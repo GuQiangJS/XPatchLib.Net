@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{74706E54-940B-483E-8CE4-9E2DBF45DB21}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>XPatchLib.UnitTest</RootNamespace>
+    <AssemblyName>XPatchSerializer.UnitTest</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>True</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>../Key/XPatchLib.DevKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml.Serialization" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="XPatchLib, Version=1.0.0.1, Culture=neutral, PublicKeyToken=ba48c1962d234d2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Bin\XPatchLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="PetShopModelTests\ArrayModelTest.cs" />
+    <Compile Include="PetShopModelTests\CollectionModelTest.cs" />
+    <Compile Include="PetShopModelTests\Models\AddressInfo.cs" />
+    <Compile Include="PetShopModelTests\Models\CreditCardInfo.cs" />
+    <Compile Include="PetShopModelTests\Models\LineItemInfo.cs" />
+    <Compile Include="PetShopModelTests\Models\OrderInfo.cs" />
+    <Compile Include="PetShopModelTests\PetShopModelTestHelper.cs" />
+    <Compile Include="PetShopModelTests\SingleModelTest.cs" />
+    <Compile Include="PetShopModelTests\ListModelTest.cs" />
+    <Compile Include="TestClass\AuthorStruct.cs" />
+    <Compile Include="TestClass\AuthorClass.cs" />
+    <Compile Include="TestClass\BookClassWithDecimalPrice.cs" />
+    <Compile Include="TestClass\BookClassCollection.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestClass\BookClass.cs" />
+    <Compile Include="TestClass\ColorClass.cs" />
+    <Compile Include="TestClass\CultureClass.cs" />
+    <Compile Include="TestClass\EnumClass.cs" />
+    <Compile Include="TestClass\ErrorPrimaryKeyDefineClass.cs" />
+    <Compile Include="TestClass\MulitPrimaryKeyClass.cs" />
+    <Compile Include="TestClass\MultilevelClass.cs" />
+    <Compile Include="TestClass\SingleQuarter.cs" />
+    <Compile Include="TestClass\MultiQuarter.cs" />
+    <Compile Include="TestClass\NullableClass.cs" />
+    <Compile Include="TestHelper.cs" />
+    <Compile Include="TestSerializeBasic.cs" />
+    <Compile Include="TestDeserializeBasic.cs" />
+    <Compile Include="TestReflectionUtils.cs" />
+    <Compile Include="TestSerializeObject.cs" />
+    <Compile Include="TestSerializeArray.cs" />
+    <Compile Include="TestColorHelper.cs" />
+    <Compile Include="TestMulitPrimaryKeyClass.cs" />
+    <Compile Include="TestXPatchSerializer.cs" />
+    <Compile Include="TestException.cs" />
+    <Compile Include="TestEnumWrapper.cs" />
+    <Compile Include="TestGuard.cs" />
+    <Compile Include="Example.cs" />
+    <Compile Include="TestDictionary.cs" />
+    <Compile Include="TestKeyValuePair.cs" />
+    <Compile Include="TestHashTable.cs" />
+    <Compile Include="TestMultilayerSet.cs" />
+    <Compile Include="TestKeyValuesObjectEqualityComparer.cs" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

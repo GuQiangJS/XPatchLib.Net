@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B52D73BE-FB16-4A4D-8049-BF81B60FE05D}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>XPatchSerializerExample</RootNamespace>
+    <AssemblyName>XPatchSerializer.Example</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>XPatchSerializerExample.PerformanceBigCollectionAnalysis</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Serialization" />
+    <Reference Include="XPatchLib">
+      <HintPath>..\Bin\XPatchLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CSharp\XPatchSerializer\ClassExample.cs" />
+    <Compile Include="CSharp\XPatchSerializer\ClassRemark.cs" />
+    <Compile Include="CSharp\XPatchSerializer\CombineStreamOverrideExample.cs" />
+    <Compile Include="CSharp\XPatchSerializer\CombineStreamExample.cs" />
+    <Compile Include="CSharp\XPatchSerializer\CombineTextReaderOverrideExample.cs" />
+    <Compile Include="CSharp\XPatchSerializer\CombineTextReaderExample.cs" />
+    <Compile Include="CSharp\XPatchSerializer\CombineXmlReaderOverrideExample.cs" />
+    <Compile Include="CSharp\XPatchSerializer\CombineXmlReaderExample.cs" />
+    <Compile Include="CSharp\XPatchSerializer\ConstructorDateModeExample.cs" />
+    <Compile Include="CSharp\XPatchSerializer\ConstructorDateModeSerializeDefalutValueExample.cs" />
+    <Compile Include="CSharp\XPatchSerializer\ConstructorExample.cs" />
+    <Compile Include="CSharp\XPatchSerializer\ConstructorSerializeDefalutValueExample.cs" />
+    <Compile Include="CSharp\XPatchSerializer\DivideStreamExample.cs" />
+    <Compile Include="CSharp\XPatchSerializer\DivideTextWriterExample.cs" />
+    <Compile Include="CSharp\XPatchSerializer\DivideXmlWriterExample.cs" />
+    <Compile Include="CSharp\XPatchSerializer\RegisteTypesExample.cs" />
+    <Compile Include="PerformanceAnalysis.cs" />
+    <Compile Include="PerformanceBigCollectionAnalysis.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="CSharp\XPatchSerializer\ClassExampleOutPut.xml" />
+    <Content Include="CSharp\XPatchSerializer\ClassRemarkOutPut.xml" />
+    <Content Include="CSharp\XPatchSerializer\CombineStreamExampleInPut.xml" />
+    <Content Include="CSharp\XPatchSerializer\CombineTextReaderExampleInPut.xml" />
+    <Content Include="CSharp\XPatchSerializer\CombineXmlReaderExampleInPut.xml" />
+    <Content Include="CSharp\XPatchSerializer\ConstructorDateModeExampleOutPut.xml" />
+    <Content Include="CSharp\XPatchSerializer\ConstructorDateModeSerializeDefalutValueExampleOutPut.xml" />
+    <Content Include="CSharp\XPatchSerializer\ConstructorExampleOutPut.xml" />
+    <Content Include="CSharp\XPatchSerializer\ConstructorSerializeDefalutValueExampleOutPut.xml" />
+    <Content Include="CSharp\XPatchSerializer\DivideStreamExampleOutPut.xml" />
+    <Content Include="CSharp\XPatchSerializer\DivideTextWriterExampleOutPut.xml" />
+    <Content Include="CSharp\XPatchSerializer\DivideXmlWriterExampleOutPut.xml" />
+    <Content Include="CSharp\XPatchSerializer\RegisteTypesExampleOutPut.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
