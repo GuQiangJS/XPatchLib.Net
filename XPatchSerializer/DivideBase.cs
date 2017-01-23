@@ -88,12 +88,6 @@ namespace XPatchLib
         /// </exception>
         protected DivideBase(TypeExtend pType, XmlDateTimeSerializationMode pMode, Boolean pSerializeDefalutValue)
         {
-            string errorPrimaryKeyName = string.Empty;
-            if (!pType.CheckPrimaryKeyAttribute(false, out errorPrimaryKeyName))
-            {
-                throw new PrimaryKeyException(pType.OriType, errorPrimaryKeyName);
-            }
-
             this.Type = pType;
             this.SerializeDefaultValue = pSerializeDefalutValue;
             this.Mode = pMode;

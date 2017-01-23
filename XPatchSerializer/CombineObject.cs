@@ -154,7 +154,7 @@ namespace XPatchLib
                         //如果当前正在处理的属性的现有属性值实例为null时，先创建一个新的实例。
                         if (memberObj == null)
                         {
-                            memberObj = memberType.CreateInstance();
+                            memberObj = TypeExtendContainer.GetTypeExtend(memberType).CreateInstance();
                         }
                         //调用CombineObject类型的Combine方法，对现有属性实例（或新创建的属性实例）进行增量数据合并。
                         new CombineCore(TypeExtendContainer.GetTypeExtend(memberType)).Combine(memberObj, memberElement);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace XPatchLib
 {
@@ -44,6 +45,8 @@ namespace XPatchLib
         internal TypeExtend(Type pType)
         {
             this.OriType = pType;
+            this.CustomAttributes = pType.GetCustomAttributes();
+            this.PrimaryKeyAttr = GetCustomAttribute<PrimaryKeyAttribute>();
 
             this.GetValueFuncs = new Dictionary<string, Func<object, object>>();
             this.SetValueFuncs = new Dictionary<string, Action<object, object>>();
@@ -53,9 +56,7 @@ namespace XPatchLib
             this.IsICollection = ReflectionUtils.IsICollection(pType);
 
             this.IsIEnumerable = ReflectionUtils.IsIEnumerable(pType);
-            this.FieldsToBeSerialized = ReflectionUtils.GetFieldsToBeSerialized(pType);
-            this.CustomAttributes = pType.GetCustomAttributes();
-            this.PrimaryKeyAttribute = GetCustomAttribute<PrimaryKeyAttribute>();
+            this.FieldsToBeSerialized = ReflectionUtils.GetFieldsToBeSerialized(pType).ToArray();
             this.DefaultValue = ReflectionUtils.GetDefaultValue(pType);
             this.IsArray = ReflectionUtils.IsArray(pType);
             this.TypeCode = Type.GetTypeCode(pType);
@@ -93,8 +94,58 @@ namespace XPatchLib
                     new MemberWrapper(pType.GetProperty(ConstValue.KEY)),
                     new MemberWrapper(pType.GetProperty(ConstValue.VALUE))
                 };
-                this.FieldsToBeSerialized = members.OrderBy(x => x.Name);
+                this.FieldsToBeSerialized = members.OrderBy(x => x.Name).ToArray();
             }
+
+            string errorPrimaryKeyName = string.Empty;
+            if (!CheckPrimaryKeyAttribute(false, out errorPrimaryKeyName))
+            {
+                throw new PrimaryKeyException(pType, errorPrimaryKeyName);
+            }
+
+            this.CreateInstanceFuncs = ClrHelper.CreateInstanceFunc(pType);
+        }
+
+        /// <summary>
+        /// 检测类型上的PrimaryKeyAttribute特性是否符合要求。 
+        /// </summary>
+        /// <param name="pType">
+        /// 待检测的类型。 
+        /// </param>
+        /// <param name="pCheckAttributeExists">
+        /// 是否强制要求类型必须设定PrimaryKeyAttribute特性。 
+        /// </param>
+        /// <param name="pErrorPrimaryKeyName">
+        /// 有问题的主键属性名称。 
+        /// </param>
+        internal Boolean CheckPrimaryKeyAttribute(bool pCheckAttributeExists, out string pErrorPrimaryKeyName)
+        {
+            Boolean result = true;
+            pErrorPrimaryKeyName = string.Empty;
+
+            if (PrimaryKeyAttr == null)
+            {
+                if (pCheckAttributeExists)
+                {
+                    result = false;
+                }
+            }
+            else
+            {
+                foreach (string primaryKey in PrimaryKeyAttr.GetPrimaryKeys())
+                {
+                    Type primaryKeyType;
+                    TryGetMemberType(primaryKey, out primaryKeyType);
+                    if (!ReflectionUtils.IsBasicType(primaryKeyType))
+                    {
+                        result = false;
+                        pErrorPrimaryKeyName = primaryKey;
+                        break;
+                    }
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -110,7 +161,7 @@ namespace XPatchLib
         /// <summary>
         /// 获取该类型下可以被序列化的字段。 
         /// </summary>
-        internal IOrderedEnumerable<MemberWrapper> FieldsToBeSerialized { get; private set; }
+        internal MemberWrapper[] FieldsToBeSerialized { get; private set; }
 
         internal Boolean IsArray { get; private set; }
 
@@ -141,7 +192,7 @@ namespace XPatchLib
         /// </summary>
         internal Type OriType { get; private set; }
 
-        internal PrimaryKeyAttribute PrimaryKeyAttribute { get; private set; }
+        internal PrimaryKeyAttribute PrimaryKeyAttr { get; private set; }
 
         internal TypeCode TypeCode { get; private set; }
 
@@ -156,9 +207,50 @@ namespace XPatchLib
 
         private Dictionary<String, Action<Object, Object>> SetValueFuncs { get; set; }
 
+        private Func<Object> CreateInstanceFuncs { get; set; }
+
         internal Object CreateInstance()
         {
-            return this.OriType.CreateInstance();
+            if (CreateInstanceFuncs != null)
+            {
+                return CreateInstanceFuncs();
+            }
+
+            if (this.IsBasicType)
+            {
+                if (this.OriType.IsValueType)
+                {
+                    return this.OriType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0], CultureInfo.InvariantCulture);
+                }
+                else if (this.OriType == typeof(string))
+                {
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                if (this.IsArray)
+                {
+                    Type elementType;
+                    if (ReflectionUtils.TryGetArrayElementType(this.OriType, out elementType))
+                    {
+                        return Array.CreateInstance(elementType, 0);
+                    }
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    try
+                    {
+                        return this.OriType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0], CultureInfo.InvariantCulture);
+                    }
+                    catch (MissingMethodException)
+                    {
+                        return Activator.CreateInstance(this.OriType, true);
+                    }
+                }
+            }
+            return null;
         }
 
         internal T GetCustomAttribute<T>() where T : Attribute
@@ -200,6 +292,19 @@ namespace XPatchLib
                 }
             }
             return result;
+        }
+
+        internal static Boolean Equals(object objA, object objB)
+        {
+            if (objA == null && objB == null)
+            {
+                return true;
+            }
+            else if (objA == null || objB == null)
+            {
+                return false;
+            }
+            return objA.Equals(objB);
         }
 
         internal Object InvokeMember(string name, BindingFlags invokeAttr, Binder binder, object target, object[] args, CultureInfo culture)
@@ -282,7 +387,7 @@ namespace XPatchLib
             IEnumerable<Attribute> newAttrs = this.CustomAttributes.Where(x => x.GetType() != typeof(PrimaryKeyAttribute));
             this.CustomAttributes = newAttrs.Union(new Attribute[] { pAttribute });
 
-            this.PrimaryKeyAttribute = pAttribute;
+            this.PrimaryKeyAttr = pAttribute;
         }
 
         private void AddGetValueFunc(MemberWrapper pMember)

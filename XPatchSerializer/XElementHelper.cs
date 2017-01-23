@@ -23,7 +23,7 @@ namespace XPatchLib
         {
             if (pAction != Action.Edit)
             {
-                pElement.SetAttributeValue(ConstValue.ACTION_NAME, Enum.GetName(typeof(Action), pAction));
+                pElement.SetAttributeValue(ConstValue.ACTION_NAME, pAction);
             }
         }
 
@@ -35,7 +35,8 @@ namespace XPatchLib
                 XAttribute attr = pElement.Attribute(ConstValue.ACTION_NAME);
                 if (attr != null)
                 {
-                    return Enum.TryParse<Action>(attr.Value, out pAction);
+                    return ActionHelper.TryParse(attr.Value, out pAction);
+                    //return Enum.TryParse<Action>(attr.Value, out pAction);
                 }
                 //string attrString = pElement.CreateReader().GetAttribute(ConstValue.ACTION_NAME);
                 //if (!string.IsNullOrEmpty(attrString))

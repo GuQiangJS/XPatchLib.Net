@@ -39,12 +39,6 @@ namespace XPatchLib
         /// </exception>
         internal CombineBase(TypeExtend pType, XmlDateTimeSerializationMode pMode)
         {
-            string errorPrimaryKeyName = string.Empty;
-            if (!pType.CheckPrimaryKeyAttribute(false, out errorPrimaryKeyName))
-            {
-                throw new PrimaryKeyException(pType.OriType, errorPrimaryKeyName);
-            }
-
             Type = pType;
             Mode = pMode;
         }

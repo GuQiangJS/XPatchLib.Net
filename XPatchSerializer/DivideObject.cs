@@ -119,7 +119,7 @@ namespace XPatchLib
                 object pOriMemberValue = this.Type.GetMemberValue(pOriObject, member.Name);
                 object pRevMemberValue = this.Type.GetMemberValue(pRevObject, member.Name);
 
-                Type memberType = ReflectionUtils.IsNullable(member.Type) ? ReflectionUtils.GetNullableValueType(member.Type) : member.Type;
+                Type memberType = member.MemberType;
 
                 XElement memberElement = null;
 
@@ -127,7 +127,7 @@ namespace XPatchLib
                 if (member.IsBasicType)
                 {
                     //如果是枚举类型，则先将枚举值转化为字符串
-                    if (member.Type.IsEnum)
+                    if (member.IsEnum)
                     {
                         pOriMemberValue = new EnumWrapper(memberType).TransToString(pOriMemberValue);
                         pRevMemberValue = new EnumWrapper(memberType).TransToString(pRevMemberValue);

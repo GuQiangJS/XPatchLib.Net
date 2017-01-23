@@ -96,15 +96,6 @@ namespace XPatchLib
             return result;
         }
 
-        private static string[] GetOrderedPrimaryKeys(PrimaryKeyAttribute pAttr)
-        {
-            if (pAttr == null)
-            {
-                return new string[] { };
-            }
-            return pAttr.GetPrimaryKeys().OrderBy(x => x).ToArray();
-        }
-
         private void SetKeyValues(Object pValue)
         {
             if (pValue != null)
@@ -112,8 +103,8 @@ namespace XPatchLib
                 TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(pValue.GetType());
                 if (!typeExtend.IsBasicType)
                 {
-                    PrimaryKeyAttribute keyAttr = typeExtend.PrimaryKeyAttribute;
-                    string[] primaryKeys = GetOrderedPrimaryKeys(keyAttr);
+                    PrimaryKeyAttribute keyAttr = typeExtend.PrimaryKeyAttr;
+                    string[] primaryKeys = keyAttr.GetPrimaryKeys();
                     if (primaryKeys.Length > 0)
                     {
                         KeysHash = new int[primaryKeys.Length];

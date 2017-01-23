@@ -57,7 +57,7 @@ namespace XPatchLib
             {
                 GenericArgumentType = TypeExtendContainer.GetTypeExtend(t);
 
-                GenericArgumentTypePrimaryKeyAttribute = GenericArgumentType.PrimaryKeyAttribute;
+                GenericArgumentTypePrimaryKeyAttribute = GenericArgumentType.PrimaryKeyAttr;
 
                 if (GenericArgumentTypePrimaryKeyAttribute == null && !this.GenericArgumentType.IsBasicType)
                 {

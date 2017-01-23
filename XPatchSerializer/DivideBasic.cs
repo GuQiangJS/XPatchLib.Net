@@ -212,7 +212,7 @@ namespace XPatchLib
         private XElement DivideCore<T>(string pName, Object pOriObject, Object pRevObject)
         {
             XElement result = null;
-            if (!ReflectionUtils.ObjectEquals(pOriObject, pRevObject))
+            if (!TypeExtend.Equals(pOriObject, pRevObject))
             {
                 //只有当原始对象与变更后的对象不相等时才需要产生增量内容。
                 if (pRevObject == null)
@@ -220,7 +220,7 @@ namespace XPatchLib
                     //当更新后对象为Null时设置为SetNull
                     return DivideCore(pName, string.Empty, Action.SetNull);
                 }
-                else if (pOriObject == null && ReflectionUtils.IsDefaultValue<T>((T)pRevObject))
+                else if (pOriObject == null && TypeExtend.Equals(this.Type.DefaultValue, pRevObject))
                 {
                     //原始对象为null，且更新后的对象为类型初始值时，需要判断_SerializeDefaultValue属性来确定是否序列化初始值。
                     if (this.SerializeDefaultValue)

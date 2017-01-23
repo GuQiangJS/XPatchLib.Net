@@ -90,10 +90,8 @@ namespace XPatchLib
         /// </summary>
         internal Boolean IsEnum
         {
-            get
-            {
-                return this.Type.IsEnum;
-            }
+            get;
+            private set;
         }
 
         /*
@@ -176,6 +174,12 @@ namespace XPatchLib
         }
 
         /// <summary>
+        /// 获取类型。 
+        /// </summary>
+        /// <remarks>实际数据类型，可能是NullableValueType。</remarks>
+        internal Type MemberType { get; private set; }
+
+        /// <summary>
         /// 初始化当前成员属性的类型信息。 
         /// </summary>
         private void InitType()
@@ -192,9 +196,13 @@ namespace XPatchLib
 
             this.Type = IsProperty ? ((PropertyInfo)MemberInfo).PropertyType : ((FieldInfo)MemberInfo).FieldType;
 
+            MemberType = ReflectionUtils.IsNullable(Type) ? ReflectionUtils.GetNullableValueType(Type) : Type;
+
             IsBasicType = ReflectionUtils.IsBasicType(Type);
 
             IsIEnumerable = ReflectionUtils.IsIEnumerable(Type);
+
+            IsEnum = Type.IsEnum;
 
             //IsICollection = ReflectionUtils.IsICollection(Type);
 

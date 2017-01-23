@@ -11,6 +11,21 @@ namespace XPatchLib
 
         private static readonly Type[] SetValueParameterTypes = new Type[] { typeof(object), typeof(object) };
 
+        public static Func<Object> CreateInstanceFunc(Type pType)
+        {
+            ConstructorInfo EmptyConstructor = pType.GetConstructor(Type.EmptyTypes);
+            if(EmptyConstructor==null)
+            {
+                return null;
+            }
+            var dynamicMethod = new DynamicMethod("CreateInstance", pType, Type.EmptyTypes, true);
+            ILGenerator ilGenerator = dynamicMethod.GetILGenerator();
+            ilGenerator.Emit(OpCodes.Nop);
+            ilGenerator.Emit(OpCodes.Newobj, EmptyConstructor);
+            ilGenerator.Emit(OpCodes.Ret);
+            return (Func<object>)dynamicMethod.CreateDelegate(typeof(Func<object>));
+        }
+
         /// <summary>
         /// </summary>
         /// <param name="pProperty">
