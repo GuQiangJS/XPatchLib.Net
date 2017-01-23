@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -125,17 +126,20 @@ namespace XPatchLib
 
         private static Object CombineBoolean(XElement pElement)
         {
-            return XmlConvert.ToBoolean(pElement.Value);
+            return Boolean.Parse(pElement.Value);
+            //return XmlConvert.ToBoolean(pElement.Value);
         }
 
         private static Object CombineByte(XElement pElement)
         {
-            return XmlConvert.ToSByte(pElement.Value);
+            return SByte.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToSByte(pElement.Value);
         }
 
         private static Object CombineChar(XElement pElement)
         {
-            return (char)XmlConvert.ToUInt16(pElement.Value);
+            return (Char)UInt16.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
+            //return (char)XmlConvert.ToUInt16(pElement.Value);
         }
 
         private static Object CombineDateTime(XElement pElement, XmlDateTimeSerializationMode pMode)
@@ -145,37 +149,44 @@ namespace XPatchLib
 
         private static Object CombineDecimal(XElement pElement)
         {
-            return XmlConvert.ToDecimal(pElement.Value);
+            return Decimal.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToDecimal(pElement.Value);
         }
 
         private static Object CombineDouble(XElement pElement)
         {
-            return XmlConvert.ToDouble(pElement.Value);
+            return Double.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToDouble(pElement.Value);
         }
 
         private static Object CombineFloat(XElement pElement)
         {
-            return XmlConvert.ToSingle(pElement.Value);
+            return Single.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToSingle(pElement.Value);
         }
 
         private static Object CombineGuid(XElement pElement)
         {
-            return XmlConvert.ToGuid(pElement.Value);
+            return Guid.Parse(pElement.Value);
+            //return XmlConvert.ToGuid(pElement.Value);
         }
 
         private static Object CombineInt32(XElement pElement)
         {
-            return XmlConvert.ToInt32(pElement.Value);
+            return Int32.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToInt32(pElement.Value);
         }
 
         private static Object CombineLong(XElement pElement)
         {
-            return XmlConvert.ToInt64(pElement.Value);
+            return Int64.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToInt64(pElement.Value);
         }
 
         private static Object CombineShort(XElement pElement)
         {
-            return XmlConvert.ToInt16(pElement.Value);
+            return Int16.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToInt16(pElement.Value);
         }
 
         private static Object CombineString(XElement pElement)
@@ -185,22 +196,26 @@ namespace XPatchLib
 
         private static Object CombineUnsignedByte(XElement pElement)
         {
-            return XmlConvert.ToByte(pElement.Value);
+            return Byte.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToByte(pElement.Value);
         }
 
         private static Object CombineUnsignedInt32(XElement pElement)
         {
-            return XmlConvert.ToUInt32(pElement.Value);
+            return UInt32.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToUInt32(pElement.Value);
         }
 
         private static Object CombineUnsignedLong(XElement pElement)
         {
-            return XmlConvert.ToUInt64(pElement.Value);
+            return UInt64.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToUInt64(pElement.Value);
         }
 
         private static Object CombineUnsignedShort(XElement pElement)
         {
-            return XmlConvert.ToUInt16(pElement.Value);
+            return UInt16.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToUInt16(pElement.Value);
         }
 
         #endregion Private Methods
