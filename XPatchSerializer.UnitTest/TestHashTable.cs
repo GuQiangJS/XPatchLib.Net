@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -15,21 +16,21 @@ namespace XPatchLib.UnitTest
         [TestMethod]
         public void TestHashTableDivideWithoutPrimaryKeyAttribute()
         {
-            Hashtable table = new Hashtable();
+            var table = new Hashtable();
 
             table.Add("aaa", "ccc");
             table.Add(123, "ddd");
 
-            XPatchSerializer serializer = new XPatchSerializer(typeof(Hashtable));
+            var serializer = new XPatchSerializer(typeof(Hashtable));
 
-            string context = string.Empty;
+            var context = string.Empty;
             try
             {
-                using (MemoryStream stream = new MemoryStream())
+                using (var stream = new MemoryStream())
                 {
                     serializer.Divide(stream, null, table);
                     stream.Position = 0;
-                    using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
                     {
                         context = stremReader.ReadToEnd();
                     }
@@ -50,22 +51,22 @@ namespace XPatchLib.UnitTest
         [TestMethod]
         public void TestQueueDivide()
         {
-            System.Collections.Generic.Queue<string> table = new System.Collections.Generic.Queue<string>();
+            var table = new Queue<string>();
             table.Enqueue("aaa");
             table.Enqueue("bbb");
             table.Enqueue("ccc");
             table.Enqueue("ddd");
 
-            XPatchSerializer serializer = new XPatchSerializer(typeof(System.Collections.Generic.Queue<string>));
+            var serializer = new XPatchSerializer(typeof(Queue<string>));
 
-            string context = string.Empty;
+            var context = string.Empty;
             try
             {
-                using (MemoryStream stream = new MemoryStream())
+                using (var stream = new MemoryStream())
                 {
                     serializer.Divide(stream, null, table);
                     stream.Position = 0;
-                    using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
                     {
                         context = stremReader.ReadToEnd();
                     }

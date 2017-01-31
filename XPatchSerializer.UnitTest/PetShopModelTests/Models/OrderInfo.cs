@@ -9,113 +9,98 @@ namespace XPatchLib.UnitTest.PetShopModelTests.Models
         #region Public Constructors
 
         /// <summary>
-        /// Default constructor This is required by web services serialization mechanism 
+        ///     Default constructor This is required by web services serialization mechanism
         /// </summary>
         public OrderInfo()
         {
-            this.LineItems = new LineItemInfo[] { };
+            LineItems = new LineItemInfo[] {};
         }
 
         /// <summary>
-        /// Constructor with specified initial values 
+        ///     Constructor with specified initial values
         /// </summary>
         /// <param name="orderId">
-        /// Unique identifier 
+        ///     Unique identifier
         /// </param>
         /// <param name="date">
-        /// Order date 
+        ///     Order date
         /// </param>
         /// <param name="userId">
-        /// User placing order 
+        ///     User placing order
         /// </param>
         /// <param name="creditCard">
-        /// Credit card used for order 
+        ///     Credit card used for order
         /// </param>
         /// <param name="billing">
-        /// Billing orderess for the order 
+        ///     Billing orderess for the order
         /// </param>
         /// <param name="shipping">
-        /// Shipping orderess for the order 
+        ///     Shipping orderess for the order
         /// </param>
         /// <param name="total">
-        /// Order total value 
+        ///     Order total value
         /// </param>
         /// <param name="line">
-        /// Ordered items 
+        ///     Ordered items
         /// </param>
         /// <param name="authorization">
-        /// Credit card authorization number 
+        ///     Credit card authorization number
         /// </param>
-        public OrderInfo(int orderId, DateTime date, string userId, CreditCardInfo creditCard, AddressInfo billing, AddressInfo shipping, decimal total, LineItemInfo[] line, Nullable<int> authorization)
+        public OrderInfo(int orderId, DateTime date, string userId, CreditCardInfo creditCard, AddressInfo billing,
+            AddressInfo shipping, decimal total, LineItemInfo[] line, int? authorization)
             : this()
         {
-            this.orderId = orderId;
-            this.date = date;
-            this.userId = userId;
-            this.creditCard = creditCard;
-            this.billingAddress = billing;
-            this.shippingAddress = shipping;
-            this.orderTotal = total;
-            this.lineItems = line;
-            this.authorizationNumber = authorization;
+            OrderId = orderId;
+            Date = date;
+            UserId = userId;
+            CreditCard = creditCard;
+            BillingAddress = billing;
+            ShippingAddress = shipping;
+            OrderTotal = total;
+            LineItems = line;
+            AuthorizationNumber = authorization;
         }
 
         public override bool Equals(object obj)
         {
-            OrderInfo order = obj as OrderInfo;
+            var order = obj as OrderInfo;
             if (order == null)
-            {
                 return false;
-            }
-            return this.OrderId.Equals(order.OrderId)
-                && this.Date.Equals(order.Date)
-                && this.UserId.Equals(order.UserId)
-                && this.CreditCard.Equals(order.CreditCard)
-                && AddressInfo.Equals(this.BillingAddress, order.BillingAddress)
-                && AddressInfo.Equals(this.ShippingAddress, order.ShippingAddress)
-                && this.OrderTotal.Equals(order.OrderTotal)
-                && this.LineItems.Length.Equals(order.LineItems.Length)
-                && ((this.LineItems.Except(order.LineItems).Count() > 0) ? false : true)
-                && this.AuthorizationNumber.Equals(order.AuthorizationNumber);
+            return OrderId.Equals(order.OrderId)
+                   && Date.Equals(order.Date)
+                   && UserId.Equals(order.UserId)
+                   && CreditCard.Equals(order.CreditCard)
+                   && Equals(BillingAddress, order.BillingAddress)
+                   && Equals(ShippingAddress, order.ShippingAddress)
+                   && OrderTotal.Equals(order.OrderTotal)
+                   && LineItems.Length.Equals(order.LineItems.Length)
+                   && (LineItems.Except(order.LineItems).Count() > 0 ? false : true)
+                   && AuthorizationNumber.Equals(order.AuthorizationNumber);
         }
 
         public override int GetHashCode()
         {
-            int result = 0;
+            var result = 0;
 
-            result ^= this.OrderId.GetHashCode();
+            result ^= OrderId.GetHashCode();
 
-            if (this.Date != null)
-            {
-                result ^= this.Date.GetHashCode();
-            }
-            if (this.UserId != null)
-            {
-                result ^= this.UserId.GetHashCode();
-            }
-            if (this.CreditCard != null)
-            {
-                result ^= this.CreditCard.GetHashCode();
-            }
-            if (this.BillingAddress != null)
-            {
-                result ^= this.BillingAddress.GetHashCode();
-            }
-            if (this.ShippingAddress != null)
-            {
-                result ^= this.ShippingAddress.GetHashCode();
-            }
+            if (Date != null)
+                result ^= Date.GetHashCode();
+            if (UserId != null)
+                result ^= UserId.GetHashCode();
+            if (CreditCard != null)
+                result ^= CreditCard.GetHashCode();
+            if (BillingAddress != null)
+                result ^= BillingAddress.GetHashCode();
+            if (ShippingAddress != null)
+                result ^= ShippingAddress.GetHashCode();
 
-            result ^= this.OrderTotal.GetHashCode();
+            result ^= OrderTotal.GetHashCode();
 
-            if (this.LineItems != null)
-            {
-                result ^= this.LineItems.GetHashCode();
-            }
-            if (this.AuthorizationNumber != null)
-            {
-                result ^= this.AuthorizationNumber.GetHashCode();
-            }
+            if (LineItems != null)
+                result ^= LineItems.GetHashCode();
+            if (AuthorizationNumber != null)
+                result ^= AuthorizationNumber.GetHashCode();
             return result;
         }
 
@@ -123,81 +108,30 @@ namespace XPatchLib.UnitTest.PetShopModelTests.Models
 
         #region Private Fields
 
-        private Nullable<int> authorizationNumber;
-
-        private AddressInfo billingAddress;
-
-        private CreditCardInfo creditCard;
-
-        private DateTime date;
-
-        private LineItemInfo[] lineItems;
-
         // Internal member variables 
-        private int orderId;
-
-        private decimal orderTotal;
-        private AddressInfo shippingAddress;
-        private string userId;
 
         #endregion Private Fields
 
         #region Public Properties
 
-        public Nullable<int> AuthorizationNumber
-        {
-            get { return authorizationNumber; }
-            set { authorizationNumber = value; }
-        }
+        public int? AuthorizationNumber { get; set; }
 
-        public AddressInfo BillingAddress
-        {
-            get { return billingAddress; }
-            set { billingAddress = value; }
-        }
+        public AddressInfo BillingAddress { get; set; }
 
-        public CreditCardInfo CreditCard
-        {
-            get { return creditCard; }
-            set { creditCard = value; }
-        }
+        public CreditCardInfo CreditCard { get; set; }
 
-        public DateTime Date
-        {
-            get { return date; }
-            set { date = value; }
-        }
+        public DateTime Date { get; set; }
 
-        public LineItemInfo[] LineItems
-        {
-            get { return lineItems; }
-            set { lineItems = value; }
-        }
+        public LineItemInfo[] LineItems { get; set; }
 
         // Properties 
-        public int OrderId
-        {
-            get { return orderId; }
-            set { orderId = value; }
-        }
+        public int OrderId { get; set; }
 
-        public decimal OrderTotal
-        {
-            get { return orderTotal; }
-            set { orderTotal = value; }
-        }
+        public decimal OrderTotal { get; set; }
 
-        public AddressInfo ShippingAddress
-        {
-            get { return shippingAddress; }
-            set { shippingAddress = value; }
-        }
+        public AddressInfo ShippingAddress { get; set; }
 
-        public string UserId
-        {
-            get { return userId; }
-            set { userId = value; }
-        }
+        public string UserId { get; set; }
 
         #endregion Public Properties
     }

@@ -14,7 +14,7 @@ namespace XPatchLib.UnitTest.TestClass
 
         public static ColorClass GetSampleInstance()
         {
-            return new ColorClass()
+            return new ColorClass
             {
                 Color = Color.AliceBlue
             };

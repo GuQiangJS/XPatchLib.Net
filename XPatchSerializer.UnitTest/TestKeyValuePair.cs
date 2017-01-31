@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,127 +15,223 @@ namespace XPatchLib.UnitTest
         [ExpectedException(typeof(ArgumentException), "原始值的Key值与更新后的值的Key值不同时，抛出异常")]
         public void TestCombineSingleKeyValuePairByDifferentKey()
         {
-            KeyValuePair<string, string> k1 = new KeyValuePair<string, string>("1", "1");
-            KeyValuePair<string, string> k2 = new KeyValuePair<string, string>(null, null);
+            var k1 = new KeyValuePair<string, string>("1", "1");
+            var k2 = new KeyValuePair<string, string>(null, null);
 
-            string changedContext = @"<KeyValuePair_String_String Action=""Remove"">
-  <Key>" + k1.Key + @"</Key>
+            var changedContext = @"<KeyValuePair_String_String Action=""Remove"">
+  <Key>" + k2.Key + @"</Key>
 </KeyValuePair_String_String>";
-            XElement changedEle = new XElement("", changedContext);
 
-            object combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(k1, changedEle);
-            Assert.AreEqual(k2, combineObj);
+            using (XmlReader reader = XmlTextReader.Create(new StringReader(changedContext)))
+            {
+                var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader,k1, ReflectionUtils.GetTypeFriendlyName(k2.GetType()));
+                Assert.AreEqual(k2, combineObj);
+            }
         }
 
         [TestMethod]
         public void TestDivideAndCombineSingleKeyValuePairByNullOriObject()
         {
-            KeyValuePair<string, string> k2 = new KeyValuePair<string, string>("1", "2");
-
-            XElement changedEle = new DivideKeyValuePair(new TypeExtend(k2.GetType())).Divide(ReflectionUtils.GetTypeFriendlyName(k2.GetType()), null, k2);
-
-            string changedContext = @"<KeyValuePair_String_String>
+            var k2 = new KeyValuePair<string, string>("1", "2");
+            var changedContext = @"<KeyValuePair_String_String>
   <Key>" + k2.Key + @"</Key>
   <Value>" + k2.Value + @"</Value>
 </KeyValuePair_String_String>";
 
-            Assert.AreEqual(changedContext, changedEle.ToString());
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                {
+                    Assert.IsTrue(
+                        new DivideKeyValuePair(writer, new TypeExtend(k2.GetType())).Divide(
+                            ReflectionUtils.GetTypeFriendlyName(k2.GetType()), null, k2));
+                }
 
-            object combineObj = new CombineKeyValuePair(new TypeExtend(k2.GetType())).Combine(null, changedEle);
-            Assert.AreEqual(k2, combineObj);
+                stream.Position = 0;
+                var changedEle = XElement.Load(stream);
+
+                Assert.AreEqual(changedContext, changedEle.ToString());
+                stream.Position = 0;
+                using (XmlReader reader = XmlReader.Create(stream))
+                {
+                    var combineObj =new CombineKeyValuePair(new TypeExtend(k2.GetType())).Combine(reader,null, ReflectionUtils.GetTypeFriendlyName(k2.GetType()));
+                    Assert.AreEqual(k2, combineObj);
+                }
+            }
         }
 
         [TestMethod]
         public void TestDivideAndCombineSingleKeyValuePairByNullRevObject()
         {
-            KeyValuePair<string, string> k1 = new KeyValuePair<string, string>("1", "1");
+            var k1 = new KeyValuePair<string, string>("1", "1");
 
-            XElement changedEle = new DivideKeyValuePair(new TypeExtend(k1.GetType())).Divide(ReflectionUtils.GetTypeFriendlyName(k1.GetType()), k1, null);
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                {
+                    Assert.IsTrue(
+                        new DivideKeyValuePair(writer, new TypeExtend(k1.GetType())).Divide(
+                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()), k1, null));
+                }
 
-            string changedContext = @"<KeyValuePair_String_String Action=""Remove"">
+                stream.Position = 0;
+                var changedEle = XElement.Load(stream);
+
+                var changedContext = @"<KeyValuePair_String_String Action=""Remove"">
   <Key>" + k1.Key + @"</Key>
 </KeyValuePair_String_String>";
 
-            Assert.AreEqual(changedContext, changedEle.ToString());
+                Assert.AreEqual(changedContext, changedEle.ToString());
 
-            object combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(k1, changedEle);
-            Assert.AreEqual(null, combineObj);
+                stream.Position = 0;
+                using (XmlReader reader = XmlReader.Create(stream))
+                {
+                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1, ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
+                    Assert.AreEqual(null, combineObj);
+                }
+            }
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), "原始值的Key值与更新后的值的Key值不同时，抛出异常")]
         public void TestDivideAndCombineSingleKeyValuePairByOriValueIsNull()
         {
-            KeyValuePair<string, string> k1 = new KeyValuePair<string, string>(null, null);
-            KeyValuePair<string, string> k2 = new KeyValuePair<string, string>("1", "2");
+            var k1 = new KeyValuePair<string, string>(null, null);
+            var k2 = new KeyValuePair<string, string>("1", "2");
 
-            XElement changedEle = new DivideKeyValuePair(new TypeExtend(k1.GetType())).Divide(ReflectionUtils.GetTypeFriendlyName(k1.GetType()), k1, k2);
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                {
+                    Assert.IsTrue(
+                        new DivideKeyValuePair(writer, new TypeExtend(k1.GetType())).Divide(
+                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()), k1, k2));
+                }
 
-            string changedContext = @"<KeyValuePair_String_String>
+                stream.Position = 0;
+                var changedEle = XElement.Load(stream);
+
+                var changedContext = @"<KeyValuePair_String_String>
   <Key>" + k2.Key + @"</Key>
   <Value>" + k2.Value + @"</Value>
 </KeyValuePair_String_String>";
 
-            Assert.AreEqual(changedContext, changedEle.ToString());
+                Assert.AreEqual(changedContext, changedEle.ToString());
 
-            object combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(k1, changedEle);
-            Assert.AreEqual(k2, combineObj);
+
+                stream.Position = 0;
+                using (XmlReader reader = XmlReader.Create(stream))
+                {
+                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1, ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
+                    Assert.AreEqual(k2, combineObj);
+                }
+            }
         }
 
         [TestMethod]
         public void TestDivideAndCombineSingleKeyValuePairBySameKey()
         {
-            KeyValuePair<string, string> k1 = new KeyValuePair<string, string>("1", "1");
-            KeyValuePair<string, string> k2 = new KeyValuePair<string, string>("1", "2");
+            var k1 = new KeyValuePair<string, string>("1", "1");
+            var k2 = new KeyValuePair<string, string>("1", "2");
 
-            XElement changedEle = new DivideKeyValuePair(new TypeExtend(k1.GetType())).Divide(ReflectionUtils.GetTypeFriendlyName(k1.GetType()), k1, k2);
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                {
+                    Assert.IsTrue(
+                        new DivideKeyValuePair(writer, new TypeExtend(k1.GetType())).Divide(
+                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()), k1, k2));
+                }
 
-            string changedContext = @"<KeyValuePair_String_String>
+                stream.Position = 0;
+                var changedEle = XElement.Load(stream);
+
+                var changedContext = @"<KeyValuePair_String_String>
   <Key>" + k2.Key + @"</Key>
   <Value>" + k2.Value + @"</Value>
 </KeyValuePair_String_String>";
 
-            Assert.AreEqual(changedContext, changedEle.ToString());
+                Assert.AreEqual(changedContext, changedEle.ToString());
 
-            object combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(k1, changedEle);
-            Assert.AreEqual(k2, combineObj);
+                stream.Position = 0;
+                using (XmlReader reader = XmlReader.Create(stream))
+                {
+                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
+                        ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
+                    Assert.AreEqual(k2, combineObj);
+                }
+            }
         }
 
         [TestMethod]
         public void TestDivideAndCombineSingleKeyValuePairBySameKeyAndRevValueIsNull()
         {
-            KeyValuePair<string, string> k1 = new KeyValuePair<string, string>("1", "1");
-            KeyValuePair<string, string> k2 = new KeyValuePair<string, string>("1", null);
+            var k1 = new KeyValuePair<string, string>("1", "1");
+            var k2 = new KeyValuePair<string, string>("1", null);
 
-            XElement changedEle = new DivideKeyValuePair(new TypeExtend(k1.GetType())).Divide(ReflectionUtils.GetTypeFriendlyName(k1.GetType()), k1, k2);
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                {
+                    Assert.IsTrue(
+                        new DivideKeyValuePair(writer, new TypeExtend(k1.GetType())).Divide(
+                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()), k1, k2));
+                }
 
-            string changedContext = @"<KeyValuePair_String_String Action=""SetNull"">
+                stream.Position = 0;
+                var changedEle = XElement.Load(stream);
+
+                var changedContext = @"<KeyValuePair_String_String Action=""SetNull"">
   <Key>" + k2.Key + @"</Key>
 </KeyValuePair_String_String>";
 
-            Assert.AreEqual(changedContext, changedEle.ToString());
+                Assert.AreEqual(changedContext, changedEle.ToString());
 
-            object combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(k1, changedEle);
-            Assert.AreEqual(k2, combineObj);
+
+                stream.Position = 0;
+                using (XmlReader reader = XmlReader.Create(stream))
+                {
+                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
+                        ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
+                    Assert.AreEqual(k2, combineObj);
+                }
+            }
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "当原始值不为Null同时更新后的值不为Null时，原始值的Key值就应该与更新后的值的Key值相同，否则不是同一个KeyValuePair对象,此时会抛出异常")]
+        [ExpectedException(typeof(ArgumentException),
+            "当原始值不为Null同时更新后的值不为Null时，原始值的Key值就应该与更新后的值的Key值相同，否则不是同一个KeyValuePair对象,此时会抛出异常")]
         public void TestDivideSingleKeyValuePairByDifferentKey()
         {
-            KeyValuePair<string, string> k1 = new KeyValuePair<string, string>("1", "1");
-            KeyValuePair<string, string> k2 = new KeyValuePair<string, string>(null, null);
+            var k1 = new KeyValuePair<string, string>("1", "1");
+            var k2 = new KeyValuePair<string, string>(null, null);
 
-            XElement changedEle = new DivideKeyValuePair(new TypeExtend(k1.GetType())).Divide(ReflectionUtils.GetTypeFriendlyName(k1.GetType()), k1, k2);
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                {
+                    Assert.IsTrue(
+                        new DivideKeyValuePair(writer, new TypeExtend(k1.GetType())).Divide(
+                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()), k1, k2));
+                }
 
-            string changedContext = @"<KeyValuePair_String_String Action=""Remove"">
+                stream.Position = 0;
+                var changedEle = XElement.Load(stream);
+
+                var changedContext = @"<KeyValuePair_String_String Action=""Remove"">
   <Key>" + k1.Key + @"</Key>
 </KeyValuePair_String_String>";
 
-            Assert.AreEqual(changedContext, changedEle.ToString());
+                Assert.AreEqual(changedContext, changedEle.ToString());
 
-            object combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(k1, changedEle);
-            Assert.AreEqual(k2, combineObj);
+                stream.Position = 0;
+                using (XmlReader reader = XmlReader.Create(stream))
+                {
+                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
+                        ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
+                    Assert.AreEqual(k2, combineObj);
+                }
+            }
         }
     }
 }

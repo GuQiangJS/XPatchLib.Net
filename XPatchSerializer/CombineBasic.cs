@@ -1,221 +1,224 @@
-﻿using System;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Globalization;
 using System.Xml;
-using System.Xml.Linq;
 
 namespace XPatchLib
 {
     /// <summary>
-    /// 基础类型增量内容合并类。 
+    ///     基础类型增量内容合并类。
     /// </summary>
+    /// <seealso cref="XPatchLib.CombineBase" />
     internal class CombineBasic : CombineBase
     {
-        #region Internal Constructors
-
         /// <summary>
-        /// 使用指定的类型初始化 <see cref="XPatchLib.CombineBasic" /> 类的新实例。 
+        ///     合并数据。
         /// </summary>
-        /// <param name="pType">
-        /// 指定的类型。 
-        /// </param>
-        /// <remarks>
-        /// 默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。 
-        /// </remarks>
-        internal CombineBasic(TypeExtend pType)
-            : base(pType) { }
-
-        /// <summary>
-        /// 使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
-        /// <see cref="XPatchLib.CombineBasic" /> 类的新实例。
-        /// </summary>
-        /// <param name="pType">
-        /// 指定的类型。 
-        /// </param>
-        /// <param name="pMode">
-        /// 指定在字符串与 System.DateTime 之间转换时，如何处理时间值。 
-        /// <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        /// <exception cref="PrimaryKeyException">
-        /// 当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。 
-        /// </exception>
-        internal CombineBasic(TypeExtend pType, XmlDateTimeSerializationMode pMode)
-            : base(pType, pMode) { }
-
-        #endregion Internal Constructors
-
-        #region Internal Methods
-
-        /// <summary>
-        /// 根据增量内容创建基础类型实例。 
-        /// </summary>
-        /// <param name="pElement">
-        /// 增量内容。 
-        /// </param>
-        /// <returns>
-        /// 创建成功的基础类型实例。 
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// 当 <paramref name="pElement" /> is null 时。 
-        /// </exception>
-        internal Object Combine(XElement pElement)
+        /// <param name="pTypeCode">合并后的数据类型。</param>
+        /// <param name="pIsGuid">是否为<see cref="Guid" />类型。</param>
+        /// <param name="pMode">指定在字符串与 <see cref="T:System.DateTime" /> 之间转换时，如何处理时间值。</param>
+        /// <param name="pValue">待合并的数据值。</param>
+        /// <returns>返回合并后的数据。</returns>
+        internal static Object CombineAction(TypeCode pTypeCode, bool pIsGuid, XmlDateTimeSerializationMode pMode,
+            string pValue)
         {
-            Guard.ArgumentNotNull(pElement, "pElement");
-
-            Action action;
-            if (pElement.TryGetActionAttribute(out action) && action == Action.SetNull)
-            {
-                return null;
-            }
-            switch (this.Type.TypeCode)
+            switch (pTypeCode)
             {
                 case TypeCode.Boolean:
-                    return CombineBoolean(pElement);
+                    return CombineBoolean(pValue);
 
                 case TypeCode.Char:
-                    return CombineChar(pElement);
+                    return CombineChar(pValue);
 
                 case TypeCode.SByte:
-                    return CombineByte(pElement);
+                    return CombineByte(pValue);
 
                 case TypeCode.Byte:
-                    return CombineUnsignedByte(pElement);
+                    return CombineUnsignedByte(pValue);
 
                 case TypeCode.Int16:
-                    return CombineShort(pElement);
+                    return CombineShort(pValue);
 
                 case TypeCode.UInt16:
-                    return CombineUnsignedShort(pElement);
+                    return CombineUnsignedShort(pValue);
 
                 case TypeCode.Int32:
-                    return CombineInt32(pElement);
+                    return CombineInt32(pValue);
 
                 case TypeCode.UInt32:
-                    return CombineUnsignedInt32(pElement);
+                    return CombineUnsignedInt32(pValue);
 
                 case TypeCode.Int64:
-                    return CombineLong(pElement);
+                    return CombineLong(pValue);
 
                 case TypeCode.UInt64:
-                    return CombineUnsignedLong(pElement);
+                    return CombineUnsignedLong(pValue);
 
                 case TypeCode.Single:
-                    return CombineFloat(pElement);
+                    return CombineFloat(pValue);
 
                 case TypeCode.Double:
-                    return CombineDouble(pElement);
+                    return CombineDouble(pValue);
 
                 case TypeCode.Decimal:
-                    return CombineDecimal(pElement);
+                    return CombineDecimal(pValue);
 
                 case TypeCode.DateTime:
-                    return CombineDateTime(pElement, this.Mode);
+                    return CombineDateTime(pValue, pMode);
 
                 case TypeCode.String:
-                    return CombineString(pElement);
+                    return CombineString(pValue);
             }
-            if (this.Type.IsGuid)
-            {
-                return CombineGuid(pElement);
-            }
+            if (pIsGuid)
+                return CombineGuid(pValue);
             return null;
         }
 
-        #endregion Internal Methods
+        /// <summary>
+        ///     根据增量内容创建基础类型实例。
+        /// </summary>
+        /// <param name="pReader">XML读取器。</param>
+        /// <param name="pOriObject">现有待合并数据的对象。</param>
+        /// <param name="pName">当前读取的内容名称。</param>
+        /// <returns></returns>
+        protected override object CombineAction(XmlReader pReader, object pOriObject, string pName)
+        {
+            return CombineAction(Type.TypeCode, Type.IsGuid, Mode, pReader.ReadString());
+        }
+
+        #region Internal Constructors
+
+        /// <summary>
+        ///     使用指定的类型初始化 <see cref="XPatchLib.CombineBasic" /> 类的新实例。
+        /// </summary>
+        /// <param name="pType">
+        ///     指定的类型。
+        /// </param>
+        /// <remarks>
+        ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
+        /// </remarks>
+        internal CombineBasic(TypeExtend pType)
+            : base(pType)
+        {
+        }
+
+        /// <summary>
+        ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
+        ///     <see cref="XPatchLib.CombineBasic" /> 类的新实例。
+        /// </summary>
+        /// <param name="pType">
+        ///     指定的类型。
+        /// </param>
+        /// <param name="pMode">
+        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
+        ///     <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
+        /// </param>
+        /// <exception cref="PrimaryKeyException">
+        ///     当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。
+        /// </exception>
+        internal CombineBasic(TypeExtend pType, XmlDateTimeSerializationMode pMode)
+            : base(pType, pMode)
+        {
+        }
+
+        #endregion Internal Constructors
 
         #region Private Methods
 
-        private static Object CombineBoolean(XElement pElement)
+        private static object CombineBoolean(string pValue)
         {
-            return Boolean.Parse(pElement.Value);
-            //return XmlConvert.ToBoolean(pElement.Value);
+            return bool.Parse(pValue);
+            //return XmlConvert.ToBoolean(pValue);
         }
 
-        private static Object CombineByte(XElement pElement)
+        private static object CombineByte(string pValue)
         {
-            return SByte.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
-            //return XmlConvert.ToSByte(pElement.Value);
+            return sbyte.Parse(pValue, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToSByte(pValue);
         }
 
-        private static Object CombineChar(XElement pElement)
+        private static object CombineChar(string pValue)
         {
-            return (Char)UInt16.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
-            //return (char)XmlConvert.ToUInt16(pElement.Value);
+            return (char) ushort.Parse(pValue, NumberFormatInfo.InvariantInfo);
+            //return (char)XmlConvert.ToUInt16(pValue);
         }
 
-        private static Object CombineDateTime(XElement pElement, XmlDateTimeSerializationMode pMode)
+        private static object CombineDateTime(string pValue, XmlDateTimeSerializationMode pMode)
         {
-            return XmlConvert.ToDateTime(pElement.Value, pMode);
+            return XmlConvert.ToDateTime(pValue, pMode);
         }
 
-        private static Object CombineDecimal(XElement pElement)
+        private static object CombineDecimal(string pValue)
         {
-            return Decimal.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
-            //return XmlConvert.ToDecimal(pElement.Value);
+            return decimal.Parse(pValue, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToDecimal(pValue);
         }
 
-        private static Object CombineDouble(XElement pElement)
+        private static object CombineDouble(string pValue)
         {
-            return Double.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
-            //return XmlConvert.ToDouble(pElement.Value);
+            return double.Parse(pValue, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToDouble(pValue);
         }
 
-        private static Object CombineFloat(XElement pElement)
+        private static object CombineFloat(string pValue)
         {
-            return Single.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
-            //return XmlConvert.ToSingle(pElement.Value);
+            return float.Parse(pValue, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToSingle(pValue);
         }
 
-        private static Object CombineGuid(XElement pElement)
+        private static object CombineGuid(string pValue)
         {
-            return Guid.Parse(pElement.Value);
-            //return XmlConvert.ToGuid(pElement.Value);
+            return Guid.Parse(pValue);
+            //return XmlConvert.ToGuid(pValue);
         }
 
-        private static Object CombineInt32(XElement pElement)
+        private static object CombineInt32(string pValue)
         {
-            return Int32.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
-            //return XmlConvert.ToInt32(pElement.Value);
+            return int.Parse(pValue, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToInt32(pValue);
         }
 
-        private static Object CombineLong(XElement pElement)
+        private static object CombineLong(string pValue)
         {
-            return Int64.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
-            //return XmlConvert.ToInt64(pElement.Value);
+            return long.Parse(pValue, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToInt64(pValue);
         }
 
-        private static Object CombineShort(XElement pElement)
+        private static object CombineShort(string pValue)
         {
-            return Int16.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
-            //return XmlConvert.ToInt16(pElement.Value);
+            return short.Parse(pValue, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToInt16(pValue);
         }
 
-        private static Object CombineString(XElement pElement)
+        private static object CombineString(string pValue)
         {
-            return pElement.Value;
+            return pValue.Replace("\n", "\r\n");
         }
 
-        private static Object CombineUnsignedByte(XElement pElement)
+        private static object CombineUnsignedByte(string pValue)
         {
-            return Byte.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
-            //return XmlConvert.ToByte(pElement.Value);
+            return byte.Parse(pValue, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToByte(pValue);
         }
 
-        private static Object CombineUnsignedInt32(XElement pElement)
+        private static object CombineUnsignedInt32(string pValue)
         {
-            return UInt32.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
-            //return XmlConvert.ToUInt32(pElement.Value);
+            return uint.Parse(pValue, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToUInt32(pValue);
         }
 
-        private static Object CombineUnsignedLong(XElement pElement)
+        private static object CombineUnsignedLong(string pValue)
         {
-            return UInt64.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
-            //return XmlConvert.ToUInt64(pElement.Value);
+            return ulong.Parse(pValue, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToUInt64(pValue);
         }
 
-        private static Object CombineUnsignedShort(XElement pElement)
+        private static object CombineUnsignedShort(string pValue)
         {
-            return UInt16.Parse(pElement.Value, NumberFormatInfo.InvariantInfo);
-            //return XmlConvert.ToUInt16(pElement.Value);
+            return ushort.Parse(pValue, NumberFormatInfo.InvariantInfo);
+            //return XmlConvert.ToUInt16(pValue);
         }
 
         #endregion Private Methods

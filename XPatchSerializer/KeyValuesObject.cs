@@ -1,23 +1,25 @@
-﻿using System;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace XPatchLib
 {
     internal class KeyValuesObject
     {
-        private static int EMPTY_STRING_HASHCODE = string.Empty.GetHashCode();
+        private static readonly int EMPTY_STRING_HASHCODE = string.Empty.GetHashCode();
 
         public KeyValuesObject(Object pValue, Object pKey)
         {
-            this.OriValue = pValue;
+            OriValue = pValue;
             SetKeyValues(pKey);
         }
 
         public KeyValuesObject(Object pValue)
         {
-            this.OriValue = pValue;
+            OriValue = pValue;
             SetKeyValues(pValue);
         }
 
@@ -36,32 +38,21 @@ namespace XPatchLib
 
                 IEnumerator enumerator = pValue.GetEnumerator();
                 if (enumerator != null)
-                {
                     while (enumerator.MoveNext())
-                    {
                         result.Enqueue(new KeyValuesObject(enumerator.Current));
-                    }
-                }
                 return result;
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         // override object.Equals 
         public override bool Equals(object obj)
         {
             if (obj == null)
-            {
                 return false;
-            }
             KeyValuesObject o = obj as KeyValuesObject;
             if (o == null)
-            {
-                return Object.Equals(ValuesHash[0], obj.GetHashCode());
-            }
+                return Equals(ValuesHash[0], obj.GetHashCode());
 
             return EqualsByKeys(o.KeysHash, o.ValuesHash);
         }
@@ -69,18 +60,13 @@ namespace XPatchLib
         //public string[] KeyNames { get; private set; }
         public bool EqualsByKeys(int[] pKeys, int[] pValues)
         {
-            if (pKeys == null || pValues == null || this.KeysHash.Length != pKeys.Length || this.ValuesHash.Length != pValues.Length)
-            {
+            if (pKeys == null || pValues == null || KeysHash.Length != pKeys.Length ||
+                ValuesHash.Length != pValues.Length)
                 return false;
-            }
 
-            for (int i = 0; i < this.KeysHash.Length; i++)
-            {
-                if (this.KeysHash[i] != pKeys[i] || this.ValuesHash[i] != pValues[i])
-                {
+            for (int i = 0; i < KeysHash.Length; i++)
+                if (KeysHash[i] != pKeys[i] || ValuesHash[i] != pValues[i])
                     return false;
-                }
-            }
             return true;
         }
 
@@ -90,9 +76,7 @@ namespace XPatchLib
             int result = 0;
 
             for (int i = 0; i < ValuesHash.Length; i++)
-            {
                 result ^= ValuesHash[i];
-            }
             return result;
         }
 
@@ -100,7 +84,7 @@ namespace XPatchLib
         {
             if (pValue != null)
             {
-                TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(pValue.GetType());
+                TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(pValue.GetType(), null);
                 if (!typeExtend.IsBasicType)
                 {
                     PrimaryKeyAttribute keyAttr = typeExtend.PrimaryKeyAttr;
@@ -112,7 +96,7 @@ namespace XPatchLib
                         for (int i = 0; i < primaryKeys.Length; i++)
                         {
                             KeysHash[i] = primaryKeys[i].GetHashCode();
-                            ValuesHash[i] = typeExtend.GetMemberValue(pValue, primaryKeys[i]).GetHashCode();
+                            ValuesHash[i] = typeExtend.GetMemberValue(pValue, primaryKeys[i]).ToString().GetHashCode();
                         }
                     }
                     else
@@ -122,8 +106,8 @@ namespace XPatchLib
                 }
                 else
                 {
-                    KeysHash = new int[1] { EMPTY_STRING_HASHCODE };
-                    ValuesHash = new int[1] { pValue.GetHashCode() };
+                    KeysHash = new int[1] {EMPTY_STRING_HASHCODE};
+                    ValuesHash = new int[1] {pValue.ToString().GetHashCode()};
                 }
             }
         }
@@ -139,9 +123,7 @@ namespace XPatchLib
         public int GetHashCode(KeyValuesObject obj)
         {
             if (obj == null)
-            {
                 throw new ArgumentNullException("obj");
-            }
             return obj.GetHashCode();
         }
     }

@@ -56,6 +56,7 @@
     <Compile Include="AttributeMissException.cs" />
     <Compile Include="ClrHelper.cs" />
     <Compile Include="ColorHelper.cs" />
+    <Compile Include="CombineAttribute.cs" />
     <Compile Include="CombineBase.cs" />
     <Compile Include="CombineBasic.cs" />
     <Compile Include="CombineCore.cs" />
@@ -65,16 +66,17 @@
     <Compile Include="CombineObject.cs" />
     <Compile Include="ConstValue.cs" />
     <Compile Include="CustomAttributeExtensions.cs" />
+    <Compile Include="DivideAttachment.cs" />
     <Compile Include="DivideIDictionary.cs" />
     <Compile Include="DivideKeyValuePair.cs" />
     <Compile Include="EnumWrapper.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Guard.cs" />
+    <Compile Include="IDivide.cs" />
     <Compile Include="IEnumerableHelper.cs" />
     <Compile Include="IEnumeratorHelper.cs" />
     <Compile Include="KeyValuesObject.cs" />
     <Compile Include="MemberWrapper.cs" />
-    <Compile Include="ObjectHelper.cs" />
     <Compile Include="PrimaryKeyAttribute.cs" />
     <Compile Include="PrimaryKeyException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -85,8 +87,7 @@
     <Compile Include="DivideIEnumerable.cs" />
     <Compile Include="DivideObject.cs" />
     <Compile Include="TypeExtend.cs" />
-    <Compile Include="TypeHelper.cs" />
-    <Compile Include="XElementHelper.cs" />
+    <Compile Include="XmlWriterHelper.cs" />
     <Compile Include="XPatchSerializer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

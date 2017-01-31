@@ -11,7 +11,7 @@ namespace XPatchLib.UnitTest
     {
         #region Private Fields
 
-        private const string changedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        private const string ChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <BookClass>
   <Author>
     <Name>" + newAuthorName + @"</Name>
@@ -19,8 +19,6 @@ namespace XPatchLib.UnitTest
 </BookClass>";
 
         private const string newAuthorName = "Barack Obama";
-        private BookClass revObj, oriObj;
-        private XPatchSerializer serializer = new XPatchSerializer(typeof(BookClass));
 
         #endregion Private Fields
 
@@ -30,11 +28,7 @@ namespace XPatchLib.UnitTest
         {
             get
             {
-                if (oriObj == null)
-                {
-                    oriObj = BookClass.GetSampleInstance();
-                }
-                return oriObj;
+                return BookClass.GetSampleInstance();
             }
         }
 
@@ -42,11 +36,8 @@ namespace XPatchLib.UnitTest
         {
             get
             {
-                if (revObj == null)
-                {
-                    revObj = BookClass.GetSampleInstance();
+                BookClass revObj = BookClass.GetSampleInstance();
                     revObj.Author.Name = newAuthorName;
-                }
                 return revObj;
             }
         }
@@ -59,18 +50,19 @@ namespace XPatchLib.UnitTest
         [Description("测试XPatchSerializer中参数类型为Stream的Divide和Combine方法")]
         public void TestXPatchSeraialzerStreamDivideAndCombine()
         {
-            using (MemoryStream stream = new MemoryStream())
+            XPatchSerializer serializer = new XPatchSerializer(typeof(BookClass));
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, OriObject, RevObject);
-                string context = TestHelper.StreamToString(stream);
-                Assert.AreEqual(changedContext, context);
+                var context = TestHelper.StreamToString(stream);
+                Assert.AreEqual(ChangedContext, context);
             }
-
-            using (MemoryStream stream = new MemoryStream())
+            serializer = new XPatchSerializer(typeof(BookClass));
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, OriObject, RevObject);
                 stream.Position = 0;
-                BookClass changedObj = serializer.Combine(stream, OriObject) as BookClass;
+                var changedObj = serializer.Combine(stream, OriObject) as BookClass;
                 Assert.AreEqual(RevObject, changedObj);
             }
         }
@@ -79,17 +71,18 @@ namespace XPatchLib.UnitTest
         [Description("测试XPatchSerializer中参数类型为TextWriter的Divide方法和TextReader的Combine方法")]
         public void TestXPatchSeraialzerTextWriterDivideAndTextReaderCombine()
         {
-            StringBuilder sb = new StringBuilder();
-            using (StringWriter swr = new StringWriter(sb))
+            XPatchSerializer serializer = new XPatchSerializer(typeof(BookClass));
+            var sb = new StringBuilder();
+            using (var swr = new StringWriter(sb))
             {
                 serializer.Divide(swr, OriObject, RevObject);
                 sb.Replace("utf-16", "utf-8");
-                Assert.AreEqual(changedContext, sb.ToString());
+                Assert.AreEqual(ChangedContext, sb.ToString());
             }
-
-            using (StringReader reader = new StringReader(changedContext))
+            serializer = new XPatchSerializer(typeof(BookClass));
+            using (var reader = new StringReader(ChangedContext))
             {
-                BookClass changedObj = serializer.Combine(reader, OriObject) as BookClass;
+                var changedObj = serializer.Combine(reader, OriObject) as BookClass;
                 Assert.AreEqual(RevObject, changedObj);
             }
         }
@@ -98,25 +91,26 @@ namespace XPatchLib.UnitTest
         [Description("测试XPatchSerializer中参数类型为XmlWriter的Divide方法和XmlReader的Combine方法")]
         public void TestXPatchSeraialzerXmlWriterDivideAndXmlReaderCombine()
         {
-            using (MemoryStream stream = new MemoryStream())
+            XPatchSerializer serializer = new XPatchSerializer(typeof(BookClass));
+            using (var stream = new MemoryStream())
             {
-                XmlWriterSettings setting = new XmlWriterSettings();
+                var setting = new XmlWriterSettings();
                 setting.Encoding = new UTF8Encoding(false);
                 setting.Indent = true;
-                using (XmlWriter xwr = XmlWriter.Create(stream, setting))
+                using (var xwr = XmlWriter.Create(stream, setting))
                 {
                     serializer.Divide(xwr, OriObject, RevObject);
-                    Assert.AreEqual(changedContext, Encoding.UTF8.GetString(stream.ToArray()));
+                    Assert.AreEqual(ChangedContext, Encoding.UTF8.GetString(stream.ToArray()));
                 }
             }
-
-            using (MemoryStream stream = new MemoryStream())
+            serializer = new XPatchSerializer(typeof(BookClass));
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, OriObject, RevObject);
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (var reader = XmlReader.Create(stream))
                 {
-                    BookClass changedObjByReader = serializer.Combine(reader, OriObject) as BookClass;
+                    var changedObjByReader = serializer.Combine(reader, OriObject) as BookClass;
                     Assert.AreEqual(RevObject, changedObjByReader);
                 }
             }

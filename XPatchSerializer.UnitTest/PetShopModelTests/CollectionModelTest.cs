@@ -14,8 +14,8 @@ namespace XPatchLib.UnitTest.PetShopModelTests
         [Description("测试Collection类型的复杂类型对象增加的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoCollectionAddDivideAndCombine()
         {
-            Collection<OrderInfo> oriObjs = new Collection<OrderInfo>();
-            Collection<OrderInfo> changedObjs = new Collection<OrderInfo>();
+            var oriObjs = new Collection<OrderInfo>();
+            var changedObjs = new Collection<OrderInfo>();
 
             oriObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(1));
             oriObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(2));
@@ -24,7 +24,7 @@ namespace XPatchLib.UnitTest.PetShopModelTests
             changedObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(2));
             changedObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(3));
 
-            string changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(Collection<OrderInfo>)) + @">
+            var changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(Collection<OrderInfo>)) + @">
   <OrderInfo Action=""Add"">
     <BillingAddress>
       <Address1>" + changedObjs[2].BillingAddress.Address1 + @"</Address1>
@@ -46,22 +46,22 @@ namespace XPatchLib.UnitTest.PetShopModelTests
       <CardType>" + changedObjs[2].CreditCard.CardType + @"</CardType>
     </CreditCard>
     <Date>" + XmlConvert.ToString(changedObjs[2].Date, XmlDateTimeSerializationMode.RoundtripKind) + @"</Date>
-    <LineItems />
     <OrderId>" + changedObjs[2].OrderId + @"</OrderId>
     <OrderTotal>" + changedObjs[2].OrderTotal + @"</OrderTotal>
     <UserId>" + changedObjs[2].UserId + @"</UserId>
   </OrderInfo>
 </" + ReflectionUtils.GetTypeFriendlyName(typeof(Collection<OrderInfo>)) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(Collection<OrderInfo>), oriObjs, changedObjs, changedContext, "");
+            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(Collection<OrderInfo>), oriObjs, changedObjs,
+                changedContext, "");
         }
 
         [TestMethod]
         [Description("测试Collection类型的复杂类型对象插入的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoCollectionInsertDivideAndCombine()
         {
-            Collection<OrderInfo> oriObjs = new Collection<OrderInfo>();
-            Collection<OrderInfo> changedObjs = new Collection<OrderInfo>();
+            var oriObjs = new Collection<OrderInfo>();
+            var changedObjs = new Collection<OrderInfo>();
 
             oriObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(1));
             oriObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(2));
@@ -71,7 +71,7 @@ namespace XPatchLib.UnitTest.PetShopModelTests
 
             changedObjs.Insert(1, PetShopModelTestHelper.CreateNewOriOrderInfo(3));
 
-            string changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(Collection<OrderInfo>)) + @">
+            var changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(Collection<OrderInfo>)) + @">
   <OrderInfo Action=""Add"">
     <BillingAddress>
       <Address1>" + changedObjs[1].BillingAddress.Address1 + @"</Address1>
@@ -93,22 +93,22 @@ namespace XPatchLib.UnitTest.PetShopModelTests
       <CardType>" + changedObjs[1].CreditCard.CardType + @"</CardType>
     </CreditCard>
     <Date>" + XmlConvert.ToString(changedObjs[1].Date, XmlDateTimeSerializationMode.RoundtripKind) + @"</Date>
-    <LineItems />
     <OrderId>" + changedObjs[1].OrderId + @"</OrderId>
     <OrderTotal>" + changedObjs[1].OrderTotal + @"</OrderTotal>
     <UserId>" + changedObjs[1].UserId + @"</UserId>
   </OrderInfo>
 </" + ReflectionUtils.GetTypeFriendlyName(typeof(Collection<OrderInfo>)) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(Collection<OrderInfo>), oriObjs, changedObjs, changedContext, "");
+            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(Collection<OrderInfo>), oriObjs, changedObjs,
+                changedContext, "");
         }
 
         [TestMethod]
         [Description("测试Collection类型的复杂类型对象删除的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoCollectionRemoveDivideAndCombine()
         {
-            Collection<OrderInfo> oriObjs = new Collection<OrderInfo>();
-            Collection<OrderInfo> changedObjs = new Collection<OrderInfo>();
+            var oriObjs = new Collection<OrderInfo>();
+            var changedObjs = new Collection<OrderInfo>();
 
             oriObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(1));
             oriObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(2));
@@ -119,13 +119,14 @@ namespace XPatchLib.UnitTest.PetShopModelTests
             changedObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(1));
             changedObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(2));
 
-            string changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(Collection<OrderInfo>)) + @">
+            var changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(Collection<OrderInfo>)) + @">
   <OrderInfo Action=""Remove"" OrderId=""3"" />
   <OrderInfo Action=""Remove"" OrderId=""4"" />
   <OrderInfo Action=""Remove"" OrderId=""5"" />
 </" + ReflectionUtils.GetTypeFriendlyName(typeof(Collection<OrderInfo>)) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(Collection<OrderInfo>), oriObjs, changedObjs, changedContext, "");
+            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(Collection<OrderInfo>), oriObjs, changedObjs,
+                changedContext, "");
         }
 
         #endregion Public Methods

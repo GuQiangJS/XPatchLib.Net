@@ -1,16 +1,15 @@
 ﻿using System;
 using System.IO;
+using System.Xml;
 using XPatchLib;
 
 namespace XPatchSerializerExample
 {
     public class ConstructorDateModeExample
     {
-        #region Private Methods
-
         private void SerializeObject(string filename)
         {
-            XPatchSerializer serializer = new XPatchSerializer(typeof(OrderedItem), System.Xml.XmlDateTimeSerializationMode.Local);
+            XPatchSerializer serializer = new XPatchSerializer(typeof(OrderedItem), XmlDateTimeSerializationMode.Local);
 
             OrderedItem i = new OrderedItem();
 
@@ -24,21 +23,11 @@ namespace XPatchSerializerExample
             writer.Close();
         }
 
-        #endregion Private Methods
-
-        #region Public Classes
-
         public class OrderedItem
         {
-            #region Public Fields
-
             public string ItemName;
             public DateTime OrderDate;
             public int Quantity;
-
-            #endregion Public Fields
         }
-
-        #endregion Public Classes
     }
 }

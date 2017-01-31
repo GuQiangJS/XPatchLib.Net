@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,18 +9,17 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static System.String;
 
 namespace XPatchLib.UnitTest
 {
     /// <summary>
-    /// 操作复杂类型 
+    ///     操作复杂类型
     /// </summary>
     [TestClass]
     public class ExampleComplexClass
     {
-        #region Private Fields
-
-        private const string changedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        private const string ChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <OrderInfo>
   <Date>2010-04-30T00:00:00</Date>
   <OrderId>2</OrderId>
@@ -27,120 +29,111 @@ namespace XPatchLib.UnitTest
   </ShippingAddress>
 </OrderInfo>";
 
-        #endregion Private Fields
-
-        #region Public Methods
-
         [TestMethod]
         public void ExampleCombine()
         {
-            OrderInfo order1 = new OrderInfo()
+            var order1 = new OrderInfo
             {
                 OrderId = 1,
                 OrderTotal = 200.45m,
-                ShippingAddress = new AddressInfo()
+                ShippingAddress = new AddressInfo
                 {
                     Country = "China",
                     Name = "Customer",
                     Phone = "138-1234-5678",
                     Zip = "100000",
                     City = "Beijing",
-                    Address = "",
+                    Address = ""
                 },
                 UserId = "1234",
                 Date = new DateTime(2008, 8, 8)
             };
 
-            OrderInfo order2 = new OrderInfo()
+            var order2 = new OrderInfo
             {
                 OrderId = 2,
                 OrderTotal = 180.50m,
-                ShippingAddress = new AddressInfo()
+                ShippingAddress = new AddressInfo
                 {
                     Country = "China",
                     Name = "Customer",
                     Phone = "138-1234-5678",
                     Zip = "100000",
                     City = "Shanghai",
-                    Address = "",
+                    Address = ""
                 },
                 UserId = "1234",
                 Date = new DateTime(2010, 4, 30)
             };
 
-            OrderInfo order3 = null;
-            XPatchSerializer serializer = new XPatchSerializer(typeof(OrderInfo));
-            using (StringReader reader = new StringReader(changedContext))
+            OrderInfo order3;
+            var serializer = new XPatchSerializer(typeof(OrderInfo));
+            using (var reader = new StringReader(ChangedContext))
             {
                 order3 = serializer.Combine(reader, order1) as OrderInfo;
             }
 
             Assert.AreEqual(order3, order2);
+            Debug.Assert(order3 != null, "order3 != null");
             Assert.AreNotEqual(order3.GetHashCode(), order2.GetHashCode());
         }
 
         [TestMethod]
         public void ExampleDivide()
         {
-            OrderInfo order1 = new OrderInfo()
+            var order1 = new OrderInfo
             {
                 OrderId = 1,
                 OrderTotal = 200.45m,
-                ShippingAddress = new AddressInfo()
+                ShippingAddress = new AddressInfo
                 {
                     Country = "China",
                     Name = "Customer",
                     Phone = "138-1234-5678",
                     Zip = "100000",
                     City = "Beijing",
-                    Address = "",
+                    Address = ""
                 },
                 UserId = "1234",
                 Date = new DateTime(2008, 8, 8)
             };
 
-            OrderInfo order2 = new OrderInfo()
+            var order2 = new OrderInfo
             {
                 OrderId = 2,
                 OrderTotal = 180.50m,
-                ShippingAddress = new AddressInfo()
+                ShippingAddress = new AddressInfo
                 {
                     Country = "China",
                     Name = "Customer",
                     Phone = "138-1234-5678",
                     Zip = "100000",
                     City = "Shanghai",
-                    Address = "",
+                    Address = ""
                 },
                 UserId = "1234",
                 Date = new DateTime(2010, 4, 30)
             };
 
-            XPatchSerializer serializer = new XPatchSerializer(typeof(OrderInfo));
+            var serializer = new XPatchSerializer(typeof(OrderInfo));
 
-            string context = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
+            string context;
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, order1, order2);
                 stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
                 {
                     context = stremReader.ReadToEnd();
                 }
             }
 
-            Assert.AreEqual(changedContext, context);
+            Assert.AreEqual(ChangedContext, context);
             Trace.WriteLine(context);
         }
 
-        #endregion Public Methods
-
-        #region Public Classes
-
         public class AddressInfo
         {
-            #region Public Properties
-
             public string Address { get; set; }
 
             public string City { get; set; }
@@ -153,62 +146,40 @@ namespace XPatchLib.UnitTest
 
             public string Zip { get; set; }
 
-            #endregion Public Properties
-
-            #region Public Methods
-
             public override bool Equals(object obj)
             {
-                AddressInfo addr = obj as AddressInfo;
+                var addr = obj as AddressInfo;
                 if (addr == null)
-                {
                     return false;
-                }
-                return string.Equals(this.Country, addr.Country)
-                    && string.Equals(this.Name, addr.Name)
-                    && string.Equals(this.Phone, addr.Phone)
-                    && string.Equals(this.Zip, addr.Zip)
-                    && string.Equals(this.City, addr.City)
-                    && string.Equals(this.Address, addr.Address);
+                return string.Equals(Country, addr.Country)
+                       && string.Equals(Name, addr.Name)
+                       && string.Equals(Phone, addr.Phone)
+                       && string.Equals(Zip, addr.Zip)
+                       && string.Equals(City, addr.City)
+                       && string.Equals(Address, addr.Address);
             }
 
             public override int GetHashCode()
             {
-                int result = 0;
+                var result = 0;
                 if (Country != null)
-                {
                     result ^= Country.GetHashCode();
-                }
                 if (Name != null)
-                {
                     result ^= Name.GetHashCode();
-                }
                 if (Phone != null)
-                {
                     result ^= Phone.GetHashCode();
-                }
                 if (Zip != null)
-                {
                     result ^= Zip.GetHashCode();
-                }
                 if (City != null)
-                {
                     result ^= City.GetHashCode();
-                }
                 if (Address != null)
-                {
                     result ^= Address.GetHashCode();
-                }
                 return result;
             }
-
-            #endregion Public Methods
         }
 
         public class OrderInfo
         {
-            #region Public Properties
-
             public DateTime Date { get; set; }
 
             public int OrderId { get; set; }
@@ -219,39 +190,27 @@ namespace XPatchLib.UnitTest
 
             public string UserId { get; set; }
 
-            #endregion Public Properties
-
-            #region Public Methods
-
             public override bool Equals(object obj)
             {
-                OrderInfo order = obj as OrderInfo;
+                var order = obj as OrderInfo;
                 if (order == null)
-                {
                     return false;
-                }
-                return int.Equals(this.OrderId, order.OrderId)
-                    && decimal.Equals(this.OrderTotal, order.OrderTotal)
-                    && AddressInfo.Equals(this.ShippingAddress, order.ShippingAddress)
-                    && string.Equals(this.UserId, order.UserId)
-                    && DateTime.Equals(this.Date, order.Date);
+                return Equals(OrderId, order.OrderId)
+                       && decimal.Equals(OrderTotal, order.OrderTotal)
+                       && Equals(ShippingAddress, order.ShippingAddress)
+                       && string.Equals(UserId, order.UserId)
+                       && DateTime.Equals(Date, order.Date);
             }
-
-            #endregion Public Methods
         }
-
-        #endregion Public Classes
     }
 
     /// <summary>
-    /// 操作复杂集合类型 
+    ///     操作复杂集合类型
     /// </summary>
     [TestClass]
     public class ExampleComplexCollectionClass
     {
-        #region Private Fields
-
-        private const string changedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        private const string ChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <OrderList>
   <Orders>
     <OrderInfo Action=""Remove"" OrderId=""3"" />
@@ -267,153 +226,160 @@ namespace XPatchLib.UnitTest
   </Orders>
 </OrderList>";
 
-        #endregion Private Fields
-
-        #region Public Methods
-
         [TestMethod]
         public void ExampleCombine()
         {
-            OrderList list1 = new OrderList()
+            var list1 = new OrderList
             {
                 UserId = "1234",
-                Orders = new List<OrderInfo>(){
-            new OrderInfo(){
-                OrderId = 1,
-                OrderTotal = 200.45m,
-                UserId = "1234",
-                Date = new DateTime(2008,8,8)
-            },
-            new OrderInfo(){
-                OrderId = 2,
-                OrderTotal = 450.23m,
-                UserId = "1234",
-                Date = new DateTime(2008,8,8)
-            },
-            new OrderInfo(){
-                OrderId = 3,
-                OrderTotal = 185.60m,
-                UserId = "1234",
-                Date = new DateTime(2008,8,8)
-            }
-        }
+                Orders = new List<OrderInfo>
+                {
+                    new OrderInfo
+                    {
+                        OrderId = 1,
+                        OrderTotal = 200.45m,
+                        UserId = "1234",
+                        Date = new DateTime(2008, 8, 8)
+                    },
+                    new OrderInfo
+                    {
+                        OrderId = 2,
+                        OrderTotal = 450.23m,
+                        UserId = "1234",
+                        Date = new DateTime(2008, 8, 8)
+                    },
+                    new OrderInfo
+                    {
+                        OrderId = 3,
+                        OrderTotal = 185.60m,
+                        UserId = "1234",
+                        Date = new DateTime(2008, 8, 8)
+                    }
+                }
             };
 
-            OrderList list2 = new OrderList()
+            var list2 = new OrderList
             {
                 UserId = "1234",
-                Orders = new List<OrderInfo>(){
-            new OrderInfo(){
-                OrderId = 1,
-                OrderTotal = 200.45m,
-                UserId = "1234",
-                Date = new DateTime(2008,8,8)
-            },
-            new OrderInfo(){
-                OrderId = 2,
-                OrderTotal = 230.89m,
-                UserId = "1234",
-                Date = new DateTime(2008,8,8)
-            },
-            new OrderInfo(){
-                OrderId = 4,
-                OrderTotal = 67.30m,
-                UserId = "1234",
-                Date = new DateTime(2008,8,8)
-            }
-        }
+                Orders = new List<OrderInfo>
+                {
+                    new OrderInfo
+                    {
+                        OrderId = 1,
+                        OrderTotal = 200.45m,
+                        UserId = "1234",
+                        Date = new DateTime(2008, 8, 8)
+                    },
+                    new OrderInfo
+                    {
+                        OrderId = 2,
+                        OrderTotal = 230.89m,
+                        UserId = "1234",
+                        Date = new DateTime(2008, 8, 8)
+                    },
+                    new OrderInfo
+                    {
+                        OrderId = 4,
+                        OrderTotal = 67.30m,
+                        UserId = "1234",
+                        Date = new DateTime(2008, 8, 8)
+                    }
+                }
             };
 
-            OrderList list3 = null;
-            XPatchSerializer serializer = new XPatchSerializer(typeof(OrderList));
-            using (StringReader reader = new StringReader(changedContext))
+            OrderList list3;
+            var serializer = new XPatchSerializer(typeof(OrderList));
+            using (var reader = new StringReader(ChangedContext))
             {
                 list3 = serializer.Combine(reader, list1) as OrderList;
             }
 
             Assert.AreEqual(list3, list2);
+            Debug.Assert(list3 != null, "list3 != null");
             Assert.AreNotEqual(list3.GetHashCode(), list1.GetHashCode());
         }
 
         [TestMethod]
         public void ExampleDivide()
         {
-            OrderList list1 = new OrderList()
+            var list1 = new OrderList
             {
                 UserId = "1234",
-                Orders = new List<OrderInfo>(){
-            new OrderInfo(){
-                OrderId = 1,
-                OrderTotal = 200.45m,
-                UserId = "1234",
-                Date = new DateTime(2008,8,8)
-            },
-            new OrderInfo(){
-                OrderId = 2,
-                OrderTotal = 450.23m,
-                UserId = "1234",
-                Date = new DateTime(2008,8,8)
-            },
-            new OrderInfo(){
-                OrderId = 3,
-                OrderTotal = 185.60m,
-                UserId = "1234",
-                Date = new DateTime(2008,8,8)
-            }
-        }
+                Orders = new List<OrderInfo>
+                {
+                    new OrderInfo
+                    {
+                        OrderId = 1,
+                        OrderTotal = 200.45m,
+                        UserId = "1234",
+                        Date = new DateTime(2008, 8, 8)
+                    },
+                    new OrderInfo
+                    {
+                        OrderId = 2,
+                        OrderTotal = 450.23m,
+                        UserId = "1234",
+                        Date = new DateTime(2008, 8, 8)
+                    },
+                    new OrderInfo
+                    {
+                        OrderId = 3,
+                        OrderTotal = 185.60m,
+                        UserId = "1234",
+                        Date = new DateTime(2008, 8, 8)
+                    }
+                }
             };
 
-            OrderList list2 = new OrderList()
+            var list2 = new OrderList
             {
                 UserId = "1234",
-                Orders = new List<OrderInfo>(){
-            new OrderInfo(){
-                OrderId = 1,
-                OrderTotal = 200.45m,
-                UserId = "1234",
-                Date = new DateTime(2008,8,8)
-            },
-            new OrderInfo(){
-                OrderId = 2,
-                OrderTotal = 230.89m,
-                UserId = "1234",
-                Date = new DateTime(2008,8,8)
-            },
-            new OrderInfo(){
-                OrderId = 4,
-                OrderTotal = 67.30m,
-                UserId = "1234",
-                Date = new DateTime(2008,8,8)
-            }
-        }
+                Orders = new List<OrderInfo>
+                {
+                    new OrderInfo
+                    {
+                        OrderId = 1,
+                        OrderTotal = 200.45m,
+                        UserId = "1234",
+                        Date = new DateTime(2008, 8, 8)
+                    },
+                    new OrderInfo
+                    {
+                        OrderId = 2,
+                        OrderTotal = 230.89m,
+                        UserId = "1234",
+                        Date = new DateTime(2008, 8, 8)
+                    },
+                    new OrderInfo
+                    {
+                        OrderId = 4,
+                        OrderTotal = 67.30m,
+                        UserId = "1234",
+                        Date = new DateTime(2008, 8, 8)
+                    }
+                }
             };
 
-            XPatchSerializer serializer = new XPatchSerializer(typeof(OrderList));
+            var serializer = new XPatchSerializer(typeof(OrderList));
 
-            string context = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
+            string context;
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, list1, list2);
                 stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
                 {
                     context = stremReader.ReadToEnd();
                 }
             }
 
-            Assert.AreEqual(changedContext, context);
+            Assert.AreEqual(ChangedContext, context);
             Trace.WriteLine(context);
         }
-
-        #endregion Public Methods
-
-        #region Public Classes
 
         [PrimaryKey("OrderId")]
         public class OrderInfo
         {
-            #region Public Properties
-
             public DateTime Date { get; set; }
 
             public int OrderId { get; set; }
@@ -424,309 +390,254 @@ namespace XPatchLib.UnitTest
 
             public string UserId { get; set; }
 
-            #endregion Public Properties
-
-            #region Public Methods
-
             public override bool Equals(object obj)
             {
-                OrderInfo order = obj as OrderInfo;
+                var order = obj as OrderInfo;
                 if (order == null)
-                {
                     return false;
-                }
-                return int.Equals(this.OrderId, order.OrderId)
-                    && decimal.Equals(this.OrderTotal, order.OrderTotal)
-                    && ExampleComplexClass.AddressInfo.Equals(this.ShippingAddress, order.ShippingAddress)
-                    && string.Equals(this.UserId, order.UserId)
-                    && DateTime.Equals(this.Date, order.Date);
+                return Equals(OrderId, order.OrderId)
+                       && decimal.Equals(OrderTotal, order.OrderTotal)
+                       && Equals(ShippingAddress, order.ShippingAddress)
+                       && string.Equals(UserId, order.UserId)
+                       && DateTime.Equals(Date, order.Date);
             }
 
             public override int GetHashCode()
             {
-                int result = 0;
-                if (OrderId != null)
-                {
-                    result ^= OrderId.GetHashCode();
-                }
-                if (OrderTotal != null)
-                {
-                    result ^= OrderTotal.GetHashCode();
-                }
+                var result = 0;
+                result ^= OrderId.GetHashCode();
+                result ^= OrderTotal.GetHashCode();
                 if (ShippingAddress != null)
-                {
                     result ^= ShippingAddress.GetHashCode();
-                }
                 if (UserId != null)
-                {
                     result ^= UserId.GetHashCode();
-                }
                 if (Date != null)
-                {
                     result ^= Date.GetHashCode();
-                }
                 return result;
             }
-
-            #endregion Public Methods
         }
 
         public class OrderList
         {
-            #region Public Properties
-
             public List<OrderInfo> Orders { get; set; }
 
             public string UserId { get; set; }
 
-            #endregion Public Properties
-
-            #region Public Methods
-
             public override bool Equals(object obj)
             {
-                OrderList list = obj as OrderList;
+                var list = obj as OrderList;
                 if (list == null)
-                {
                     return false;
-                }
-                return string.Equals(this.UserId, list.UserId)
-                    && (
-                    (this.Orders == null && list.Orders == null)
-                    ||
-                    (this.Orders.Count.Equals(list.Orders.Count)
-                    && this.Orders.Except(list.Orders).Count() == 0
-                    && list.Orders.Except(this.Orders).Count() == 0
-                    )
-                    );
+                Debug.Assert(Orders != null, "Orders != null");
+                return string.Equals(UserId, list.UserId)
+                       && (
+                           Orders == null && list.Orders == null
+                           ||
+                           Orders.Count.Equals(list.Orders.Count)
+                           && Orders.Except(list.Orders).Count() == 0
+                           && list.Orders.Except(Orders).Count() == 0
+                       );
             }
-
-            #endregion Public Methods
         }
-
-        #endregion Public Classes
     }
 
     [TestClass]
     public class ExampleDateTimeSerializationMode
     {
-        #region Private Fields
-
-        private const string localChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        private const string LocalChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <CreditCard>
   <CardExpiration>2017-05-01T20:00:00+08:00</CardExpiration>
 </CreditCard>";
 
-        private const string roundtripKindChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        private const string RoundtripKindChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <CreditCard>
   <CardExpiration>2017-05-01T20:00:00</CardExpiration>
 </CreditCard>";
 
-        private const string unspecifiedChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        private const string UnspecifiedChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <CreditCard>
   <CardExpiration>2017-05-01T20:00:00</CardExpiration>
 </CreditCard>";
 
-        private const string utcChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        private const string UtcChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <CreditCard>
   <CardExpiration>2017-05-01T20:00:00Z</CardExpiration>
 </CreditCard>";
 
-        #endregion Private Fields
-
-        #region Public Methods
-
         [TestMethod]
         public void ExampleCombine()
         {
-            CreditCard card1 = new CreditCard()
+            var card1 = new CreditCard
             {
                 CardExpiration = new DateTime(2017, 05, 01, 20, 0, 0)
             };
 
-            XPatchSerializer serializer = new XPatchSerializer(typeof(CreditCard));
+            var serializer = new XPatchSerializer(typeof(CreditCard));
 
-            CreditCard card2 = null;
-            using (StringReader reader = new StringReader(roundtripKindChangedContext))
+            CreditCard card2;
+            using (var reader = new StringReader(RoundtripKindChangedContext))
             {
                 card2 = serializer.Combine(reader, null) as CreditCard;
             }
 
             Assert.AreEqual(card2, card1);
+            Debug.Assert(card2 != null, "card2 != null");
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
 
             serializer = new XPatchSerializer(typeof(CreditCard), XmlDateTimeSerializationMode.Local);
 
             card2 = null;
-            using (StringReader reader = new StringReader(localChangedContext))
+            using (var reader = new StringReader(LocalChangedContext))
             {
                 card2 = serializer.Combine(reader, null) as CreditCard;
             }
 
             Assert.AreEqual(card2, card1);
+            Debug.Assert(card2 != null, "card2 != null");
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
 
             serializer = new XPatchSerializer(typeof(CreditCard), XmlDateTimeSerializationMode.Unspecified);
 
             card2 = null;
-            using (StringReader reader = new StringReader(unspecifiedChangedContext))
+            using (var reader = new StringReader(UnspecifiedChangedContext))
             {
                 card2 = serializer.Combine(reader, null) as CreditCard;
             }
 
             Assert.AreEqual(card2, card1);
+            Debug.Assert(card2 != null, "card2 != null");
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
 
             serializer = new XPatchSerializer(typeof(CreditCard), XmlDateTimeSerializationMode.Utc);
 
             card2 = null;
-            using (StringReader reader = new StringReader(utcChangedContext))
+            using (var reader = new StringReader(UtcChangedContext))
             {
                 card2 = serializer.Combine(reader, null) as CreditCard;
             }
 
             Assert.AreEqual(card2, card1);
+            Debug.Assert(card2 != null, "card2 != null");
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
         }
 
         [TestMethod]
         public void ExampleDivide()
         {
-            CreditCard card1 = new CreditCard()
+            var card1 = new CreditCard
             {
                 CardExpiration = new DateTime(2017, 05, 01, 20, 0, 0)
             };
 
-            XPatchSerializer serializer = new XPatchSerializer(typeof(CreditCard));
+            var serializer = new XPatchSerializer(typeof(CreditCard));
 
-            string context = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
+            string context;
+            context = Empty;
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, null, card1);
                 stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
                 {
                     context = stremReader.ReadToEnd();
                 }
             }
 
-            Assert.AreEqual(roundtripKindChangedContext, context);
+            Assert.AreEqual(RoundtripKindChangedContext, context);
             Trace.WriteLine(context);
 
             serializer = new XPatchSerializer(typeof(CreditCard), XmlDateTimeSerializationMode.Local);
 
-            context = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
+            context = Empty;
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, null, card1);
                 stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
                 {
                     context = stremReader.ReadToEnd();
                 }
             }
 
-            Assert.AreEqual(localChangedContext, context);
+            Assert.AreEqual(LocalChangedContext, context);
             Trace.WriteLine(context);
 
             serializer = new XPatchSerializer(typeof(CreditCard), XmlDateTimeSerializationMode.Unspecified);
 
-            context = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
+            context = Empty;
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, null, card1);
                 stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
                 {
                     context = stremReader.ReadToEnd();
                 }
             }
 
-            Assert.AreEqual(unspecifiedChangedContext, context);
+            Assert.AreEqual(UnspecifiedChangedContext, context);
             Trace.WriteLine(context);
 
             serializer = new XPatchSerializer(typeof(CreditCard), XmlDateTimeSerializationMode.Utc);
 
-            context = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
+            context = Empty;
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, null, card1);
                 stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
                 {
                     context = stremReader.ReadToEnd();
                 }
             }
 
-            Assert.AreEqual(utcChangedContext, context);
+            Assert.AreEqual(UtcChangedContext, context);
             Trace.WriteLine(context);
         }
 
-        #endregion Public Methods
-
-        #region Public Classes
-
         public class CreditCard
         {
-            #region Public Properties
-
             public DateTime CardExpiration { get; set; }
-
-            #endregion Public Properties
-
-            #region Public Methods
 
             public override bool Equals(object obj)
             {
-                CreditCard card = obj as CreditCard;
+                var card = obj as CreditCard;
                 if (card == null)
-                {
                     return false;
-                }
-                return string.Equals(this.CardExpiration, card.CardExpiration);
+                return Equals(CardExpiration, card.CardExpiration);
             }
-
-            #endregion Public Methods
         }
-
-        #endregion Public Classes
     }
 
     /// <summary>
-    /// 初级入门 
+    ///     初级入门
     /// </summary>
-    [TestClassAttribute]
+    [TestClass]
     public class ExampleSampleABC
     {
-        #region Private Fields
-
-        private const string changedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        private const string ChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <CreditCard>
   <CardExpiration>05/17</CardExpiration>
   <CardNumber>9876543210</CardNumber>
 </CreditCard>";
 
-        #endregion Private Fields
-
-        #region Public Methods
-
         [TestMethod]
         public void ExampleCombine()
         {
-            CreditCard card1 = new CreditCard()
+            var card1 = new CreditCard
             {
                 CardExpiration = "05/12",
                 CardNumber = "0123456789"
             };
-            CreditCard card2 = new CreditCard()
+            var card2 = new CreditCard
             {
                 CardExpiration = "05/17",
                 CardNumber = "9876543210"
             };
 
             CreditCard card3 = null;
-            XPatchSerializer serializer = new XPatchSerializer(typeof(CreditCard));
-            using (StringReader reader = new StringReader(changedContext))
+            var serializer = new XPatchSerializer(typeof(CreditCard));
+            using (var reader = new StringReader(ChangedContext))
             {
                 card3 = serializer.Combine(reader, card1) as CreditCard;
             }
@@ -738,76 +649,58 @@ namespace XPatchLib.UnitTest
         [TestMethod]
         public void ExampleDivide()
         {
-            CreditCard card1 = new CreditCard()
+            var card1 = new CreditCard
             {
                 CardExpiration = "05/12",
                 CardNumber = "0123456789"
             };
-            CreditCard card2 = new CreditCard()
+            var card2 = new CreditCard
             {
                 CardExpiration = "05/17",
                 CardNumber = "9876543210"
             };
 
-            XPatchSerializer serializer = new XPatchSerializer(typeof(CreditCard));
+            var serializer = new XPatchSerializer(typeof(CreditCard));
 
-            string context = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
+            var context = Empty;
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, card1, card2);
                 stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
                 {
                     context = stremReader.ReadToEnd();
                 }
             }
 
-            Assert.AreEqual(changedContext, context);
+            Assert.AreEqual(ChangedContext, context);
             Trace.WriteLine(context);
         }
 
-        #endregion Public Methods
-
-        #region Public Classes
-
         public class CreditCard
         {
-            #region Public Properties
-
             public string CardExpiration { get; set; }
 
             public string CardNumber { get; set; }
 
-            #endregion Public Properties
-
-            #region Public Methods
-
             public override bool Equals(object obj)
             {
-                CreditCard card = obj as CreditCard;
+                var card = obj as CreditCard;
                 if (card == null)
-                {
                     return false;
-                }
-                return string.Equals(this.CardNumber, card.CardNumber)
-                    && string.Equals(this.CardExpiration, card.CardExpiration);
+                return string.Equals(CardNumber, card.CardNumber)
+                       && string.Equals(CardExpiration, card.CardExpiration);
             }
-
-            #endregion Public Methods
         }
-
-        #endregion Public Classes
     }
 
     /// <summary>
-    /// 操作简单类型 
+    ///     操作简单类型
     /// </summary>
     [TestClass]
     public class ExampleSampleClass
     {
-        #region Private Fields
-
-        private const string changedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        private const string ChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <Warehouse>
   <Items>
     <String Action=""Remove"">ItemB</String>
@@ -816,28 +709,24 @@ namespace XPatchLib.UnitTest
   <Name>Company B</Name>
 </Warehouse>";
 
-        #endregion Private Fields
-
-        #region Public Methods
-
         [TestMethod]
         public void ExampleCombine()
         {
-            Warehouse w1 = new Warehouse()
+            var w1 = new Warehouse
             {
                 Name = "Company A",
-                Items = new string[] { "ItemA", "ItemB", "ItemC" }
+                Items = new[] {"ItemA", "ItemB", "ItemC"}
             };
 
-            Warehouse w2 = new Warehouse()
+            var w2 = new Warehouse
             {
                 Name = "Company B",
-                Items = new string[] { "ItemA", "ItemC", "ItemD" }
+                Items = new[] {"ItemA", "ItemC", "ItemD"}
             };
 
-            Warehouse w3 = null;
-            XPatchSerializer serializer = new XPatchSerializer(typeof(Warehouse));
-            using (StringReader reader = new StringReader(changedContext))
+            Warehouse w3;
+            var serializer = new XPatchSerializer(typeof(Warehouse));
+            using (var reader = new StringReader(ChangedContext))
             {
                 w3 = serializer.Combine(reader, w1) as Warehouse;
             }
@@ -849,64 +738,64 @@ namespace XPatchLib.UnitTest
         [TestMethod]
         public void ExampleDivide()
         {
-            Warehouse w1 = new Warehouse()
+            var w1 = new Warehouse
             {
                 Name = "Company A",
-                Items = new string[] { "ItemA", "ItemB", "ItemC" }
+                Items = new[] {"ItemA", "ItemB", "ItemC"}
             };
 
-            Warehouse w2 = new Warehouse()
+            var w2 = new Warehouse
             {
                 Name = "Company B",
-                Items = new string[] { "ItemA", "ItemC", "ItemD" }
+                Items = new[] {"ItemA", "ItemC", "ItemD"}
             };
 
-            XPatchSerializer serializer = new XPatchSerializer(typeof(Warehouse));
+            var serializer = new XPatchSerializer(typeof(Warehouse));
 
-            string context = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
+            var context = Empty;
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, w1, w2);
                 stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
                 {
                     context = stremReader.ReadToEnd();
                 }
             }
 
-            Assert.AreEqual(changedContext, context);
+            Assert.AreEqual(ChangedContext, context);
             Trace.WriteLine(context);
         }
 
         [TestMethod]
         public void ExampleDivideSetNull()
         {
-            Warehouse w1 = new Warehouse()
+            var w1 = new Warehouse
             {
                 Name = "Company A",
-                Items = new string[] { "ItemA", "ItemB", "ItemC" }
+                Items = new[] {"ItemA", "ItemB", "ItemC"}
             };
 
-            Warehouse w2 = new Warehouse()
+            var w2 = new Warehouse
             {
                 Name = "Company B",
                 Items = null
             };
 
-            XPatchSerializer serializer = new XPatchSerializer(typeof(Warehouse));
+            var serializer = new XPatchSerializer(typeof(Warehouse));
 
-            string changedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
+            var changedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <Warehouse>
   <Items Action=""SetNull"" />
   <Name>Company B</Name>
 </Warehouse>";
 
-            string context = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
+            var context = Empty;
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, w1, w2);
                 stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
                 {
                     context = stremReader.ReadToEnd();
                 }
@@ -916,254 +805,194 @@ namespace XPatchLib.UnitTest
             Trace.WriteLine(context);
         }
 
-        #endregion Public Methods
-
-        #region Public Classes
-
         public class Warehouse
         {
-            #region Public Properties
-
             public string Address { get; set; }
 
             public string[] Items { get; set; }
 
             public string Name { get; set; }
 
-            #endregion Public Properties
-
-            #region Public Methods
-
             public override bool Equals(object obj)
             {
-                Warehouse w = obj as Warehouse;
+                var w = obj as Warehouse;
                 if (w == null)
-                {
                     return false;
-                }
-                return string.Equals(this.Name, w.Name)
-                    && string.Equals(this.Address, w.Address)
-                    && (
-                    (this.Items == null && w.Items == null)
-                    ||
-                    (this.Items.Length.Equals(w.Items.Length)
-                    && this.Items.Except(w.Items).Count() == 0
-                    && w.Items.Except(this.Items).Count() == 0)
-                    );
+                return string.Equals(Name, w.Name)
+                       && string.Equals(Address, w.Address)
+                       && (
+                           Items == null && w.Items == null
+                           ||
+                           Items.Length.Equals(w.Items.Length)
+                           && Items.Except(w.Items).Count() == 0
+                           && w.Items.Except(Items).Count() == 0
+                       );
             }
-
-            #endregion Public Methods
         }
-
-        #endregion Public Classes
     }
 
     /// <summary>
-    /// 是否序列化默认值设置 
+    ///     是否序列化默认值设置
     /// </summary>
     [TestClass]
     public class ExampleSerializeDefaultValue
     {
-        #region Private Fields
-
-        private const string notSerializeDefaultValueChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        private const string NotSerializeDefaultValueChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <CreditCard>
   <CardExpiration>05/17</CardExpiration>
   <CardNumber>0123456789</CardNumber>
 </CreditCard>";
 
-        private const string serializeDefaultValueChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        private const string SerializeDefaultValueChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <CreditCard>
   <CardCode>0</CardCode>
   <CardExpiration>05/17</CardExpiration>
   <CardNumber>0123456789</CardNumber>
 </CreditCard>";
 
-        #endregion Private Fields
-
-        #region Public Methods
-
         [TestMethod]
         public void ExampleCombine()
         {
-            CreditCard card1 = new CreditCard()
+            var card1 = new CreditCard
             {
                 CardNumber = "0123456789",
                 CardExpiration = "05/17",
                 CardCode = 0
             };
 
-            XPatchSerializer serializer = new XPatchSerializer(typeof(CreditCard));
+            var serializer = new XPatchSerializer(typeof(CreditCard));
 
             CreditCard card2 = null;
-            using (StringReader reader = new StringReader(notSerializeDefaultValueChangedContext))
+            using (var reader = new StringReader(NotSerializeDefaultValueChangedContext))
             {
                 card2 = serializer.Combine(reader, null) as CreditCard;
             }
 
             Assert.AreEqual(card2, card1);
+            Debug.Assert(card2 != null, "card2 != null");
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
 
             serializer = new XPatchSerializer(typeof(CreditCard), true);
 
             card2 = null;
-            using (StringReader reader = new StringReader(notSerializeDefaultValueChangedContext))
+            using (var reader = new StringReader(NotSerializeDefaultValueChangedContext))
             {
                 card2 = serializer.Combine(reader, null) as CreditCard;
             }
 
             Assert.AreEqual(card2, card1);
+            Debug.Assert(card2 != null, "card2 != null");
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
         }
 
         [TestMethod]
         public void ExampleDivide()
         {
-            CreditCard card1 = new CreditCard()
+            var card1 = new CreditCard
             {
                 CardNumber = "0123456789",
                 CardExpiration = "05/17",
                 CardCode = 0
             };
 
-            XPatchSerializer serializer = new XPatchSerializer(typeof(CreditCard));
+            var serializer = new XPatchSerializer(typeof(CreditCard));
 
-            string context = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
+            string context;
+            context = "";
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, null, card1);
                 stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
                 {
                     context = stremReader.ReadToEnd();
                 }
             }
 
-            Assert.AreEqual(notSerializeDefaultValueChangedContext, context);
+            Assert.AreEqual(NotSerializeDefaultValueChangedContext, context);
             Trace.WriteLine(context);
 
             serializer = new XPatchSerializer(typeof(CreditCard), true);
 
-            context = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
+            context = Empty;
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, null, card1);
                 stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
                 {
                     context = stremReader.ReadToEnd();
                 }
             }
 
-            Assert.AreEqual(serializeDefaultValueChangedContext, context);
+            Assert.AreEqual(SerializeDefaultValueChangedContext, context);
             Trace.WriteLine(context);
         }
 
-        #endregion Public Methods
-
-        #region Public Classes
-
         public class CreditCard
         {
-            #region Public Properties
-
             public int CardCode { get; set; }
 
             public string CardExpiration { get; set; }
 
             public string CardNumber { get; set; }
 
-            #endregion Public Properties
-
-            #region Public Methods
-
             public override bool Equals(object obj)
             {
-                CreditCard card = obj as CreditCard;
+                var card = obj as CreditCard;
                 if (card == null)
-                {
                     return false;
-                }
-                return string.Equals(this.CardNumber, card.CardNumber)
-                    && string.Equals(this.CardExpiration, card.CardExpiration)
-                    && string.Equals(this.CardCode, card.CardCode);
+                return string.Equals(CardNumber, card.CardNumber)
+                       && string.Equals(CardExpiration, card.CardExpiration)
+                       && Equals(CardCode, card.CardCode);
             }
-
-            #endregion Public Methods
         }
-
-        #endregion Public Classes
     }
 
     [TestClass]
     public class XPatchSerialzerExample
     {
-        #region Private Fields
-
-        private const string context = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        private const string Context = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <MyClass>
   <MyObjectProperty>
     <ObjectName>My String</ObjectName>
   </MyObjectProperty>
 </MyClass>";
 
-        #endregion Private Fields
-
-        #region Public Methods
-
         [TestMethod]
         public void ExampleClassDef()
         {
-            XPatchSerializer serializer = new XPatchSerializer(typeof(MyClass));
+            var serializer = new XPatchSerializer(typeof(MyClass));
 
-            MyClass c1 = new MyClass();
-            c1.MyObjectProperty.ObjectName = "My String";
+            var c1 = new MyClass {MyObjectProperty = {ObjectName = "My String"}};
 
-            string changedContext = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
+            string changedContext;
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, null, c1);
                 stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
                 {
                     changedContext = stremReader.ReadToEnd();
                 }
             }
 
-            Assert.AreEqual(context, changedContext);
+            Assert.AreEqual(Context, changedContext);
         }
-
-        #endregion Public Methods
-
-        #region Public Classes
 
         public class MyClass
         {
-            #region Public Constructors
+            public MyObject MyObjectProperty;
 
             public MyClass()
             {
                 MyObjectProperty = new MyObject();
             }
-
-            #endregion Public Constructors
-
-            #region Public Fields
-
-            public MyObject MyObjectProperty;
-
-            #endregion Public Fields
         }
 
         public class MyObject
         {
-            #region Public Fields
-
             public string ObjectName;
-
-            #endregion Public Fields
         }
-
-        #endregion Public Classes
     }
 }

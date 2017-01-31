@@ -1,6 +1,11 @@
-﻿using System;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,21 +21,24 @@ namespace XPatchLib.UnitTest
         [TestMethod]
         public void BasicSerializeCtorTest()
         {
-            DivideBasic ser = new DivideBasic(new TypeExtend(typeof(string)));
-            ser.Mode = XmlDateTimeSerializationMode.RoundtripKind;
+            var ser = new DivideBasic(new XmlTextWriter(new MemoryStream(), Encoding.UTF8),
+                new TypeExtend(typeof(string)));
+            Assert.AreEqual(ser.Mode, XmlDateTimeSerializationMode.RoundtripKind);
 
-            ser = new DivideBasic(new TypeExtend(typeof(string)), XmlDateTimeSerializationMode.Unspecified);
-            ser.Mode = XmlDateTimeSerializationMode.Unspecified;
+            ser = new DivideBasic(new XmlTextWriter(new MemoryStream(), Encoding.UTF8), new TypeExtend(typeof(string)),
+                XmlDateTimeSerializationMode.Unspecified);
+            Assert.AreEqual(ser.Mode, XmlDateTimeSerializationMode.Unspecified);
         }
+
 
         [TestMethod]
         public void BasicTypeSerializationTest()
         {
-            Guid g1 = Guid.NewGuid();
-            Guid g2 = Guid.NewGuid();
+            var g1 = Guid.NewGuid();
+            var g2 = Guid.NewGuid();
 
-            string s1 = Guid.NewGuid().ToString();
-            string s2 = Guid.NewGuid().ToString();
+            var s1 = Guid.NewGuid().ToString();
+            var s2 = Guid.NewGuid().ToString();
 
             var oriObjs = new object[]
             {
@@ -42,14 +50,15 @@ namespace XPatchLib.UnitTest
                 , short.MinValue
                 , sbyte.MinValue
                 , byte.MinValue
-                , UInt16.MinValue
-                , UInt32.MinValue
-                , UInt64.MinValue
-                , Single.MinValue
-                , Decimal.MinValue
+                , ushort.MinValue
+                , uint.MinValue
+                , ulong.MinValue
+                , float.MinValue
+                , decimal.MinValue
                 , DateTime.MinValue
                 , g1
-                , 'a'};
+                , 'a'
+            };
 
             var revObjs = new object[]
             {
@@ -61,14 +70,15 @@ namespace XPatchLib.UnitTest
                 , short.MaxValue
                 , sbyte.MaxValue
                 , byte.MaxValue
-                , UInt16.MaxValue
-                , UInt32.MaxValue
-                , UInt64.MaxValue
-                , Single.MaxValue
-                , Decimal.MaxValue
+                , ushort.MaxValue
+                , uint.MaxValue
+                , ulong.MaxValue
+                , float.MaxValue
+                , decimal.MaxValue
                 , DateTime.MaxValue
                 , g2
-                , 'b' };
+                , 'b'
+            };
 
             var types = new[]
             {
@@ -80,21 +90,22 @@ namespace XPatchLib.UnitTest
                 , typeof(short)
                 , typeof(sbyte)
                 , typeof(byte)
-                , typeof(UInt16)
-                , typeof(UInt32)
-                , typeof(UInt64)
+                , typeof(ushort)
+                , typeof(uint)
+                , typeof(ulong)
                 , typeof(float)
                 , typeof(decimal)
                 , typeof(DateTime)
                 , typeof(Guid)
-                , typeof(char) };
+                , typeof(char)
+            };
 
-            var serializedResults = new string[]
+            var serializedResults = new[]
             {
                 "<Boolean>" + XmlConvert.ToString(true) + "</Boolean>"
                 , "<Int32>" + int.MaxValue + "</Int32>"
                 , "<Double>" + XmlConvert.ToString(double.MaxValue) + "</Double>"
-                , "<String>"+s2+"</String>"
+                , "<String>" + s2 + "</String>"
                 , "<Int64>" + long.MaxValue + "</Int64>"
                 , "<Int16>" + short.MaxValue + "</Int16>"
                 , "<SByte>" + sbyte.MaxValue + "</SByte>"
@@ -104,10 +115,13 @@ namespace XPatchLib.UnitTest
                 , "<UInt64>" + ulong.MaxValue + "</UInt64>"
                 , "<Single>" + XmlConvert.ToString(float.MaxValue) + "</Single>"
                 , "<Decimal>" + XmlConvert.ToString(decimal.MaxValue) + "</Decimal>"
-                , "<DateTime>" + XmlConvert.ToString(DateTime.MaxValue,XmlDateTimeSerializationMode.RoundtripKind) + "</DateTime>"
+                ,
+                "<DateTime>" + XmlConvert.ToString(DateTime.MaxValue, XmlDateTimeSerializationMode.RoundtripKind) +
+                "</DateTime>"
                 , "<Guid>" + XmlConvert.ToString(g2) + "</Guid>"
-                , "<Char>" + XmlConvert.ToString((ushort)'b') + "</Char>" };
-            var serializedSetNullResults = new string[]
+                , "<Char>" + XmlConvert.ToString((ushort) 'b') + "</Char>"
+            };
+            var serializedSetNullResults = new[]
             {
                 @"<Boolean Action=""SetNull"" />"
                 , @"<Int32 Action=""SetNull"" />"
@@ -124,10 +138,11 @@ namespace XPatchLib.UnitTest
                 , @"<Decimal Action=""SetNull"" />"
                 , @"<DateTime Action=""SetNull"" />"
                 , @"<Guid Action=""SetNull"" />"
-                , @"<Char Action=""SetNull"" />" };
+                , @"<Char Action=""SetNull"" />"
+            };
             //值类型默认值
             //https://msdn.microsoft.com/zh-cn/library/83fhsxwc.aspx
-            var serializedDefaultValues = new string[]
+            var serializedDefaultValues = new[]
             {
                 "<Boolean>" + XmlConvert.ToString(false) + "</Boolean>"
                 , "<Int32>" + 0 + "</Int32>"
@@ -142,51 +157,122 @@ namespace XPatchLib.UnitTest
                 , "<UInt64>" + 0 + "</UInt64>"
                 , "<Single>" + XmlConvert.ToString(0F) + "</Single>"
                 , "<Decimal>" + XmlConvert.ToString(0M) + "</Decimal>"
-                , "<DateTime>" + XmlConvert.ToString(new DateTime(),XmlDateTimeSerializationMode.RoundtripKind) + "</DateTime>"
+                ,
+                "<DateTime>" + XmlConvert.ToString(new DateTime(), XmlDateTimeSerializationMode.RoundtripKind) +
+                "</DateTime>"
                 , "<Guid>" + XmlConvert.ToString(Guid.Empty) + "</Guid>"
-                , "<Char>" + XmlConvert.ToString((ushort)'\0') + "</Char>" };
+                , "<Char>" + XmlConvert.ToString((ushort) '\0') + "</Char>"
+            };
 
-            for (int i = 0; i < types.Length; i++)
+            for (var i = 0; i < types.Length; i++)
             {
-                DivideBasic ser = new DivideBasic(new TypeExtend(types[i]));
-                CombineBasic der = new CombineBasic(new TypeExtend(types[i]));
-
-                //原始值与更新值不同时，序列化更新值
-                XElement ele = ser.Divide(types[i].Name, oriObjs[i], revObjs[i]);
-                Assert.AreEqual(serializedResults[i], TestHelper.XElementToString(ele));
-
-                Assert.AreEqual(revObjs[i], der.Combine(ele));
-
-                //原始值有值，更新值为null时，序列化为<XXX Action="SetNull" />
-                ele = ser.Divide(types[i].Name, oriObjs[i], null);
-                Assert.AreEqual(serializedSetNullResults[i], TestHelper.XElementToString(ele));
-                Assert.AreEqual(null, der.Combine(ele));
-
-                //原始值为null，更新值有值时序列化更新值
-                ele = ser.Divide(types[i].Name, null, revObjs[i]);
-                Assert.AreEqual(serializedResults[i], TestHelper.XElementToString(ele));
-                Assert.AreEqual(revObjs[i], der.Combine(ele));
-
-                //原始值与更新值相同时不做序列化
-                Assert.IsNull(ser.Divide(types[i].Name, oriObjs[i], oriObjs[i]));
-                //原始值与更新值均为null时不做序列化
-                Assert.IsNull(ser.Divide(types[i].Name, null, null));
-
-                //原始值为null，如果更新值为默认值时，如果默认不序列化默认值，则不做序列化
-                Assert.IsNull(ser.Divide(types[i].Name, null, ReflectionUtils.GetDefaultValue(types[i])));
-
-                ser.SerializeDefaultValue = true;
-                //原始值为null，如果更新值为默认值时，如果设置为序列化默认值，则做序列化
-                ele = ser.Divide(types[i].Name, null, ReflectionUtils.GetDefaultValue(types[i]));
-                if (types[i] == typeof(string))
+                using (var stream = new MemoryStream())
                 {
-                    //string类型的默认值为null，不是String.Empty
-                    Assert.IsNull(ele);
+                    using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                    {
+                        var ser = new DivideBasic(writer, new TypeExtend(types[i]));
+
+                        //原始值与更新值不同时，序列化更新值
+                        Assert.IsTrue(ser.Divide(types[i].Name, oriObjs[i], revObjs[i]));
+                    }
+                    stream.Position = 0;
+                    var ele = XElement.Load(stream);
+
+                    var der = new CombineBasic(new TypeExtend(types[i]));
+                    var s = ele.ToString();
+                    Debug.WriteLine(s);
+                    Assert.AreEqual(serializedResults[i], s, "输出内容与预期不符");
+                    stream.Position = 0;
+                    using (XmlReader reader = XmlReader.Create(stream))
+                    {
+                        Assert.AreEqual(revObjs[i], der.Combine(reader,null, types[i].Name), "增量合并后的对象实例与预期不符");
+                    }
                 }
-                else
+
+                using (var stream = new MemoryStream())
                 {
-                    Assert.IsNotNull(ele);
-                    Assert.AreEqual(serializedDefaultValues[i], TestHelper.XElementToString(ele));
+                    using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                    {
+                        var ser = new DivideBasic(writer, new TypeExtend(types[i]));
+                        //原始值有值，更新值为null时，序列化为<XXX Action="SetNull" />
+                        Assert.IsTrue(ser.Divide(types[i].Name, oriObjs[i], null));
+                    }
+                    stream.Position = 0;
+                    var ele = XElement.Load(stream);
+
+                    var der = new CombineBasic(new TypeExtend(types[i]));
+                    var s = ele.ToString();
+                    Debug.WriteLine(s);
+
+                    Assert.AreEqual(serializedSetNullResults[i], s, "输出内容与预期不符");
+                    stream.Position = 0;
+                    using (XmlReader reader = XmlReader.Create(stream))
+                    {
+                        Assert.AreEqual(null, der.Combine(reader, null, types[i].Name), "增量合并后的对象实例与预期不符");
+                    }
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                    {
+                        var ser = new DivideBasic(writer, new TypeExtend(types[i]));
+                        //原始值为null，更新值有值时序列化更新值
+                        Assert.IsTrue(ser.Divide(types[i].Name, null, revObjs[i]));
+                    }
+                    stream.Position = 0;
+                    var ele = XElement.Load(stream);
+
+                    var der = new CombineBasic(new TypeExtend(types[i]));
+                    var s = ele.ToString();
+                    Debug.WriteLine(s);
+
+                    Assert.AreEqual(serializedResults[i], s, "输出内容与预期不符");
+                    stream.Position = 0;
+                    using (XmlReader reader = XmlReader.Create(stream))
+                    {
+                        Assert.AreEqual(revObjs[i], der.Combine(reader, null, types[i].Name), "增量合并后的对象实例与预期不符");
+                    }
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                    {
+                        var ser = new DivideBasic(writer, new TypeExtend(types[i]));
+                        //原始值与更新值相同时不做序列化
+                        Assert.IsFalse(ser.Divide(types[i].Name, oriObjs[i], oriObjs[i]));
+                        //原始值与更新值均为null时不做序列化
+                        Assert.IsFalse(ser.Divide(types[i].Name, null, null));
+                        //原始值为null，如果更新值为默认值时，如果默认不序列化默认值，则不做序列化
+                        Assert.IsFalse(ser.Divide(types[i].Name, null, ReflectionUtils.GetDefaultValue(types[i])));
+                    }
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                    {
+                        var ser = new DivideBasic(writer, new TypeExtend(types[i]));
+                        ser.SerializeDefaultValue = true;
+                        //原始值为null，如果更新值为默认值时，如果设置为序列化默认值，则做序列化
+                        if (types[i] != typeof(string))
+                        {
+                            Assert.IsTrue(ser.Divide(types[i].Name, null, ReflectionUtils.GetDefaultValue(types[i])));
+                            writer.WriteEndElement();
+                            writer.Flush();
+                            stream.Position = 0;
+                            var ele = XElement.Load(stream);
+                            Assert.IsNotNull(ele);
+                            var s = ele.ToString();
+                            Debug.WriteLine(s);
+                            Assert.AreEqual(serializedDefaultValues[i], s);
+                        }
+                        else
+                        {
+                            Assert.IsFalse(ser.Divide(types[i].Name, null, ReflectionUtils.GetDefaultValue(types[i])));
+                        }
+                    }
                 }
             }
         }
@@ -194,102 +280,145 @@ namespace XPatchLib.UnitTest
         [TestMethod]
         public void SerializeColor_Argb()
         {
-            DivideObject ser = new DivideObject(new TypeExtend(typeof(ColorClass)));
-            CombineObject dser = new CombineObject(new TypeExtend(typeof(ColorClass)));
-
-            ColorClass c1 = new ColorClass() { Color = Color.FromArgb(255, 255, 255) };
-            XElement ele = ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)), null, c1);
-
-            string result =
-string.Format(@"<ColorClass>
+            var c1 = new ColorClass {Color = Color.FromArgb(255, 255, 255)};
+            var result = string.Format(@"<ColorClass>
   <Color>#{0:X}</Color>
 </ColorClass>", c1.Color.ToArgb());
+            var dser = new CombineObject(new TypeExtend(typeof(ColorClass)));
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                {
+                    var ser = new DivideObject(writer, new TypeExtend(typeof(ColorClass)));
+                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)), null, c1));
+                }
+                stream.Position = 0;
+                var ele = XElement.Load(stream);
+                Debug.WriteLine(ele.ToString());
+                Assert.AreEqual(result, ele.ToString());
 
-            Assert.AreEqual(result, ele.ToString());
-
-            ColorClass c2 = dser.Combine(ColorClass.GetSampleInstance(), ele) as ColorClass;
-            Assert.AreEqual(c1.Color, c2.Color);
+                stream.Position = 0;
+                using (XmlReader reader = XmlReader.Create(stream))
+                {
+                    var c2 = dser.Combine(reader,ColorClass.GetSampleInstance(), ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass))) as ColorClass;
+                Debug.Assert(c2 != null, "c2 != null");
+                Assert.AreEqual(c1.Color, c2.Color);
+                }
+            }
         }
 
         [TestMethod]
         public void SerializeColor_KnownColor()
         {
-            DivideObject ser = new DivideObject(new TypeExtend(typeof(ColorClass)));
-            CombineObject dser = new CombineObject(new TypeExtend(typeof(ColorClass)));
-
-            ColorClass c1 = ColorClass.GetSampleInstance();
-            XElement ele = ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)), null, c1);
-
-            string result =
-string.Format(@"<ColorClass>
+            var result = @"<ColorClass>
   <Color>AliceBlue</Color>
-</ColorClass>");
+</ColorClass>";
+            using (var stream = new MemoryStream())
+            {
+                var c1 = ColorClass.GetSampleInstance();
+                var dser = new CombineObject(new TypeExtend(typeof(ColorClass)));
+                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                {
+                    var ser = new DivideObject(writer, new TypeExtend(typeof(ColorClass)));
 
-            Assert.AreEqual(result, ele.ToString());
+                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)), null, c1));
+                }
+                stream.Position = 0;
+                var ele = XElement.Load(stream);
 
-            ColorClass c2 = ColorClass.GetSampleInstance();
-            c2.Color = Color.AntiqueWhite;
-            Assert.AreEqual(Color.AntiqueWhite, c2.Color);
+                Assert.AreEqual(result, ele.ToString());
+                Debug.WriteLine(ele.ToString());
 
-            c1 = dser.Combine(c2, ele) as ColorClass;
+                var c2 = ColorClass.GetSampleInstance();
+                c2.Color = Color.AntiqueWhite;
+                Assert.AreEqual(Color.AntiqueWhite, c2.Color);
 
-            Assert.AreEqual(ColorClass.GetSampleInstance().Color, c2.Color);
+                stream.Position = 0;
+                using (XmlReader reader = XmlReader.Create(stream))
+                {
+                    //合并数据时会默认更新传入的原始对象
+                    dser.Combine(reader, c2, ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)));
+
+                    Assert.AreEqual(ColorClass.GetSampleInstance().Color, c2.Color);
+                }
+            }
         }
 
         [TestMethod]
         public void SerializeEnum()
         {
-            DivideObject ser = new DivideObject(new TypeExtend(typeof(EnumClass)));
-            CombineObject dser = new CombineObject(new TypeExtend(typeof(EnumClass)));
-
-            XElement ele = null;
-            string result = string.Empty;
-
-            ele = ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(EnumClass)), null, EnumClass.GetSampleInstance());
-
-            result =
-@"<EnumClass>
+            var result = @"<EnumClass>
   <MultiQuarter>First, Second, Third, Fourth</MultiQuarter>
   <SingleQuarter>First</SingleQuarter>
 </EnumClass>";
+            var dser = new CombineObject(new TypeExtend(typeof(EnumClass)));
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                {
+                    var ser = new DivideObject(writer, new TypeExtend(typeof(EnumClass)));
+                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(EnumClass)), null,
+                        EnumClass.GetSampleInstance()));
+                }
 
-            Assert.AreEqual(result, ele.ToString());
+                stream.Position = 0;
+                var ele = XElement.Load(stream);
 
-            EnumClass c1 = EnumClass.GetSampleInstance();
+                Assert.AreEqual(result, ele.ToString());
+                Debug.WriteLine(ele.ToString());
+            }
+
+            var c1 = EnumClass.GetSampleInstance();
             c1.SingleQuarter = SingleQuarter.Second;
             c1.MultiQuarter = MultiQuarter.Second | MultiQuarter.Fourth;
 
-            ele = ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(EnumClass)), EnumClass.GetSampleInstance(), c1);
-
-            result =
-@"<EnumClass>
+            result = @"<EnumClass>
   <MultiQuarter>Second, Fourth</MultiQuarter>
   <SingleQuarter>Second</SingleQuarter>
 </EnumClass>";
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                {
+                    var ser = new DivideObject(writer, new TypeExtend(typeof(EnumClass)));
+                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(EnumClass)),
+                        EnumClass.GetSampleInstance(), c1));
+                }
 
-            Assert.AreEqual(result, ele.ToString());
-            EnumClass c2 = dser.Combine(EnumClass.GetSampleInstance(), ele) as EnumClass;
-            Assert.IsNotNull(c2);
-            Assert.AreEqual(SingleQuarter.Second, c2.SingleQuarter);
-            Assert.AreEqual(MultiQuarter.Second | MultiQuarter.Fourth, c2.MultiQuarter);
+                stream.Position = 0;
+                var ele = XElement.Load(stream);
+                Assert.AreEqual(result, ele.ToString());
+                Debug.WriteLine(ele.ToString());
+                stream.Position = 0;
+                using (XmlReader reader = XmlReader.Create(stream))
+                {
+                    var c2 = dser.Combine(reader,EnumClass.GetSampleInstance(), ReflectionUtils.GetTypeFriendlyName(typeof(EnumClass))) as EnumClass;
+                    Assert.IsNotNull(c2);
+                    Assert.AreEqual(SingleQuarter.Second, c2.SingleQuarter);
+                    Assert.AreEqual(MultiQuarter.Second | MultiQuarter.Fourth, c2.MultiQuarter);
+                }
+            }
         }
 
         [TestMethod]
         public void SerializeErrorColor()
         {
-            string result = @"<ColorClass>
+            var result = @"<ColorClass>
   <Color>#xxxxxx</Color>
 </ColorClass>";
             XElement xele;
-            using (StringReader reader = new StringReader(result))
+            using (var reader = new StringReader(result))
             {
                 xele = XElement.Load(reader);
             }
 
-            CombineObject dser = new CombineObject(new TypeExtend(typeof(ColorClass)));
+            var dser = new CombineObject(new TypeExtend(typeof(ColorClass)));
             try
             {
-                ColorClass c2 = dser.Combine(ColorClass.GetSampleInstance(), xele) as ColorClass;
+                using (XmlReader reader = XmlTextReader.Create(new StringReader(result)))
+                {
+                    dser.Combine(reader,ColorClass.GetSampleInstance(), "ColorClass");
+                }
             }
             catch (FormatException ex)
             {

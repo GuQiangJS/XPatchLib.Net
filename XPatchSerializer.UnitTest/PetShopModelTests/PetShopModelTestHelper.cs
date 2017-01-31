@@ -26,7 +26,7 @@ namespace XPatchLib.UnitTest.PetShopModelTests
         internal static string oriZip = "20500";
 
         /// <summary>
-        /// 使用处CreditCardInfo.CardId外其他的固定值创建OrderInfo类型对象。 
+        ///     使用处CreditCardInfo.CardId外其他的固定值创建OrderInfo类型对象。
         /// </summary>
         /// <returns>
         /// </returns>
@@ -37,14 +37,19 @@ namespace XPatchLib.UnitTest.PetShopModelTests
 
         internal static OrderInfo CreateNewOriOrderInfo(int pOrderId)
         {
-            AddressInfo addr1 = new AddressInfo(oriFirstName, oriLastName, oriAddress1, oriAddress2, oriCity, oriStatus, oriZip, oriCountry, oriPhone, oriEmail) { AddressId = oriAddressId };
+            var addr1 = new AddressInfo(oriFirstName, oriLastName, oriAddress1, oriAddress2, oriCity, oriStatus, oriZip,
+                oriCountry, oriPhone, oriEmail) {AddressId = oriAddressId};
 
-            OrderInfo result = new OrderInfo()
+            var result = new OrderInfo
             {
                 OrderId = pOrderId,
                 Date = oriOrderDate,
                 UserId = oriUserId,
-                CreditCard = new CreditCardInfo(oriCreditCardType, oriCreditCardNumber, oriCreditCardExpiration) { CardId = oriCreditCardId },
+                CreditCard =
+                    new CreditCardInfo(oriCreditCardType, oriCreditCardNumber, oriCreditCardExpiration)
+                    {
+                        CardId = oriCreditCardId
+                    },
                 BillingAddress = addr1,
                 OrderTotal = oriOrderTotal
             };

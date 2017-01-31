@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Drawing;
 using System.Globalization;
 using System.Reflection;
@@ -7,37 +10,36 @@ using System.Xml.Serialization;
 namespace XPatchLib
 {
     /// <summary>
-    /// 成员属性包装器。 
+    ///     成员属性包装器。
     /// </summary>
     internal class MemberWrapper
     {
         #region Internal Constructors
 
         /// <summary>
-        /// 使用指定的 <see cref="System.Reflection.MemberInfo" /> 初始化
-        /// <see cref="XPatchLib.MemberWrapper" /> 类的新实例。
+        ///     使用指定的 <see cref="System.Reflection.MemberInfo" /> 初始化
+        ///     <see cref="XPatchLib.MemberWrapper" /> 类的新实例。
         /// </summary>
         /// <param name="pMemberInfo">
-        /// 指定的成员属性的信息。 
+        ///     指定的成员属性的信息。
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="pMemberInfo" /> 为空时。 
+        ///     <paramref name="pMemberInfo" /> 为空时。
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// <paramref name="pMemberInfo" />.MemberType 既不是 <see cref="MemberTypes.Property" /> 也不是
-        /// <see cref="MemberTypes.Field" /> 时。
+        ///     <paramref name="pMemberInfo" />.MemberType 既不是 <see cref="MemberTypes.Property" /> 也不是
+        ///     <see cref="MemberTypes.Field" /> 时。
         /// </exception>
         internal MemberWrapper(MemberInfo pMemberInfo)
         {
             Guard.ArgumentNotNull(pMemberInfo, "pMemberInfo");
 
             if (pMemberInfo.MemberType != MemberTypes.Property && pMemberInfo.MemberType != MemberTypes.Field)
-            {
-                //TODO:多语言
                 throw new ArgumentException(
-                    string.Format(CultureInfo.InvariantCulture, "{0}.MemberType 既不是 MemberTypes.Property 也不是 MemberTypes.Field。而是 {1} 。", pMemberInfo, pMemberInfo.MemberType)
+                    string.Format(CultureInfo.InvariantCulture,
+                        "{0}.MemberType 既不是 MemberTypes.Property 也不是 MemberTypes.Field。而是 {1} 。", pMemberInfo,
+                        pMemberInfo.MemberType)
                     , "pMemberInfo");
-            }
 
             MemberInfo = pMemberInfo;
 
@@ -52,47 +54,40 @@ namespace XPatchLib
         #endregion Internal Constructors
 
         /// <summary>
-        /// 获取类型默认值。 
+        ///     获取类型默认值。
         /// </summary>
         internal Object DefaultValue { get; private set; }
 
         /// <summary>
-        /// 获取Getter是否为Public。 
+        ///     获取Getter是否为Public。
         /// </summary>
         internal Boolean HasPublicGetter { get; private set; }
 
         /// <summary>
-        /// 获取Setter是否为Public。 
+        ///     获取Setter是否为Public。
         /// </summary>
         internal Boolean HasPublicSetter { get; private set; }
 
         /// <summary>
-        /// 是否为基础类型。 
+        ///     是否为基础类型。
         /// </summary>
         /// <remarks>
-        /// 参见 <see cref="ReflectionUtils.IsBasicType" /> 
+        ///     参见 <see cref="ReflectionUtils.IsBasicType" />
         /// </remarks>
         internal Boolean IsBasicType { get; private set; }
 
         /// <summary>
-        /// 获取是否为 Color 类型。 
+        ///     获取是否为 Color 类型。
         /// </summary>
         internal Boolean IsColor
         {
-            get
-            {
-                return this.Type == typeof(Color);
-            }
+            get { return Type == typeof(Color); }
         }
 
         /// <summary>
-        /// 获取是否为枚举类型。 
+        ///     获取是否为枚举类型。
         /// </summary>
-        internal Boolean IsEnum
-        {
-            get;
-            private set;
-        }
+        internal Boolean IsEnum { get; private set; }
 
         /*
         /// <summary>
@@ -121,66 +116,63 @@ namespace XPatchLib
         */
 
         /// <summary>
-        /// 是否为集合类型。 
+        ///     是否为集合类型。
         /// </summary>
         /// <remarks>
-        /// 参见 <see cref="ReflectionUtils.IsArray" /> 
+        ///     参见 <see cref="ReflectionUtils.IsArray" />
         /// </remarks>
         internal Boolean IsIEnumerable { get; private set; }
 
         /// <summary>
-        /// 是不是属性类型。 
+        ///     是不是属性类型。
         /// </summary>
         /// <remarks>
-        /// 如果不是就是字段（Field）类型。 
+        ///     如果不是就是字段（Field）类型。
         /// </remarks>
         internal Boolean IsProperty { get; private set; }
 
         /// <summary>
-        /// 获取当前成员属性实例。 
+        ///     获取当前成员属性实例。
         /// </summary>
-        internal MemberInfo MemberInfo { get; private set; }
+        internal MemberInfo MemberInfo { get; }
 
         /// <summary>
-        /// 获取当前成员的名称。 
+        ///     获取当前成员的名称。
         /// </summary>
         internal String Name { get; private set; }
 
         /// <summary>
-        /// 获取类型。 
+        ///     获取类型。
         /// </summary>
         internal Type Type { get; private set; }
 
         /// <summary>
-        /// 获取当前成员的 <see cref="System.Xml.Serialization.XmlIgnoreAttribute" /> 特性标记。 
+        ///     获取当前成员的 <see cref="System.Xml.Serialization.XmlIgnoreAttribute" /> 特性标记。
         /// </summary>
         internal XmlIgnoreAttribute XmlIgnore { get; private set; }
 
         #region Private Methods
 
         /// <summary>
-        /// 初始化当前成员属性的默认值。 
+        ///     初始化当前成员属性的默认值。
         /// </summary>
         private void InitDefaultValue()
         {
             if (Type.IsValueType)
-            {
-                DefaultValue = Type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0], CultureInfo.InvariantCulture);
-            }
+                DefaultValue = Type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0],
+                    CultureInfo.InvariantCulture);
             else
-            {
                 DefaultValue = null;
-            }
         }
 
         /// <summary>
-        /// 获取类型。 
+        ///     获取类型。
         /// </summary>
         /// <remarks>实际数据类型，可能是NullableValueType。</remarks>
         internal Type MemberType { get; private set; }
 
         /// <summary>
-        /// 初始化当前成员属性的类型信息。 
+        ///     初始化当前成员属性的类型信息。
         /// </summary>
         private void InitType()
         {
@@ -190,11 +182,11 @@ namespace XPatchLib
             HasPublicSetter = true;
             if (IsProperty)
             {
-                HasPublicSetter = (((PropertyInfo)MemberInfo).GetSetMethod() != null);
-                HasPublicGetter = (((PropertyInfo)MemberInfo).GetGetMethod() != null);
+                HasPublicSetter = ((PropertyInfo) MemberInfo).GetSetMethod() != null;
+                HasPublicGetter = ((PropertyInfo) MemberInfo).GetGetMethod() != null;
             }
 
-            this.Type = IsProperty ? ((PropertyInfo)MemberInfo).PropertyType : ((FieldInfo)MemberInfo).FieldType;
+            Type = IsProperty ? ((PropertyInfo) MemberInfo).PropertyType : ((FieldInfo) MemberInfo).FieldType;
 
             MemberType = ReflectionUtils.IsNullable(Type) ? ReflectionUtils.GetNullableValueType(Type) : Type;
 

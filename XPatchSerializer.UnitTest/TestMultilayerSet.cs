@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,21 +13,22 @@ namespace XPatchLib.UnitTest
         [Description("多层次的集合增加内容拆分及合并测试")]
         public void TestAppendDividendAndCombineMultilayerSet()
         {
-            Root r1 = CreateRoot(10, 3);
-            Root r2 = CreateRoot(10, 4);
+            var r1 = CreateRoot(10, 3);
+            var r2 = CreateRoot(10, 4);
 
-            XPatchSerializer serializer = new XPatchSerializer(typeof(Root));
+            var serializer = new XPatchSerializer(typeof(Root));
 
-            string context = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
+            string context;
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, r1, r2);
                 context = TestHelper.StreamToString(stream);
+                Debug.WriteLine(context);
             }
-            using (StringReader reader = new StringReader(context))
+            using (var reader = new StringReader(context))
             {
-                Root r3 = serializer.Combine(reader, r1) as Root;
-                Assert.AreEqual(r1, r3);
+                var r3 = serializer.Combine(reader, r1) as Root;
+                Assert.AreEqual(r2, r3);
             }
         }
 
@@ -34,34 +36,33 @@ namespace XPatchLib.UnitTest
         [Description("多层次的集合删除内容拆分及合并测试")]
         public void TestRemoveDividendAndCombineMultilayerSet()
         {
-            Root r1 = CreateRoot(10, 4);
-            Root r2 = CreateRoot(10, 3);
+            var r1 = CreateRoot(10, 4);
+            var r2 = CreateRoot(10, 3);
 
-            XPatchSerializer serializer = new XPatchSerializer(typeof(Root));
+            var serializer = new XPatchSerializer(typeof(Root));
 
-            string context = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
+            string context;
+            using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, r1, r2);
                 context = TestHelper.StreamToString(stream);
+                Debug.WriteLine(context);
             }
-            using (StringReader reader = new StringReader(context))
+            using (var reader = new StringReader(context))
             {
-                Root r3 = serializer.Combine(reader, r1) as Root;
-                Assert.AreEqual(r1, r3);
+                var r3 = serializer.Combine(reader, r1) as Root;
+                Assert.AreEqual(r2, r3);
             }
         }
 
         private Root CreateRoot(int pFirstNum, int pSecondNum)
         {
-            Root result = new Root();
-            for (int i = 0; i < pFirstNum; i++)
+            var result = new Root();
+            for (var i = 0; i < pFirstNum; i++)
             {
-                result.Childs.Add(new FirstChild() { Key = i.ToString(), Value = i.ToString() });
-                for (int j = 0; j < pSecondNum; j++)
-                {
-                    result.Childs[i].Childs.Add(new SecondChild() { Key = j.ToString(), Value = j.ToString() });
-                }
+                result.Childs.Add(new FirstChild {Key = i.ToString(), Value = i.ToString()});
+                for (var j = 0; j < pSecondNum; j++)
+                    result.Childs[i].Childs.Add(new SecondChild {Key = j.ToString(), Value = j.ToString()});
             }
             return result;
         }
@@ -77,15 +78,12 @@ namespace XPatchLib.UnitTest
 
             public override bool Equals(object obj)
             {
-                FirstChild c = obj as FirstChild;
+                var c = obj as FirstChild;
                 if (c == null)
-                {
                     return false;
-                }
-                return string.Equals(this.Key, c.Key) &&
-                    string.Equals(this.Value, c.Value) &&
-                    this.Childs.Except(c.Childs).Count() > 0 &&
-                    c.Childs.Except(this.Childs).Count() > 0;
+                return string.Equals(Key, c.Key) &&
+                       string.Equals(Value, c.Value) &&
+                       Childs.SequenceEqual(c.Childs);
             }
         }
 
@@ -97,13 +95,11 @@ namespace XPatchLib.UnitTest
 
             public override bool Equals(object obj)
             {
-                KeyValueClass c = obj as KeyValueClass;
+                var c = obj as KeyValueClass;
                 if (c == null)
-                {
                     return false;
-                }
-                return string.Equals(this.Key, c.Key) &&
-                    string.Equals(this.Value, c.Value);
+                return string.Equals(Key, c.Key) &&
+                       string.Equals(Value, c.Value);
             }
         }
 
@@ -118,12 +114,10 @@ namespace XPatchLib.UnitTest
 
             public override bool Equals(object obj)
             {
-                Root r = obj as Root;
+                var r = obj as Root;
                 if (r == null)
-                {
                     return false;
-                }
-                return this.Childs.Except(r.Childs).Count() > 0 && r.Childs.Except(this.Childs).Count() > 0;
+                return Childs.SequenceEqual(r.Childs);
             }
         }
 

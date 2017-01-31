@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace XPatchLib.UnitTest.TestClass
@@ -7,30 +6,25 @@ namespace XPatchLib.UnitTest.TestClass
     [PrimaryKey("ID")]
     internal class FirstLevelClass
     {
-        #region Public Properties
-
-        public String ID { get; set; }
-
-        public SecondLevelClass Second { get; set; }
-
-        #endregion Public Properties
-
         #region Public Methods
 
         public override bool Equals(object obj)
         {
-            FirstLevelClass c = obj as FirstLevelClass;
+            var c = obj as FirstLevelClass;
             if (c == null)
-            {
                 return false;
-            }
-            else
-            {
-                return SecondLevelClass.Equals(c.Second, this.Second) && String.Equals(c.ID, this.ID);
-            }
+            return Equals(c.Second, Second) && string.Equals(c.ID, ID);
         }
 
         #endregion Public Methods
+
+        #region Public Properties
+
+        public string ID { get; set; }
+
+        public SecondLevelClass Second { get; set; }
+
+        #endregion Public Properties
     }
 
     internal class MultilevelClass
@@ -39,7 +33,7 @@ namespace XPatchLib.UnitTest.TestClass
 
         internal MultilevelClass()
         {
-            this.Items = new List<FirstLevelClass>();
+            Items = new List<FirstLevelClass>();
         }
 
         #endregion Internal Constructors
@@ -54,7 +48,7 @@ namespace XPatchLib.UnitTest.TestClass
 
         public static MultilevelClass GetSampleInstance()
         {
-            MultilevelClass obj = new MultilevelClass();
+            var obj = new MultilevelClass();
             obj.Items = new List<FirstLevelClass>();
             obj.Items.Add(new FirstLevelClass());
             obj.Items.Add(new FirstLevelClass());
@@ -70,15 +64,10 @@ namespace XPatchLib.UnitTest.TestClass
 
         public override bool Equals(object obj)
         {
-            MultilevelClass c = obj as MultilevelClass;
+            var c = obj as MultilevelClass;
             if (c == null)
-            {
                 return false;
-            }
-            else
-            {
-                return c.Items.SequenceEqual(this.Items);
-            }
+            return c.Items.SequenceEqual(Items);
         }
 
         #endregion Public Methods
@@ -88,7 +77,7 @@ namespace XPatchLib.UnitTest.TestClass
     {
         #region Public Properties
 
-        public String SecondID { get; set; }
+        public string SecondID { get; set; }
 
         #endregion Public Properties
 
@@ -96,15 +85,10 @@ namespace XPatchLib.UnitTest.TestClass
 
         public override bool Equals(object obj)
         {
-            SecondLevelClass c = obj as SecondLevelClass;
+            var c = obj as SecondLevelClass;
             if (c == null)
-            {
                 return false;
-            }
-            else
-            {
-                return String.Equals(c.SecondID, this.SecondID);
-            }
+            return string.Equals(c.SecondID, SecondID);
         }
 
         #endregion Public Methods

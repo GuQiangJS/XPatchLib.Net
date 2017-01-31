@@ -33,7 +33,7 @@ namespace XPatchLib.UnitTest
 
             Assert.AreEqual("Array1OfBookClass", ReflectionUtils.GetTypeFriendlyName(typeof(BookClass[])));
 
-            Assert.AreEqual("Nullable_DateTime", ReflectionUtils.GetTypeFriendlyName(typeof(Nullable<DateTime>)));
+            Assert.AreEqual("Nullable_DateTime", ReflectionUtils.GetTypeFriendlyName(typeof(DateTime?)));
         }
 
         [TestMethod]
@@ -48,22 +48,22 @@ namespace XPatchLib.UnitTest
         {
             Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(string)));
             Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(Guid)));
-            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(Int16)));
-            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(Int32)));
-            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(Int64)));
-            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(UInt16)));
-            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(UInt32)));
-            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(UInt64)));
-            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(Double)));
-            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(Decimal)));
-            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(Single)));
-            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(Char)));
-            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(Boolean)));
+            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(short)));
+            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(int)));
+            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(long)));
+            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(ushort)));
+            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(uint)));
+            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(ulong)));
+            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(double)));
+            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(decimal)));
+            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(float)));
+            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(char)));
+            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(bool)));
             Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(DateTime)));
-            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(Byte)));
-            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(SByte)));
+            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(byte)));
+            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(sbyte)));
 
-            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(Nullable<SByte>)));
+            Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(sbyte?)));
 
             Assert.IsFalse(ReflectionUtils.IsBasicType(typeof(BookClass)));
 
@@ -77,10 +77,10 @@ namespace XPatchLib.UnitTest
             Assert.IsFalse(ReflectionUtils.IsNullable(typeof(BookClass), out valueType));
             Assert.IsNull(valueType);
 
-            Assert.IsFalse(ReflectionUtils.IsNullable(typeof(String), out valueType));
+            Assert.IsFalse(ReflectionUtils.IsNullable(typeof(string), out valueType));
             Assert.IsNull(valueType);
 
-            Assert.IsTrue(ReflectionUtils.IsNullable(typeof(Nullable<DateTime>), out valueType));
+            Assert.IsTrue(ReflectionUtils.IsNullable(typeof(DateTime?), out valueType));
             Assert.IsNotNull(valueType);
             Assert.AreEqual(typeof(DateTime), valueType);
         }

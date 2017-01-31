@@ -9,15 +9,10 @@ namespace XPatchLib.UnitTest.TestClass
 
         public override bool Equals(object obj)
         {
-            BookClassCollection c = obj as BookClassCollection;
+            var c = obj as BookClassCollection;
             if (c == null)
-            {
                 return false;
-            }
-            else
-            {
-                return c.Items.SequenceEqual(this.Items);
-            }
+            return c.Items.SequenceEqual(Items);
         }
 
         #endregion Public Methods

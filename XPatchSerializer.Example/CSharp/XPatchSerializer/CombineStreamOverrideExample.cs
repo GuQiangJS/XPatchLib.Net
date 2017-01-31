@@ -6,17 +6,11 @@ namespace XPatchSerializerExample
 {
     public class CombineStreamOverrideExample
     {
-        #region Public Methods
-
         public static void Main()
         {
             CombineStreamOverrideExample t = new CombineStreamOverrideExample();
-            t.CombineObject("simple.xml");
+            t.CombineObject("patch.xml");
         }
-
-        #endregion Public Methods
-
-        #region Private Methods
 
         private void CombineObject(string filename)
         {
@@ -24,44 +18,34 @@ namespace XPatchSerializerExample
             XPatchSerializer serializer = new XPatchSerializer(typeof(OrderedItem));
             Stream reader = new FileStream(filename, FileMode.Open);
 
-            OrderedItem oldOrderItem = new OrderedItem()
+            OrderedItem oldOrderItem = new OrderedItem
             {
                 Description = "Small Widget",
                 ItemName = "Widgt",
                 Quantity = 0,
-                UnitPrice = (decimal)4.7
+                UnitPrice = (decimal) 4.7
             };
 
             // 采用覆盖现有 oldOrderItem 合并方式，将增量内容与 oldOrderItem 内容进行合并，将增量内容直接变更至 oldOrderItem
             // newOrderItem 与 oldOrderItem 为同一对象。
-            OrderedItem newOrderItem = (OrderedItem)serializer.Combine(reader, oldOrderItem, true);
+            OrderedItem newOrderItem = (OrderedItem) serializer.Combine(reader, oldOrderItem, true);
 
             Console.Write(
-            newOrderItem.ItemName + "\t" +
-            newOrderItem.Description + "\t" +
-            newOrderItem.UnitPrice + "\t" +
-            newOrderItem.Quantity + "\t");
+                newOrderItem.ItemName + "\t" +
+                newOrderItem.Description + "\t" +
+                newOrderItem.UnitPrice + "\t" +
+                newOrderItem.Quantity + "\t");
 
             Console.Write(oldOrderItem.GetHashCode());
             Console.Write(newOrderItem.GetHashCode());
         }
 
-        #endregion Private Methods
-
-        #region Public Classes
-
         public class OrderedItem
         {
-            #region Public Fields
-
             public string Description;
             public string ItemName;
             public int Quantity;
             public decimal UnitPrice;
-
-            #endregion Public Fields
         }
-
-        #endregion Public Classes
     }
 }

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace XPatchLib.UnitTest.TestClass
 {
     /// <summary>
-    /// 检测复杂对象的差量化时，可以使用重写Equals方法来判断两个对象是否为同意对象。
+    ///     检测复杂对象的差量化时，可以使用重写Equals方法来判断两个对象是否为同意对象。
     /// </summary>
     internal class MultilevelClassOverrideEquals
     {
@@ -12,7 +11,7 @@ namespace XPatchLib.UnitTest.TestClass
 
         public static MultilevelClassOverrideEquals GetSampleInstance()
         {
-            MultilevelClassOverrideEquals obj = new MultilevelClassOverrideEquals();
+            var obj = new MultilevelClassOverrideEquals();
 
             obj.Items = new List<FirstLevelClassOverrideEquals>();
             obj.Items.Add(new FirstLevelClassOverrideEquals());
@@ -30,18 +29,16 @@ namespace XPatchLib.UnitTest.TestClass
 
     internal class FirstLevelClassOverrideEquals
     {
-        public String ID { get; set; }
+        public string ID { get; set; }
 
         public SecondLevelClass Second { get; set; }
 
         public override bool Equals(object obj)
         {
-            FirstLevelClassOverrideEquals c = obj as FirstLevelClassOverrideEquals;
+            var c = obj as FirstLevelClassOverrideEquals;
             if (c == null)
-            {
                 return false;
-            }
-            return c.ID.Equals(this.ID);
+            return c.ID.Equals(ID);
         }
     }
 }

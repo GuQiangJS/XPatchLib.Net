@@ -32,7 +32,7 @@ namespace XPatchLib.UnitTest
         {
             try
             {
-                Guard.ArgumentNotNullOrEmpty(new string[] { }, "TestArgumentName");
+                Guard.ArgumentNotNullOrEmpty(new string[] {}, "TestArgumentName");
             }
             catch (ArgumentException ex)
             {
@@ -76,7 +76,7 @@ namespace XPatchLib.UnitTest
         [TestMethod]
         public void TestFileNotFound()
         {
-            string tempFile = Path.Combine(Path.GetTempPath(), (Guid.NewGuid().ToString() + ".txt"));
+            var tempFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".txt");
             try
             {
                 Guard.FileNotFound(tempFile);

@@ -11,7 +11,7 @@ namespace XPatchLib.UnitTest
         [TestMethod]
         public void BasicDeserializeCtorTest()
         {
-            CombineBasic ser = new CombineBasic(new TypeExtend(typeof(string)));
+            var ser = new CombineBasic(new TypeExtend(typeof(string)));
             ser.Mode = XmlDateTimeSerializationMode.RoundtripKind;
 
             ser = new CombineBasic(new TypeExtend(typeof(string)), XmlDateTimeSerializationMode.Unspecified);

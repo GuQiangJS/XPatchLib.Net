@@ -64,7 +64,7 @@ namespace XPatchLib
                     Type memberType;
                     pElementType.TryGetMemberType(attr.Name.LocalName, out memberType);
 
-                    CombineBasic c = new CombineBasic(TypeExtendContainer.GetTypeExtend(memberType));
+                    CombineBasic c = new CombineBasic(TypeExtendContainer.GetTypeExtend(memberType, pElementType));
                     ele.Value = attr.Value;
 
                     keys.Enqueue(attr.Name.LocalName.GetHashCode());

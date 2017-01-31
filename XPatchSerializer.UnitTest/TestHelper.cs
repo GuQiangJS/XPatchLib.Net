@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
@@ -11,50 +14,99 @@ namespace XPatchLib.UnitTest
 {
     internal static class TestHelper
     {
+        internal const string XmlHeaderContext = @"<?xml version=""1.0"" encoding=""utf-8""?>";
+
+        internal static XmlWriterSettings FlagmentSetting
+        {
+            get
+            {
+                var settings = new XmlWriterSettings();
+                settings.ConformanceLevel = ConformanceLevel.Fragment;
+                settings.Indent = true;
+                settings.Encoding = Encoding.UTF8;
+                settings.OmitXmlDeclaration = false;
+                return settings;
+            }
+        }
+
         #region Internal Methods
 
-        internal static void PrivateAssert(Type pType, object pOriObj, object pChangedObj, string pChangedContext, string pAssert)
+        internal static void PrivateAssert(Type pType, object pOriObj, object pChangedObj, string pChangedContext,
+            string pAssert)
         {
-            PrivateAssert(pType, pOriObj, pChangedObj, pChangedContext, pAssert, XmlDateTimeSerializationMode.RoundtripKind);
+            PrivateAssert(pType, pOriObj, pChangedObj, pChangedContext, pAssert,
+                XmlDateTimeSerializationMode.RoundtripKind);
         }
 
-        internal static void PrivateAssert(Type pType, object pOriObj, object pChangedObj, string pChangedContext, string pAssert, XmlDateTimeSerializationMode pMode)
+        internal static void PrivateAssert(Type pType, object pOriObj, object pChangedObj, string pChangedContext,
+            string pAssert, XmlDateTimeSerializationMode pMode)
         {
-            XElement changedEle = new DivideCore(new TypeExtend(pType), pMode).Divide(ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj);
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = XmlWriter.Create(stream, FlagmentSetting))
+                {
+                    Assert.IsTrue(
+                        new DivideCore(writer, new TypeExtend(pType), pMode).Divide(
+                            ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj));
+                }
+                stream.Position = 0;
+                var changedEle = XElement.Load(stream);
+                stream.Position = 0;
+                using (XmlReader reader = XmlReader.Create(stream))
+                {
+                    var combinedObj = new CombineCore(new TypeExtend(pType), pMode).Combine(reader,pOriObj, ReflectionUtils.GetTypeFriendlyName(pType));
 
-            object combinedObj = new CombineCore(new TypeExtend(pType), pMode).Combine(pOriObj, changedEle);
+                    Trace.Write(pChangedContext);
 
-            Trace.Write(pChangedContext);
+                    Assert.AreEqual(pChangedContext, changedEle.ToString(), pAssert);
 
-            Assert.AreEqual(pChangedContext, changedEle.ToString(), pAssert);
-
-            PrivateAssertObject(pChangedObj, combinedObj, pAssert);
+                    PrivateAssertObject(pChangedObj, combinedObj, pAssert);
+                }
+            }
         }
 
-        internal static void PrivateAssertIEnumerable<T>(Type pType, object pOriObj, object pChangedObj, string pChangedContext, string pAssert)
+        internal static void PrivateAssertIEnumerable<T>(Type pType, object pOriObj, object pChangedObj,
+            string pChangedContext, string pAssert)
         {
-            PrivateAssertIEnumerable<T>(pType, pOriObj, pChangedObj, pChangedContext, pAssert, XmlDateTimeSerializationMode.RoundtripKind);
+            PrivateAssertIEnumerable<T>(pType, pOriObj, pChangedObj, pChangedContext, pAssert,
+                XmlDateTimeSerializationMode.RoundtripKind);
         }
 
-        internal static void PrivateAssertIEnumerable<T>(Type pType, object pOriObj, object pChangedObj, string pChangedContext, string pAssert, XmlDateTimeSerializationMode pMode)
+        internal static void PrivateAssertIEnumerable<T>(Type pType, object pOriObj, object pChangedObj,
+            string pChangedContext, string pAssert, XmlDateTimeSerializationMode pMode)
         {
-            XElement changedEle = new DivideCore(new TypeExtend(pType), pMode).Divide(ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj);
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = XmlWriter.Create(stream, FlagmentSetting))
+                {
+                    Assert.IsTrue(
+                        new DivideCore(writer, new TypeExtend(pType), pMode).Divide(
+                            ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj));
+                }
+                stream.Position = 0;
+                var changedEle = XElement.Load(stream);
 
-            object combinedObj = new CombineCore(new TypeExtend(pType), pMode).Combine(pOriObj, changedEle);
+                stream.Position = 0;
+                using (XmlReader reader = XmlReader.Create(stream))
+                {
+                    var combinedObj = new CombineCore(new TypeExtend(pType), pMode).Combine(reader, pOriObj,
+                        ReflectionUtils.GetTypeFriendlyName(pType));
 
-            Trace.Write(pChangedContext);
+                    Trace.Write(pChangedContext);
 
-            Assert.AreEqual(pChangedContext, changedEle.ToString(), pAssert);
+                    Assert.AreEqual(pChangedContext, changedEle.ToString(), pAssert);
 
-            PrivateAssertIEnumerable<T>(pChangedObj, combinedObj, pType, pAssert);
+                    PrivateAssertIEnumerable<T>(pChangedObj, combinedObj, pType, pAssert);
+                }
+            }
         }
 
         internal static void PrivateAssertIEnumerable<T>(object A, object B, Type pType, string pAssert)
         {
-            IEnumerable aList = A as IEnumerable;
-            IEnumerable bList = B as IEnumerable;
-            IEnumerator aEnumerator = aList.GetEnumerator();
-            IEnumerator bEnumerator = bList.GetEnumerator();
+            var aList = A as IEnumerable;
+            var bList = B as IEnumerable;
+            var aEnumerator = aList.GetEnumerator();
+            var bEnumerator = bList.GetEnumerator();
 
             Assert.IsTrue(aEnumerator.IEnumeratorEquals(bEnumerator));
             Assert.IsTrue(bEnumerator.IEnumeratorEquals(aEnumerator));
@@ -68,7 +120,7 @@ namespace XPatchLib.UnitTest
         internal static string StreamToString(Stream stream)
         {
             stream.Position = 0;
-            using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+            using (var stremReader = new StreamReader(stream, Encoding.UTF8))
             {
                 return stremReader.ReadToEnd();
             }
@@ -76,20 +128,8 @@ namespace XPatchLib.UnitTest
 
         internal static Stream StringToStream(string str)
         {
-            byte[] strBytes = Encoding.UTF8.GetBytes(str);
+            var strBytes = Encoding.UTF8.GetBytes(str);
             return new MemoryStream(strBytes);
-        }
-
-        internal static string XElementToString(XElement pElement)
-        {
-            if (pElement == null)
-            {
-                return string.Empty;
-            }
-            else
-            {
-                return pElement.ToString();
-            }
         }
 
         private static bool IEnumeratorEquals(this IEnumerator aEnumerator, IEnumerator bEnumerator)
@@ -97,20 +137,16 @@ namespace XPatchLib.UnitTest
             aEnumerator.Reset();
             while (aEnumerator.MoveNext())
             {
-                bool found = false;
+                var found = false;
                 bEnumerator.Reset();
                 while (bEnumerator.MoveNext())
-                {
                     if (aEnumerator.Current.Equals(bEnumerator.Current))
                     {
                         found = true;
                         break;
                     }
-                }
                 if (!found)
-                {
                     return false;
-                }
             }
             return true;
         }

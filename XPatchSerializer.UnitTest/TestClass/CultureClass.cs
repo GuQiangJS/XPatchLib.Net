@@ -4,6 +4,25 @@ namespace XPatchLib.UnitTest.TestClass
 {
     internal class CultureClass
     {
+        #region Public Methods
+
+        public static CultureClass GetSampleInstance()
+        {
+            return new CultureClass
+            {
+                Date1 = new DateTime(2010, 10, 11, 18, 20, 30),
+                Date2 = new DateTime(2011, 9, 20, 4, 10, 30),
+                Dec1 = 192389183919123.18232131m,
+                Dec2 = 19232389.18391912318232131m,
+                Number1 = 123123.1233,
+                Number2 = 32243.67676,
+                Number3 = 21313.123123,
+                Numbers = new[] {23213.2132, 123.213, 123.23e32}
+            };
+        }
+
+        #endregion Public Methods
+
         #region Public Properties
 
         public DateTime Date1 { get; set; }
@@ -18,24 +37,5 @@ namespace XPatchLib.UnitTest.TestClass
         public double[] Numbers { get; set; }
 
         #endregion Public Properties
-
-        #region Public Methods
-
-        public static CultureClass GetSampleInstance()
-        {
-            return new CultureClass
-            {
-                Date1 = new DateTime(2010, 10, 11, 18, 20, 30),
-                Date2 = new DateTime(2011, 9, 20, 4, 10, 30),
-                Dec1 = 192389183919123.18232131m,
-                Dec2 = 19232389.18391912318232131m,
-                Number1 = 123123.1233,
-                Number2 = 32243.67676,
-                Number3 = 21313.123123,
-                Numbers = new[] { 23213.2132, 123.213, 123.23e32 }
-            };
-        }
-
-        #endregion Public Methods
     }
 }

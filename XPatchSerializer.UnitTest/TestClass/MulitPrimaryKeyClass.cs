@@ -5,17 +5,13 @@
     {
         #region Public Constructors
 
-        public MulitPrimaryKeyClass()
-        {
-        }
-
         public override bool Equals(object obj)
         {
-            MulitPrimaryKeyClass c = obj as MulitPrimaryKeyClass;
+            var c = obj as MulitPrimaryKeyClass;
             if (c == null)
                 return false;
-            return this.Id.Equals(c.Id)
-                && this.Name.Equals(c.Name);
+            return Id.Equals(c.Id)
+                   && Name.Equals(c.Name);
         }
 
         #endregion Public Constructors

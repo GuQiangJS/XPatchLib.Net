@@ -13,10 +13,18 @@ namespace XPatchLib.UnitTest.PetShopModelTests
         [Description("测试Collection类型的复杂类型对象增加的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoArrayAddDivideAndCombine()
         {
-            OrderInfo[] oriObjs = new OrderInfo[] { PetShopModelTestHelper.CreateNewOriOrderInfo(1), PetShopModelTestHelper.CreateNewOriOrderInfo(2) };
-            OrderInfo[] changedObjs = new OrderInfo[] { PetShopModelTestHelper.CreateNewOriOrderInfo(1), PetShopModelTestHelper.CreateNewOriOrderInfo(2), PetShopModelTestHelper.CreateNewOriOrderInfo(3) };
+            OrderInfo[] oriObjs =
+            {
+                PetShopModelTestHelper.CreateNewOriOrderInfo(1),
+                PetShopModelTestHelper.CreateNewOriOrderInfo(2)
+            };
+            OrderInfo[] changedObjs =
+            {
+                PetShopModelTestHelper.CreateNewOriOrderInfo(1),
+                PetShopModelTestHelper.CreateNewOriOrderInfo(2), PetShopModelTestHelper.CreateNewOriOrderInfo(3)
+            };
 
-            string changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(OrderInfo[])) + @">
+            var changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(OrderInfo[])) + @">
   <OrderInfo Action=""Add"">
     <BillingAddress>
       <Address1>" + changedObjs[2].BillingAddress.Address1 + @"</Address1>
@@ -38,7 +46,6 @@ namespace XPatchLib.UnitTest.PetShopModelTests
       <CardType>" + changedObjs[2].CreditCard.CardType + @"</CardType>
     </CreditCard>
     <Date>" + XmlConvert.ToString(changedObjs[2].Date, XmlDateTimeSerializationMode.RoundtripKind) + @"</Date>
-    <LineItems />
     <OrderId>" + changedObjs[2].OrderId + @"</OrderId>
     <OrderTotal>" + changedObjs[2].OrderTotal + @"</OrderTotal>
     <UserId>" + changedObjs[2].UserId + @"</UserId>
@@ -52,10 +59,18 @@ namespace XPatchLib.UnitTest.PetShopModelTests
         [Description("测试Collection类型的复杂类型对象插入的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoArrayInsertDivideAndCombine()
         {
-            OrderInfo[] oriObjs = new OrderInfo[] { PetShopModelTestHelper.CreateNewOriOrderInfo(1), PetShopModelTestHelper.CreateNewOriOrderInfo(2) };
-            OrderInfo[] changedObjs = new OrderInfo[] { PetShopModelTestHelper.CreateNewOriOrderInfo(1), PetShopModelTestHelper.CreateNewOriOrderInfo(3), PetShopModelTestHelper.CreateNewOriOrderInfo(2) };
+            OrderInfo[] oriObjs =
+            {
+                PetShopModelTestHelper.CreateNewOriOrderInfo(1),
+                PetShopModelTestHelper.CreateNewOriOrderInfo(2)
+            };
+            OrderInfo[] changedObjs =
+            {
+                PetShopModelTestHelper.CreateNewOriOrderInfo(1),
+                PetShopModelTestHelper.CreateNewOriOrderInfo(3), PetShopModelTestHelper.CreateNewOriOrderInfo(2)
+            };
 
-            string changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(OrderInfo[])) + @">
+            var changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(OrderInfo[])) + @">
   <OrderInfo Action=""Add"">
     <BillingAddress>
       <Address1>" + changedObjs[1].BillingAddress.Address1 + @"</Address1>
@@ -77,7 +92,6 @@ namespace XPatchLib.UnitTest.PetShopModelTests
       <CardType>" + changedObjs[1].CreditCard.CardType + @"</CardType>
     </CreditCard>
     <Date>" + XmlConvert.ToString(changedObjs[1].Date, XmlDateTimeSerializationMode.RoundtripKind) + @"</Date>
-    <LineItems />
     <OrderId>" + changedObjs[1].OrderId + @"</OrderId>
     <OrderTotal>" + changedObjs[1].OrderTotal + @"</OrderTotal>
     <UserId>" + changedObjs[1].UserId + @"</UserId>
@@ -91,10 +105,19 @@ namespace XPatchLib.UnitTest.PetShopModelTests
         [Description("测试Collection类型的复杂类型对象删除的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoArrayRemoveDivideAndCombine()
         {
-            OrderInfo[] oriObjs = new OrderInfo[] { PetShopModelTestHelper.CreateNewOriOrderInfo(1), PetShopModelTestHelper.CreateNewOriOrderInfo(2), PetShopModelTestHelper.CreateNewOriOrderInfo(3), PetShopModelTestHelper.CreateNewOriOrderInfo(4), PetShopModelTestHelper.CreateNewOriOrderInfo(5) };
-            OrderInfo[] changedObjs = new OrderInfo[] { PetShopModelTestHelper.CreateNewOriOrderInfo(1), PetShopModelTestHelper.CreateNewOriOrderInfo(2) };
+            OrderInfo[] oriObjs =
+            {
+                PetShopModelTestHelper.CreateNewOriOrderInfo(1),
+                PetShopModelTestHelper.CreateNewOriOrderInfo(2), PetShopModelTestHelper.CreateNewOriOrderInfo(3),
+                PetShopModelTestHelper.CreateNewOriOrderInfo(4), PetShopModelTestHelper.CreateNewOriOrderInfo(5)
+            };
+            OrderInfo[] changedObjs =
+            {
+                PetShopModelTestHelper.CreateNewOriOrderInfo(1),
+                PetShopModelTestHelper.CreateNewOriOrderInfo(2)
+            };
 
-            string changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(OrderInfo[])) + @">
+            var changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(OrderInfo[])) + @">
   <OrderInfo Action=""Remove"" OrderId=""3"" />
   <OrderInfo Action=""Remove"" OrderId=""4"" />
   <OrderInfo Action=""Remove"" OrderId=""5"" />
