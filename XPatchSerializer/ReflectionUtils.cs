@@ -30,9 +30,8 @@ namespace XPatchLib
         /// </param>
         /// <returns>
         /// </returns>
-        internal static IOrderedEnumerable<MemberWrapper> GetFieldsToBeSerialized(Type pObjType)
+        internal static MemberWrapper[] GetFieldsToBeSerialized(Type pObjType)
         {
-            IOrderedEnumerable<MemberWrapper> result;
             Queue<MemberWrapper> r = new Queue<MemberWrapper>();
             foreach (MemberInfo memberInfo in pObjType.GetMembers(BindingFlags.Instance | BindingFlags.Public))
                 if (memberInfo.MemberType == MemberTypes.Property || memberInfo.MemberType == MemberTypes.Field)
@@ -41,8 +40,7 @@ namespace XPatchLib
                     if (wrapper.XmlIgnore == null && wrapper.HasPublicGetter && wrapper.HasPublicSetter)
                         r.Enqueue(wrapper);
                 }
-            result = r.OrderBy(x => x.Name);
-            return result;
+            return r.OrderBy(x => x.Name).ToArray();
         }
 
         /// <summary>
@@ -108,14 +106,6 @@ namespace XPatchLib
             }
 
             return result;
-        }
-
-        internal static Boolean InvokeObjectEquals(object target, object[] args)
-        {
-            return
-                (Boolean)
-                Type.GetType("System.Object")
-                    .InvokeMember("Equals", BindingFlags.InvokeMethod, null, target, args, CultureInfo.InvariantCulture);
         }
 
         internal static bool IsArray(Type pType)
@@ -272,35 +262,6 @@ namespace XPatchLib
                 return true;
             return false;
         }
-
-        //internal static Boolean ObjectEquals<T>(T pOriObj, T pRevObj)
-        //{
-        //    object[] args = new object[] { pOriObj, pRevObj };
-        //    object result = null;
-
-        //    MethodInfo method = typeof(T).GetMethod("Equals", BindingFlags.Static | BindingFlags.Public);
-        //    if (method != null)
-        //    {
-        //        result = method.Invoke(pOriObj, new object[] { pOriObj, pRevObj });
-        //    }
-        //    else
-        //    {
-        //        try
-        //        {
-        //            result = typeof(T).InvokeMember("Equals", BindingFlags.InvokeMethod, null, result, args, CultureInfo.InvariantCulture);
-        //        }
-        //        catch (MissingMethodException)
-        //        {
-        //            result = InvokeObjectEquals(result, args);
-        //        }
-        //        catch (AmbiguousMatchException)
-        //        {
-        //            result = InvokeObjectEquals(result, args);
-        //        }
-        //    }
-
-        //    return (Boolean)result;
-        //}
 
         internal static void RegisterTypes(IDictionary<Type, string[]> pTypes)
         {

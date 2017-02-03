@@ -40,6 +40,23 @@ namespace XPatchLib
     /// </remarks>
     internal static class ActionHelper
     {
+        internal static String ToString(Action pAction)
+        {
+            switch(pAction)
+            {
+                case Action.Edit:
+                    return "Edit";
+                case Action.Add:
+                    return "Add";
+                case Action.Remove:
+                    return "Remove";
+                case Action.SetNull:
+                    return "SetNull";
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
         /// <summary>
         ///     将一个枚举常数的名称的字符串表示转换成等效的枚举对象。用于指示转换是否成功的返回值。
         /// </summary>

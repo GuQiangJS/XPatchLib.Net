@@ -22,7 +22,7 @@ namespace XPatchLib
         {
             if (pAction != Action.Edit)
             {
-                pWriter.WriteAttributeString(ConstValue.ACTION_NAME, pAction.ToString());
+                pWriter.WriteAttributeString(ConstValue.ACTION_NAME, ActionHelper.ToString(pAction));
             }
         }
     }

@@ -30,7 +30,7 @@ namespace XPatchLib
         //public Object[] KeyValues { get; private set; }
         public int[] ValuesHash { get; private set; }
 
-        public static IEnumerable<KeyValuesObject> Translate(IEnumerable pValue)
+        public static KeyValuesObject[] Translate(IEnumerable pValue)
         {
             if (pValue != null)
             {
@@ -40,7 +40,7 @@ namespace XPatchLib
                 if (enumerator != null)
                     while (enumerator.MoveNext())
                         result.Enqueue(new KeyValuesObject(enumerator.Current));
-                return result;
+                return result.ToArray();
             }
             return null;
         }
@@ -96,7 +96,7 @@ namespace XPatchLib
                         for (int i = 0; i < primaryKeys.Length; i++)
                         {
                             KeysHash[i] = primaryKeys[i].GetHashCode();
-                            ValuesHash[i] = typeExtend.GetMemberValue(pValue, primaryKeys[i]).ToString().GetHashCode();
+                            ValuesHash[i] = typeExtend.GetMemberValue(pValue, primaryKeys[i]).GetHashCode();
                         }
                     }
                     else

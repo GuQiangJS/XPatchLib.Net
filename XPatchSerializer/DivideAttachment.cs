@@ -40,7 +40,7 @@ namespace XPatchLib
         public Action CurrentAction { get; set; }
     }
 
-    internal struct ParentObject
+    internal class ParentObject
     {
         public ParentObject(String pName, Object pCurrentObj, TypeExtend pType)
         {
@@ -57,12 +57,8 @@ namespace XPatchLib
 
         public override bool Equals(object obj)
         {
-            if (obj is ParentObject)
-            {
-                ParentObject parentObject = (ParentObject) obj;
-                return string.Equals(parentObject.Name, Name) && Equals(parentObject.Type, Type);
-            }
-            return false;
+            ParentObject parentObject = (ParentObject)obj;
+            return parentObject!=null && string.Equals(parentObject.Name, Name) && Equals(parentObject.Type, Type);
         }
 
         public Object CurrentObj { get; set; }
@@ -70,12 +66,12 @@ namespace XPatchLib
         /// <summary>
         ///     获取父级对象类型。
         /// </summary>
-        public TypeExtend Type { get; }
+        public TypeExtend Type { get; set; }
 
         /// <summary>
         ///     获取父级元素名称。
         /// </summary>
-        public String Name { get; }
+        public String Name { get; set; }
 
         public Action Action { get; set; }
     }

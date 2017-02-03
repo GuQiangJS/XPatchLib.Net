@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Xml;
 
 namespace XPatchLib
@@ -67,7 +66,7 @@ namespace XPatchLib
         /// <remarks>执行此操作会移动到移动到包含当前属性节点的元素。<see cref="XmlReader.MoveToElement()" /></remarks>
         protected virtual CombineAttribute AnlysisAttributes(XmlReader pReader, string pName)
         {
-            CombineAttribute result = new CombineAttribute(Action.Edit);
+            CombineAttribute result = new CombineAttribute(Action.Edit, pReader.AttributeCount);
             if (pReader.NodeType == XmlNodeType.Element &&
                 pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) && pReader.HasAttributes)
             {
@@ -85,16 +84,33 @@ namespace XPatchLib
                         continue;
                     }
 
-                    result.KeysValuePairs.Add(pReader.Name, pReader.Value);
+                    result.KeysValuePairs.Add(pReader.Name, AnlysisKeyAttributeValueObject(pReader.Name, pReader.Value));
                 }
                 pReader.MoveToElement();
             }
             return result;
         }
 
+        protected virtual Object AnlysisKeyAttributeValueObject(string pKeyName,string pKeyValue)
+        {
+            MemberWrapper member = FindMember(pKeyName);
+            if(member!=null)
+            {
+                return CombineBasic.CombineAction(System.Type.GetTypeCode(member.Type), member.Type == typeof(Guid), Mode, pKeyValue);
+            }
+            return pKeyValue;
+        }
+
         protected virtual MemberWrapper FindMember(string pMemberName)
         {
-            return Type.FieldsToBeSerialized.FirstOrDefault(x => x.Name.Equals(pMemberName));
+            for (int i = 0; i < Type.FieldsToBeSerialized.Length;i++ )
+            {
+                if(Type.FieldsToBeSerialized[i].Name.Equals(pMemberName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Type.FieldsToBeSerialized[i];
+                }
+            }
+            return null;
         }
 
         protected virtual bool TryFindMember(string pMemberName, out MemberWrapper pMember)
@@ -146,6 +162,7 @@ namespace XPatchLib
         {
             Type = pType;
             Mode = pMode;
+            Attributes = new CombineAttribute(Action.Edit, 0);
         }
 
         #endregion Internal Constructors
@@ -162,7 +179,7 @@ namespace XPatchLib
         /// </summary>
         internal TypeExtend Type { get; set; }
 
-        protected CombineAttribute Attributes { get; private set; } = new CombineAttribute(Action.Edit);
+        protected CombineAttribute Attributes { get; private set; }
 
         #endregion Internal Properties
     }

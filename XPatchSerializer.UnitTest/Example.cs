@@ -9,7 +9,6 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static System.String;
 
 namespace XPatchLib.UnitTest
 {
@@ -532,7 +531,7 @@ namespace XPatchLib.UnitTest
             var serializer = new XPatchSerializer(typeof(CreditCard));
 
             string context;
-            context = Empty;
+            context = String.Empty;
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, null, card1);
@@ -548,7 +547,7 @@ namespace XPatchLib.UnitTest
 
             serializer = new XPatchSerializer(typeof(CreditCard), XmlDateTimeSerializationMode.Local);
 
-            context = Empty;
+            context = String.Empty;
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, null, card1);
@@ -564,7 +563,7 @@ namespace XPatchLib.UnitTest
 
             serializer = new XPatchSerializer(typeof(CreditCard), XmlDateTimeSerializationMode.Unspecified);
 
-            context = Empty;
+            context = String.Empty;
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, null, card1);
@@ -580,7 +579,7 @@ namespace XPatchLib.UnitTest
 
             serializer = new XPatchSerializer(typeof(CreditCard), XmlDateTimeSerializationMode.Utc);
 
-            context = Empty;
+            context = String.Empty;
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, null, card1);
@@ -662,7 +661,7 @@ namespace XPatchLib.UnitTest
 
             var serializer = new XPatchSerializer(typeof(CreditCard));
 
-            var context = Empty;
+            var context = String.Empty;
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, card1, card2);
@@ -752,7 +751,7 @@ namespace XPatchLib.UnitTest
 
             var serializer = new XPatchSerializer(typeof(Warehouse));
 
-            var context = Empty;
+            var context = String.Empty;
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, w1, w2);
@@ -790,7 +789,7 @@ namespace XPatchLib.UnitTest
   <Name>Company B</Name>
 </Warehouse>";
 
-            var context = Empty;
+            var context = String.Empty;
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, w1, w2);
@@ -914,7 +913,7 @@ namespace XPatchLib.UnitTest
 
             serializer = new XPatchSerializer(typeof(CreditCard), true);
 
-            context = Empty;
+            context = String.Empty;
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, null, card1);

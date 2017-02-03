@@ -60,7 +60,7 @@ namespace XPatchLib
             IsICollection = ReflectionUtils.IsICollection(pType);
 
             IsIEnumerable = ReflectionUtils.IsIEnumerable(pType);
-            FieldsToBeSerialized = ReflectionUtils.GetFieldsToBeSerialized(pType).ToArray();
+            FieldsToBeSerialized = ReflectionUtils.GetFieldsToBeSerialized(pType);
             DefaultValue = ReflectionUtils.GetDefaultValue(pType);
             IsArray = ReflectionUtils.IsArray(pType);
             TypeCode = Type.GetTypeCode(pType);
@@ -127,14 +127,14 @@ namespace XPatchLib
         /// <summary>
         ///     获取该类型下可以被序列化的字段。
         /// </summary>
-        internal MemberWrapper[] FieldsToBeSerialized { get; }
+        internal MemberWrapper[] FieldsToBeSerialized { get; private set; }
 
-        internal Boolean IsArray { get; }
+        internal Boolean IsArray { get; private set; }
 
         /// <summary>
         ///     获取是否为基础类型。
         /// </summary>
-        internal Boolean IsBasicType { get; }
+        internal Boolean IsBasicType { get; private set; }
 
         internal Boolean IsGenericType { get; private set; }
 
@@ -142,11 +142,11 @@ namespace XPatchLib
 
         internal Boolean IsICollection { get; private set; }
 
-        internal Boolean IsIDictionary { get; }
+        internal Boolean IsIDictionary { get; private set; }
 
         internal Boolean IsIEnumerable { get; private set; }
 
-        internal Boolean IsKeyValuePair { get; }
+        internal Boolean IsKeyValuePair { get; private set; }
 
         /// <summary>
         ///     只有当是字典类型或KeyValue类型时才会有值
@@ -156,7 +156,7 @@ namespace XPatchLib
         /// <summary>
         ///     获取原始类型定义。
         /// </summary>
-        internal Type OriType { get; }
+        internal Type OriType { get; private set; }
 
         internal PrimaryKeyAttribute PrimaryKeyAttr { get; private set; }
 
@@ -169,11 +169,11 @@ namespace XPatchLib
         /// </summary>
         internal Type ValueArgumentType { get; private set; }
 
-        private Dictionary<String, Func<Object, Object>> GetValueFuncs { get; }
+        private Dictionary<String, Func<Object, Object>> GetValueFuncs;
 
-        private Dictionary<String, Action<Object, Object>> SetValueFuncs { get; }
+        private Dictionary<String, Action<Object, Object>> SetValueFuncs;
 
-        private Func<Object> CreateInstanceFuncs { get; }
+        private Func<Object> CreateInstanceFuncs;
 
         /// <summary>
         ///     检测类型上的PrimaryKeyAttribute特性是否符合要求。
@@ -217,8 +217,7 @@ namespace XPatchLib
             if (IsBasicType)
             {
                 if (OriType.IsValueType)
-                    return OriType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0],
-                        CultureInfo.InvariantCulture);
+                    return CreateInstanceFuncs();
                 if (OriType == typeof(string))
                     return string.Empty;
             }
@@ -329,9 +328,16 @@ namespace XPatchLib
         {
             pProInfo = null;
             pIsProperty = false;
-            MemberWrapper member =
-                FieldsToBeSerialized.FirstOrDefault(
-                    x => x.Name.Equals(pPropertyName, StringComparison.OrdinalIgnoreCase));
+            MemberWrapper member = null;
+
+            for (int i = 0; i < FieldsToBeSerialized.Length; i++)
+            {
+                if (FieldsToBeSerialized[i].Name.Equals(pPropertyName, StringComparison.OrdinalIgnoreCase))
+                {
+                    member = FieldsToBeSerialized[i];
+                    break;
+                }
+            }
 
             if (member != null)
             {

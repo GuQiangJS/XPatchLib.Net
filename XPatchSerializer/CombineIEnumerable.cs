@@ -3,9 +3,7 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Xml;
 
@@ -26,13 +24,12 @@ namespace XPatchLib
         /// <returns></returns>
         protected override object CombineAction(XmlReader pReader, object pOriObject, string pName)
         {
+            var kvs = KeyValuesObject.Translate(pOriObject as IEnumerable);
             while (!pReader.EOF)
             {
                 if (pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) &&
                     pReader.NodeType == XmlNodeType.EndElement)
                     break;
-
-                var kvs = KeyValuesObject.Translate(pOriObject as IEnumerable);
 
                 pReader.MoveToElement();
 
@@ -107,9 +104,9 @@ namespace XPatchLib
         /// <summary>
         ///     获取集合中的元素类型。
         /// </summary>
-        protected TypeExtend GenericArgumentType { get; }
+        protected TypeExtend GenericArgumentType { get; private set; }
 
-        protected PrimaryKeyAttribute GenericArgumentTypePrimaryKeyAttribute { get; }
+        protected PrimaryKeyAttribute GenericArgumentTypePrimaryKeyAttribute { get; private set; }
 
         #endregion Protected Properties
 
@@ -150,7 +147,7 @@ namespace XPatchLib
             else if (listType.GetMethod(ConstValue.OPERATOR_ADD) != null)
             {
                 //非数组类型时，在当前集合类型上调用Add方法
-                listType.InvokeMember(ConstValue.OPERATOR_ADD, BindingFlags.InvokeMethod, null, pOriObject, new[] {obj},
+                Type.InvokeMember(ConstValue.OPERATOR_ADD, BindingFlags.InvokeMethod, null, pOriObject, new[] { obj },
                     CultureInfo.InvariantCulture);
             }
             else
@@ -167,7 +164,7 @@ namespace XPatchLib
         /// <param name="pOriObject">待合并数据的原始对象。</param>
         /// <param name="pOriEnumerable">当前正在处理的集合对象。</param>
         /// <param name="pName">当前正在解析的节点名称。</param>
-        private void CombineCore(XmlReader pReader, ref object pOriObject, IEnumerable<KeyValuesObject> pOriEnumerable,
+        private void CombineCore(XmlReader pReader, ref object pOriObject, KeyValuesObject[] pOriEnumerable,
             string pName)
         {
             var attrs = AnlysisAttributes(pReader, pName);
@@ -188,6 +185,18 @@ namespace XPatchLib
             }
         }
 
+        protected override MemberWrapper FindMember(string pMemberName)
+        {
+            for (int i = 0; i < GenericArgumentType.FieldsToBeSerialized.Length; i++)
+            {
+                if (GenericArgumentType.FieldsToBeSerialized[i].Name.Equals(pMemberName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return GenericArgumentType.FieldsToBeSerialized[i];
+                }
+            }
+            return null;
+        }
+
         /// <summary>
         ///     合并编辑类型动作的增量内容。
         /// </summary>
@@ -197,7 +206,7 @@ namespace XPatchLib
         /// <param name="pOriEnumerable">当前正在处理的集合对象。</param>
         /// <param name="pName">当前正在解析的节点名称。</param>
         private void CombineEditItem(XmlReader pReader, CombineAttribute pAttribute, ref object pOriObject,
-            IEnumerable<KeyValuesObject> pOriEnumerable, string pName)
+            KeyValuesObject[] pOriEnumerable, string pName)
         {
             //当前编辑的对象在原始集合对象中以零开始的索引。
             int index = -1;
@@ -244,13 +253,13 @@ namespace XPatchLib
                 else if (listType.GetMethod(ConstValue.OPERATOR_SET) != null)
                 {
                     //当当前集合不是数组类型时
-                    var obj = listType.InvokeMember(ConstValue.OPERATOR_GET, BindingFlags.InvokeMethod, null, pOriObject,
+                    var obj = Type.InvokeMember(ConstValue.OPERATOR_GET, BindingFlags.InvokeMethod, null, pOriObject,
                         new object[] {pIndex}, CultureInfo.InvariantCulture);
 
                     //创建集合元素实例,根据增量内容内容向集合元素实例赋值。
                     obj = new CombineCore(GenericArgumentType).Combine(pReader, obj, pName);
 
-                    listType.InvokeMember(ConstValue.OPERATOR_SET, BindingFlags.InvokeMethod, null, pOriObject,
+                    Type.InvokeMember(ConstValue.OPERATOR_SET, BindingFlags.InvokeMethod, null, pOriObject,
                         new[] {pIndex, obj}, CultureInfo.InvariantCulture);
                 }
                 else
@@ -274,7 +283,7 @@ namespace XPatchLib
         /// <param name="pOriObject">待合并数据的原始对象。</param>
         /// <param name="pOriEnumerable">当前正在处理的集合对象。</param>
         private void CombineRemovedItem(XmlReader pReader, CombineAttribute pAttribute, ref object pOriObject,
-            IEnumerable<KeyValuesObject> pOriEnumerable)
+            KeyValuesObject[] pOriEnumerable)
         {
             //在集合中找到的待删除的元素实例。
             object foundItem = null;
@@ -286,12 +295,26 @@ namespace XPatchLib
                 {
                     var value = pReader.ReadString();
                     //当时基础类型时，按照基础类型获取所有的方式查找索引。
-                    foundItem = pOriEnumerable.FirstOrDefault(x => x.Equals(value)).OriValue;
+                    for (int i = 0; i < pOriEnumerable.Length;i++ )
+                    {
+                        if(pOriEnumerable[i].Equals(value))
+                        {
+                            foundItem = pOriEnumerable[i].OriValue;
+                            break;
+                        }
+                    }
                 }
                 else
                 {
-                    var keyValuesObject =
-                        pOriEnumerable.FirstOrDefault(x => x.EqualsByKeys(pAttribute.Keys, pAttribute.Values));
+                    KeyValuesObject keyValuesObject = null;
+                    for (int i = 0; i < pOriEnumerable.Length; i++)
+                    {
+                        if (pOriEnumerable[i].EqualsByKeys(pAttribute.Keys, pAttribute.Values))
+                        {
+                            keyValuesObject = pOriEnumerable[i];
+                            break;
+                        }
+                    }
                     if (keyValuesObject != null)
                         foundItem = keyValuesObject.OriValue;
                 }
@@ -336,7 +359,7 @@ namespace XPatchLib
                 else if (listType.GetMethod(ConstValue.OPERATOR_REMOVE) != null)
                 {
                     //非数组类型时，在当前集合类型上调用Remove方法
-                    listType.InvokeMember(ConstValue.OPERATOR_REMOVE, BindingFlags.InvokeMethod, null, pOriObject,
+                    Type.InvokeMember(ConstValue.OPERATOR_REMOVE, BindingFlags.InvokeMethod, null, pOriObject,
                         new[] {pFoundItem}, CultureInfo.InvariantCulture);
                 }
                 else

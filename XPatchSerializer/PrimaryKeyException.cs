@@ -99,12 +99,12 @@ namespace XPatchLib
         /// <summary>
         ///     获取有问题的主键名称。
         /// </summary>
-        public string PrimaryKeyName { get; }
+        public string PrimaryKeyName { get; set; }
 
         /// <summary>
         ///     获取有问题的类型。
         /// </summary>
-        public Type SourceType { get; }
+        public Type SourceType { get; set; }
 
         /// <summary>
         ///     用关于异常的信息设置 <see cref="System.Runtime.Serialization.SerializationInfo" /> 。

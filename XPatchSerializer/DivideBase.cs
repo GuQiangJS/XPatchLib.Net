@@ -125,6 +125,18 @@ namespace XPatchLib
         protected abstract bool DivideAction(string pName, object pOriObject, object pRevObject,
             DivideAttachment pAttach = null);
 
+        protected static KeyValuesObject Find(KeyValuesObject[] pArray, KeyValuesObject pItem)
+        {
+            for (int i = 0; i < pArray.Length; i++)
+            {
+                if (pArray[i].Equals(pItem))
+                {
+                    return pArray[i];
+                }
+            }
+            return null;
+        }
+
         #region Protected Constructors
 
         /// <summary>

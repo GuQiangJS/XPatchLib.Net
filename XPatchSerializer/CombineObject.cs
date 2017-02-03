@@ -36,9 +36,7 @@ namespace XPatchLib
                     MemberWrapper member;
                     if (TryFindMember(variable.Key, out member))
                     {
-                        Type.SetMemberValue(pOriObject, variable.Key,
-                            CombineBasic.CombineAction(System.Type.GetTypeCode(member.Type),
-                                member.Type == typeof(Guid), Mode, variable.Value));
+                        Type.SetMemberValue(pOriObject, variable.Key, variable.Value);
 #if DEBUG
                         Debug.WriteLine("{2} SetMemberValue: {0}={1}", variable.Key, variable.Value,
                             Type.TypeFriendlyName);

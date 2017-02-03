@@ -21,7 +21,7 @@ namespace XPatchLib
         /// <summary>
         ///     集合类型中元素的类型。
         /// </summary>
-        protected TypeExtend GenericArgumentType { get; }
+        protected TypeExtend GenericArgumentType { get; private set; }
 
         #endregion Protected Properties
 
@@ -43,8 +43,8 @@ namespace XPatchLib
             IEnumerable pOriItems = pOriObject as IEnumerable;
             IEnumerable pRevItems = pRevObject as IEnumerable;
 
-            IEnumerable<KeyValuesObject> oriKey = Translate(pOriItems);
-            IEnumerable<KeyValuesObject> revKey = Translate(pRevItems);
+            KeyValuesObject[] oriKey = Translate(pOriItems);
+            KeyValuesObject[] revKey = Translate(pRevItems);
             if (pAttach == null)
                 pAttach = new DivideAttachment();
             //将当前节点加入附件中，如果遇到子节点被写入前，会首先根据队列先进先出写入附件中的节点的开始标记
@@ -173,7 +173,7 @@ namespace XPatchLib
 
         #region Private Methods
 
-        private static IEnumerable<KeyValuesObject> Translate(IEnumerable pValue)
+        private static KeyValuesObject[] Translate(IEnumerable pValue)
         {
             if (pValue != null)
             {
@@ -188,7 +188,7 @@ namespace XPatchLib
 
                         result.Enqueue(new KeyValuesObject(enumerator.Current, key));
                     }
-                return result;
+                return result.ToArray();
             }
             return null;
         }
@@ -202,8 +202,8 @@ namespace XPatchLib
         /// <returns>
         ///     当找到一个或多个被添加的元素时，返回 true 否则 返回 false 。
         /// </returns>
-        private static Boolean TryGetAddedItems(IEnumerable<KeyValuesObject> pOriItems,
-            IEnumerable<KeyValuesObject> pRevItems, out IEnumerable<KeyValuesObject> pFoundItems)
+        private static Boolean TryGetAddedItems(KeyValuesObject[] pOriItems,
+            KeyValuesObject[] pRevItems, out IEnumerable<KeyValuesObject> pFoundItems)
         {
             //查找存在于更新后的集合中但是不存在于原始集合中的元素。
             if (pOriItems == null)
@@ -228,8 +228,8 @@ namespace XPatchLib
         /// <remarks>
         ///     返回的集合是即存在于原始集合又存在于更新后集合的对象。
         /// </remarks>
-        private static Boolean TryGetEditedItems(IEnumerable<KeyValuesObject> pOriItems,
-            IEnumerable<KeyValuesObject> pRevItems, out IEnumerable<KeyValuesObject> pFoundItems)
+        private static Boolean TryGetEditedItems(KeyValuesObject[] pOriItems,
+            KeyValuesObject[] pRevItems, out IEnumerable<KeyValuesObject> pFoundItems)
         {
             pFoundItems = null;
             if (pOriItems != null && pRevItems != null)
@@ -247,8 +247,8 @@ namespace XPatchLib
         /// <returns>
         ///     当找到一个或多个被删除的元素时，返回 true 否则 返回 false 。
         /// </returns>
-        private static Boolean TryGetRemovedItems(IEnumerable<KeyValuesObject> pOriItems,
-            IEnumerable<KeyValuesObject> pRevItems, out IEnumerable<KeyValuesObject> pFoundItems)
+        private static Boolean TryGetRemovedItems(KeyValuesObject[] pOriItems,
+            KeyValuesObject[] pRevItems, out IEnumerable<KeyValuesObject> pFoundItems)
         {
             //查找存在于原始集合中但是不存在于更新后的集合中的元素。
             //pFoundItems = pRevItems.Except(pOriItems, GenericArgumentType, GenericArgumentPrimaryKeys);
@@ -268,7 +268,7 @@ namespace XPatchLib
         /// <param name="pRevItems">更新后的集合。</param>
         /// <param name="pAction">操作方式。</param>
         /// <param name="pAttach">The p attach.</param>
-        private Boolean DivideItems(IEnumerable<KeyValuesObject> pOriItems, IEnumerable<KeyValuesObject> pRevItems,
+        private Boolean DivideItems(KeyValuesObject[] pOriItems, KeyValuesObject[] pRevItems,
             Action pAction, DivideAttachment pAttach)
         {
             IEnumerable<KeyValuesObject> pFoundItems = null;
@@ -309,7 +309,7 @@ namespace XPatchLib
                     {
                         //当前元素是新增操作时
                         //再次调用DivideCore.Divide的方法，传入空的原始对象，生成新增的增量节点。
-                        KeyValuesObject obj = pRevItems.FirstOrDefault(x => x.Equals(items.Current));
+                        KeyValuesObject obj = Find(pRevItems, items.Current);
                         bool itemResult = ser.Divide(GenericArgumentType.TypeFriendlyName, null, obj.OriValue,
                             pAttach);
                         if (!result)
@@ -319,7 +319,7 @@ namespace XPatchLib
                     {
                         //当前元素是删除操作时
                         //再次调用DivideCore.Divide的方法，传入空的更新后对象，生成删除的增量节点。
-                        KeyValuesObject obj = pOriItems.FirstOrDefault(x => x.Equals(items.Current));
+                        KeyValuesObject obj = Find(pOriItems, items.Current);
 
                         if (pAttach == null)
                             pAttach = new DivideAttachment();
@@ -332,8 +332,8 @@ namespace XPatchLib
                     else if (pAction == Action.Edit)
                     {
                         //将此元素与当前正在遍历的元素作为参数调用序列化，看是否产生增量内容内容（如果没有产生增量内容内容则说明两个对象需要序列化的内容完全一样）
-                        KeyValuesObject oldObj = pOriItems.FirstOrDefault(x => x.Equals(items.Current));
-                        KeyValuesObject newObj = pRevItems.FirstOrDefault(x => x.Equals(items.Current));
+                        KeyValuesObject oldObj = Find(pOriItems, items.Current);
+                        KeyValuesObject newObj = Find(pRevItems, items.Current);
                         bool itemResult = ser.Divide(GenericArgumentType.TypeFriendlyName, oldObj.OriValue,
                             newObj.OriValue,
                             pAttach);
