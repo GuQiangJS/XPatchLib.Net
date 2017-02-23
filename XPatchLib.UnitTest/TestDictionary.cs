@@ -744,7 +744,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideCore(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -773,7 +773,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideIDictionary(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -797,7 +797,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideCore(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -820,7 +820,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideIDictionary(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -850,7 +850,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideCore(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -880,7 +880,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideIDictionary(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -908,7 +908,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideCore(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -937,7 +937,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideIDictionary(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -967,7 +967,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideCore(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -998,7 +998,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideIDictionary(writer, new TypeExtend(dic1.GetType())).Divide(

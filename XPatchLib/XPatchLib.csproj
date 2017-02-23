@@ -80,6 +80,7 @@
     <Compile Include="IDivide.cs" />
     <Compile Include="IEnumerableHelper.cs" />
     <Compile Include="IEnumeratorHelper.cs" />
+    <Compile Include="ITextWriter.cs" />
     <Compile Include="KeyValuesObject.cs" />
     <Compile Include="MemberWrapper.cs" />
     <Compile Include="PrimaryKeyAttribute.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="DivideIEnumerable.cs" />
     <Compile Include="DivideObject.cs" />
     <Compile Include="TypeExtend.cs" />
+    <Compile Include="XmlTextWriter.cs" />
     <Compile Include="XmlWriterHelper.cs" />
     <Compile Include="XmlSerializer.cs" />
   </ItemGroup>

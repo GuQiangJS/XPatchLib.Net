@@ -4,7 +4,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 
@@ -76,13 +75,6 @@ namespace XPatchLib
 
             #endregion 处理新增
 
-            if (result)
-            {
-                Writer.WriteEndElement();
-#if DEBUG
-                Debug.WriteLine("WriteEndElement.");
-#endif
-            }
             return result;
         }
 
@@ -91,7 +83,7 @@ namespace XPatchLib
         /// <summary>
         ///     使用指定的类型初始化 <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <exception cref="PrimaryKeyException">默认在字符串与System.DateTime 之间转换时，转换时应保留时区信息。</exception>
         /// <exception cref="ArgumentException">待处理的类型不是字典类型时。</exception>
@@ -100,7 +92,7 @@ namespace XPatchLib
         ///     <para> 默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。 </para>
         ///     <para> 默认不序列化默认值。 </para>
         /// </remarks>
-        internal DivideIDictionary(XmlWriter pWriter, TypeExtend pType)
+        internal DivideIDictionary(ITextWriter pWriter, TypeExtend pType)
             : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind)
         {
         }
@@ -108,7 +100,7 @@ namespace XPatchLib
         /// <summary>
         ///     使用指定的类型及指定是否序列化默认值初始化 <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
         /// <exception cref="ArgumentException">待处理的类型不是字典类型时。</exception>
@@ -116,7 +108,7 @@ namespace XPatchLib
         /// <remarks>
         ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
         /// </remarks>
-        internal DivideIDictionary(XmlWriter pWriter, TypeExtend pType, Boolean pSerializeDefalutValue)
+        internal DivideIDictionary(ITextWriter pWriter, TypeExtend pType, Boolean pSerializeDefalutValue)
             : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind, pSerializeDefalutValue)
         {
         }
@@ -125,7 +117,7 @@ namespace XPatchLib
         ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
         ///     <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pMode">
         ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
@@ -136,7 +128,7 @@ namespace XPatchLib
         /// <remarks>
         ///     默认不序列化默认值。
         /// </remarks>
-        internal DivideIDictionary(XmlWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
+        internal DivideIDictionary(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
             : this(pWriter, pType, pMode, false)
         {
         }
@@ -145,7 +137,7 @@ namespace XPatchLib
         ///     使用指定的类型、指定是否序列化默认值和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
         ///     <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pMode">
         ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
@@ -156,7 +148,7 @@ namespace XPatchLib
         /// <exception cref="System.ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentException">待处理的类型不是字典类型时。</exception>
         /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="pType" /> 上无法获取元素类型时。</exception>
-        internal DivideIDictionary(XmlWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
+        internal DivideIDictionary(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
             Boolean pSerializeDefalutValue)
             : base(pWriter, pType, pMode, pSerializeDefalutValue)
         {

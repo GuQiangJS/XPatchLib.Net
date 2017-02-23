@@ -17,6 +17,33 @@ namespace XPatchLib
     internal class DivideCore : DivideBase
     {
         /// <summary>
+        ///     产生增量内容。
+        /// </summary>
+        /// <param name="pName">增量内容对象的名称。</param>
+        /// <param name="pOriObject">原始对象。</param>
+        /// <param name="pRevObject">更新后的对象。</param>
+        /// <param name="pAttach">生成增量时可能用到的附件。</param>
+        /// <returns>
+        ///     返回是否成功写入内容。如果成功写入返回 <c>true</c> ，否则返回 <c>false</c> 。
+        /// </returns>
+        public override bool Divide(string pName, object pOriObject, object pRevObject, DivideAttachment pAttach = null)
+        {
+            Guard.ArgumentNotNullOrEmpty(pName, "pName");
+
+            //当前节点是被SetNull时，直接写入节点并增加SetNull Attribute，并返回写入成功。
+            if (IsSetNull(pOriObject, pRevObject))
+            {
+                WriteParentElementStart(pAttach);
+                Writer.WriteStartObject(pName);
+                Writer.WriteActionAttribute(Action.SetNull);
+                return true;
+            }
+            if (Equals(pOriObject, pRevObject))
+                return false;
+            return DivideAction(pName, pOriObject, pRevObject, pAttach);
+        }
+
+        /// <summary>
         ///     产生增量内容的实际方法。
         /// </summary>
         /// <param name="pName">增量内容对象的名称。</param>
@@ -42,9 +69,7 @@ namespace XPatchLib
             else
                 divide = new DivideObject(Writer, Type, Mode, SerializeDefaultValue);
 
-            if (divide.Divide(pName, pOriObject, pRevObject, pAttach))
-                return true;
-            return false;
+            return divide.Divide(pName, pOriObject, pRevObject, pAttach);
         }
 
         #region Internal Constructors
@@ -52,12 +77,12 @@ namespace XPatchLib
         /// <summary>
         ///     使用指定的类型初始化 <see cref="XPatchLib.DivideCore" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <remarks>
         ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
         /// </remarks>
-        internal DivideCore(XmlWriter pWriter, TypeExtend pType)
+        internal DivideCore(ITextWriter pWriter, TypeExtend pType)
             : base(pWriter, pType)
         {
         }
@@ -72,7 +97,7 @@ namespace XPatchLib
         /// <remarks>
         ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
         /// </remarks>
-        internal DivideCore(XmlWriter pWriter, TypeExtend pType, Boolean pSerializeDefalutValue)
+        internal DivideCore(ITextWriter pWriter, TypeExtend pType, Boolean pSerializeDefalutValue)
             : base(pWriter, pType, pSerializeDefalutValue)
         {
         }
@@ -81,7 +106,7 @@ namespace XPatchLib
         ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
         ///     <see cref="XPatchLib.DivideCore" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pMode">
         ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
@@ -91,7 +116,7 @@ namespace XPatchLib
         /// <remarks>
         ///     默认不序列化默认值。
         /// </remarks>
-        internal DivideCore(XmlWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
+        internal DivideCore(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
             : base(pWriter, pType, pMode)
         {
         }
@@ -100,7 +125,7 @@ namespace XPatchLib
         ///     使用指定的类型、指定是否序列化默认值和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
         ///     <see cref="XPatchLib.DivideCore" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pMode">
         ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
@@ -108,7 +133,7 @@ namespace XPatchLib
         /// </param>
         /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
         /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
-        internal DivideCore(XmlWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
+        internal DivideCore(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
             Boolean pSerializeDefalutValue)
             : base(pWriter, pType, pMode, pSerializeDefalutValue)
         {

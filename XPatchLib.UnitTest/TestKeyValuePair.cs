@@ -1,7 +1,9 @@
-﻿using System;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -24,7 +26,8 @@ namespace XPatchLib.UnitTest
 
             using (XmlReader reader = XmlTextReader.Create(new StringReader(changedContext)))
             {
-                var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader,k1, ReflectionUtils.GetTypeFriendlyName(k2.GetType()));
+                var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
+                    ReflectionUtils.GetTypeFriendlyName(k2.GetType()));
                 Assert.AreEqual(k2, combineObj);
             }
         }
@@ -40,7 +43,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideKeyValuePair(writer, new TypeExtend(k2.GetType())).Divide(
@@ -54,7 +57,8 @@ namespace XPatchLib.UnitTest
                 stream.Position = 0;
                 using (XmlReader reader = XmlReader.Create(stream))
                 {
-                    var combineObj =new CombineKeyValuePair(new TypeExtend(k2.GetType())).Combine(reader,null, ReflectionUtils.GetTypeFriendlyName(k2.GetType()));
+                    var combineObj = new CombineKeyValuePair(new TypeExtend(k2.GetType())).Combine(reader, null,
+                        ReflectionUtils.GetTypeFriendlyName(k2.GetType()));
                     Assert.AreEqual(k2, combineObj);
                 }
             }
@@ -67,7 +71,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideKeyValuePair(writer, new TypeExtend(k1.GetType())).Divide(
@@ -86,7 +90,8 @@ namespace XPatchLib.UnitTest
                 stream.Position = 0;
                 using (XmlReader reader = XmlReader.Create(stream))
                 {
-                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1, ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
+                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
+                        ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
                     Assert.AreEqual(null, combineObj);
                 }
             }
@@ -101,7 +106,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideKeyValuePair(writer, new TypeExtend(k1.GetType())).Divide(
@@ -122,7 +127,8 @@ namespace XPatchLib.UnitTest
                 stream.Position = 0;
                 using (XmlReader reader = XmlReader.Create(stream))
                 {
-                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1, ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
+                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
+                        ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
                     Assert.AreEqual(k2, combineObj);
                 }
             }
@@ -136,7 +142,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideKeyValuePair(writer, new TypeExtend(k1.GetType())).Divide(
@@ -171,7 +177,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideKeyValuePair(writer, new TypeExtend(k1.GetType())).Divide(
@@ -208,7 +214,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideKeyValuePair(writer, new TypeExtend(k1.GetType())).Divide(

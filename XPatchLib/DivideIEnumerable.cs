@@ -4,7 +4,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 
@@ -70,13 +69,7 @@ namespace XPatchLib
 
             if (result)
             {
-                if (Writer.WriteState == WriteState.Element)
-                {
-                    Writer.WriteEndElement();
-#if DEBUG
-                    Debug.WriteLine("WriteEndElement.");
-#endif
-                }
+                //Writer.WriteEndObject();
             }
             else if (pOriObject == null && pRevObject != null)
             {
@@ -93,14 +86,14 @@ namespace XPatchLib
         /// <summary>
         ///     使用指定的类型初始化 <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 元素类型的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
         /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="pType" /> 上无法获取元素类型时。</exception>
         /// <remarks>
         ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
         /// </remarks>
-        internal DivideIEnumerable(XmlWriter pWriter, TypeExtend pType)
+        internal DivideIEnumerable(ITextWriter pWriter, TypeExtend pType)
             : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind)
         {
         }
@@ -108,7 +101,7 @@ namespace XPatchLib
         /// <summary>
         ///     使用指定的类型及指定是否序列化默认值初始化 <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
         /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 元素类型的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
@@ -116,7 +109,7 @@ namespace XPatchLib
         /// <remarks>
         ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
         /// </remarks>
-        internal DivideIEnumerable(XmlWriter pWriter, TypeExtend pType, Boolean pSerializeDefalutValue)
+        internal DivideIEnumerable(ITextWriter pWriter, TypeExtend pType, Boolean pSerializeDefalutValue)
             : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind, pSerializeDefalutValue)
         {
         }
@@ -125,7 +118,7 @@ namespace XPatchLib
         ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
         ///     <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pMode">
         ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
@@ -136,7 +129,7 @@ namespace XPatchLib
         /// <remarks>
         ///     默认不序列化默认值。
         /// </remarks>
-        internal DivideIEnumerable(XmlWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
+        internal DivideIEnumerable(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
             : this(pWriter, pType, pMode, false)
         {
         }
@@ -145,7 +138,7 @@ namespace XPatchLib
         ///     使用指定的类型、指定是否序列化默认值和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
         ///     <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pMode">
         ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
@@ -156,7 +149,7 @@ namespace XPatchLib
         /// <exception cref="System.ArgumentOutOfRangeException"></exception>
         /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 元素类型的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
         /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="pType" /> 上无法获取元素类型时。</exception>
-        internal DivideIEnumerable(XmlWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
+        internal DivideIEnumerable(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
             Boolean pSerializeDefalutValue)
             : base(pWriter, pType, pMode, pSerializeDefalutValue)
         {
@@ -328,35 +321,20 @@ namespace XPatchLib
                         //当前元素是删除操作时
 
                         WriteParentElementStart(pAttach);
-                        Writer.WriteStartElement(GenericArgumentType.TypeFriendlyName);
+                        Writer.WriteStartObject(GenericArgumentType.TypeFriendlyName);
                         Writer.WriteActionAttribute(Action.Remove);
-#if DEBUG
-                        Debug.WriteLine(string.Format("WriteStartElement:{0}.", GenericArgumentType.TypeFriendlyName));
-                        Debug.WriteLine("WriteActionAttribute:{0}.", Action.Remove);
-#endif
 
                         if (GenericArgumentType.IsBasicType)
-                        {
-                            //当是基础类型时，记录基础类型的值。
-                            Writer.WriteString(items.Current.OriValue.ToString());
-                            //Writer.WriteEndElement();
-#if DEBUG
-                            Debug.WriteLine("WriteString:{0}.", items.Current.OriValue.ToString());
-                            //Debug.WriteLine("WriteEndElement.");
-#endif
-                        }
+                            Writer.WriteValue(items.Current.OriValue.ToString());
                         else
-                        {
-                            //当不是基础类型时，认为是复杂类型
-                            //将类型上标记的主键属性名称与主键值做为Attribute的Name和Value记录。
                             WriteKeyAttributes(new DivideAttachment
                             {
                                 CurrentObj = items.Current.OriValue,
                                 CurrentType = GenericArgumentType,
                                 PrimaryKeys = GenericArgumentPrimaryKeys
                             });
-                        }
                         result = itemResult = true;
+                        Writer.WriteEndProperty();
                     }
                     else if (pAction == Action.Edit)
                     {
@@ -381,13 +359,6 @@ namespace XPatchLib
                     pAttach.CurrentObj = null;
                     pAttach.CurrentType = null;
                     pAttach.PrimaryKeys = new string[] {};
-                    if (itemResult)
-                    {
-                        Writer.WriteEndElement();
-#if DEBUG
-                        Debug.WriteLine("WriteEndElement.");
-#endif
-                    }
                 }
             }
             return result;

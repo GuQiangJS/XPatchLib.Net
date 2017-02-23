@@ -1,8 +1,6 @@
 ﻿// Copyright © 2013-2017 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
-using System.Xml;
-
 namespace XPatchLib
 {
     /// <summary>
@@ -18,10 +16,11 @@ namespace XPatchLib
         /// <remarks>
         ///     当 <paramref name="pAction" />==<see cref="Action" />时不写入。
         /// </remarks>
-        internal static void WriteActionAttribute(this XmlWriter pWriter, Action pAction)
+        internal static void WriteActionAttribute(this ITextWriter pWriter, Action pAction)
         {
             if (pAction != Action.Edit)
-                pWriter.WriteAttributeString(ConstValue.ACTION_NAME, ActionHelper.ToString(pAction));
+                if (pWriter is XmlTextWriter)
+                    pWriter.WriteAttribute(ConstValue.ACTION_NAME, ActionHelper.ToString(pAction));
         }
     }
 }

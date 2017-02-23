@@ -21,12 +21,13 @@ namespace XPatchLib.UnitTest
         [TestMethod]
         public void BasicSerializeCtorTest()
         {
-            var ser = new DivideBasic(new XmlTextWriter(new MemoryStream(), Encoding.UTF8),
+            var ser = new DivideBasic(
+                new XmlTextWriter(new System.Xml.XmlTextWriter(new MemoryStream(), Encoding.UTF8)),
                 new TypeExtend(typeof(string)));
             Assert.AreEqual(ser.Mode, XmlDateTimeSerializationMode.RoundtripKind);
 
-            ser = new DivideBasic(new XmlTextWriter(new MemoryStream(), Encoding.UTF8), new TypeExtend(typeof(string)),
-                XmlDateTimeSerializationMode.Unspecified);
+            ser = new DivideBasic(new XmlTextWriter(new System.Xml.XmlTextWriter(new MemoryStream(), Encoding.UTF8)),
+                new TypeExtend(typeof(string)), XmlDateTimeSerializationMode.Unspecified);
             Assert.AreEqual(ser.Mode, XmlDateTimeSerializationMode.Unspecified);
         }
 
@@ -168,7 +169,7 @@ namespace XPatchLib.UnitTest
             {
                 using (var stream = new MemoryStream())
                 {
-                    using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                    using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                     {
                         var ser = new DivideBasic(writer, new TypeExtend(types[i]));
 
@@ -185,13 +186,13 @@ namespace XPatchLib.UnitTest
                     stream.Position = 0;
                     using (XmlReader reader = XmlReader.Create(stream))
                     {
-                        Assert.AreEqual(revObjs[i], der.Combine(reader,null, types[i].Name), "增量合并后的对象实例与预期不符");
+                        Assert.AreEqual(revObjs[i], der.Combine(reader, null, types[i].Name), "增量合并后的对象实例与预期不符");
                     }
                 }
 
                 using (var stream = new MemoryStream())
                 {
-                    using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                    using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                     {
                         var ser = new DivideBasic(writer, new TypeExtend(types[i]));
                         //原始值有值，更新值为null时，序列化为<XXX Action="SetNull" />
@@ -214,7 +215,7 @@ namespace XPatchLib.UnitTest
 
                 using (var stream = new MemoryStream())
                 {
-                    using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                    using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                     {
                         var ser = new DivideBasic(writer, new TypeExtend(types[i]));
                         //原始值为null，更新值有值时序列化更新值
@@ -237,7 +238,7 @@ namespace XPatchLib.UnitTest
 
                 using (var stream = new MemoryStream())
                 {
-                    using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                    using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                     {
                         var ser = new DivideBasic(writer, new TypeExtend(types[i]));
                         //原始值与更新值相同时不做序列化
@@ -251,7 +252,7 @@ namespace XPatchLib.UnitTest
 
                 using (var stream = new MemoryStream())
                 {
-                    using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                    using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                     {
                         var ser = new DivideBasic(writer, new TypeExtend(types[i]));
                         ser.SerializeDefaultValue = true;
@@ -259,7 +260,7 @@ namespace XPatchLib.UnitTest
                         if (types[i] != typeof(string))
                         {
                             Assert.IsTrue(ser.Divide(types[i].Name, null, ReflectionUtils.GetDefaultValue(types[i])));
-                            writer.WriteEndElement();
+                            writer.WriteEndObject();
                             writer.Flush();
                             stream.Position = 0;
                             var ele = XElement.Load(stream);
@@ -287,7 +288,7 @@ namespace XPatchLib.UnitTest
             var dser = new CombineObject(new TypeExtend(typeof(ColorClass)));
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     var ser = new DivideObject(writer, new TypeExtend(typeof(ColorClass)));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)), null, c1));
@@ -300,9 +301,11 @@ namespace XPatchLib.UnitTest
                 stream.Position = 0;
                 using (XmlReader reader = XmlReader.Create(stream))
                 {
-                    var c2 = dser.Combine(reader,ColorClass.GetSampleInstance(), ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass))) as ColorClass;
-                Debug.Assert(c2 != null, "c2 != null");
-                Assert.AreEqual(c1.Color, c2.Color);
+                    var c2 =
+                        dser.Combine(reader, ColorClass.GetSampleInstance(),
+                            ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass))) as ColorClass;
+                    Debug.Assert(c2 != null, "c2 != null");
+                    Assert.AreEqual(c1.Color, c2.Color);
                 }
             }
         }
@@ -317,7 +320,7 @@ namespace XPatchLib.UnitTest
             {
                 var c1 = ColorClass.GetSampleInstance();
                 var dser = new CombineObject(new TypeExtend(typeof(ColorClass)));
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     var ser = new DivideObject(writer, new TypeExtend(typeof(ColorClass)));
 
@@ -354,7 +357,7 @@ namespace XPatchLib.UnitTest
             var dser = new CombineObject(new TypeExtend(typeof(EnumClass)));
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     var ser = new DivideObject(writer, new TypeExtend(typeof(EnumClass)));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(EnumClass)), null,
@@ -378,7 +381,7 @@ namespace XPatchLib.UnitTest
 </EnumClass>";
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     var ser = new DivideObject(writer, new TypeExtend(typeof(EnumClass)));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(EnumClass)),
@@ -392,7 +395,9 @@ namespace XPatchLib.UnitTest
                 stream.Position = 0;
                 using (XmlReader reader = XmlReader.Create(stream))
                 {
-                    var c2 = dser.Combine(reader,EnumClass.GetSampleInstance(), ReflectionUtils.GetTypeFriendlyName(typeof(EnumClass))) as EnumClass;
+                    var c2 =
+                        dser.Combine(reader, EnumClass.GetSampleInstance(),
+                            ReflectionUtils.GetTypeFriendlyName(typeof(EnumClass))) as EnumClass;
                     Assert.IsNotNull(c2);
                     Assert.AreEqual(SingleQuarter.Second, c2.SingleQuarter);
                     Assert.AreEqual(MultiQuarter.Second | MultiQuarter.Fourth, c2.MultiQuarter);
@@ -417,7 +422,7 @@ namespace XPatchLib.UnitTest
             {
                 using (XmlReader reader = XmlTextReader.Create(new StringReader(result)))
                 {
-                    dser.Combine(reader,ColorClass.GetSampleInstance(), "ColorClass");
+                    dser.Combine(reader, ColorClass.GetSampleInstance(), "ColorClass");
                 }
             }
             catch (FormatException ex)

@@ -68,7 +68,7 @@ namespace XPatchLib
         {
             try
             {
-                if (!fieldInfo.IsPublic) return null;
+                //if (!fieldInfo.IsPublic) return null;
                 var instance = Expression.Parameter(typeof(Object), "i");
                 Debug.Assert(fieldInfo.DeclaringType != null, "fieldInfo.DeclaringType != null");
                 var castedInstance = Expression.ConvertChecked

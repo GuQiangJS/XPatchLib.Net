@@ -2,7 +2,6 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
 using System.Xml;
 
 namespace XPatchLib
@@ -22,23 +21,29 @@ namespace XPatchLib
         /// <returns>返回是否成功写入内容。如果成功写入返回 <c>true</c> ，否则返回 <c>false</c> 。</returns>
         public virtual bool Divide(string pName, object pOriObject, object pRevObject, DivideAttachment pAttach = null)
         {
+            bool result = false;
+
             Guard.ArgumentNotNullOrEmpty(pName, "pName");
 
-            //当前节点是被SetNull时，直接写入节点并增加SetNull Attribute，并返回写入成功。
-            if (IsSetNull(pOriObject, pRevObject))
+            try
             {
-                WriteParentElementStart(pAttach);
-                Writer.WriteStartElement(pName);
-                Writer.WriteActionAttribute(Action.SetNull);
-#if DEBUG
-                Debug.WriteLine(string.Format("WriteStartElement:{0}.", pName));
-                Debug.WriteLine("WriteActionAttribute:{0}.", Action.SetNull);
-#endif
-                return true;
+                //当前节点是被SetNull时，直接写入节点并增加SetNull Attribute，并返回写入成功。
+                if (IsSetNull(pOriObject, pRevObject))
+                {
+                    WriteParentElementStart(pAttach);
+                    Writer.WriteStartObject(pName);
+                    Writer.WriteActionAttribute(Action.SetNull);
+                    return result = true;
+                }
+                if (Equals(pOriObject, pRevObject))
+                    return result = false;
+                return result = DivideAction(pName, pOriObject, pRevObject, pAttach);
             }
-            if (Equals(pOriObject, pRevObject))
-                return false;
-            return DivideAction(pName, pOriObject, pRevObject, pAttach);
+            finally
+            {
+                if (result)
+                    Writer.WriteEndObject();
+            }
         }
 
         /// <summary>
@@ -51,10 +56,7 @@ namespace XPatchLib
                 foreach (var key in pAttach.PrimaryKeys)
                 {
                     string v = pAttach.CurrentType.GetMemberValue(pAttach.CurrentObj, key).ToString();
-                    Writer.WriteAttributeString(key, v);
-#if DEBUG
-                    Debug.WriteLine("{0}=\"{1}\"", key, v);
-#endif
+                    Writer.WriteAttribute(key, v);
                 }
         }
 
@@ -70,12 +72,8 @@ namespace XPatchLib
                 while (true)
                 {
                     var parent = pAttach.ParentQuere.Dequeue();
-                    Writer.WriteStartElement(parent.Name);
+                    Writer.WriteStartObject(parent.Name);
                     Writer.WriteActionAttribute(parent.Action);
-#if DEBUG
-                    Debug.WriteLine(string.Format("WriteStartElement:{0}.", parent.Name));
-                    Debug.WriteLine("WriteActionAttribute:{0}.", parent.Action);
-#endif
 
                     if (parent.Type.PrimaryKeyAttr != null && parent.CurrentObj != null && parent.Type != null &&
                         parent.Type.ParentType != null &&
@@ -84,10 +82,7 @@ namespace XPatchLib
                         foreach (var key in parent.Type.PrimaryKeyAttr.GetPrimaryKeys())
                         {
                             string v = parent.Type.GetMemberValue(parent.CurrentObj, key).ToString();
-                            Writer.WriteAttributeString(key, v);
-#if DEBUG
-                            Debug.WriteLine("{0}=\"{1}\"", key, v);
-#endif
+                            Writer.WriteAttribute(key, v);
                         }
 
                     result = true;
@@ -138,7 +133,7 @@ namespace XPatchLib
         /// <summary>
         ///     使用指定的类型初始化 <see cref="XPatchLib.DivideBase" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
         /// <exception cref="ArgumentNullException">当参数 <paramref name="pWriter" /> is null 时。</exception>
@@ -146,7 +141,7 @@ namespace XPatchLib
         ///     <para> 默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。 </para>
         ///     <para> 默认不序列化默认值。 </para>
         /// </remarks>
-        protected DivideBase(XmlWriter pWriter, TypeExtend pType)
+        protected DivideBase(ITextWriter pWriter, TypeExtend pType)
             : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind)
         {
         }
@@ -154,7 +149,7 @@ namespace XPatchLib
         /// <summary>
         ///     使用指定的类型及指定是否序列化默认值初始化 <see cref="XPatchLib.DivideBase" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
         /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
@@ -162,7 +157,7 @@ namespace XPatchLib
         /// <remarks>
         ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
         /// </remarks>
-        protected DivideBase(XmlWriter pWriter, TypeExtend pType, bool pSerializeDefalutValue)
+        protected DivideBase(ITextWriter pWriter, TypeExtend pType, bool pSerializeDefalutValue)
             : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind, pSerializeDefalutValue)
         {
         }
@@ -171,7 +166,7 @@ namespace XPatchLib
         ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
         ///     <see cref="XPatchLib.CombineBase" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pMode">指定在字符串与 System.DateTime 之间转换时，如何处理时间值。</param>
         /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
@@ -179,7 +174,7 @@ namespace XPatchLib
         /// <remarks>
         ///     默认不序列化默认值。
         /// </remarks>
-        protected DivideBase(XmlWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
+        protected DivideBase(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
             : this(pWriter, pType, pMode, false)
         {
         }
@@ -188,7 +183,7 @@ namespace XPatchLib
         ///     使用指定的类型、指定是否序列化默认值和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
         ///     <see cref="XPatchLib.CombineBase" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pMode">
         ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
@@ -197,7 +192,7 @@ namespace XPatchLib
         /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
         /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
         /// <exception cref="ArgumentNullException">当参数 <paramref name="pWriter" /> is null 时。</exception>
-        protected DivideBase(XmlWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
+        protected DivideBase(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
             bool pSerializeDefalutValue)
         {
             Guard.ArgumentNotNull(pWriter, "pWriter");
@@ -233,9 +228,9 @@ namespace XPatchLib
         public bool ParentElementWrited { get; set; }
 
         /// <summary>
-        ///     获取当前的XML写入器。
+        ///     获取当前的写入器。
         /// </summary>
-        protected XmlWriter Writer;
+        protected ITextWriter Writer;
 
         #endregion Internal Properties
     }

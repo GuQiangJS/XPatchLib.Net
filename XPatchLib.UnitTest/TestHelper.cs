@@ -29,6 +29,12 @@ namespace XPatchLib.UnitTest
             }
         }
 
+        internal static ITextWriter CreateWriter(Stream output, XmlWriterSettings settings)
+        {
+            XmlWriter xmlWriter = XmlWriter.Create(output, settings);
+            return new XmlTextWriter(xmlWriter);
+        }
+
         #region Internal Methods
 
         internal static void PrivateAssert(Type pType, object pOriObj, object pChangedObj, string pChangedContext,
@@ -43,7 +49,7 @@ namespace XPatchLib.UnitTest
         {
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, FlagmentSetting))
+                using (ITextWriter writer = CreateWriter(stream, FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideCore(writer, new TypeExtend(pType), pMode).Divide(
@@ -54,7 +60,8 @@ namespace XPatchLib.UnitTest
                 stream.Position = 0;
                 using (XmlReader reader = XmlReader.Create(stream))
                 {
-                    var combinedObj = new CombineCore(new TypeExtend(pType), pMode).Combine(reader,pOriObj, ReflectionUtils.GetTypeFriendlyName(pType));
+                    var combinedObj = new CombineCore(new TypeExtend(pType), pMode).Combine(reader, pOriObj,
+                        ReflectionUtils.GetTypeFriendlyName(pType));
 
                     Trace.Write(pChangedContext);
 
@@ -77,7 +84,7 @@ namespace XPatchLib.UnitTest
         {
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, FlagmentSetting))
+                using (ITextWriter writer = CreateWriter(stream, FlagmentSetting))
                 {
                     Assert.IsTrue(
                         new DivideCore(writer, new TypeExtend(pType), pMode).Divide(

@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -297,7 +300,7 @@ namespace XPatchLib.UnitTest
             {
                 using (var stream = new MemoryStream())
                 {
-                    using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                    using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                     {
                         new DivideIEnumerable(writer, new TypeExtend(typeof(AuthorClass)));
                     }
@@ -364,7 +367,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(BookClassCollection)));
 
@@ -379,7 +382,9 @@ namespace XPatchLib.UnitTest
                 stream.Position = 0;
                 using (XmlReader reader = XmlReader.Create(stream))
                 {
-                    var b3 = com.Combine(reader,b1, ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection))) as BookClassCollection;
+                    var b3 =
+                        com.Combine(reader, b1, ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection))) as
+                            BookClassCollection;
 
                     Assert.AreEqual(b2, b3);
                 }
@@ -409,7 +414,7 @@ namespace XPatchLib.UnitTest
 </BookClassCollection>";
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(BookClassCollection)), true);
 
@@ -425,7 +430,9 @@ namespace XPatchLib.UnitTest
                 stream.Position = 0;
                 using (XmlReader reader = XmlReader.Create(stream))
                 {
-                    var b3 = com.Combine(reader,b1, ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection))) as BookClassCollection;
+                    var b3 =
+                        com.Combine(reader, b1, ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection))) as
+                            BookClassCollection;
 
                     Assert.AreEqual(b2, b3);
                 }
@@ -446,7 +453,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[])));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, s2));
@@ -459,7 +466,7 @@ namespace XPatchLib.UnitTest
                 stream.Position = 0;
                 using (XmlReader reader = XmlReader.Create(stream))
                 {
-                    var s3 = com.Combine(reader,s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as string[];
+                    var s3 = com.Combine(reader, s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as string[];
                     Assert.AreEqual(s2.Length, s3.Length);
 
                     Assert.IsTrue(s3.Contains(s2[0]));
@@ -481,7 +488,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[])));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), null, s1));
@@ -518,7 +525,7 @@ namespace XPatchLib.UnitTest
 </Array1OfString>";
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[])));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, s2));
@@ -532,7 +539,7 @@ namespace XPatchLib.UnitTest
                 using (XmlReader reader = XmlReader.Create(stream))
                 {
                     var com = new CombineIEnumerable(new TypeExtend(typeof(string[])));
-                    var s3 = com.Combine(reader,s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as string[];
+                    var s3 = com.Combine(reader, s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as string[];
 
                     Assert.AreEqual(s2.Length, s3.Length);
 
@@ -551,7 +558,7 @@ namespace XPatchLib.UnitTest
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = XmlWriter.Create(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[])));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, null));
@@ -566,7 +573,9 @@ namespace XPatchLib.UnitTest
                 using (XmlReader reader = XmlReader.Create(stream))
                 {
                     var com = new CombineIEnumerable(new TypeExtend(typeof(BookClassCollection)));
-                    var b3 = com.Combine(reader,s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as BookClassCollection;
+                    var b3 =
+                        com.Combine(reader, s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as
+                            BookClassCollection;
 
                     Assert.AreEqual(null, b3);
                 }

@@ -2,7 +2,6 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 
@@ -95,26 +94,18 @@ namespace XPatchLib
                 //只要成功写入过一个节点，就表示父节点都写入过了
                 divide.ParentElementWrited = result;
                 var childResult = divide.Divide(member.Name, pOriMemberValue, pRevMemberValue, pAttach);
-                if (childResult)
-                {
-                    Writer.WriteEndElement();
-#if DEBUG
-                    Debug.WriteLine("WriteEndElement.");
-#endif
-                }
+                //if (childResult)
+                //{
+                //    //结束子节点标记
+                //    Writer.WriteEndProperty();
+                //}
 
                 if (!result)
                     result = childResult;
             }
-            //如果有子节点成功写入，则需要写入当前节点的关闭。
-            if (result)
-                if (Writer.WriteState == WriteState.Element)
-                {
-                    Writer.WriteEndElement();
-#if DEBUG
-                    Debug.WriteLine("WriteEndElement.");
-#endif
-                }
+            ////如果有子节点成功写入，则需要写入当前节点的关闭。
+            //if (result)
+            //        Writer.WriteEndObject();
             return result;
         }
 
@@ -123,12 +114,12 @@ namespace XPatchLib
         /// <summary>
         ///     使用指定的类型初始化 <see cref="XPatchLib.DivideObject" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <remarks>
         ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
         /// </remarks>
-        internal DivideObject(XmlWriter pWriter, TypeExtend pType)
+        internal DivideObject(ITextWriter pWriter, TypeExtend pType)
             : base(pWriter, pType)
         {
         }
@@ -136,14 +127,14 @@ namespace XPatchLib
         /// <summary>
         ///     使用指定的类型及指定是否序列化默认值初始化 <see cref="XPatchLib.DivideObject" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
         /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
         /// <remarks>
         ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
         /// </remarks>
-        internal DivideObject(XmlWriter pWriter, TypeExtend pType, bool pSerializeDefalutValue)
+        internal DivideObject(ITextWriter pWriter, TypeExtend pType, bool pSerializeDefalutValue)
             : base(pWriter, pType, pSerializeDefalutValue)
         {
         }
@@ -152,7 +143,7 @@ namespace XPatchLib
         ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
         ///     <see cref="XPatchLib.DivideObject" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pMode">
         ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
@@ -162,7 +153,7 @@ namespace XPatchLib
         /// <remarks>
         ///     默认不序列化默认值。
         /// </remarks>
-        internal DivideObject(XmlWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
+        internal DivideObject(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
             : base(pWriter, pType, pMode)
         {
         }
@@ -171,7 +162,7 @@ namespace XPatchLib
         ///     使用指定的类型、指定是否序列化默认值和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
         ///     <see cref="XPatchLib.DivideObject" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pMode">
         ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
@@ -179,7 +170,7 @@ namespace XPatchLib
         /// </param>
         /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
         /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
-        internal DivideObject(XmlWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
+        internal DivideObject(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
             bool pSerializeDefalutValue)
             : base(pWriter, pType, pMode, pSerializeDefalutValue)
         {

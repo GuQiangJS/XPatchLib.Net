@@ -252,3 +252,5 @@ paket-files/
 *.sln.iml
 /HelperBuilder/CHMBilder/WorkingPath
 /XPatchLib.Output/Doc/Helper
+/HelperBuilder/CHMBuilder/WorkingPath
+/HelperBuilder/WebBuilder/WorkingPath

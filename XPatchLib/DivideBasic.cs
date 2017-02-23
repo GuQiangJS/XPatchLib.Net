@@ -2,7 +2,6 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
 using System.Xml;
 
 namespace XPatchLib
@@ -83,12 +82,12 @@ namespace XPatchLib
         /// <summary>
         ///     使用指定的类型初始化 <see cref="XPatchLib.DivideBasic" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <remarks>
         ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
         /// </remarks>
-        internal DivideBasic(XmlWriter pWriter, TypeExtend pType)
+        internal DivideBasic(ITextWriter pWriter, TypeExtend pType)
             : base(pWriter, pType)
         {
         }
@@ -96,14 +95,14 @@ namespace XPatchLib
         /// <summary>
         ///     使用指定的类型及指定是否序列化默认值初始化 <see cref="XPatchLib.DivideBasic" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
         /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
         /// <remarks>
         ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
         /// </remarks>
-        internal DivideBasic(XmlWriter pWriter, TypeExtend pType, Boolean pSerializeDefalutValue)
+        internal DivideBasic(ITextWriter pWriter, TypeExtend pType, Boolean pSerializeDefalutValue)
             : base(pWriter, pType, pSerializeDefalutValue)
         {
         }
@@ -112,7 +111,7 @@ namespace XPatchLib
         ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
         ///     <see cref="XPatchLib.DivideBasic" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pMode">
         ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
@@ -122,7 +121,7 @@ namespace XPatchLib
         /// <remarks>
         ///     默认不序列化默认值。
         /// </remarks>
-        internal DivideBasic(XmlWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
+        internal DivideBasic(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
             : base(pWriter, pType, pMode)
         {
         }
@@ -131,7 +130,7 @@ namespace XPatchLib
         ///     使用指定的类型、指定是否序列化默认值和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
         ///     <see cref="XPatchLib.DivideBasic" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pMode">
         ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
@@ -139,7 +138,7 @@ namespace XPatchLib
         /// </param>
         /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
         /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
-        internal DivideBasic(XmlWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
+        internal DivideBasic(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
             Boolean pSerializeDefalutValue)
             : base(pWriter, pType, pMode, pSerializeDefalutValue)
         {
@@ -165,29 +164,13 @@ namespace XPatchLib
             if (string.IsNullOrEmpty(pElementName))
                 return false;
             WriteParentElementStart(pAttach);
-            Writer.WriteStartElement(pElementName);
+            Writer.WriteStartProperty(pElementName);
             if (pAttach != null && pAttach.CurrentAction != Action.Edit)
-            {
                 Writer.WriteActionAttribute(pAttach.CurrentAction);
-#if DEBUG
-                Debug.WriteLine("Write DivideAttachment ActionAttribute:{0}.", pAttach.CurrentAction);
-#endif
-            }
             else
-            {
                 Writer.WriteActionAttribute(pAction);
-            }
-#if DEBUG
-            Debug.WriteLine(string.Format("WriteStartElement:{0}.", pElementName));
-            Debug.WriteLine("WriteActionAttribute:{0}.", pAction);
-#endif
             if (pAction != Action.SetNull)
-            {
-                Writer.WriteString(pElementValue);
-#if DEBUG
-                Debug.WriteLine(string.Format("WriteString:{0}.", pElementValue));
-#endif
-            }
+                Writer.WriteValue(pElementValue);
             return true;
         }
 

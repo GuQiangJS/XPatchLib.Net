@@ -410,8 +410,9 @@ namespace XPatchLib
                         settings.Indent = true;
                         settings.Encoding = Encoding.UTF8;
                         settings.OmitXmlDeclaration = false;
-                        using (var writer = XmlWriter.Create(stream, settings))
+                        using (var xmlWriter = XmlWriter.Create(stream, settings))
                         {
+                            ITextWriter writer = new XmlTextWriter(xmlWriter);
                             new DivideCore(writer, _type, _mode).Divide(_type.TypeFriendlyName, null, pOriValue);
                         }
 #if DEBUG
@@ -461,7 +462,7 @@ namespace XPatchLib
         /// </example>
         public void Divide(Stream pStream, object pOriValue, object pRevValue)
         {
-            var xmlWriter = new XmlTextWriter(pStream, Encoding.UTF8)
+            var xmlWriter = new System.Xml.XmlTextWriter(pStream, Encoding.UTF8)
             {
                 Formatting = Formatting.Indented,
                 Indentation = 2
@@ -493,7 +494,7 @@ namespace XPatchLib
         /// </example>
         public void Divide(TextWriter pWriter, object pOriValue, object pRevValue)
         {
-            var xmlWriter = new XmlTextWriter(pWriter)
+            var xmlWriter = new System.Xml.XmlTextWriter(pWriter)
             {
                 Formatting = Formatting.Indented,
                 Indentation = 2
@@ -524,6 +525,13 @@ namespace XPatchLib
         ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\DivideXmlWriterExampleOutPut.xml" />
         /// </example>
         public void Divide(XmlWriter pWriter, object pOriValue, object pRevValue)
+        {
+            Guard.ArgumentNotNull(pWriter, "pWriter");
+            
+            Divide(new XmlTextWriter(pWriter), pOriValue, pRevValue);
+        }
+
+        private void Divide(ITextWriter pWriter, object pOriValue, object pRevValue)
         {
             Guard.ArgumentNotNull(pWriter, "pWriter");
 

@@ -2,7 +2,6 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Xml;
 
@@ -26,10 +25,22 @@ namespace XPatchLib
         /// </returns>
         public override bool Divide(string pName, object pOriObject, object pRevObject, DivideAttachment pAttach = null)
         {
+            bool result = false;
+
             Guard.ArgumentNotNullOrEmpty(pName, "pName");
 
-            //KeyValuePair类型如果Key值为null，表示被删除而不是SetNull。
-            return DivideAction(pName, pOriObject, pRevObject, pAttach);
+            try
+            {
+                Guard.ArgumentNotNullOrEmpty(pName, "pName");
+
+                //KeyValuePair类型如果Key值为null，表示被删除而不是SetNull。
+                return result = DivideAction(pName, pOriObject, pRevObject, pAttach);
+            }
+            finally
+            {
+                if (result)
+                    Writer.WriteEndObject();
+            }
         }
 
         /// <summary>
@@ -112,24 +123,9 @@ namespace XPatchLib
             //尝试添加Key值部分
             if (new DivideCore(Writer, pKeyType).Divide(ConstValue.KEY, null, keyObject, pAttach))
             {
-                Writer.WriteEndElement();
-#if DEBUG
-                Debug.WriteLine("WriteEndElement.");
-#endif
                 if (pAction != Action.Remove && pAction != Action.SetNull)
-                    if (new DivideCore(Writer, pValueType).Divide(ConstValue.VALUE, oriValueObject, revValueObject,
-                        pAttach))
-                    {
-                        Writer.WriteEndElement();
-#if DEBUG
-                        Debug.WriteLine("WriteEndElement.");
-#endif
-                    }
-
-                Writer.WriteEndElement();
-#if DEBUG
-                Debug.WriteLine("WriteEndElement.");
-#endif
+                    new DivideCore(Writer, pValueType).Divide(ConstValue.VALUE, oriValueObject, revValueObject,
+                        pAttach);
                 return true;
             }
             return false;
@@ -142,12 +138,12 @@ namespace XPatchLib
         /// <summary>
         ///     使用指定的类型初始化 <see cref="XPatchLib.DivideKeyValuePair" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <remarks>
         ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
         /// </remarks>
-        internal DivideKeyValuePair(XmlWriter pWriter, TypeExtend pType)
+        internal DivideKeyValuePair(ITextWriter pWriter, TypeExtend pType)
             : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind)
         {
         }
@@ -155,13 +151,13 @@ namespace XPatchLib
         /// <summary>
         ///     使用指定的类型及指定是否序列化默认值初始化 <see cref="XPatchLib.DivideKeyValuePair" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
         /// <remarks>
         ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
         /// </remarks>
-        internal DivideKeyValuePair(XmlWriter pWriter, TypeExtend pType, bool pSerializeDefalutValue)
+        internal DivideKeyValuePair(ITextWriter pWriter, TypeExtend pType, bool pSerializeDefalutValue)
             : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind, pSerializeDefalutValue)
         {
         }
@@ -170,7 +166,7 @@ namespace XPatchLib
         ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
         ///     <see cref="XPatchLib.DivideKeyValuePair" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pMode">
         ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
@@ -179,7 +175,7 @@ namespace XPatchLib
         /// <remarks>
         ///     默认不序列化默认值。
         /// </remarks>
-        internal DivideKeyValuePair(XmlWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
+        internal DivideKeyValuePair(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
             : this(pWriter, pType, pMode, false)
         {
         }
@@ -188,14 +184,14 @@ namespace XPatchLib
         ///     使用指定的类型、指定是否序列化默认值和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
         ///     <see cref="XPatchLib.DivideKeyValuePair" /> 类的新实例。
         /// </summary>
-        /// <param name="pWriter">XML写入器。</param>
+        /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         /// <param name="pMode">
         ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
         ///     <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
         /// </param>
         /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
-        internal DivideKeyValuePair(XmlWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
+        internal DivideKeyValuePair(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
             bool pSerializeDefalutValue)
             : base(pWriter, pType, pMode, pSerializeDefalutValue)
         {
