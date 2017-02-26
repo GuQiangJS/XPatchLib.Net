@@ -1,0 +1,223 @@
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Diagnostics;
+using System.IO;
+
+namespace XPatchLib
+{
+    /// <summary>
+    ///     Json写入器。
+    /// </summary>
+    /// <seealso cref="XPatchLib.ITextWriter" />
+    internal class JsonTextWriter : ITextWriter
+    {
+        private State _State;
+
+        enum State
+        {
+            Start,
+            StartDocument,
+            EndDocument,
+            StartObject,
+            EndObject,
+            Property,
+            StartArray,
+            EndArray,
+            StartProperty,
+            EndProperty
+        }
+
+        private readonly TextWriter Writer;
+
+        /// <summary>
+        ///     以指定的 <paramref name="pWriter" /> 实例创建 <see cref="XmlTextWriter" /> 类型实例。
+        /// </summary>
+        /// <param name="pWriter">The p writer.</param>
+        internal JsonTextWriter(TextWriter pWriter)
+        {
+            Guard.ArgumentNotNull(pWriter, "pWriter");
+            Writer = pWriter;
+            _State = State.Start;
+        }
+
+        /// <summary>
+        ///     写入文档开始标记。
+        /// </summary>
+        public void WriteStartDocument()
+        {
+            Writer.Write("{");
+#if DEBUG
+            Debug.WriteLine("WriteStartDocument.");
+#endif
+            _State = State.StartDocument;
+        }
+
+        /// <summary>
+        ///     写入文档结束标记。
+        /// </summary>
+        public void WriteEndDocument()
+        {
+            _State = State.EndDocument;
+        }
+
+        /// <summary>
+        ///     将缓冲区中的所有内容刷新到基础流，并同时刷新基础流。
+        /// </summary>
+        public void Flush()
+        {
+            Writer.Flush();
+        }
+
+        /// <summary>
+        ///     写入对象开始标记。
+        /// </summary>
+        /// <param name="pName">对象名称。</param>
+        public void WriteStartObject(string pName)
+        {
+            WritePropertyDelimiter();
+            Writer.Write("\"{0}\":{{", pName);
+#if DEBUG
+            Debug.WriteLine(string.Format("WriteStartObject '{0}'.", pName));
+#endif
+            _State = State.StartObject;
+        }
+        void WritePropertyDelimiter()
+        {
+            if (_State == State.EndObject || _State == State.EndProperty || _State == State.EndArray)
+            {
+                Writer.Write(',');
+#if DEBUG
+                Debug.WriteLine("WritePropertyDelimiter");
+#endif
+            }
+        }
+
+        /// <summary>
+        ///     写入对象结束标记。
+        /// </summary>
+        public void WriteEndObject()
+        {
+            Writer.Write("}");
+#if DEBUG
+            Debug.WriteLine("WriteEndObject.");
+#endif
+            _State = State.EndObject;
+        }
+
+        /// <summary>
+        ///     写入特性。
+        /// </summary>
+        /// <param name="pName">特性名称。</param>
+        /// <param name="pValue">特性值。</param>
+        public void WriteAttribute(string pName, string pValue)
+        {
+            WritePropertyDelimiter();
+            Writer.Write("\"{0}\":\"{1}\"", pName, pValue);
+#if DEBUG
+            Debug.WriteLine("WriteAttribute '{0}'='{1}'.", pName, pValue);
+#endif
+            _State = State.Property;
+        }
+
+        /// <summary>
+        ///     写入属性。
+        /// </summary>
+        /// <param name="pName">属性名称。</param>
+        /// <param name="pValue">属性值。</param>
+        public void WriteProperty(string pName, string pValue)
+        {
+            WritePropertyDelimiter();
+            Writer.Write("\"{0}\":\"{1}\"", pName, pValue);
+#if DEBUG
+            Debug.WriteLine("WriteProperty '{0}'='{1}'.", pName, pValue);
+#endif
+            _State = State.Property;
+        }
+
+        /// <summary>
+        ///     写入列表类型对象开始标记。
+        /// </summary>
+        /// <param name="pName">列表类型对象实例名称</param>
+        public void WriteStartArray(string pName)
+        {
+            WritePropertyDelimiter();
+            Writer.Write("\"{0}\":[", pName);
+#if DEBUG
+            Debug.WriteLine(string.Format("WriteStartArray '{0}'.", pName));
+#endif
+            _State = State.StartArray;
+        }
+
+        /// <summary>
+        ///     写入列表对象结束标记。
+        /// </summary>
+        public void WriteEndArray()
+        {
+            Writer.Write("]");
+#if DEBUG
+            Debug.WriteLine("WriteEndArray.");
+#endif
+            _State = State.EndArray;
+        }
+
+        /// <summary>
+        ///     写入属性开始标记。
+        /// </summary>
+        /// <param name="pName">属性名称。</param>
+        public void WriteStartProperty(string pName)
+        {
+            WritePropertyDelimiter();
+            Writer.Write("\"{0}\":", pName);
+#if DEBUG
+            Debug.WriteLine(string.Format("WriteStartProperty '{0}'.", pName));
+#endif
+            _State = State.StartProperty;
+        }
+
+        /// <summary>
+        ///     写入属性结束标记。
+        /// </summary>
+        public void WriteEndProperty()
+        {
+            //            if (Writer.State == State.Content || Writer.State == State.Element)
+            //            {
+            //                Writer.WriteEndElement();
+            //#if DEBUG
+            //                Debug.WriteLine("WriteEndProperty.");
+            //#endif
+            //            }
+            _State = State.EndProperty;
+        }
+
+        /// <summary>
+        ///     写入文本。
+        /// </summary>
+        /// <param name="pValue">待写入的文本。</param>
+        public void WriteValue(string pValue)
+        {
+            Writer.Write("\"{0}\"", pValue);
+#if DEBUG
+            Debug.WriteLine(string.Format("WriteValue '{0}'.", pValue));
+#endif
+        }
+
+        void IDisposable.Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///     执行与释放或重置非托管资源相关的应用程序定义的任务。
+        /// </summary>
+        protected void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                ((IDisposable) Writer)?.Dispose();
+            }
+        }
+    }
+}
