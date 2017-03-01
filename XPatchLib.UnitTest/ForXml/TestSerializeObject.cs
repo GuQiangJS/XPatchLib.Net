@@ -12,7 +12,7 @@ using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XPatchLib.UnitTest.TestClass;
 
-namespace XPatchLib.UnitTest
+namespace XPatchLib.UnitTest.ForXml
 {
     [TestClass]
     public class TestSerializeObject
@@ -127,16 +127,19 @@ namespace XPatchLib.UnitTest
                 Debug.WriteLine(ele.ToString());
 
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    CombineObject dSer = new CombineObject(new TypeExtend(typeof(MultilevelClass)));
-                    MultilevelClass newItem =
-                        dSer.Combine(reader, MultilevelClass.GetSampleInstance(), typeof(MultilevelClass).Name) as
-                            MultilevelClass;
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        CombineObject dSer = new CombineObject(new TypeExtend(typeof(MultilevelClass)));
+                        MultilevelClass newItem =
+                            dSer.Combine(reader, MultilevelClass.GetSampleInstance(), typeof(MultilevelClass).Name) as
+                                MultilevelClass;
 
-                    Debug.Assert(newItem != null, "newItem != null");
-                    Assert.AreEqual(c.Items.Count, newItem.Items.Count);
-                    Assert.IsTrue(c.Equals(newItem));
+                        Debug.Assert(newItem != null, "newItem != null");
+                        Assert.AreEqual(c.Items.Count, newItem.Items.Count);
+                        Assert.IsTrue(c.Equals(newItem));
+                    }
                 }
             }
         }
@@ -172,16 +175,19 @@ namespace XPatchLib.UnitTest
                 Assert.AreEqual(result, ele.ToString());
 
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    CombineObject dSer = new CombineObject(new TypeExtend(typeof(MultilevelClass)));
-                    MultilevelClass newItem =
-                        dSer.Combine(reader, MultilevelClass.GetSampleInstance(), typeof(MultilevelClass).Name) as
-                            MultilevelClass;
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        CombineObject dSer = new CombineObject(new TypeExtend(typeof(MultilevelClass)));
+                        MultilevelClass newItem =
+                            dSer.Combine(reader, MultilevelClass.GetSampleInstance(), typeof(MultilevelClass).Name) as
+                                MultilevelClass;
 
-                    Debug.Assert(newItem != null, "newItem != null");
-                    Assert.AreEqual(c.Items.Count, newItem.Items.Count);
-                    Assert.AreEqual(c, newItem);
+                        Debug.Assert(newItem != null, "newItem != null");
+                        Assert.AreEqual(c.Items.Count, newItem.Items.Count);
+                        Assert.AreEqual(c, newItem);
+                    }
                 }
             }
         }
@@ -218,15 +224,18 @@ namespace XPatchLib.UnitTest
                 Assert.AreEqual(result, ele.ToString());
 
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    CombineObject dSer = new CombineObject(new TypeExtend(typeof(MultilevelClass)));
-                    MultilevelClass newItem =
-                        dSer.Combine(reader, null, typeof(MultilevelClass).Name) as MultilevelClass;
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        CombineObject dSer = new CombineObject(new TypeExtend(typeof(MultilevelClass)));
+                        MultilevelClass newItem =
+                            dSer.Combine(reader, null, typeof(MultilevelClass).Name) as MultilevelClass;
 
-                    Debug.Assert(newItem != null, "newItem != null");
-                    Assert.AreEqual(MultilevelClass.GetSampleInstance().Items.Count, newItem.Items.Count);
-                    Assert.IsTrue(MultilevelClass.GetSampleInstance().Equals(newItem));
+                        Debug.Assert(newItem != null, "newItem != null");
+                        Assert.AreEqual(MultilevelClass.GetSampleInstance().Items.Count, newItem.Items.Count);
+                        Assert.IsTrue(MultilevelClass.GetSampleInstance().Equals(newItem));
+                    }
                 }
             }
         }
@@ -258,17 +267,20 @@ namespace XPatchLib.UnitTest
                 Assert.AreEqual(result, ele.ToString());
 
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    //Assert.Fail("缺少分序列化部分。");
-                    CombineObject com = new CombineObject(new TypeExtend(typeof(MultilevelClass)));
-                    MultilevelClass combineObj =
-                        com.Combine(reader, MultilevelClass.GetSampleInstance(), typeof(MultilevelClass).Name) as
-                            MultilevelClass;
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        //Assert.Fail("缺少分序列化部分。");
+                        CombineObject com = new CombineObject(new TypeExtend(typeof(MultilevelClass)));
+                        MultilevelClass combineObj =
+                            com.Combine(reader, MultilevelClass.GetSampleInstance(), typeof(MultilevelClass).Name) as
+                                MultilevelClass;
 
-                    Debug.Assert(combineObj != null, "combineObj != null");
-                    Assert.AreEqual(c.Items.Count, combineObj.Items.Count);
-                    Assert.IsTrue(c.Equals(combineObj));
+                        Debug.Assert(combineObj != null, "combineObj != null");
+                        Assert.AreEqual(c.Items.Count, combineObj.Items.Count);
+                        Assert.IsTrue(c.Equals(combineObj));
+                    }
                 }
             }
         }
@@ -298,15 +310,18 @@ namespace XPatchLib.UnitTest
                 Assert.AreEqual(result, ele.ToString());
 
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    NullableClass b3 =
-                        dser.Combine(reader, b1, ReflectionUtils.GetTypeFriendlyName(typeof(NullableClass))) as
-                            NullableClass;
-                    Debug.Assert(b3 != null, "b3 != null");
-                    Assert.AreEqual(b2.Title, b3.Title);
-                    Assert.AreEqual(b2.PublishYear, b3.PublishYear);
-                    Assert.AreEqual(b2.PurchaseYear, b3.PurchaseYear);
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        NullableClass b3 =
+                            dser.Combine(reader, b1, ReflectionUtils.GetTypeFriendlyName(typeof(NullableClass))) as
+                                NullableClass;
+                        Debug.Assert(b3 != null, "b3 != null");
+                        Assert.AreEqual(b2.Title, b3.Title);
+                        Assert.AreEqual(b2.PublishYear, b3.PublishYear);
+                        Assert.AreEqual(b2.PurchaseYear, b3.PurchaseYear);
+                    }
                 }
             }
         }
@@ -336,15 +351,18 @@ namespace XPatchLib.UnitTest
                 Assert.AreEqual(result, ele.ToString());
 
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    NullableClass b2 =
-                        dser.Combine(reader, NullableClass.GetSampleInstance(),
-                            ReflectionUtils.GetTypeFriendlyName(typeof(NullableClass))) as NullableClass;
-                    Debug.Assert(b2 != null, "b2 != null");
-                    Assert.AreEqual(b1.Title, b2.Title);
-                    Assert.AreEqual(b1.PublishYear, b2.PublishYear);
-                    Assert.AreEqual(b1.PurchaseYear, b2.PurchaseYear);
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        NullableClass b2 =
+                            dser.Combine(reader, NullableClass.GetSampleInstance(),
+                                ReflectionUtils.GetTypeFriendlyName(typeof(NullableClass))) as NullableClass;
+                        Debug.Assert(b2 != null, "b2 != null");
+                        Assert.AreEqual(b1.Title, b2.Title);
+                        Assert.AreEqual(b1.PublishYear, b2.PublishYear);
+                        Assert.AreEqual(b1.PurchaseYear, b2.PurchaseYear);
+                    }
                 }
             }
         }
@@ -443,18 +461,22 @@ namespace XPatchLib.UnitTest
                 Assert.IsNotNull(ele);
                 Assert.AreEqual(result, ele.ToString());
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    //创建另外一个原始对象
-                    BookClassWithDecimalPrice b2 = BookClassWithDecimalPrice.GetSampleInstance();
-                    b2 =
-                        dser.Combine(reader, b2, ReflectionUtils.GetTypeFriendlyName(typeof(BookClassWithDecimalPrice)))
-                            as BookClassWithDecimalPrice;
-                    Debug.Assert(b2 != null, "b2 != null");
-                    Assert.AreEqual(b1.Name, b2.Name);
-                    Assert.AreEqual(b1.Comments, b2.Comments);
-                    Assert.AreEqual(b1.Price, b2.Price);
-                    Assert.AreEqual(b1.PublishYear, b2.PublishYear);
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        //创建另外一个原始对象
+                        BookClassWithDecimalPrice b2 = BookClassWithDecimalPrice.GetSampleInstance();
+                        b2 =
+                            dser.Combine(reader, b2,
+                                    ReflectionUtils.GetTypeFriendlyName(typeof(BookClassWithDecimalPrice)))
+                                as BookClassWithDecimalPrice;
+                        Debug.Assert(b2 != null, "b2 != null");
+                        Assert.AreEqual(b1.Name, b2.Name);
+                        Assert.AreEqual(b1.Comments, b2.Comments);
+                        Assert.AreEqual(b1.Price, b2.Price);
+                        Assert.AreEqual(b1.PublishYear, b2.PublishYear);
+                    }
                 }
             }
         }
@@ -486,16 +508,19 @@ namespace XPatchLib.UnitTest
                 Assert.IsNotNull(ele);
                 Assert.AreEqual(result, ele.ToString());
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    //创建另外一个原始对象
-                    AuthorStruct b2 = AuthorStruct.GetSampleInstance();
-                    b2 =
-                        dser.Combine(reader, b2, ReflectionUtils.GetTypeFriendlyName(typeof(AuthorStruct))) as
-                            AuthorStruct;
-                    Debug.Assert(b2 != null, "b2 != null");
-                    Assert.AreEqual(b1.Name, b2.Name);
-                    Assert.AreEqual(b1.Comments, b2.Comments);
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        //创建另外一个原始对象
+                        AuthorStruct b2 = AuthorStruct.GetSampleInstance();
+                        b2 =
+                            dser.Combine(reader, b2, ReflectionUtils.GetTypeFriendlyName(typeof(AuthorStruct))) as
+                                AuthorStruct;
+                        Debug.Assert(b2 != null, "b2 != null");
+                        Assert.AreEqual(b1.Name, b2.Name);
+                        Assert.AreEqual(b1.Comments, b2.Comments);
+                    }
                 }
             }
         }
@@ -530,18 +555,21 @@ namespace XPatchLib.UnitTest
                 Assert.IsNotNull(ele);
                 Assert.AreEqual(result, ele.ToString());
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    //创建原始对象
-                    b1 = AuthorClass.GetSampleInstance();
-                    //对原始对象进行增量内容数据合并
-                    b1 =
-                        dser.Combine(reader, b1, ReflectionUtils.GetTypeFriendlyName(typeof(AuthorClass))) as
-                            AuthorClass;
-                    //合并后的对象与更新对象的数据比较
-                    Debug.Assert(b1 != null, "b1 != null");
-                    Assert.AreEqual(b1.Name, b2.Name);
-                    Assert.AreEqual(b1.Comments, b2.Comments);
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        //创建原始对象
+                        b1 = AuthorClass.GetSampleInstance();
+                        //对原始对象进行增量内容数据合并
+                        b1 =
+                            dser.Combine(reader, b1, ReflectionUtils.GetTypeFriendlyName(typeof(AuthorClass))) as
+                                AuthorClass;
+                        //合并后的对象与更新对象的数据比较
+                        Debug.Assert(b1 != null, "b1 != null");
+                        Assert.AreEqual(b1.Name, b2.Name);
+                        Assert.AreEqual(b1.Comments, b2.Comments);
+                    }
                 }
             }
         }
@@ -572,16 +600,19 @@ namespace XPatchLib.UnitTest
                 Assert.IsNotNull(ele);
                 Assert.AreEqual(result, ele.ToString());
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    //创建另外一个原始对象
-                    AuthorClass b2 = AuthorClass.GetSampleInstance();
-                    b2 =
-                        dser.Combine(reader, b2, ReflectionUtils.GetTypeFriendlyName(typeof(AuthorClass))) as
-                            AuthorClass;
-                    Debug.Assert(b2 != null, "b2 != null");
-                    Assert.AreEqual(b1.Name, b2.Name);
-                    Assert.AreEqual(b1.Comments, b2.Comments);
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        //创建另外一个原始对象
+                        AuthorClass b2 = AuthorClass.GetSampleInstance();
+                        b2 =
+                            dser.Combine(reader, b2, ReflectionUtils.GetTypeFriendlyName(typeof(AuthorClass))) as
+                                AuthorClass;
+                        Debug.Assert(b2 != null, "b2 != null");
+                        Assert.AreEqual(b1.Name, b2.Name);
+                        Assert.AreEqual(b1.Comments, b2.Comments);
+                    }
                 }
             }
         }
@@ -609,16 +640,19 @@ namespace XPatchLib.UnitTest
                 Assert.IsNotNull(ele);
                 Assert.AreEqual(result, ele.ToString());
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    //创建原始对象
-                    b1 = AuthorClass.GetSampleInstance();
-                    //对原始对象进行增量内容数据合并
-                    b1 =
-                        dser.Combine(reader, b1, ReflectionUtils.GetTypeFriendlyName(typeof(AuthorClass))) as
-                            AuthorClass;
-                    //合并后的对象与更新对象的数据比较
-                    Assert.IsNull(b1);
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        //创建原始对象
+                        b1 = AuthorClass.GetSampleInstance();
+                        //对原始对象进行增量内容数据合并
+                        b1 =
+                            dser.Combine(reader, b1, ReflectionUtils.GetTypeFriendlyName(typeof(AuthorClass))) as
+                                AuthorClass;
+                        //合并后的对象与更新对象的数据比较
+                        Assert.IsNull(b1);
+                    }
                 }
             }
         }
@@ -655,7 +689,7 @@ namespace XPatchLib.UnitTest
             using (MemoryStream stream = new MemoryStream())
             {
                 serializer.Divide(stream, b1, b2);
-                string context = TestHelper.StreamToString(stream);
+                string context = UnitTest.TestHelper.StreamToString(stream);
                 Assert.AreEqual(TestHelper.XmlHeaderContext, context);
             }
         }

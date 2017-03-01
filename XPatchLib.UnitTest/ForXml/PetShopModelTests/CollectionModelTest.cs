@@ -3,7 +3,7 @@ using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XPatchLib.UnitTest.PetShopModelTests.Models;
 
-namespace XPatchLib.UnitTest.PetShopModelTests
+namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
 {
     [TestClass]
     public class CollectionModelTest

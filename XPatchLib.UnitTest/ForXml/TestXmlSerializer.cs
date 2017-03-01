@@ -4,7 +4,7 @@ using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XPatchLib.UnitTest.TestClass;
 
-namespace XPatchLib.UnitTest
+namespace XPatchLib.UnitTest.ForXml
 {
     [TestClass]
     public class TestXmlSerializer
@@ -54,7 +54,7 @@ namespace XPatchLib.UnitTest
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, OriObject, RevObject);
-                var context = TestHelper.StreamToString(stream);
+                var context = UnitTest.TestHelper.StreamToString(stream);
                 Assert.AreEqual(ChangedContext, context);
             }
             serializer = new XmlSerializer(typeof(BookClass));

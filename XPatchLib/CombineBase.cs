@@ -22,7 +22,7 @@ namespace XPatchLib
         /// <exception cref="ArgumentNullException">当参数 <paramref name="pReader" /> is null 时。</exception>
         /// <exception cref="ArgumentNullException">当参数 <paramref name="pReader" /> is null 时。</exception>
         /// <exception cref="ArgumentException">当参数 <paramref name="pName" /> 长度为 0 时。</exception>
-        internal virtual object Combine(XmlReader pReader, Object pOriObject, string pName)
+        internal virtual object Combine(ITextReader pReader, Object pOriObject, string pName)
         {
             Guard.ArgumentNotNull(pReader, "pReader");
             Guard.ArgumentNotNullOrEmpty(pName, "pName");
@@ -52,7 +52,7 @@ namespace XPatchLib
         /// <param name="pReader">The p reader.</param>
         /// <param name="pName">Name of the p.</param>
         /// <remarks>执行此操作会移动到移动到包含当前属性节点的元素。<see cref="XmlReader.MoveToElement()" /></remarks>
-        protected virtual void InitAttributes(XmlReader pReader, string pName)
+        protected virtual void InitAttributes(ITextReader pReader, string pName)
         {
             Attributes = AnlysisAttributes(pReader, pName);
         }
@@ -64,11 +64,11 @@ namespace XPatchLib
         /// <param name="pName">Name of the p.</param>
         /// <returns></returns>
         /// <remarks>执行此操作会移动到移动到包含当前属性节点的元素。<see cref="XmlReader.MoveToElement()" /></remarks>
-        protected virtual CombineAttribute AnlysisAttributes(XmlReader pReader, string pName)
+        protected virtual CombineAttribute AnlysisAttributes(ITextReader pReader, string pName)
         {
             CombineAttribute result = new CombineAttribute(Action.Edit, pReader.AttributeCount);
-            if (pReader.NodeType == XmlNodeType.Element &&
-                pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) && pReader.HasAttributes)
+            if (pReader.NodeType == NodeType.Element &&
+                pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) && pReader.AttributeCount > 0)
             {
                 //读取除Action以外的所有Action，将其赋值给属性
                 while (pReader.MoveToNextAttribute())
@@ -121,7 +121,7 @@ namespace XPatchLib
         /// <param name="pOriObject">现有待合并数据的对象。</param>
         /// <param name="pName">当前读取的内容名称。</param>
         /// <returns></returns>
-        protected abstract object CombineAction(XmlReader pReader, Object pOriObject, string pName);
+        protected abstract object CombineAction(ITextReader pReader, Object pOriObject, string pName);
 
         #region Internal Constructors
 

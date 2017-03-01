@@ -19,7 +19,7 @@ namespace XPatchLib
         /// <param name="pOriObject">现有待合并数据的对象。</param>
         /// <param name="pName">当前读取的内容名称。</param>
         /// <returns></returns>
-        protected override object CombineAction(XmlReader pReader, object pOriObject, string pName)
+        protected override object CombineAction(ITextReader pReader, object pOriObject, string pName)
         {
             //当原始对象为null时，先创建一个实例。
             if (pOriObject == null)
@@ -28,7 +28,7 @@ namespace XPatchLib
             while (!pReader.EOF)
             {
                 if (pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) &&
-                    pReader.NodeType == XmlNodeType.EndElement)
+                    pReader.NodeType == NodeType.EndElement)
                     break;
                 //读取除Action以外的所有Action，将其赋值给属性
                 foreach (var variable in Attributes.KeysValuePairs)
@@ -44,7 +44,7 @@ namespace XPatchLib
                     }
                 }
 
-                if (pReader.NodeType == XmlNodeType.Element)
+                if (pReader.NodeType == NodeType.Element)
                 {
                     MemberWrapper member;
 

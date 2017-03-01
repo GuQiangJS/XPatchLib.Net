@@ -18,7 +18,7 @@ namespace XPatchLib
         /// <summary>
         ///     以指定的 <paramref name="pWriter" /> 实例创建 <see cref="XmlTextWriter" /> 类型实例。
         /// </summary>
-        /// <param name="pWriter">The p writer.</param>
+        /// <param name="pWriter">指定的 XML 编写器。</param>
         internal XmlTextWriter(XmlWriter pWriter)
         {
             Guard.ArgumentNotNull(pWriter, "pWriter");

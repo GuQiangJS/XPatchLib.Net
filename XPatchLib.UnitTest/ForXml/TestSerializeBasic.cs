@@ -11,7 +11,7 @@ using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XPatchLib.UnitTest.TestClass;
 
-namespace XPatchLib.UnitTest
+namespace XPatchLib.UnitTest.ForXml
 {
     [TestClass]
     public class TestSerializeBasic
@@ -184,9 +184,12 @@ namespace XPatchLib.UnitTest
                     Debug.WriteLine(s);
                     Assert.AreEqual(serializedResults[i], s, "输出内容与预期不符");
                     stream.Position = 0;
-                    using (XmlReader reader = XmlReader.Create(stream))
+                    using (XmlReader xmlReader = XmlReader.Create(stream))
                     {
-                        Assert.AreEqual(revObjs[i], der.Combine(reader, null, types[i].Name), "增量合并后的对象实例与预期不符");
+                        using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                        {
+                            Assert.AreEqual(revObjs[i], der.Combine(reader, null, types[i].Name), "增量合并后的对象实例与预期不符");
+                        }
                     }
                 }
 
@@ -207,9 +210,12 @@ namespace XPatchLib.UnitTest
 
                     Assert.AreEqual(serializedSetNullResults[i], s, "输出内容与预期不符");
                     stream.Position = 0;
-                    using (XmlReader reader = XmlReader.Create(stream))
+                    using (XmlReader xmlReader = XmlReader.Create(stream))
                     {
-                        Assert.AreEqual(null, der.Combine(reader, null, types[i].Name), "增量合并后的对象实例与预期不符");
+                        using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                        {
+                            Assert.AreEqual(null, der.Combine(reader, null, types[i].Name), "增量合并后的对象实例与预期不符");
+                        }
                     }
                 }
 
@@ -230,9 +236,12 @@ namespace XPatchLib.UnitTest
 
                     Assert.AreEqual(serializedResults[i], s, "输出内容与预期不符");
                     stream.Position = 0;
-                    using (XmlReader reader = XmlReader.Create(stream))
+                    using (XmlReader xmlReader = XmlReader.Create(stream))
                     {
-                        Assert.AreEqual(revObjs[i], der.Combine(reader, null, types[i].Name), "增量合并后的对象实例与预期不符");
+                        using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                        {
+                            Assert.AreEqual(revObjs[i], der.Combine(reader, null, types[i].Name), "增量合并后的对象实例与预期不符");
+                        }
                     }
                 }
 
@@ -299,13 +308,16 @@ namespace XPatchLib.UnitTest
                 Assert.AreEqual(result, ele.ToString());
 
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    var c2 =
-                        dser.Combine(reader, ColorClass.GetSampleInstance(),
-                            ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass))) as ColorClass;
-                    Debug.Assert(c2 != null, "c2 != null");
-                    Assert.AreEqual(c1.Color, c2.Color);
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var c2 =
+                            dser.Combine(reader, ColorClass.GetSampleInstance(),
+                                ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass))) as ColorClass;
+                        Debug.Assert(c2 != null, "c2 != null");
+                        Assert.AreEqual(c1.Color, c2.Color);
+                    }
                 }
             }
         }
@@ -337,12 +349,15 @@ namespace XPatchLib.UnitTest
                 Assert.AreEqual(Color.AntiqueWhite, c2.Color);
 
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    //合并数据时会默认更新传入的原始对象
-                    dser.Combine(reader, c2, ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)));
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        //合并数据时会默认更新传入的原始对象
+                        dser.Combine(reader, c2, ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)));
 
-                    Assert.AreEqual(ColorClass.GetSampleInstance().Color, c2.Color);
+                        Assert.AreEqual(ColorClass.GetSampleInstance().Color, c2.Color);
+                    }
                 }
             }
         }
@@ -393,14 +408,17 @@ namespace XPatchLib.UnitTest
                 Assert.AreEqual(result, ele.ToString());
                 Debug.WriteLine(ele.ToString());
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    var c2 =
-                        dser.Combine(reader, EnumClass.GetSampleInstance(),
-                            ReflectionUtils.GetTypeFriendlyName(typeof(EnumClass))) as EnumClass;
-                    Assert.IsNotNull(c2);
-                    Assert.AreEqual(SingleQuarter.Second, c2.SingleQuarter);
-                    Assert.AreEqual(MultiQuarter.Second | MultiQuarter.Fourth, c2.MultiQuarter);
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var c2 =
+                            dser.Combine(reader, EnumClass.GetSampleInstance(),
+                                ReflectionUtils.GetTypeFriendlyName(typeof(EnumClass))) as EnumClass;
+                        Assert.IsNotNull(c2);
+                        Assert.AreEqual(SingleQuarter.Second, c2.SingleQuarter);
+                        Assert.AreEqual(MultiQuarter.Second | MultiQuarter.Fourth, c2.MultiQuarter);
+                    }
                 }
             }
         }
@@ -420,9 +438,12 @@ namespace XPatchLib.UnitTest
             var dser = new CombineObject(new TypeExtend(typeof(ColorClass)));
             try
             {
-                using (XmlReader reader = XmlTextReader.Create(new StringReader(result)))
+                using (XmlReader xmlReader = System.Xml.XmlTextReader.Create(new StringReader(result)))
                 {
-                    dser.Combine(reader, ColorClass.GetSampleInstance(), "ColorClass");
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        dser.Combine(reader, ColorClass.GetSampleInstance(), "ColorClass");
+                    }
                 }
             }
             catch (FormatException ex)

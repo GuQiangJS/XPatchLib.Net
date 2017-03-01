@@ -36,7 +36,7 @@ namespace XPatchLib
         ///     待更新的Key值存在，但是更新操作被指定为<see cref="Action.Remove" />,
         ///     <see cref="Action.Edit" />,<see cref="Action.SetNull" />之外的操作时。
         /// </exception>
-        protected override object CombineAction(XmlReader pReader, object pOriObject, string pName)
+        protected override object CombineAction(ITextReader pReader, object pOriObject, string pName)
         {
             //获取KeyValuePair类型对象的Key值与Value值的类型
             TypeExtend keyType = TypeExtendContainer.GetTypeExtend(Type.KeyArgumentType, Type);
@@ -51,11 +51,11 @@ namespace XPatchLib
             while (!pReader.EOF)
             {
                 if (pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) &&
-                    pReader.NodeType == XmlNodeType.EndElement)
+                    pReader.NodeType == NodeType.EndElement)
                     break;
-                if (pReader.Name.Equals(ConstValue.KEY) && pReader.NodeType == XmlNodeType.Element)
+                if (pReader.Name.Equals(ConstValue.KEY) && pReader.NodeType == NodeType.Element)
                     revKey = new CombineCore(keyType, Mode).Combine(pReader, null, pReader.Name);
-                if (pReader.Name.Equals(ConstValue.VALUE) && pReader.NodeType == XmlNodeType.Element)
+                if (pReader.Name.Equals(ConstValue.VALUE) && pReader.NodeType == NodeType.Element)
                     revValue = new CombineCore(valueType, Mode).Combine(pReader, null, pReader.Name);
                 pReader.Read();
             }

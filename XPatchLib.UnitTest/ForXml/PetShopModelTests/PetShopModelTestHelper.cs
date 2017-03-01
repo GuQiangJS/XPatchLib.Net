@@ -1,7 +1,7 @@
 ﻿using System;
 using XPatchLib.UnitTest.PetShopModelTests.Models;
 
-namespace XPatchLib.UnitTest.PetShopModelTests
+namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
 {
     internal static class PetShopModelTestHelper
     {

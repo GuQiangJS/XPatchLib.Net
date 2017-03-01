@@ -12,7 +12,7 @@ using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XPatchLib.UnitTest.TestClass;
 
-namespace XPatchLib.UnitTest
+namespace XPatchLib.UnitTest.ForXml
 {
     [TestClass]
     public class TestSerializeArray
@@ -140,7 +140,7 @@ namespace XPatchLib.UnitTest
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, null, a);
-                context = TestHelper.StreamToString(stream);
+                context = UnitTest.TestHelper.StreamToString(stream);
             }
 
             Assert.AreEqual(result, context);
@@ -200,7 +200,7 @@ namespace XPatchLib.UnitTest
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, null, b);
-                var context = TestHelper.StreamToString(stream);
+                var context = UnitTest.TestHelper.StreamToString(stream);
                 Assert.AreEqual(result, context);
             }
 
@@ -214,7 +214,7 @@ namespace XPatchLib.UnitTest
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, new BookClassCollection(), b);
-                var context = TestHelper.StreamToString(stream);
+                var context = UnitTest.TestHelper.StreamToString(stream);
                 Assert.AreEqual(result, context);
             }
 
@@ -239,7 +239,7 @@ namespace XPatchLib.UnitTest
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, null, b);
-                var context = TestHelper.StreamToString(stream);
+                var context = UnitTest.TestHelper.StreamToString(stream);
                 Assert.AreEqual(result, context);
             }
 
@@ -254,7 +254,7 @@ namespace XPatchLib.UnitTest
             {
                 //b是空白集合，与空白集合产生增量内容，为空白内容。
                 serializer.Divide(stream, new BookClassCollection(), b);
-                var context = TestHelper.StreamToString(stream);
+                var context = UnitTest.TestHelper.StreamToString(stream);
                 Assert.AreEqual(TestHelper.XmlHeaderContext, context);
             }
 
@@ -286,7 +286,7 @@ namespace XPatchLib.UnitTest
                 c.Add(new BookClass {Name = "C"});
                 c.Add(new BookClass {Name = "D"});
                 serializer.Divide(stream, c, b);
-                var context = TestHelper.StreamToString(stream);
+                var context = UnitTest.TestHelper.StreamToString(stream);
                 Assert.AreEqual(TestHelper.XmlHeaderContext, context);
             }
         }
@@ -380,13 +380,16 @@ namespace XPatchLib.UnitTest
                 Debug.WriteLine(ele.ToString());
                 var com = new CombineIEnumerable(new TypeExtend(typeof(BookClassCollection)));
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    var b3 =
-                        com.Combine(reader, b1, ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection))) as
-                            BookClassCollection;
+                    using (ITextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var b3 =
+                            com.Combine(reader, b1, ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection))) as
+                                BookClassCollection;
 
-                    Assert.AreEqual(b2, b3);
+                        Assert.AreEqual(b2, b3);
+                    }
                 }
             }
         }
@@ -428,13 +431,16 @@ namespace XPatchLib.UnitTest
 
                 var com = new CombineIEnumerable(new TypeExtend(typeof(BookClassCollection)));
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    var b3 =
-                        com.Combine(reader, b1, ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection))) as
-                            BookClassCollection;
+                    using (ITextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var b3 =
+                            com.Combine(reader, b1, ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection))) as
+                                BookClassCollection;
 
-                    Assert.AreEqual(b2, b3);
+                        Assert.AreEqual(b2, b3);
+                    }
                 }
             }
         }
@@ -464,13 +470,16 @@ namespace XPatchLib.UnitTest
                 Assert.AreEqual(result, ele.ToString());
                 var com = new CombineIEnumerable(new TypeExtend(typeof(string[])));
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    var s3 = com.Combine(reader, s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as string[];
-                    Assert.AreEqual(s2.Length, s3.Length);
+                    using (ITextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var s3 = com.Combine(reader, s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as string[];
+                        Assert.AreEqual(s2.Length, s3.Length);
 
-                    Assert.IsTrue(s3.Contains(s2[0]));
-                    Assert.IsTrue(s3.Contains(s2[1]));
+                        Assert.IsTrue(s3.Contains(s2[0]));
+                        Assert.IsTrue(s3.Contains(s2[1]));
+                    }
                 }
             }
         }
@@ -500,15 +509,18 @@ namespace XPatchLib.UnitTest
 
                 var com = new CombineIEnumerable(new TypeExtend(typeof(string[])));
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    var s2 =
-                        com.Combine(reader, new string[] {}, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as
-                            string[];
-                    Assert.AreEqual(2, s2.Length);
+                    using (ITextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var s2 =
+                            com.Combine(reader, new string[] {}, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as
+                                string[];
+                        Assert.AreEqual(2, s2.Length);
 
-                    Assert.IsTrue(s2.Contains("ABC"));
-                    Assert.IsTrue(s2.Contains("DEF"));
+                        Assert.IsTrue(s2.Contains("ABC"));
+                        Assert.IsTrue(s2.Contains("DEF"));
+                    }
                 }
             }
         }
@@ -536,14 +548,17 @@ namespace XPatchLib.UnitTest
                 Assert.AreEqual(result, ele.ToString());
 
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    var com = new CombineIEnumerable(new TypeExtend(typeof(string[])));
-                    var s3 = com.Combine(reader, s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as string[];
+                    using (ITextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var com = new CombineIEnumerable(new TypeExtend(typeof(string[])));
+                        var s3 = com.Combine(reader, s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as string[];
 
-                    Assert.AreEqual(s2.Length, s3.Length);
+                        Assert.AreEqual(s2.Length, s3.Length);
 
-                    Assert.AreEqual(s2[0], s3[0]);
+                        Assert.AreEqual(s2[0], s3[0]);
+                    }
                 }
             }
         }
@@ -570,14 +585,17 @@ namespace XPatchLib.UnitTest
 
 
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    var com = new CombineIEnumerable(new TypeExtend(typeof(BookClassCollection)));
-                    var b3 =
-                        com.Combine(reader, s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as
-                            BookClassCollection;
+                    using (ITextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var com = new CombineIEnumerable(new TypeExtend(typeof(BookClassCollection)));
+                        var b3 =
+                            com.Combine(reader, s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as
+                                BookClassCollection;
 
-                    Assert.AreEqual(null, b3);
+                        Assert.AreEqual(null, b3);
+                    }
                 }
             }
         }

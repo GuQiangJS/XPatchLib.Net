@@ -8,7 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XPatchLib.UnitTest
+namespace XPatchLib.UnitTest.ForXml
 {
     [TestClass]
     public class TestDictionary
@@ -108,27 +108,30 @@ namespace XPatchLib.UnitTest
             dic2.Add("Ekey", "EValue");
 
             var changedEle = XElement.Load(new StringReader(ComplexOperatorChangedContext));
-
-            using (XmlReader reader = XmlReader.Create(new StringReader(ComplexOperatorChangedContext)))
+            
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(ComplexOperatorChangedContext)))
             {
-                var newDic =
-                    new CombineCore(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                        Dictionary<string, string>;
-
-                Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                Assert.IsNotNull(newDic);
-                Assert.AreEqual(4, newDic.Count);
-                Assert.AreEqual(dic2.Count, newDic.Count);
-                foreach (var key in dic2.Keys)
+                using (var reader = new XmlTextReader(xmlReader))
                 {
-                    Assert.AreEqual(dic1[key], newDic[key]);
-                    Assert.AreEqual(dic2[key], newDic[key]);
-                }
+                    var newDic =
+                        new CombineCore(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
+                            Dictionary<string, string>;
 
-                //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
-                Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
+                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
+                    Assert.IsNotNull(newDic);
+                    Assert.AreEqual(4, newDic.Count);
+                    Assert.AreEqual(dic2.Count, newDic.Count);
+                    foreach (var key in dic2.Keys)
+                    {
+                        Assert.AreEqual(dic1[key], newDic[key]);
+                        Assert.AreEqual(dic2[key], newDic[key]);
+                    }
+
+                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
+                    Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
+                }
             }
         }
 
@@ -149,26 +152,29 @@ namespace XPatchLib.UnitTest
 
             var changedEle = XElement.Load(new StringReader(ComplexOperatorChangedContext));
 
-            using (XmlReader reader = XmlReader.Create(new StringReader(ComplexOperatorChangedContext)))
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(ComplexOperatorChangedContext)))
             {
-                var newDic =
-                    new CombineIDictionary(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                        Dictionary<string, string>;
-
-                Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                Assert.IsNotNull(newDic);
-                Assert.AreEqual(4, newDic.Count);
-                Assert.AreEqual(dic2.Count, newDic.Count);
-                foreach (var key in dic2.Keys)
+                using (var reader = new XmlTextReader(xmlReader))
                 {
-                    Assert.AreEqual(dic1[key], newDic[key]);
-                    Assert.AreEqual(dic2[key], newDic[key]);
-                }
+                    var newDic =
+                        new CombineIDictionary(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
+                            Dictionary<string, string>;
 
-                //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
-                Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
+                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
+                    Assert.IsNotNull(newDic);
+                    Assert.AreEqual(4, newDic.Count);
+                    Assert.AreEqual(dic2.Count, newDic.Count);
+                    foreach (var key in dic2.Keys)
+                    {
+                        Assert.AreEqual(dic1[key], newDic[key]);
+                        Assert.AreEqual(dic2[key], newDic[key]);
+                    }
+
+                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
+                    Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
+                }
             }
         }
 
@@ -228,7 +234,7 @@ namespace XPatchLib.UnitTest
             {
                 var serializer = new XmlSerializer(dic1.GetType());
                 serializer.Divide(stream, dic1, dic2);
-                var context = TestHelper.StreamToString(stream);
+                var context = UnitTest.TestHelper.StreamToString(stream);
                 Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + ComplexOperatorChangedContext,
                     context);
             }
@@ -247,21 +253,24 @@ namespace XPatchLib.UnitTest
 
             Dictionary<string, string> oldDic = null;
 
-            using (XmlReader reader = XmlReader.Create(new StringReader(CreateChangedContext)))
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(CreateChangedContext)))
             {
-                var newDic =
-                    new CombineCore(new TypeExtend(dic1.GetType())).Combine(reader, oldDic,
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                        Dictionary<string, string>;
+                using (var reader = new XmlTextReader(xmlReader))
+                {
+                    var newDic =
+                        new CombineCore(new TypeExtend(dic1.GetType())).Combine(reader, oldDic,
+                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
+                            Dictionary<string, string>;
 
-                Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                Assert.IsNotNull(newDic);
-                Assert.AreEqual(dic1.Count, newDic.Count);
-                foreach (var key in dic1.Keys)
-                    Assert.AreEqual(dic1[key], newDic[key]);
+                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
+                    Assert.IsNotNull(newDic);
+                    Assert.AreEqual(dic1.Count, newDic.Count);
+                    foreach (var key in dic1.Keys)
+                        Assert.AreEqual(dic1[key], newDic[key]);
 
-                //原始值为Null时，内部重新创建对象实例，所以原始值依然为Null。
-                Assert.IsNull(oldDic);
+                    //原始值为Null时，内部重新创建对象实例，所以原始值依然为Null。
+                    Assert.IsNull(oldDic);
+                }
             }
         }
 
@@ -278,21 +287,24 @@ namespace XPatchLib.UnitTest
 
             Dictionary<string, string> oldDic = null;
 
-            using (XmlReader reader = XmlReader.Create(new StringReader(CreateChangedContext)))
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(CreateChangedContext)))
             {
-                var newDic =
-                    new CombineIDictionary(new TypeExtend(dic1.GetType())).Combine(reader, oldDic,
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                        Dictionary<string, string>;
+                using (var reader = new XmlTextReader(xmlReader))
+                {
+                    var newDic =
+                        new CombineIDictionary(new TypeExtend(dic1.GetType())).Combine(reader, oldDic,
+                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
+                            Dictionary<string, string>;
 
-                Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                Assert.IsNotNull(newDic);
-                Assert.AreEqual(dic1.Count, newDic.Count);
-                foreach (var key in dic1.Keys)
-                    Assert.AreEqual(dic1[key], newDic[key]);
+                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
+                    Assert.IsNotNull(newDic);
+                    Assert.AreEqual(dic1.Count, newDic.Count);
+                    foreach (var key in dic1.Keys)
+                        Assert.AreEqual(dic1[key], newDic[key]);
 
-                //原始值为Null时，内部重新创建对象实例，所以原始值依然为Null。
-                Assert.IsNull(oldDic);
+                    //原始值为Null时，内部重新创建对象实例，所以原始值依然为Null。
+                    Assert.IsNull(oldDic);
+                }
             }
         }
 
@@ -334,7 +346,7 @@ namespace XPatchLib.UnitTest
             {
                 var serializer = new XmlSerializer(dic1.GetType());
                 serializer.Divide(stream, null, dic1);
-                var context = TestHelper.StreamToString(stream);
+                var context = UnitTest.TestHelper.StreamToString(stream);
                 Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + CreateChangedContext, context);
             }
         }
@@ -356,26 +368,29 @@ namespace XPatchLib.UnitTest
 
             var changedEle = XElement.Load(new StringReader(EditChangedContext));
 
-            using (XmlReader reader = XmlReader.Create(new StringReader(EditChangedContext)))
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(EditChangedContext)))
             {
-                var newDic =
-                    new CombineCore(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                        Dictionary<string, string>;
-
-                Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                Assert.IsNotNull(newDic);
-                Assert.AreEqual(4, newDic.Count);
-                Assert.AreEqual(dic2.Count, newDic.Count);
-                foreach (var key in dic2.Keys)
+                using (var reader = new XmlTextReader(xmlReader))
                 {
-                    Assert.AreEqual(dic1[key], newDic[key]);
-                    Assert.AreEqual(dic2[key], newDic[key]);
-                }
+                    var newDic =
+                        new CombineCore(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
+                            Dictionary<string, string>;
 
-                //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
-                Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
+                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
+                    Assert.IsNotNull(newDic);
+                    Assert.AreEqual(4, newDic.Count);
+                    Assert.AreEqual(dic2.Count, newDic.Count);
+                    foreach (var key in dic2.Keys)
+                    {
+                        Assert.AreEqual(dic1[key], newDic[key]);
+                        Assert.AreEqual(dic2[key], newDic[key]);
+                    }
+
+                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
+                    Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
+                }
             }
         }
 
@@ -396,26 +411,29 @@ namespace XPatchLib.UnitTest
 
             var changedEle = XElement.Load(new StringReader(EditChangedContext));
 
-            using (XmlReader reader = XmlReader.Create(new StringReader(EditChangedContext)))
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(EditChangedContext)))
             {
-                var newDic =
-                    new CombineIDictionary(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                        Dictionary<string, string>;
-
-                Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                Assert.IsNotNull(newDic);
-                Assert.AreEqual(4, newDic.Count);
-                Assert.AreEqual(dic2.Count, newDic.Count);
-                foreach (var key in dic2.Keys)
+                using (var reader = new XmlTextReader(xmlReader))
                 {
-                    Assert.AreEqual(dic1[key], newDic[key]);
-                    Assert.AreEqual(dic2[key], newDic[key]);
-                }
+                    var newDic =
+                        new CombineIDictionary(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
+                            Dictionary<string, string>;
 
-                //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
-                Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
+                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
+                    Assert.IsNotNull(newDic);
+                    Assert.AreEqual(4, newDic.Count);
+                    Assert.AreEqual(dic2.Count, newDic.Count);
+                    foreach (var key in dic2.Keys)
+                    {
+                        Assert.AreEqual(dic1[key], newDic[key]);
+                        Assert.AreEqual(dic2[key], newDic[key]);
+                    }
+
+                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
+                    Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
+                }
             }
         }
 
@@ -474,7 +492,7 @@ namespace XPatchLib.UnitTest
             {
                 var serializer = new XmlSerializer(dic1.GetType());
                 serializer.Divide(stream, dic1, dic2);
-                var context = TestHelper.StreamToString(stream);
+                var context = UnitTest.TestHelper.StreamToString(stream);
                 Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + EditChangedContext, context);
             }
         }
@@ -490,22 +508,25 @@ namespace XPatchLib.UnitTest
 
             var changedEle = XElement.Load(new StringReader(RemoveChangedContext));
 
-            using (XmlReader reader = XmlReader.Create(new StringReader(RemoveChangedContext)))
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(RemoveChangedContext)))
             {
-                var newDic =
-                    new CombineCore(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                        Dictionary<string, string>;
+                using (var reader = new XmlTextReader(xmlReader))
+                {
+                    var newDic =
+                        new CombineCore(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
+                            Dictionary<string, string>;
 
-                Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                Assert.IsNotNull(newDic);
-                Assert.AreEqual(2, newDic.Count);
-                Assert.AreEqual(dic1.Count, newDic.Count);
-                foreach (var key in dic1.Keys)
-                    Assert.AreEqual(dic1[key], newDic[key]);
+                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
+                    Assert.IsNotNull(newDic);
+                    Assert.AreEqual(2, newDic.Count);
+                    Assert.AreEqual(dic1.Count, newDic.Count);
+                    foreach (var key in dic1.Keys)
+                        Assert.AreEqual(dic1[key], newDic[key]);
 
-                //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
+                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
+                }
             }
         }
 
@@ -520,22 +541,25 @@ namespace XPatchLib.UnitTest
 
             var changedEle = XElement.Load(new StringReader(RemoveChangedContext));
 
-            using (XmlReader reader = XmlReader.Create(new StringReader(RemoveChangedContext)))
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(RemoveChangedContext)))
             {
-                var newDic =
-                    new CombineIDictionary(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                        Dictionary<string, string>;
+                using (var reader = new XmlTextReader(xmlReader))
+                {
+                    var newDic =
+                        new CombineIDictionary(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
+                            Dictionary<string, string>;
 
-                Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                Assert.IsNotNull(newDic);
-                Assert.AreEqual(2, newDic.Count);
-                Assert.AreEqual(dic1.Count, newDic.Count);
-                foreach (var key in dic1.Keys)
-                    Assert.AreEqual(dic1[key], newDic[key]);
+                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
+                    Assert.IsNotNull(newDic);
+                    Assert.AreEqual(2, newDic.Count);
+                    Assert.AreEqual(dic1.Count, newDic.Count);
+                    foreach (var key in dic1.Keys)
+                        Assert.AreEqual(dic1[key], newDic[key]);
 
-                //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
+                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
+                }
             }
         }
 
@@ -582,7 +606,7 @@ namespace XPatchLib.UnitTest
             {
                 var serializer = new XmlSerializer(dic1.GetType());
                 serializer.Divide(stream, dic1, dic2);
-                var context = TestHelper.StreamToString(stream);
+                var context = UnitTest.TestHelper.StreamToString(stream);
                 Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + RemoveChangedContext, context);
             }
         }
@@ -604,26 +628,29 @@ namespace XPatchLib.UnitTest
 
             var changedEle = XElement.Load(new StringReader(SetNullChangedContext));
 
-            using (XmlReader reader = XmlReader.Create(new StringReader(SetNullChangedContext)))
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(SetNullChangedContext)))
             {
-                var newDic =
-                    new CombineCore(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                        Dictionary<string, string>;
-
-                Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                Assert.IsNotNull(newDic);
-                Assert.AreEqual(4, newDic.Count);
-                Assert.AreEqual(dic2.Count, newDic.Count);
-                foreach (var key in dic2.Keys)
+                using (var reader = new XmlTextReader(xmlReader))
                 {
-                    Assert.AreEqual(dic1[key], newDic[key]);
-                    Assert.AreEqual(dic2[key], newDic[key]);
-                }
+                    var newDic =
+                        new CombineCore(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
+                            Dictionary<string, string>;
 
-                //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
-                Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
+                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
+                    Assert.IsNotNull(newDic);
+                    Assert.AreEqual(4, newDic.Count);
+                    Assert.AreEqual(dic2.Count, newDic.Count);
+                    foreach (var key in dic2.Keys)
+                    {
+                        Assert.AreEqual(dic1[key], newDic[key]);
+                        Assert.AreEqual(dic2[key], newDic[key]);
+                    }
+
+                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
+                    Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
+                }
             }
         }
 
@@ -644,26 +671,29 @@ namespace XPatchLib.UnitTest
 
             var changedEle = XElement.Load(new StringReader(SetNullChangedContext));
 
-            using (XmlReader reader = XmlReader.Create(new StringReader(SetNullChangedContext)))
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(SetNullChangedContext)))
             {
-                var newDic =
-                    new CombineIDictionary(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                        Dictionary<string, string>;
-
-                Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                Assert.IsNotNull(newDic);
-                Assert.AreEqual(4, newDic.Count);
-                Assert.AreEqual(dic2.Count, newDic.Count);
-                foreach (var key in dic2.Keys)
+                using (var reader = new XmlTextReader(xmlReader))
                 {
-                    Assert.AreEqual(dic1[key], newDic[key]);
-                    Assert.AreEqual(dic2[key], newDic[key]);
-                }
+                    var newDic =
+                        new CombineIDictionary(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
+                            Dictionary<string, string>;
 
-                //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
-                Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
+                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
+                    Assert.IsNotNull(newDic);
+                    Assert.AreEqual(4, newDic.Count);
+                    Assert.AreEqual(dic2.Count, newDic.Count);
+                    foreach (var key in dic2.Keys)
+                    {
+                        Assert.AreEqual(dic1[key], newDic[key]);
+                        Assert.AreEqual(dic2[key], newDic[key]);
+                    }
+
+                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
+                    Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
+                }
             }
         }
 
@@ -722,7 +752,7 @@ namespace XPatchLib.UnitTest
             {
                 var serializer = new XmlSerializer(dic1.GetType());
                 serializer.Divide(stream, dic1, dic2);
-                var context = TestHelper.StreamToString(stream);
+                var context = UnitTest.TestHelper.StreamToString(stream);
                 Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + SetNullChangedContext, context);
             }
         }

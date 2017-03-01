@@ -26,17 +26,17 @@ namespace XPatchLib
         /// <param name="pOriObject">现有待合并数据的对象。</param>
         /// <param name="pName">当前读取的内容名称。</param>
         /// <returns></returns>
-        protected override object CombineAction(XmlReader pReader, object pOriObject, string pName)
+        protected override object CombineAction(ITextReader pReader, object pOriObject, string pName)
         {
             while (!pReader.EOF)
             {
                 if (pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) &&
-                    pReader.NodeType == XmlNodeType.EndElement)
+                    pReader.NodeType == NodeType.EndElement)
                     break;
 
                 pReader.MoveToElement();
 
-                if (pReader.Name == GenericArgumentType.TypeFriendlyName && pReader.NodeType == XmlNodeType.Element)
+                if (pReader.Name == GenericArgumentType.TypeFriendlyName && pReader.NodeType == NodeType.Element)
                     CombineCore(pReader, ref pOriObject, GenericArgumentType.TypeFriendlyName);
                 pReader.Read();
             }
@@ -50,7 +50,7 @@ namespace XPatchLib
         /// <param name="pReader">Xml读取器。</param>
         /// <param name="pOriObject">待合并数据的原始对象。</param>
         /// <param name="pName">当前正在解析的节点名称。</param>
-        private void CombineCore(XmlReader pReader, ref object pOriObject, string pName)
+        private void CombineCore(ITextReader pReader, ref object pOriObject, string pName)
         {
             CombineAttribute attrs = AnlysisAttributes(pReader, pName);
 

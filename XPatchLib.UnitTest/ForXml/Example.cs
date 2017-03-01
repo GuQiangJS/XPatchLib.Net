@@ -10,7 +10,7 @@ using System.Text;
 using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XPatchLib.UnitTest
+namespace XPatchLib.UnitTest.ForXml
 {
     /// <summary>
     ///     操作复杂类型

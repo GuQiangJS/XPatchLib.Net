@@ -255,7 +255,7 @@ namespace XPatchLib
         /// </example>
         public object Combine(Stream pStream, object pOriValue, bool pOverride)
         {
-            var xmlReader = new XmlTextReader(pStream);
+            var xmlReader = new System.Xml.XmlTextReader(pStream);
             xmlReader.WhitespaceHandling = WhitespaceHandling.Significant;
             xmlReader.Normalization = true;
             xmlReader.XmlResolver = null;
@@ -322,7 +322,7 @@ namespace XPatchLib
         /// </example>
         public object Combine(TextReader pReader, object pOriValue, bool pOverride)
         {
-            var xmlReader = new XmlTextReader(pReader);
+            var xmlReader = new System.Xml.XmlTextReader(pReader);
             xmlReader.WhitespaceHandling = WhitespaceHandling.Significant;
             xmlReader.Normalization = true;
             xmlReader.XmlResolver = null;
@@ -422,7 +422,7 @@ namespace XPatchLib
                         stream.Position = 0;
                         using (XmlReader reader = XmlReader.Create(stream))
                         {
-                            cloneObjValue = new CombineCore(_type).Combine(reader, null, _type.TypeFriendlyName);
+                            cloneObjValue = new CombineCore(_type).Combine(new XmlTextReader(reader), null, _type.TypeFriendlyName);
                         }
                     }
                     finally
@@ -435,7 +435,13 @@ namespace XPatchLib
                 cloneObjValue = _type.CreateInstance();
 
             //var ele = XElement.Load(pReader, LoadOptions.None);
-            return new CombineCore(_type, _mode).Combine(pReader, cloneObjValue, _type.TypeFriendlyName);
+            return new CombineCore(_type, _mode).Combine(new XmlTextReader(pReader), cloneObjValue,
+                _type.TypeFriendlyName);
+        }
+
+        private object Combine(ITextReader pReader, object pOriValue, bool pOverride)
+        {
+            return new CombineCore(_type, _mode).Combine(pReader, pOriValue, _type.TypeFriendlyName);
         }
 
         /// <summary>

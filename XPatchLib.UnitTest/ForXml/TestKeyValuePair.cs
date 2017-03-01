@@ -8,7 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XPatchLib.UnitTest
+namespace XPatchLib.UnitTest.ForXml
 {
     [TestClass]
     public class TestKeyValuePair
@@ -24,11 +24,14 @@ namespace XPatchLib.UnitTest
   <Key>" + k2.Key + @"</Key>
 </KeyValuePair_String_String>";
 
-            using (XmlReader reader = XmlTextReader.Create(new StringReader(changedContext)))
+            using (XmlReader xmlReader = System.Xml.XmlTextReader.Create(new StringReader(changedContext)))
             {
-                var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
-                    ReflectionUtils.GetTypeFriendlyName(k2.GetType()));
-                Assert.AreEqual(k2, combineObj);
+                using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                {
+                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
+                        ReflectionUtils.GetTypeFriendlyName(k2.GetType()));
+                    Assert.AreEqual(k2, combineObj);
+                }
             }
         }
 
@@ -55,11 +58,14 @@ namespace XPatchLib.UnitTest
 
                 Assert.AreEqual(changedContext, changedEle.ToString());
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    var combineObj = new CombineKeyValuePair(new TypeExtend(k2.GetType())).Combine(reader, null,
-                        ReflectionUtils.GetTypeFriendlyName(k2.GetType()));
-                    Assert.AreEqual(k2, combineObj);
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var combineObj = new CombineKeyValuePair(new TypeExtend(k2.GetType())).Combine(reader, null,
+                            ReflectionUtils.GetTypeFriendlyName(k2.GetType()));
+                        Assert.AreEqual(k2, combineObj);
+                    }
                 }
             }
         }
@@ -88,11 +94,14 @@ namespace XPatchLib.UnitTest
                 Assert.AreEqual(changedContext, changedEle.ToString());
 
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
-                        ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
-                    Assert.AreEqual(null, combineObj);
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
+                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
+                        Assert.AreEqual(null, combineObj);
+                    }
                 }
             }
         }
@@ -125,11 +134,14 @@ namespace XPatchLib.UnitTest
 
 
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
-                        ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
-                    Assert.AreEqual(k2, combineObj);
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
+                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
+                        Assert.AreEqual(k2, combineObj);
+                    }
                 }
             }
         }
@@ -160,11 +172,14 @@ namespace XPatchLib.UnitTest
                 Assert.AreEqual(changedContext, changedEle.ToString());
 
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
-                        ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
-                    Assert.AreEqual(k2, combineObj);
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
+                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
+                        Assert.AreEqual(k2, combineObj);
+                    }
                 }
             }
         }
@@ -195,11 +210,14 @@ namespace XPatchLib.UnitTest
 
 
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
-                        ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
-                    Assert.AreEqual(k2, combineObj);
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
+                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
+                        Assert.AreEqual(k2, combineObj);
+                    }
                 }
             }
         }
@@ -231,11 +249,14 @@ namespace XPatchLib.UnitTest
                 Assert.AreEqual(changedContext, changedEle.ToString());
 
                 stream.Position = 0;
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
-                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
-                        ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
-                    Assert.AreEqual(k2, combineObj);
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType())).Combine(reader, k1,
+                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
+                        Assert.AreEqual(k2, combineObj);
+                    }
                 }
             }
         }

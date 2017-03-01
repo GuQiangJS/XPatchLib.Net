@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XPatchLib.UnitTest
+namespace XPatchLib.UnitTest.ForXml
 {
     [TestClass]
     public class TestMultilayerSet
@@ -22,7 +22,7 @@ namespace XPatchLib.UnitTest
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, r1, r2);
-                context = TestHelper.StreamToString(stream);
+                context = UnitTest.TestHelper.StreamToString(stream);
                 Debug.WriteLine(context);
             }
             using (var reader = new StringReader(context))
@@ -45,7 +45,7 @@ namespace XPatchLib.UnitTest
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, r1, r2);
-                context = TestHelper.StreamToString(stream);
+                context = UnitTest.TestHelper.StreamToString(stream);
                 Debug.WriteLine(context);
             }
             using (var reader = new StringReader(context))

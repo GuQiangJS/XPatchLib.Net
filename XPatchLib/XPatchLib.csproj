@@ -80,6 +80,7 @@
     <Compile Include="IDivide.cs" />
     <Compile Include="IEnumerableHelper.cs" />
     <Compile Include="IEnumeratorHelper.cs" />
+    <Compile Include="ITextReader.cs" />
     <Compile Include="ITextWriter.cs" />
     <Compile Include="JsonSerializer.cs" />
     <Compile Include="KeyValuesObject.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="DivideObject.cs" />
     <Compile Include="TypeExtend.cs" />
     <Compile Include="JsonTextWriter.cs" />
+    <Compile Include="XmlTextReader.cs" />
     <Compile Include="XmlTextWriter.cs" />
     <Compile Include="XmlWriterHelper.cs" />
     <Compile Include="XmlSerializer.cs" />

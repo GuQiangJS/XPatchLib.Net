@@ -23,7 +23,7 @@ namespace XPatchLib
         /// <param name="pOriObject">现有待合并数据的对象。</param>
         /// <param name="pName">当前读取的内容名称。</param>
         /// <returns></returns>
-        protected override Object CombineAction(XmlReader pReader, Object pOriObject, String pName)
+        protected override Object CombineAction(ITextReader pReader, Object pOriObject, String pName)
         {
             if (pOriObject == null)
                 pOriObject = Type.CreateInstance();

@@ -22,18 +22,18 @@ namespace XPatchLib
         /// <param name="pOriObject">现有待合并数据的对象。</param>
         /// <param name="pName">当前读取的内容名称。</param>
         /// <returns></returns>
-        protected override object CombineAction(XmlReader pReader, object pOriObject, string pName)
+        protected override object CombineAction(ITextReader pReader, object pOriObject, string pName)
         {
             var kvs = KeyValuesObject.Translate(pOriObject as IEnumerable);
             while (!pReader.EOF)
             {
                 if (pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) &&
-                    pReader.NodeType == XmlNodeType.EndElement)
+                    pReader.NodeType == NodeType.EndElement)
                     break;
 
                 pReader.MoveToElement();
 
-                if (pReader.Name == GenericArgumentType.TypeFriendlyName && pReader.NodeType == XmlNodeType.Element)
+                if (pReader.Name == GenericArgumentType.TypeFriendlyName && pReader.NodeType == NodeType.Element)
                     CombineCore(pReader, ref pOriObject, kvs, GenericArgumentType.TypeFriendlyName);
                 pReader.Read();
             }
@@ -118,7 +118,7 @@ namespace XPatchLib
         /// <param name="pReader">Xml读取器。</param>
         /// <param name="pOriObject">待合并数据的原始对象。</param>
         /// <param name="pName">当前正在解析的节点名称</param>
-        private void CombineAddedItem(XmlReader pReader, ref object pOriObject,
+        private void CombineAddedItem(ITextReader pReader, ref object pOriObject,
             string pName)
         {
             //当原始对象为null时，先创建一个实例。
@@ -164,7 +164,7 @@ namespace XPatchLib
         /// <param name="pOriObject">待合并数据的原始对象。</param>
         /// <param name="pOriEnumerable">当前正在处理的集合对象。</param>
         /// <param name="pName">当前正在解析的节点名称。</param>
-        private void CombineCore(XmlReader pReader, ref object pOriObject, KeyValuesObject[] pOriEnumerable,
+        private void CombineCore(ITextReader pReader, ref object pOriObject, KeyValuesObject[] pOriEnumerable,
             string pName)
         {
             var attrs = AnlysisAttributes(pReader, pName);
@@ -202,7 +202,7 @@ namespace XPatchLib
         /// <param name="pOriObject">待合并数据的原始对象。</param>
         /// <param name="pOriEnumerable">当前正在处理的集合对象。</param>
         /// <param name="pName">当前正在解析的节点名称。</param>
-        private void CombineEditItem(XmlReader pReader, CombineAttribute pAttribute, ref object pOriObject,
+        private void CombineEditItem(ITextReader pReader, CombineAttribute pAttribute, ref object pOriObject,
             KeyValuesObject[] pOriEnumerable, string pName)
         {
             //当前编辑的对象在原始集合对象中以零开始的索引。
@@ -230,7 +230,7 @@ namespace XPatchLib
         /// <param name="pOriObject">待合并数据的原始对象。</param>
         /// <param name="pIndex">待变更对象在集合中的位置。</param>
         /// <param name="pName">当前正在解析的节点名称。</param>
-        private void CombineEditItem(XmlReader pReader, ref object pOriObject, int pIndex, string pName)
+        private void CombineEditItem(ITextReader pReader, ref object pOriObject, int pIndex, string pName)
         {
             if (pIndex >= 0)
             {
@@ -279,7 +279,7 @@ namespace XPatchLib
         /// <param name="pAttribute">当前正在解析的Attributes。（包含了Action和主键集合）</param>
         /// <param name="pOriObject">待合并数据的原始对象。</param>
         /// <param name="pOriEnumerable">当前正在处理的集合对象。</param>
-        private void CombineRemovedItem(XmlReader pReader, CombineAttribute pAttribute, ref object pOriObject,
+        private void CombineRemovedItem(ITextReader pReader, CombineAttribute pAttribute, ref object pOriObject,
             KeyValuesObject[] pOriEnumerable)
         {
             //在集合中找到的待删除的元素实例。

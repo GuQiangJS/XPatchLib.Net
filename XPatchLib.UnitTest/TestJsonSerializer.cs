@@ -49,7 +49,7 @@ namespace XPatchLib.UnitTest
             using (var stream = new MemoryStream())
             {
                 serializer.Divide(stream, OriObject, RevObject);
-                var context = TestHelper.StreamToString(stream);
+                var context = UnitTest.TestHelper.StreamToString(stream);
                 Assert.AreEqual(ChangedContext, context);
             }
             Assert.Fail("Not Complete");

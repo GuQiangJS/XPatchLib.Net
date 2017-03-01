@@ -1,30 +1,30 @@
-﻿using System.Collections.Generic;
-using System.Xml;
+﻿using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XPatchLib.UnitTest.PetShopModelTests.Models;
 
-namespace XPatchLib.UnitTest.PetShopModelTests
+namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
 {
     [TestClass]
-    public class ListModelTest
+    public class ArrayModelTest
     {
         #region Public Methods
 
         [TestMethod]
-        [Description("测试List类型的复杂类型对象增加的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
-        public void TestOrderInfoListAddDivideAndCombine()
+        [Description("测试Collection类型的复杂类型对象增加的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
+        public void TestOrderInfoArrayAddDivideAndCombine()
         {
-            var oriObjs = new List<OrderInfo>();
-            var changedObjs = new List<OrderInfo>();
+            OrderInfo[] oriObjs =
+            {
+                PetShopModelTestHelper.CreateNewOriOrderInfo(1),
+                PetShopModelTestHelper.CreateNewOriOrderInfo(2)
+            };
+            OrderInfo[] changedObjs =
+            {
+                PetShopModelTestHelper.CreateNewOriOrderInfo(1),
+                PetShopModelTestHelper.CreateNewOriOrderInfo(2), PetShopModelTestHelper.CreateNewOriOrderInfo(3)
+            };
 
-            oriObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(1));
-            oriObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(2));
-
-            changedObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(1));
-            changedObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(2));
-            changedObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(3));
-
-            var changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(List<OrderInfo>)) + @">
+            var changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(OrderInfo[])) + @">
   <OrderInfo Action=""Add"">
     <BillingAddress>
       <Address1>" + changedObjs[2].BillingAddress.Address1 + @"</Address1>
@@ -50,28 +50,27 @@ namespace XPatchLib.UnitTest.PetShopModelTests
     <OrderTotal>" + changedObjs[2].OrderTotal + @"</OrderTotal>
     <UserId>" + changedObjs[2].UserId + @"</UserId>
   </OrderInfo>
-</" + ReflectionUtils.GetTypeFriendlyName(typeof(List<OrderInfo>)) + @">";
+</" + ReflectionUtils.GetTypeFriendlyName(typeof(OrderInfo[])) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(List<OrderInfo>), oriObjs, changedObjs, changedContext,
-                "");
+            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(OrderInfo[]), oriObjs, changedObjs, changedContext, "");
         }
 
         [TestMethod]
-        [Description("测试List类型的复杂类型对象插入的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
-        public void TestOrderInfoListInsertDivideAndCombine()
+        [Description("测试Collection类型的复杂类型对象插入的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
+        public void TestOrderInfoArrayInsertDivideAndCombine()
         {
-            var oriObjs = new List<OrderInfo>();
-            var changedObjs = new List<OrderInfo>();
+            OrderInfo[] oriObjs =
+            {
+                PetShopModelTestHelper.CreateNewOriOrderInfo(1),
+                PetShopModelTestHelper.CreateNewOriOrderInfo(2)
+            };
+            OrderInfo[] changedObjs =
+            {
+                PetShopModelTestHelper.CreateNewOriOrderInfo(1),
+                PetShopModelTestHelper.CreateNewOriOrderInfo(3), PetShopModelTestHelper.CreateNewOriOrderInfo(2)
+            };
 
-            oriObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(1));
-            oriObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(2));
-
-            changedObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(1));
-            changedObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(2));
-
-            changedObjs.Insert(1, PetShopModelTestHelper.CreateNewOriOrderInfo(3));
-
-            var changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(List<OrderInfo>)) + @">
+            var changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(OrderInfo[])) + @">
   <OrderInfo Action=""Add"">
     <BillingAddress>
       <Address1>" + changedObjs[1].BillingAddress.Address1 + @"</Address1>
@@ -97,36 +96,34 @@ namespace XPatchLib.UnitTest.PetShopModelTests
     <OrderTotal>" + changedObjs[1].OrderTotal + @"</OrderTotal>
     <UserId>" + changedObjs[1].UserId + @"</UserId>
   </OrderInfo>
-</" + ReflectionUtils.GetTypeFriendlyName(typeof(List<OrderInfo>)) + @">";
+</" + ReflectionUtils.GetTypeFriendlyName(typeof(OrderInfo[])) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(List<OrderInfo>), oriObjs, changedObjs, changedContext,
-                "");
+            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(OrderInfo[]), oriObjs, changedObjs, changedContext, "");
         }
 
         [TestMethod]
-        [Description("测试List类型的复杂类型对象删除的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
-        public void TestOrderInfoListRemoveDivideAndCombine()
+        [Description("测试Collection类型的复杂类型对象删除的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
+        public void TestOrderInfoArrayRemoveDivideAndCombine()
         {
-            var oriObjs = new List<OrderInfo>();
-            var changedObjs = new List<OrderInfo>();
+            OrderInfo[] oriObjs =
+            {
+                PetShopModelTestHelper.CreateNewOriOrderInfo(1),
+                PetShopModelTestHelper.CreateNewOriOrderInfo(2), PetShopModelTestHelper.CreateNewOriOrderInfo(3),
+                PetShopModelTestHelper.CreateNewOriOrderInfo(4), PetShopModelTestHelper.CreateNewOriOrderInfo(5)
+            };
+            OrderInfo[] changedObjs =
+            {
+                PetShopModelTestHelper.CreateNewOriOrderInfo(1),
+                PetShopModelTestHelper.CreateNewOriOrderInfo(2)
+            };
 
-            oriObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(1));
-            oriObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(2));
-            oriObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(3));
-            oriObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(4));
-            oriObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(5));
-
-            changedObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(1));
-            changedObjs.Add(PetShopModelTestHelper.CreateNewOriOrderInfo(2));
-
-            var changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(List<OrderInfo>)) + @">
+            var changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(OrderInfo[])) + @">
   <OrderInfo Action=""Remove"" OrderId=""3"" />
   <OrderInfo Action=""Remove"" OrderId=""4"" />
   <OrderInfo Action=""Remove"" OrderId=""5"" />
-</" + ReflectionUtils.GetTypeFriendlyName(typeof(List<OrderInfo>)) + @">";
+</" + ReflectionUtils.GetTypeFriendlyName(typeof(OrderInfo[])) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(List<OrderInfo>), oriObjs, changedObjs, changedContext,
-                "");
+            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(OrderInfo[]), oriObjs, changedObjs, changedContext, "");
         }
 
         #endregion Public Methods
