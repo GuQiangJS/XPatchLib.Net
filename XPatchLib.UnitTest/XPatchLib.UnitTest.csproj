@@ -48,6 +48,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
@@ -66,7 +67,9 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -75,6 +78,7 @@
     <Compile Include="ForXml\PetShopModelTests\ArrayModelTest.cs" />
     <Compile Include="ForXml\PetShopModelTests\CollectionModelTest.cs" />
     <Compile Include="ForXml\PetShopModelTests\ListModelTest.cs" />
+    <Compile Include="ForXml\TestSpecialCharacters.cs" />
     <Compile Include="PetShopModelTests\Models\AddressInfo.cs" />
     <Compile Include="PetShopModelTests\Models\CreditCardInfo.cs" />
     <Compile Include="PetShopModelTests\Models\LineItemInfo.cs" />

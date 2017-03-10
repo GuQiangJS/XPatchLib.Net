@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace XPatchLib
 {
@@ -43,6 +44,85 @@ namespace XPatchLib
                 pOriValue, pRevValue))
                 pWriter.WriteEndDocument();
             pWriter.Flush();
+        }
+
+        public object Combine(Stream pStream, object pOriValue)
+        {
+            return Combine(pStream, pOriValue, false);
+        }
+        public object Combine(Stream pStream, object pOriValue, bool pOverride)
+        {
+            var xmlReader = XmlReader.Create(pStream);
+            //xmlReader.WhitespaceHandling = WhitespaceHandling.Significant;
+            //xmlReader.Normalization = true;
+            //xmlReader.XmlResolver = null;
+            return Combine(xmlReader, pOriValue, pOverride);
+        }
+        public object Combine(XmlReader pReader, object pOriValue, bool pOverride)
+        {
+            Guard.ArgumentNotNull(pReader, "pReader");
+
+            object cloneObjValue = null;
+            //当原始值不为Null时，需要先对原始值进行克隆，否则做数据合并时会侵入到原始数据
+            if (pOriValue != null)
+                if (pOverride)
+                {
+                    cloneObjValue = pOriValue;
+                }
+                else
+                {
+                    MemoryStream stream = null;
+                    try
+                    {
+                        stream = new MemoryStream();
+                        var settings = new XmlWriterSettings();
+                        settings.ConformanceLevel = ConformanceLevel.Fragment;
+                        settings.Indent = true;
+                        settings.Encoding = Encoding.UTF8;
+                        settings.OmitXmlDeclaration = false;
+                        using (StreamWriter streamWriter = new StreamWriter(stream, Encoding.UTF8))
+                        {
+                            ITextWriter writer = new JsonTextWriter(streamWriter);
+                            new DivideCore(writer, _type, _mode).Divide(_type.TypeFriendlyName, null, pOriValue);
+                            stream.Position = 0;
+                            using (JsonTextReader reader = new JsonTextReader(stream))
+                            {
+                                cloneObjValue = new CombineCore(_type).Combine(reader, null, _type.TypeFriendlyName);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        if (stream != null)
+                            stream.Dispose();
+                    }
+                }
+            else
+                cloneObjValue = _type.CreateInstance();
+
+            Stream inputStream = null;
+            try
+            {
+                string s = pReader.ReadOuterXml();
+                inputStream = GenerateStreamFromString(s);
+                return new CombineCore(_type, _mode).Combine(new JsonTextReader(inputStream), cloneObjValue,
+                    _type.TypeFriendlyName);
+            }
+            finally
+            {
+                if (inputStream != null)
+                    inputStream.Dispose();
+            }
+        }
+
+        static Stream GenerateStreamFromString(string s)
+        {
+            MemoryStream stream = new MemoryStream();
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(s);
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
         }
     }
 }

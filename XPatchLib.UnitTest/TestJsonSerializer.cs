@@ -1,6 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XPatchLib.UnitTest.TestClass;
 
@@ -45,6 +49,31 @@ namespace XPatchLib.UnitTest
         [Description("测试JsonSerializer中参数类型为Stream的Divide和Combine方法")]
         public void TestJsonSerializerStreamDivideAndCombine()
         {
+//            string s1 =
+//"{\"AuthToken\": \"ASDAF\", \"ID\": 10, \"Data\": {\"key\": 2}}";
+//            s1 = "{\"BookClass\":{\"Author\":{\"Name\":\"Barack Obama\"}}}";
+//            byte[] bytes = Encoding.Unicode.GetBytes(s1);
+
+            //using (XmlDictionaryReader reader =
+            //    JsonReaderWriterFactory.CreateJsonReader(bytes,
+            //     new XmlDictionaryReaderQuotas()))
+            //{
+            //    while (reader.Read())
+            //    {
+            //        Debug.WriteLine("Type={0}\tName={1}\tValue={2}",
+            //            reader.NodeType, reader.Name, reader.Value);
+            //        if (reader.AttributeCount > 0)
+            //        {
+            //            while (reader.MoveToNextAttribute())
+            //            {
+            //                Debug.WriteLine("Type={0}\tName={1}\tValue={2}",
+            //                    reader.NodeType, reader.Name, reader.Value);
+            //            }
+            //        }
+            //    }
+            //}
+
+
             JsonSerializer serializer = new JsonSerializer(typeof(BookClass), true);
             using (var stream = new MemoryStream())
             {
@@ -52,15 +81,23 @@ namespace XPatchLib.UnitTest
                 var context = UnitTest.TestHelper.StreamToString(stream);
                 Assert.AreEqual(ChangedContext, context);
             }
-            Assert.Fail("Not Complete");
-            //serializer = new JsonSerializer(typeof(BookClass), true);
-            //using (var stream = new MemoryStream())
-            //{
-            //    serializer.Divide(stream, OriObject, RevObject);
-            //    stream.Position = 0;
-            //    var changedObj = serializer.Combine(stream, OriObject) as BookClass;
-            //    Assert.AreEqual(RevObject, changedObj);
-            //}
+            serializer = new JsonSerializer(typeof(BookClass), true);
+            string s = string.Empty;
+            using (var stream = new MemoryStream())
+            {
+                serializer.Divide(stream, OriObject, RevObject);
+                stream.Position = 0;
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                {
+                    s= reader.ReadToEnd();
+                }
+            }
+            byte[] byteArray = Encoding.UTF8.GetBytes(s);
+            using (MemoryStream ms = new MemoryStream(byteArray))
+            {
+                var changedObj = serializer.Combine(ms, OriObject, true) as BookClass;
+                Assert.AreEqual(RevObject, changedObj);
+            }
         }
 
         [TestMethod]
