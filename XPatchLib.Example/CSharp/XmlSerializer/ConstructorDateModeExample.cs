@@ -9,7 +9,7 @@ namespace XmlSerializerExample
     {
         private void SerializeObject(string filename)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(OrderedItem), XmlDateTimeSerializationMode.Local);
+            XmlSerializer serializer = new XmlSerializer(typeof(OrderedItem), DateTimeSerializationMode.Local);
 
             OrderedItem i = new OrderedItem();
 

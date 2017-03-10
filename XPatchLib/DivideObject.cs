@@ -59,19 +59,16 @@ namespace XPatchLib
                         memberType = typeof(string);
                     }
 
-                    divide = new DivideBasic(Writer, TypeExtendContainer.GetTypeExtend(memberType, Type), Mode,
-                        SerializeDefaultValue);
+                    divide = new DivideBasic(Writer, TypeExtendContainer.GetTypeExtend(memberType, Type));
                 }
                 //集合类型
                 else if (member.IsIEnumerable)
                 {
-                    divide = new DivideIEnumerable(Writer, TypeExtendContainer.GetTypeExtend(memberType, Type), Mode,
-                        SerializeDefaultValue);
+                    divide = new DivideIEnumerable(Writer, TypeExtendContainer.GetTypeExtend(memberType, Type));
                 }
                 else
                 {
-                    divide = new DivideCore(Writer, TypeExtendContainer.GetTypeExtend(memberType, Type), Mode,
-                        SerializeDefaultValue);
+                    divide = new DivideCore(Writer, TypeExtendContainer.GetTypeExtend(memberType, Type));
                 }
 
                 if (pAttach == null)
@@ -116,63 +113,8 @@ namespace XPatchLib
         /// </summary>
         /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
-        /// <remarks>
-        ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
-        /// </remarks>
         internal DivideObject(ITextWriter pWriter, TypeExtend pType)
             : base(pWriter, pType)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型及指定是否序列化默认值初始化 <see cref="XPatchLib.DivideObject" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
-        /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
-        /// <remarks>
-        ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
-        /// </remarks>
-        internal DivideObject(ITextWriter pWriter, TypeExtend pType, bool pSerializeDefalutValue)
-            : base(pWriter, pType, pSerializeDefalutValue)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
-        ///     <see cref="XPatchLib.DivideObject" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <param name="pMode">
-        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        ///     <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
-        /// <remarks>
-        ///     默认不序列化默认值。
-        /// </remarks>
-        internal DivideObject(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
-            : base(pWriter, pType, pMode)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型、指定是否序列化默认值和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
-        ///     <see cref="XPatchLib.DivideObject" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <param name="pMode">
-        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        ///     <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
-        /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
-        internal DivideObject(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
-            bool pSerializeDefalutValue)
-            : base(pWriter, pType, pMode, pSerializeDefalutValue)
         {
         }
 

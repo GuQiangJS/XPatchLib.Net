@@ -43,9 +43,7 @@ namespace XPatchLib
     public class XmlSerializer
     {
         #region Private Fields
-
-        private readonly XmlDateTimeSerializationMode _mode;
-        private readonly bool _serializeDefalutValue;
+        
         private readonly TypeExtend _type;
 
         #endregion Private Fields
@@ -75,259 +73,15 @@ namespace XPatchLib
         ///     <code language="xml" source="..\..\XPatchLib.Example\CSharp\XmlSerializer\ConstructorExampleOutPut.xml" />
         /// </example>
         public XmlSerializer(Type pType)
-            : this(pType, XmlDateTimeSerializationMode.RoundtripKind)
-        {
-        }
-
-        /// <summary>
-        ///     初始化 <c> XmlSerializer </c> 类的新实例。
-        /// </summary>
-        /// <param name="pType">
-        ///     此 <see cref="XPatchLib.XmlSerializer" /> 可序列化的对象的类型。
-        /// </param>
-        /// <param name="pSerializeDefalutValue">
-        ///     指定是否序列化默认值。
-        /// </param>
-        /// <remarks>
-        ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
-        /// </remarks>
-        /// <example>
-        ///     <para>
-        ///         下面的示例构造 XmlSerializer，它在原始值为null和更新后名为 Widget 的简单对象之间产生增量内容。
-        ///         该示例设置需要序列化默认值，所以当Quantity属性与类型默认值一致时，依然会被序列化至结果中。 该示例在调用 Divide 方法之前设置该对象的各种属性。
-        ///     </para>
-        ///     <code language="c#"
-        ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\ConstructorSerializeDefalutValueExample.cs" />
-        ///     <para> 序列化增量内容的 XML 输出如下所示： </para>
-        ///     <code language="xml"
-        ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\ConstructorSerializeDefalutValueExampleOutPut.xml" />
-        /// </example>
-        public XmlSerializer(Type pType, bool pSerializeDefalutValue)
-            : this(pType, XmlDateTimeSerializationMode.RoundtripKind, pSerializeDefalutValue)
-        {
-        }
-
-        /// <summary>
-        ///     初始化 <c> XmlSerializer </c> 类的新实例。
-        /// </summary>
-        /// <param name="pType">
-        ///     此 <see cref="XPatchLib.XmlSerializer" /> 可序列化的对象的类型。
-        /// </param>
-        /// <param name="pMode">
-        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        ///     <para> 使用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        /// <remarks>
-        ///     <para> 默认不序列化默认值。 </para>
-        /// </remarks>
-        /// <example>
-        ///     <para>
-        ///         下面的示例构造 XmlSerializer，它在原始值为null和更新后名为 Widget 的简单对象之间产生增量内容。 该示例设置了是用 Local
-        ///         方式处理日期类型，并且默认不序列化默认值。 该示例在调用 Divide 方法之前设置该对象的各种属性。
-        ///     </para>
-        ///     <code language="c#" source="..\..\XPatchLib.Example\CSharp\XmlSerializer\ConstructorDateModeExample.cs" />
-        ///     <para> 序列化增量内容的 XML 输出如下所示： </para>
-        ///     <code language="xml"
-        ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\ConstructorDateModeExampleOutPut.xml" />
-        /// </example>
-        public XmlSerializer(Type pType, XmlDateTimeSerializationMode pMode)
-            : this(pType, pMode, false)
-        {
-        }
-
-        /// <summary>
-        ///     初始化 <c> XmlSerializer </c> 类的新实例。
-        /// </summary>
-        /// <param name="pType">
-        ///     此 <see cref="XPatchLib.XmlSerializer" /> 可序列化的对象的类型。
-        /// </param>
-        /// <param name="pMode">
-        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        ///     <para> 使用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        /// <param name="pSerializeDefalutValue">
-        ///     指定是否序列化默认值。
-        /// </param>
-        /// <example>
-        ///     <para>
-        ///         下面的示例构造 XmlSerializer，它在原始值为null和更新后名为 Widget 的简单对象之间产生增量内容。 该示例以 Utc
-        ///         方式处理时间，并且设置为不序列化默认值。 该示例在调用 Divide 方法之前设置该对象的各种属性。
-        ///     </para>
-        ///     <code language="c#"
-        ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\ConstructorDateModeSerializeDefalutValueExample.cs" />
-        ///     <para> 序列化增量内容的 XML 输出如下所示： </para>
-        ///     <code language="xml"
-        ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\ConstructorDateModeSerializeDefalutValueExampleOutPut.xml" />
-        /// </example>
-        public XmlSerializer(Type pType, XmlDateTimeSerializationMode pMode, bool pSerializeDefalutValue)
         {
             TypeExtendContainer.Clear();
             _type = TypeExtendContainer.GetTypeExtend(pType, null);
-            _serializeDefalutValue = pSerializeDefalutValue;
-            _mode = pMode;
         }
 
         #endregion Public Constructors
 
-        #region Private Fields
-
-        //[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        //private XmlSerializerNamespaces defaultNamespaces;
-
-        #endregion Private Fields
-
-        //private XmlSerializerNamespaces DefaultNamespaces
-        //{
-        //    get
-        //    {
-        //        if (defaultNamespaces == null)
-        //        {
-        //            XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
-        //            namespaces.Add("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        //            namespaces.Add("xsd", "http://www.w3.org/2001/XMLSchema");
-        //            if (defaultNamespaces == null)
-        //            {
-        //                defaultNamespaces = namespaces;
-        //            }
-        //        }
-        //        return defaultNamespaces;
-        //    }
-        //}
-
         #region Public Methods
 
-        /// <summary>
-        ///     反序列化指定 <see cref="System.IO.Stream" /> 包含的 XML 增量文档，并与 原始对象 进行数据合并。
-        /// </summary>
-        /// <param name="pStream">
-        ///     包含要反序列化的 XML 增量文档的 <see cref="System.IO.Stream" />。
-        /// </param>
-        /// <param name="pOriValue">
-        ///     待进行数据合并的原始对象。
-        /// </param>
-        /// <returns>
-        ///     正被反序列化及合并后的 <see cref="System.Object" />。
-        /// </returns>
-        /// <remarks>
-        ///     <para>
-        ///         <b> 默认不覆盖 <paramref name="pOriValue" /> 对象实例。 </b>
-        ///     </para>
-        ///     <para> 在反序列化及合并之前，必须使用待合并的对象的类型构造一个 <see cref="XPatchLib.XmlSerializer" /> 。 </para>
-        /// </remarks>
-        /// <example>
-        ///     <para> 下面的示例使用 <c> Stream </c> 对象反序列化增量内容，并附加至原始对象。 </para>
-        ///     <code language="c#" source="..\..\XPatchLib.Example\CSharp\XmlSerializer\CombineStreamExample.cs" />
-        ///     <code language="xml" title="patch.xml"
-        ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\CombineStreamExampleInPut.xml" />
-        /// </example>
-        public object Combine(Stream pStream, object pOriValue)
-        {
-            return Combine(pStream, pOriValue, false);
-        }
-
-        /// <summary>
-        ///     以可指定是否覆盖原始对象的方式反序列化指定 <see cref="System.IO.Stream" /> 包含的 XML 增量文档，并与 原始对象 进行数据合并。
-        /// </summary>
-        /// <param name="pStream">
-        ///     包含要反序列化的 XML 增量文档的 <see cref="System.IO.Stream" />。
-        /// </param>
-        /// <param name="pOriValue">
-        ///     待进行数据合并的原始对象。
-        /// </param>
-        /// <param name="pOverride">
-        ///     是否覆盖 <paramref name="pOriValue" /> 对象实例。
-        /// </param>
-        /// <returns>
-        ///     正被反序列化及合并后的 <see cref="System.Object" />。
-        /// </returns>
-        /// <remarks>
-        ///     <para>
-        ///         设置参数 <paramref name="pOverride" /> 为 True 时，将比设置为 False 时，大幅提高序列化与反序列化性能。在无需保留 <paramref name="pOriValue" />
-        ///         对象实例的情况下，建议使用 True 作为参数。
-        ///     </para>
-        ///     <para> 在反序列化及合并之前，必须使用待合并的对象的类型构造一个 <see cref="XPatchLib.XmlSerializer" /> 。 </para>
-        /// </remarks>
-        /// <example>
-        ///     <para> 下面的示例使用 <c> Stream </c> 对象反序列化增量内容，并附加至原始对象。 </para>
-        ///     <code language="c#" source="..\..\XPatchLib.Example\CSharp\XmlSerializer\CombineStreamOverrideExample.cs" />
-        ///     <code language="xml" title="patch.xml"
-        ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\CombineStreamExampleInPut.xml" />
-        /// </example>
-        public object Combine(Stream pStream, object pOriValue, bool pOverride)
-        {
-            var xmlReader = new System.Xml.XmlTextReader(pStream);
-            xmlReader.WhitespaceHandling = WhitespaceHandling.Significant;
-            xmlReader.Normalization = true;
-            xmlReader.XmlResolver = null;
-            return Combine(xmlReader, pOriValue, pOverride);
-        }
-
-        /// <summary>
-        ///     反序列化指定 <see cref="System.IO.TextReader" /> 包含的 XML 增量文档，并与 原始对象 进行数据合并。
-        /// </summary>
-        /// <param name="pReader">
-        ///     包含要反序列化的 XML 增量文档的 <see cref="System.IO.TextReader" />。
-        /// </param>
-        /// <param name="pOriValue">
-        ///     待进行数据合并的原始对象。
-        /// </param>
-        /// <returns>
-        ///     正被反序列化及合并后的 <see cref="System.Object" />。
-        /// </returns>
-        /// <remarks>
-        ///     <para>
-        ///         <b> 默认不覆盖 <paramref name="pOriValue" /> 对象实例。 </b>
-        ///     </para>
-        ///     <para> 在反序列化及合并之前，必须使用待合并的对象的类型构造一个 <see cref="XPatchLib.XmlSerializer" /> 。 </para>
-        /// </remarks>
-        /// <example>
-        ///     <para> 下面的示例使用 <c> TextReader </c> 对象反序列化增量内容，并附加至原始对象。 </para>
-        ///     <code language="c#" source="..\..\XPatchLib.Example\CSharp\XmlSerializer\CombineTextReaderExample.cs" />
-        ///     <code language="xml" title="patch.xml"
-        ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\CombineTextReaderExampleInPut.xml" />
-        /// </example>
-        public object Combine(TextReader pReader, object pOriValue)
-        {
-            return Combine(pReader, pOriValue, false);
-        }
-
-        /// <summary>
-        ///     以可指定是否覆盖原始对象的方式反序列化指定 <see cref="System.IO.TextReader" /> 包含的 XML 增量文档，并与 原始对象 进行数据合并。
-        /// </summary>
-        /// <param name="pReader">
-        ///     包含要反序列化的 XML 增量文档的 <see cref="System.IO.TextReader" />。
-        /// </param>
-        /// <param name="pOriValue">
-        ///     待进行数据合并的原始对象。
-        /// </param>
-        /// <param name="pOverride">
-        ///     是否覆盖 <paramref name="pOriValue" /> 对象实例。
-        /// </param>
-        /// <returns>
-        ///     正被反序列化及合并后的 <see cref="System.Object" />。
-        /// </returns>
-        /// <remarks>
-        ///     <para>
-        ///         设置参数 <paramref name="pOverride" /> 为 True 时，将比设置为 False 时，大幅提高序列化与反序列化性能。在无需保留 <paramref name="pOriValue" />
-        ///         对象实例的情况下，建议使用 True 作为参数。
-        ///     </para>
-        ///     <para> 在反序列化及合并之前，必须使用待合并的对象的类型构造一个 <see cref="XPatchLib.XmlSerializer" /> 。 </para>
-        /// </remarks>
-        /// <example>
-        ///     <para> 下面的示例使用 <c> TextReader </c> 对象反序列化增量内容，并附加至原始对象。 </para>
-        ///     <code language="c#"
-        ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\CombineTextReaderOverrideExample.cs" />
-        ///     <code language="xml" title="patch.xml"
-        ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\CombineTextReaderExampleInPut.xml" />
-        /// </example>
-        public object Combine(TextReader pReader, object pOriValue, bool pOverride)
-        {
-            var xmlReader = new System.Xml.XmlTextReader(pReader);
-            xmlReader.WhitespaceHandling = WhitespaceHandling.Significant;
-            xmlReader.Normalization = true;
-            xmlReader.XmlResolver = null;
-            return Combine(xmlReader, pOriValue, pOverride);
-        }
 
         /// <summary>
         ///     反序列化指定 <see cref="System.Xml.XmlReader" /> 包含的 XML 增量文档，并与 原始对象 进行数据合并。
@@ -353,7 +107,7 @@ namespace XPatchLib
         ///     <code language="xml" title="patch.xml"
         ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\CombineXmlReaderExampleInPut.xml" />
         /// </example>
-        public object Combine(XmlReader pReader, object pOriValue)
+        public object Combine(ITextReader pReader, object pOriValue)
         {
             return Combine(pReader, pOriValue, false);
         }
@@ -388,7 +142,7 @@ namespace XPatchLib
         ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\CombineXmlReaderExampleInPut.xml" />
         /// </example>
         [SuppressMessage("Microsoft.Usage", "CA2202:不要多次释放对象")]
-        public object Combine(XmlReader pReader, object pOriValue, bool pOverride)
+        public object Combine(ITextReader pReader, object pOriValue, bool pOverride)
         {
             Guard.ArgumentNotNull(pReader, "pReader");
 
@@ -413,7 +167,7 @@ namespace XPatchLib
                         using (var xmlWriter = XmlWriter.Create(stream, settings))
                         {
                             ITextWriter writer = new XmlTextWriter(xmlWriter);
-                            new DivideCore(writer, _type, _mode).Divide(_type.TypeFriendlyName, null, pOriValue);
+                            new DivideCore(writer, _type).Divide(_type.TypeFriendlyName, null, pOriValue);
                         }
 #if DEBUG
                         stream.Position = 0;
@@ -435,114 +189,15 @@ namespace XPatchLib
                 cloneObjValue = _type.CreateInstance();
 
             //var ele = XElement.Load(pReader, LoadOptions.None);
-            return new CombineCore(_type, _mode).Combine(new XmlTextReader(pReader), cloneObjValue,
-                _type.TypeFriendlyName);
+            return new CombineCore(_type).Combine(pReader, cloneObjValue, _type.TypeFriendlyName);
         }
 
-        private object Combine(ITextReader pReader, object pOriValue, bool pOverride)
-        {
-            return new CombineCore(_type, _mode).Combine(pReader, pOriValue, _type.TypeFriendlyName);
-        }
-
-        /// <summary>
-        ///     使用指定的 <see cref="System.IO.Stream" /> 序列化指定的 原始对象 与 更新对象 间的增量内容 并将 XML 文档写入文件。
-        /// </summary>
-        /// <param name="pStream">
-        ///     用于编写 XML 文档的 <see cref="System.IO.Stream" />。
-        /// </param>
-        /// <param name="pOriValue">
-        ///     原始对象。
-        /// </param>
-        /// <param name="pRevValue">
-        ///     更新后对象。
-        /// </param>
-        /// <remarks>
-        ///     Divide 方法将原始对象与更新后对象之间差异内容的的公共字段和读/写属性转换为 XML。它不转换方法、索引器、私有字段或只读属性。
-        /// </remarks>
-        /// <example>
-        ///     <para> 下面的示例使用 <see cref="System.IO.Stream" /> 对象反序列化增量内容，并附加至原始对象。 </para>
-        ///     <code language="c#" source="..\..\XPatchLib.Example\CSharp\XmlSerializer\DivideStreamExample.cs" />
-        ///     <para> 序列化增量内容的 XML 输出如下所示： </para>
-        ///     <code language="xml" title="patch.xml"
-        ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\DivideStreamExampleOutPut.xml" />
-        /// </example>
-        public void Divide(Stream pStream, object pOriValue, object pRevValue)
-        {
-            var xmlWriter = new System.Xml.XmlTextWriter(pStream, Encoding.UTF8)
-            {
-                Formatting = Formatting.Indented,
-                Indentation = 2
-            };
-            Divide(xmlWriter, pOriValue, pRevValue);
-        }
-
-        /// <summary>
-        ///     使用指定的 <see cref="System.IO.TextWriter" /> 序列化指定的 原始对象 与 更新对象 间的增量内容 并将 XML 文档写入文件。
-        /// </summary>
-        /// <param name="pWriter">
-        ///     用于编写 XML 文档的 <see cref="System.IO.TextWriter" />。
-        /// </param>
-        /// <param name="pOriValue">
-        ///     原始对象。
-        /// </param>
-        /// <param name="pRevValue">
-        ///     更新对象。
-        /// </param>
-        /// <remarks>
-        ///     Divide 方法将原始对象与更新后对象之间差异内容的的公共字段和读/写属性转换为 XML。它不转换方法、索引器、私有字段或只读属性。
-        /// </remarks>
-        /// <example>
-        ///     <para> 下面的示例使用 <see cref="System.IO.TextWriter" /> 对象反序列化增量内容，并附加至原始对象。 </para>
-        ///     <code language="c#" source="..\..\XPatchLib.Example\CSharp\XmlSerializer\DivideTextWriterExample.cs" />
-        ///     <para> 序列化增量内容的 XML 输出如下所示： </para>
-        ///     <code language="xml" title="patch.xml"
-        ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\DivideTextWriterExampleOutPut.xml" />
-        /// </example>
-        public void Divide(TextWriter pWriter, object pOriValue, object pRevValue)
-        {
-            var xmlWriter = new System.Xml.XmlTextWriter(pWriter)
-            {
-                Formatting = Formatting.Indented,
-                Indentation = 2
-            };
-            Divide(xmlWriter, pOriValue, pRevValue);
-        }
-
-        /// <summary>
-        ///     使用指定的 <see cref="System.Xml.XmlWriter" /> 序列化指定的 原始对象 与 更新对象 间的增量内容 并将 XML 文档写入文件。
-        /// </summary>
-        /// <param name="pWriter">
-        ///     用于编写 XML 文档的 <see cref="System.Xml.XmlWriter" />。
-        /// </param>
-        /// <param name="pOriValue">
-        ///     原始对象。
-        /// </param>
-        /// <param name="pRevValue">
-        ///     更新对象。
-        /// </param>
-        /// <remarks>
-        ///     Divide 方法将原始对象与更新后对象之间差异内容的的公共字段和读/写属性转换为 XML。它不转换方法、索引器、私有字段或只读属性。
-        /// </remarks>
-        /// <example>
-        ///     <para> 下面的示例使用 <see cref="System.Xml.XmlWriter" /> 对象反序列化增量内容，并附加至原始对象。 </para>
-        ///     <code language="c#" source="..\..\XPatchLib.Example\CSharp\XmlSerializer\DivideXmlWriterExample.cs" />
-        ///     <para> 序列化增量内容的 XML 输出如下所示： </para>
-        ///     <code language="xml" title="patch.xml"
-        ///         source="..\..\XPatchLib.Example\CSharp\XmlSerializer\DivideXmlWriterExampleOutPut.xml" />
-        /// </example>
-        public void Divide(XmlWriter pWriter, object pOriValue, object pRevValue)
-        {
-            Guard.ArgumentNotNull(pWriter, "pWriter");
-            
-            Divide(new XmlTextWriter(pWriter), pOriValue, pRevValue);
-        }
-
-        private void Divide(ITextWriter pWriter, object pOriValue, object pRevValue)
+        public void Divide(ITextWriter pWriter, object pOriValue, object pRevValue)
         {
             Guard.ArgumentNotNull(pWriter, "pWriter");
 
             pWriter.WriteStartDocument();
-            if (new DivideCore(pWriter, _type, _mode, _serializeDefalutValue).Divide(_type.TypeFriendlyName,
+            if (new DivideCore(pWriter, _type).Divide(_type.TypeFriendlyName,
                 pOriValue, pRevValue))
                 pWriter.WriteEndDocument();
             pWriter.Flush();

@@ -12,7 +12,7 @@ namespace XPatchLib
     //TODO:Not Complete
     internal class JsonSerializer
     {
-        private readonly XmlDateTimeSerializationMode _mode = XmlDateTimeSerializationMode.RoundtripKind;
+        private readonly DateTimeSerializationMode _mode = DateTimeSerializationMode.RoundtripKind;
         private readonly bool _serializeDefalutValue;
         private readonly TypeExtend _type;
 
@@ -40,7 +40,7 @@ namespace XPatchLib
             Guard.ArgumentNotNull(pWriter, "pWriter");
 
             pWriter.WriteStartDocument();
-            if (new DivideCore(pWriter, _type, _mode, _serializeDefalutValue).Divide(_type.TypeFriendlyName,
+            if (new DivideCore(pWriter, _type).Divide(_type.TypeFriendlyName,
                 pOriValue, pRevValue))
                 pWriter.WriteEndDocument();
             pWriter.Flush();
@@ -83,7 +83,7 @@ namespace XPatchLib
                         using (StreamWriter streamWriter = new StreamWriter(stream, Encoding.UTF8))
                         {
                             ITextWriter writer = new JsonTextWriter(streamWriter);
-                            new DivideCore(writer, _type, _mode).Divide(_type.TypeFriendlyName, null, pOriValue);
+                            new DivideCore(writer, _type).Divide(_type.TypeFriendlyName, null, pOriValue);
                             stream.Position = 0;
                             using (JsonTextReader reader = new JsonTextReader(stream))
                             {
@@ -105,7 +105,7 @@ namespace XPatchLib
             {
                 string s = pReader.ReadOuterXml();
                 inputStream = GenerateStreamFromString(s);
-                return new CombineCore(_type, _mode).Combine(new JsonTextReader(inputStream), cloneObjValue,
+                return new CombineCore(_type).Combine(new JsonTextReader(inputStream), cloneObjValue,
                     _type.TypeFriendlyName);
             }
             finally

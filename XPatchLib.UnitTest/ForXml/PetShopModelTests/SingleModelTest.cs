@@ -55,7 +55,7 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
 </OrderInfo>";
 
             TestHelper.PrivateAssert(typeof(OrderInfo), oriObj, changedObj, changedContext, "更新OrderInfo中的Date信息(Local)",
-                XmlDateTimeSerializationMode.Local);
+                DateTimeSerializationMode.Local);
 
             oriObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
             changedObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
@@ -65,7 +65,7 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
 </OrderInfo>";
 
             TestHelper.PrivateAssert(typeof(OrderInfo), oriObj, changedObj, changedContext,
-                "更新OrderInfo中的Date信息(Unspecified)", XmlDateTimeSerializationMode.Unspecified);
+                "更新OrderInfo中的Date信息(Unspecified)", DateTimeSerializationMode.Unspecified);
 
             oriObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
             changedObj = PetShopModelTestHelper.CreateNewOriOrderInfo();

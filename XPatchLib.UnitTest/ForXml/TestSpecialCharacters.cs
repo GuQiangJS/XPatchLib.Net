@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XPatchLib.UnitTest.TestClass;
 
@@ -22,16 +23,21 @@ namespace XPatchLib.UnitTest.ForXml
             XmlSerializer XmlSerializer = new XmlSerializer(typeof(AuthorClass));
             using (MemoryStream stream = new MemoryStream())
             {
-                XmlSerializer.Divide(stream, null, authorClass1);
-
-                stream.Position = 0;
-                string s = UnitTest.TestHelper.StreamToString(stream);
-
-                Assert.AreEqual(context, s);
-                using (StringReader reader = new StringReader(s))
+                using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    AuthorClass authorClass2 = XmlSerializer.Combine(reader, null, true) as AuthorClass;
-                    Assert.AreEqual(authorClass1, authorClass2);
+                    XmlSerializer.Divide(writer, null, authorClass1);
+
+                    stream.Position = 0;
+                    using (XmlTextReader xmlReader = new XmlTextReader(XmlReader.Create(stream)))
+                    {
+                        AuthorClass authorClass2 = XmlSerializer.Combine(xmlReader, null, true) as AuthorClass;
+                        Assert.AreEqual(authorClass1, authorClass2);
+                    }
+
+                    stream.Position = 0;
+                    string s = UnitTest.TestHelper.StreamToString(stream);
+
+                    Assert.AreEqual(context, s);
                 }
             }
         }

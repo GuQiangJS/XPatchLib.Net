@@ -3,6 +3,7 @@
 
 using System;
 using System.Net.NetworkInformation;
+using System.Security.Cryptography.X509Certificates;
 
 namespace XPatchLib
 {
@@ -12,6 +13,11 @@ namespace XPatchLib
     /// <seealso cref="System.IDisposable" />
     public interface ITextReader : IDisposable
     {
+        /// <summary>
+        /// 获取或设置在字符串与 <see cref="DateTime"/> 之间转换时，如何处理时间值。
+        /// </summary>
+        DateTimeSerializationMode Mode { get; set; }
+
         /// <summary>
         ///     获取读取器的状态。
         /// </summary>

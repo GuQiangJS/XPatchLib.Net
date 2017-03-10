@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace XPatchLib.UnitTest.ForXml
@@ -28,11 +29,14 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var stream = new MemoryStream())
                 {
-                    serializer.Divide(stream, null, table);
-                    stream.Position = 0;
-                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                    using (var writer = TestHelper.CreateWriter(stream))
                     {
-                        context = stremReader.ReadToEnd();
+                        serializer.Divide(writer, null, table);
+                        stream.Position = 0;
+                        using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                        {
+                            context = stremReader.ReadToEnd();
+                        }
                     }
                 }
             }
@@ -64,11 +68,14 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var stream = new MemoryStream())
                 {
-                    serializer.Divide(stream, null, table);
-                    stream.Position = 0;
-                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                    using (var writer = TestHelper.CreateWriter(stream))
                     {
-                        context = stremReader.ReadToEnd();
+                        serializer.Divide(writer, null, table);
+                        stream.Position = 0;
+                        using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                        {
+                            context = stremReader.ReadToEnd();
+                        }
                     }
                 }
                 Trace.WriteLine(context);

@@ -137,84 +137,16 @@ namespace XPatchLib
         /// <param name="pType">指定的类型。</param>
         /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
         /// <exception cref="ArgumentNullException">当参数 <paramref name="pWriter" /> is null 时。</exception>
-        /// <remarks>
-        ///     <para> 默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。 </para>
-        ///     <para> 默认不序列化默认值。 </para>
-        /// </remarks>
         protected DivideBase(ITextWriter pWriter, TypeExtend pType)
-            : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型及指定是否序列化默认值初始化 <see cref="XPatchLib.DivideBase" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
-        /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
-        /// <exception cref="ArgumentNullException">当参数 <paramref name="pWriter" /> is null 时。</exception>
-        /// <remarks>
-        ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
-        /// </remarks>
-        protected DivideBase(ITextWriter pWriter, TypeExtend pType, bool pSerializeDefalutValue)
-            : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind, pSerializeDefalutValue)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
-        ///     <see cref="XPatchLib.CombineBase" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <param name="pMode">指定在字符串与 System.DateTime 之间转换时，如何处理时间值。</param>
-        /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
-        /// <exception cref="ArgumentNullException">当参数 <paramref name="pWriter" /> is null 时。</exception>
-        /// <remarks>
-        ///     默认不序列化默认值。
-        /// </remarks>
-        protected DivideBase(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
-            : this(pWriter, pType, pMode, false)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型、指定是否序列化默认值和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
-        ///     <see cref="XPatchLib.CombineBase" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <param name="pMode">
-        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        ///     <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
-        /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
-        /// <exception cref="ArgumentNullException">当参数 <paramref name="pWriter" /> is null 时。</exception>
-        protected DivideBase(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
-            bool pSerializeDefalutValue)
         {
             Guard.ArgumentNotNull(pWriter, "pWriter");
             Writer = pWriter;
             Type = pType;
-            SerializeDefaultValue = pSerializeDefalutValue;
-            Mode = pMode;
         }
 
         #endregion Protected Constructors
 
         #region Internal Properties
-
-        /// <summary>
-        ///     获取或设置在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        /// </summary>
-        internal XmlDateTimeSerializationMode Mode { get; set; }
-
-        /// <summary>
-        ///     获取或设置是否处理序列化默认值。
-        /// </summary>
-        internal bool SerializeDefaultValue { get; set; }
 
         /// <summary>
         ///     获取或设置当前正在处理的类型。

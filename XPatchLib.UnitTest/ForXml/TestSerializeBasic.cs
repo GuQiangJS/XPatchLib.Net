@@ -21,14 +21,13 @@ namespace XPatchLib.UnitTest.ForXml
         [TestMethod]
         public void BasicSerializeCtorTest()
         {
-            var ser = new DivideBasic(
-                new XmlTextWriter(new System.Xml.XmlTextWriter(new MemoryStream(), Encoding.UTF8)),
-                new TypeExtend(typeof(string)));
-            Assert.AreEqual(ser.Mode, XmlDateTimeSerializationMode.RoundtripKind);
-
-            ser = new DivideBasic(new XmlTextWriter(new System.Xml.XmlTextWriter(new MemoryStream(), Encoding.UTF8)),
-                new TypeExtend(typeof(string)), XmlDateTimeSerializationMode.Unspecified);
-            Assert.AreEqual(ser.Mode, XmlDateTimeSerializationMode.Unspecified);
+            var writer = new XmlTextWriter(new System.Xml.XmlTextWriter(new MemoryStream(), Encoding.UTF8));
+            Assert.AreEqual(writer.Mode, DateTimeSerializationMode.RoundtripKind);
+            Assert.AreEqual(writer.Mode.Convert(),XmlDateTimeSerializationMode.RoundtripKind);
+            
+            writer.Mode=DateTimeSerializationMode.Unspecified;
+            Assert.AreEqual(writer.Mode, DateTimeSerializationMode.Unspecified);
+            Assert.AreEqual(writer.Mode.Convert(), XmlDateTimeSerializationMode.Unspecified);
         }
 
 
@@ -169,7 +168,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var stream = new MemoryStream())
                 {
-                    using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                    using (ITextWriter writer = TestHelper.CreateWriter(stream))
                     {
                         var ser = new DivideBasic(writer, new TypeExtend(types[i]));
 
@@ -195,7 +194,7 @@ namespace XPatchLib.UnitTest.ForXml
 
                 using (var stream = new MemoryStream())
                 {
-                    using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                    using (ITextWriter writer = TestHelper.CreateWriter(stream))
                     {
                         var ser = new DivideBasic(writer, new TypeExtend(types[i]));
                         //原始值有值，更新值为null时，序列化为<XXX Action="SetNull" />
@@ -221,7 +220,7 @@ namespace XPatchLib.UnitTest.ForXml
 
                 using (var stream = new MemoryStream())
                 {
-                    using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                    using (ITextWriter writer = TestHelper.CreateWriter(stream))
                     {
                         var ser = new DivideBasic(writer, new TypeExtend(types[i]));
                         //原始值为null，更新值有值时序列化更新值
@@ -247,7 +246,7 @@ namespace XPatchLib.UnitTest.ForXml
 
                 using (var stream = new MemoryStream())
                 {
-                    using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                    using (ITextWriter writer = TestHelper.CreateWriter(stream))
                     {
                         var ser = new DivideBasic(writer, new TypeExtend(types[i]));
                         //原始值与更新值相同时不做序列化
@@ -261,15 +260,15 @@ namespace XPatchLib.UnitTest.ForXml
 
                 using (var stream = new MemoryStream())
                 {
-                    using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                    using (ITextWriter writer = TestHelper.CreateWriter(stream))
                     {
+                        writer.SerializeDefalutValue = true;
                         var ser = new DivideBasic(writer, new TypeExtend(types[i]));
-                        ser.SerializeDefaultValue = true;
                         //原始值为null，如果更新值为默认值时，如果设置为序列化默认值，则做序列化
                         if (types[i] != typeof(string))
                         {
                             Assert.IsTrue(ser.Divide(types[i].Name, null, ReflectionUtils.GetDefaultValue(types[i])));
-                            writer.WriteEndObject();
+                            //writer.WriteEndObject();
                             writer.Flush();
                             stream.Position = 0;
                             var ele = XElement.Load(stream);
@@ -297,7 +296,7 @@ namespace XPatchLib.UnitTest.ForXml
             var dser = new CombineObject(new TypeExtend(typeof(ColorClass)));
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     var ser = new DivideObject(writer, new TypeExtend(typeof(ColorClass)));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)), null, c1));
@@ -332,7 +331,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 var c1 = ColorClass.GetSampleInstance();
                 var dser = new CombineObject(new TypeExtend(typeof(ColorClass)));
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     var ser = new DivideObject(writer, new TypeExtend(typeof(ColorClass)));
 
@@ -372,7 +371,7 @@ namespace XPatchLib.UnitTest.ForXml
             var dser = new CombineObject(new TypeExtend(typeof(EnumClass)));
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     var ser = new DivideObject(writer, new TypeExtend(typeof(EnumClass)));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(EnumClass)), null,
@@ -396,7 +395,7 @@ namespace XPatchLib.UnitTest.ForXml
 </EnumClass>";
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     var ser = new DivideObject(writer, new TypeExtend(typeof(EnumClass)));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(EnumClass)),

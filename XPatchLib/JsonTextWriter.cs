@@ -4,38 +4,27 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 namespace XPatchLib
 {
+    //TODO:Not Complete
     /// <summary>
     ///     Json写入器。
     /// </summary>
     /// <seealso cref="XPatchLib.ITextWriter" />
     internal class JsonTextWriter : ITextWriter
     {
-        private State _State;
-
-        enum State
-        {
-            Start,
-            StartDocument,
-            EndDocument,
-            StartObject,
-            EndObject,
-            Property,
-            StartArray,
-            EndArray,
-            StartProperty,
-            EndProperty
-        }
-
         private readonly TextWriter Writer;
 
+
+        private State _State;
+
         /// <summary>
-        ///     以指定的 <paramref name="pWriter" /> 实例创建 <see cref="XmlTextWriter" /> 类型实例。
+        ///     以指定的 <paramref name="pWriter" /> 实例创建 <see cref="JsonTextWriter" /> 类型实例。
         /// </summary>
-        /// <param name="pWriter">The p writer.</param>
-        internal JsonTextWriter(TextWriter pWriter)
+        /// <param name="pWriter">指定的 Json 编写器。</param>
+        public JsonTextWriter(TextWriter pWriter)
         {
             Guard.ArgumentNotNull(pWriter, "pWriter");
             Writer = pWriter;
@@ -82,16 +71,6 @@ namespace XPatchLib
             Debug.WriteLine(string.Format("WriteStartObject '{0}'.", pName));
 #endif
             _State = State.StartObject;
-        }
-        void WritePropertyDelimiter()
-        {
-            if (_State == State.EndObject || _State == State.EndProperty || _State == State.EndArray)
-            {
-                Writer.Write(',');
-#if DEBUG
-                Debug.WriteLine("WritePropertyDelimiter");
-#endif
-            }
         }
 
         /// <summary>
@@ -210,14 +189,67 @@ namespace XPatchLib
         }
 
         /// <summary>
+        ///     获取或设置在字符串与 <see cref="DateTime" /> 之间转换时，如何处理时间值。
+        /// </summary>
+        /// <value>默认值 <see cref="DateTimeSerializationMode.RoundtripKind" /> 。</value>
+        public DateTimeSerializationMode Mode { get; set; } = DateTimeSerializationMode.RoundtripKind;
+
+        /// <summary>
+        ///     获取或设置是否序列化默认值。
+        /// </summary>
+        /// <value>默认值 <c>false</c> 。</value>
+        public bool SerializeDefalutValue { get; set; }
+
+        /// <summary>
+        ///     获取或设置要使用的文本编码的类型。
+        /// </summary>
+        /// <value>默认值 <see cref="Encoding.UTF8" /> 。</value>
+        public Encoding Encoding { get; set; } = Encoding.UTF8;
+
+        /// <summary>
+        ///     获取或设置如何对输出进行格式设置。
+        /// </summary>
+        /// <value><see cref="Formatting" /> 值之一。 默认值是 <see cref="Formatting.None" /> （无特殊格式）。</value>
+        public Formatting Formatting { get; set; } = Formatting.None;
+
+        /// <summary>
+        ///     获取或设置用于缩进时用于转换的字符 <see cref="Formatting" /> 设置为 <see cref="Formatting.Indented" />。
+        /// </summary>
+        /// <value>默认值是 空格 。</value>
+        public string IndentChars { get; set; } = " ";
+
+        private void WritePropertyDelimiter()
+        {
+            if (_State == State.EndObject || _State == State.EndProperty || _State == State.EndArray)
+            {
+                Writer.Write(',');
+#if DEBUG
+                Debug.WriteLine("WritePropertyDelimiter");
+#endif
+            }
+        }
+
+        /// <summary>
         ///     执行与释放或重置非托管资源相关的应用程序定义的任务。
         /// </summary>
         protected void Dispose(bool disposing)
         {
             if (disposing)
-            {
                 ((IDisposable) Writer)?.Dispose();
-            }
+        }
+
+        private enum State
+        {
+            Start,
+            StartDocument,
+            EndDocument,
+            StartObject,
+            EndObject,
+            Property,
+            StartArray,
+            EndArray,
+            StartProperty,
+            EndProperty
         }
     }
 }

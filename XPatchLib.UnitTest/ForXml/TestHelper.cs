@@ -29,10 +29,16 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
+        internal static ITextWriter CreateWriter(Stream output)
+        {
+            return CreateWriter(output, FlagmentSetting);
+        }
+
         internal static ITextWriter CreateWriter(Stream output, XmlWriterSettings settings)
         {
-            XmlWriter xmlWriter = XmlWriter.Create(output, settings);
-            return new XmlTextWriter(xmlWriter);
+            System.Xml.XmlTextWriter writer = new System.Xml.XmlTextWriter(output, settings.Encoding);
+            writer.Formatting = System.Xml.Formatting.Indented;
+            return new XmlTextWriter(writer);
         }
 
         #region Internal Methods
@@ -41,18 +47,19 @@ namespace XPatchLib.UnitTest.ForXml
             string pAssert)
         {
             PrivateAssert(pType, pOriObj, pChangedObj, pChangedContext, pAssert,
-                XmlDateTimeSerializationMode.RoundtripKind);
+                DateTimeSerializationMode.RoundtripKind);
         }
 
         internal static void PrivateAssert(Type pType, object pOriObj, object pChangedObj, string pChangedContext,
-            string pAssert, XmlDateTimeSerializationMode pMode)
+            string pAssert, DateTimeSerializationMode pMode)
         {
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = CreateWriter(stream, FlagmentSetting))
+                using (ITextWriter writer = CreateWriter(stream))
                 {
+                    writer.Mode = pMode;
                     Assert.IsTrue(
-                        new DivideCore(writer, new TypeExtend(pType), pMode).Divide(
+                        new DivideCore(writer, new TypeExtend(pType)).Divide(
                             ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj));
                 }
                 stream.Position = 0;
@@ -62,7 +69,8 @@ namespace XPatchLib.UnitTest.ForXml
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
                     {
-                        var combinedObj = new CombineCore(new TypeExtend(pType), pMode).Combine(reader, pOriObj,
+                        reader.Mode = pMode;
+                        var combinedObj = new CombineCore(new TypeExtend(pType)).Combine(reader, pOriObj,
                             ReflectionUtils.GetTypeFriendlyName(pType));
 
                         Trace.Write(pChangedContext);
@@ -79,18 +87,19 @@ namespace XPatchLib.UnitTest.ForXml
             string pChangedContext, string pAssert)
         {
             PrivateAssertIEnumerable<T>(pType, pOriObj, pChangedObj, pChangedContext, pAssert,
-                XmlDateTimeSerializationMode.RoundtripKind);
+                DateTimeSerializationMode.RoundtripKind);
         }
 
         internal static void PrivateAssertIEnumerable<T>(Type pType, object pOriObj, object pChangedObj,
-            string pChangedContext, string pAssert, XmlDateTimeSerializationMode pMode)
+            string pChangedContext, string pAssert, DateTimeSerializationMode pMode)
         {
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = CreateWriter(stream, FlagmentSetting))
+                using (ITextWriter writer = CreateWriter(stream))
                 {
+                    writer.Mode = pMode;
                     Assert.IsTrue(
-                        new DivideCore(writer, new TypeExtend(pType), pMode).Divide(
+                        new DivideCore(writer, new TypeExtend(pType)).Divide(
                             ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj));
                 }
                 stream.Position = 0;
@@ -101,7 +110,8 @@ namespace XPatchLib.UnitTest.ForXml
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
                     {
-                        var combinedObj = new CombineCore(new TypeExtend(pType), pMode).Combine(reader, pOriObj,
+                        reader.Mode = pMode;
+                        var combinedObj = new CombineCore(new TypeExtend(pType)).Combine(reader, pOriObj,
                             ReflectionUtils.GetTypeFriendlyName(pType));
 
                         Trace.Write(pChangedContext);

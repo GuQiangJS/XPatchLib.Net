@@ -10,7 +10,7 @@ namespace XPatchLib
     ///     表示提供对 XML 数据进行快速、非缓存、只进访问的读取器。
     /// </summary>
     /// <seealso cref="XPatchLib.ITextReader" />
-    internal class XmlTextReader : ITextReader
+    public class XmlTextReader : ITextReader
     {
         private readonly XmlReader Reader;
 
@@ -18,7 +18,7 @@ namespace XPatchLib
         ///     以指定的 <paramref name="pReader" /> 实例创建 <see cref="XmlTextReader" /> 类型实例。
         /// </summary>
         /// <param name="pReader">指定的 XML 读取器。</param>
-        internal XmlTextReader(XmlReader pReader)
+        public XmlTextReader(XmlReader pReader)
         {
             Guard.ArgumentNotNull(pReader, "pReader");
             Reader = pReader;
@@ -175,6 +175,12 @@ namespace XPatchLib
                 }
             }
         }
+
+        /// <summary>
+        /// 获取或设置在字符串与 <see cref="DateTime" /> 之间转换时，如何处理时间值。
+        /// </summary>
+        /// <value>默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。</value>
+        public DateTimeSerializationMode Mode { get; set; }
 
         /// <summary>
         ///     执行与释放或重置非托管资源相关的应用程序定义的任务。

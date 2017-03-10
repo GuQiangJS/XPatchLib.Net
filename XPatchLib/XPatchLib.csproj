@@ -72,10 +72,12 @@
     <Compile Include="CombineObject.cs" />
     <Compile Include="ConstValue.cs" />
     <Compile Include="CustomAttributeExtensions.cs" />
+    <Compile Include="DateTimeSerializationMode.cs" />
     <Compile Include="DivideAttachment.cs" />
     <Compile Include="DivideIDictionary.cs" />
     <Compile Include="DivideKeyValuePair.cs" />
     <Compile Include="EnumWrapper.cs" />
+    <Compile Include="Formatting.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Guard.cs" />
     <Compile Include="IDivide.cs" />

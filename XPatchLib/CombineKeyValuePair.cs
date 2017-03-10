@@ -54,9 +54,9 @@ namespace XPatchLib
                     pReader.NodeType == NodeType.EndElement)
                     break;
                 if (pReader.Name.Equals(ConstValue.KEY) && pReader.NodeType == NodeType.Element)
-                    revKey = new CombineCore(keyType, Mode).Combine(pReader, null, pReader.Name);
+                    revKey = new CombineCore(keyType).Combine(pReader, null, pReader.Name);
                 if (pReader.Name.Equals(ConstValue.VALUE) && pReader.NodeType == NodeType.Element)
-                    revValue = new CombineCore(valueType, Mode).Combine(pReader, null, pReader.Name);
+                    revValue = new CombineCore(valueType).Combine(pReader, null, pReader.Name);
                 pReader.Read();
             }
 
@@ -100,29 +100,9 @@ namespace XPatchLib
         /// <param name="pType">
         ///     指定的类型。
         /// </param>
-        /// <remarks>
-        ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
-        /// </remarks>
         internal CombineKeyValuePair(TypeExtend pType)
-            : this(pType, XmlDateTimeSerializationMode.RoundtripKind)
+            : base(pType)
         {
-        }
-
-        /// <summary>
-        ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
-        ///     <see cref="XPatchLib.CombineIEnumerable" /> 类的新实例。
-        /// </summary>
-        /// <param name="pType">
-        ///     指定的类型。
-        /// </param>
-        /// <param name="pMode">
-        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        ///     <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        internal CombineKeyValuePair(TypeExtend pType, XmlDateTimeSerializationMode pMode)
-            : base(pType, pMode)
-        {
-            //TODO:未判断是否为KeyValuePair类型
         }
 
         #endregion Internal Constructors

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace XPatchLib.UnitTest.ForXml
@@ -21,14 +22,20 @@ namespace XPatchLib.UnitTest.ForXml
             string context;
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, r1, r2);
-                context = UnitTest.TestHelper.StreamToString(stream);
-                Debug.WriteLine(context);
+                using (var writer = TestHelper.CreateWriter(stream))
+                {
+                    serializer.Divide(writer, r1, r2);
+                    context = UnitTest.TestHelper.StreamToString(stream);
+                    Debug.WriteLine(context);
+                }
             }
-            using (var reader = new StringReader(context))
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
             {
-                var r3 = serializer.Combine(reader, r1) as Root;
-                Assert.AreEqual(r2, r3);
+                using (var reader = new XmlTextReader(xmlReader))
+                {
+                    var r3 = serializer.Combine(reader, r1) as Root;
+                    Assert.AreEqual(r2, r3);
+                }
             }
         }
 
@@ -44,14 +51,20 @@ namespace XPatchLib.UnitTest.ForXml
             string context;
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, r1, r2);
-                context = UnitTest.TestHelper.StreamToString(stream);
-                Debug.WriteLine(context);
+                using (var writer = TestHelper.CreateWriter(stream))
+                {
+                    serializer.Divide(writer, r1, r2);
+                    context = UnitTest.TestHelper.StreamToString(stream);
+                    Debug.WriteLine(context);
+                }
             }
-            using (var reader = new StringReader(context))
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
             {
-                var r3 = serializer.Combine(reader, r1) as Root;
-                Assert.AreEqual(r2, r3);
+                using (var reader = new XmlTextReader(xmlReader))
+                {
+                    var r3 = serializer.Combine(reader, r1) as Root;
+                    Assert.AreEqual(r2, r3);
+                }
             }
         }
 

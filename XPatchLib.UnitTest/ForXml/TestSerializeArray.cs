@@ -88,7 +88,10 @@ namespace XPatchLib.UnitTest.ForXml
                 var serializer = new XmlSerializer(typeof(List<AuthorClass>));
                 using (var stream = new MemoryStream())
                 {
-                    serializer.Divide(stream, null, a);
+                    using (var writer = TestHelper.CreateWriter(stream))
+                    {
+                        serializer.Divide(writer, null, a);
+                    }
                 }
             }
             catch (AttributeMissException ex)
@@ -139,8 +142,11 @@ namespace XPatchLib.UnitTest.ForXml
             serializer.RegisterTypes(types);
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, null, a);
-                context = UnitTest.TestHelper.StreamToString(stream);
+                using (var writer = TestHelper.CreateWriter(stream))
+                {
+                    serializer.Divide(writer, null, a);
+                    context = UnitTest.TestHelper.StreamToString(stream);
+                }
             }
 
             Assert.AreEqual(result, context);
@@ -161,11 +167,14 @@ namespace XPatchLib.UnitTest.ForXml
             c.Add(new BookClass {Name = "C"});
             c.Add(new BookClass {Name = "D"});
 
-            using (var reader = new StringReader(result))
+            using (XmlReader reader = XmlReader.Create(new StringReader(result)))
             {
-                var b = serializer.Combine(reader, c) as BookClassCollection;
+                using (XmlTextReader xmlReader = new XmlTextReader(reader))
+                {
+                    var b = serializer.Combine(xmlReader, c) as BookClassCollection;
 
-                Assert.AreEqual(b, c);
+                    Assert.AreEqual(b, c);
+                }
             }
         }
 
@@ -199,30 +208,43 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, null, b);
-                var context = UnitTest.TestHelper.StreamToString(stream);
-                Assert.AreEqual(result, context);
+                using (var writer = TestHelper.CreateWriter(stream))
+                {
+                    serializer.Divide(writer, null, b);
+                    var context = UnitTest.TestHelper.StreamToString(stream);
+                    Assert.AreEqual(result, context);
+                }
             }
 
-            using (TextReader reader = new StringReader(result))
+            
+            using (XmlReader reader = XmlReader.Create(new StringReader(result)))
             {
-                var b1 = serializer.Combine(reader, null) as BookClassCollection;
-                Assert.IsNotNull(b1);
-                Assert.AreEqual(b, b1);
+                using (XmlTextReader xmlReader = new XmlTextReader(reader))
+                {
+                    var b1 = serializer.Combine(xmlReader, null) as BookClassCollection;
+                    Assert.IsNotNull(b1);
+                    Assert.AreEqual(b, b1);
+                }
             }
 
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, new BookClassCollection(), b);
-                var context = UnitTest.TestHelper.StreamToString(stream);
-                Assert.AreEqual(result, context);
+                using (var writer = TestHelper.CreateWriter(stream))
+                {
+                    serializer.Divide(writer, new BookClassCollection(), b);
+                    var context = UnitTest.TestHelper.StreamToString(stream);
+                    Assert.AreEqual(result, context);
+                }
             }
 
-            using (TextReader reader = new StringReader(result))
+            using (XmlReader reader = XmlReader.Create(new StringReader(result)))
             {
-                var b1 = serializer.Combine(reader, new BookClassCollection()) as BookClassCollection;
-                Assert.IsNotNull(b1);
-                Assert.AreEqual(b, b1);
+                using (XmlTextReader xmlReader = new XmlTextReader(reader))
+                {
+                    var b1 = serializer.Combine(xmlReader, new BookClassCollection()) as BookClassCollection;
+                    Assert.IsNotNull(b1);
+                    Assert.AreEqual(b, b1);
+                }
             }
         }
 
@@ -238,31 +260,43 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, null, b);
-                var context = UnitTest.TestHelper.StreamToString(stream);
-                Assert.AreEqual(result, context);
+                using (var writer = TestHelper.CreateWriter(stream))
+                {
+                    serializer.Divide(writer, null, b);
+                    var context = UnitTest.TestHelper.StreamToString(stream);
+                    Assert.AreEqual(result, context);
+                }
             }
 
-            using (TextReader reader = new StringReader(result))
+            using (XmlReader reader = XmlReader.Create(new StringReader(result)))
             {
-                var b1 = serializer.Combine(reader, null) as BookClassCollection;
-                Assert.IsNotNull(b1);
-                Assert.AreEqual(b, b1);
+                using (XmlTextReader xmlReader = new XmlTextReader(reader))
+                {
+                    var b1 = serializer.Combine(xmlReader, null) as BookClassCollection;
+                    Assert.IsNotNull(b1);
+                    Assert.AreEqual(b, b1);
+                }
             }
 
             using (var stream = new MemoryStream())
             {
-                //b是空白集合，与空白集合产生增量内容，为空白内容。
-                serializer.Divide(stream, new BookClassCollection(), b);
-                var context = UnitTest.TestHelper.StreamToString(stream);
-                Assert.AreEqual(TestHelper.XmlHeaderContext, context);
+                using (var writer = TestHelper.CreateWriter(stream))
+                {
+                    //b是空白集合，与空白集合产生增量内容，为空白内容。
+                    serializer.Divide(writer, new BookClassCollection(), b);
+                    var context = UnitTest.TestHelper.StreamToString(stream);
+                    Assert.AreEqual(TestHelper.XmlHeaderContext, context);
+                }
             }
 
-            using (TextReader reader = new StringReader(result))
+            using (XmlReader reader = XmlReader.Create(new StringReader(result)))
             {
-                var b1 = serializer.Combine(reader, new BookClassCollection()) as BookClassCollection;
-                Assert.IsNotNull(b1);
-                Assert.AreEqual(b, b1);
+                using (XmlTextReader xmlReader = new XmlTextReader(reader))
+                {
+                    var b1 = serializer.Combine(xmlReader, new BookClassCollection()) as BookClassCollection;
+                    Assert.IsNotNull(b1);
+                    Assert.AreEqual(b, b1);
+                }
             }
         }
 
@@ -280,14 +314,17 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                var c = new BookClassCollection();
-                c.Add(new BookClass {Name = "A"});
-                c.Add(new BookClass {Name = "B"});
-                c.Add(new BookClass {Name = "C"});
-                c.Add(new BookClass {Name = "D"});
-                serializer.Divide(stream, c, b);
-                var context = UnitTest.TestHelper.StreamToString(stream);
-                Assert.AreEqual(TestHelper.XmlHeaderContext, context);
+                using (var writer = TestHelper.CreateWriter(stream))
+                {
+                    var c = new BookClassCollection();
+                    c.Add(new BookClass {Name = "A"});
+                    c.Add(new BookClass {Name = "B"});
+                    c.Add(new BookClass {Name = "C"});
+                    c.Add(new BookClass {Name = "D"});
+                    serializer.Divide(writer, c, b);
+                    var context = UnitTest.TestHelper.StreamToString(stream);
+                    Assert.AreEqual(TestHelper.XmlHeaderContext, context);
+                }
             }
         }
 
@@ -300,7 +337,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var stream = new MemoryStream())
                 {
-                    using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                    using (ITextWriter writer = TestHelper.CreateWriter(stream))
                     {
                         new DivideIEnumerable(writer, new TypeExtend(typeof(AuthorClass)));
                     }
@@ -326,7 +363,7 @@ namespace XPatchLib.UnitTest.ForXml
             var exceptionCatched = false;
             try
             {
-                new XmlSerializer(typeof(List<AuthorClass>)).Divide(new MemoryStream(), null, new List<AuthorClass>());
+                new XmlSerializer(typeof(List<AuthorClass>)).Divide(new XmlTextWriter(XmlWriter.Create(new MemoryStream())), null, new List<AuthorClass>());
             }
             catch (AttributeMissException ex)
             {
@@ -367,7 +404,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(BookClassCollection)));
 
@@ -417,9 +454,10 @@ namespace XPatchLib.UnitTest.ForXml
 </BookClassCollection>";
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
-                    var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(BookClassCollection)), true);
+                    writer.SerializeDefalutValue = true;
+                    var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(BookClassCollection)));
 
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection)), b1, b2));
                 }
@@ -459,7 +497,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[])));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, s2));
@@ -497,7 +535,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[])));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), null, s1));
@@ -537,7 +575,7 @@ namespace XPatchLib.UnitTest.ForXml
 </Array1OfString>";
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[])));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, s2));
@@ -573,7 +611,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[])));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, null));

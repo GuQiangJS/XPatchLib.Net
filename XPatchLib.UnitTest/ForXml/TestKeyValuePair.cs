@@ -46,7 +46,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideKeyValuePair(writer, new TypeExtend(k2.GetType())).Divide(
@@ -77,7 +77,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideKeyValuePair(writer, new TypeExtend(k1.GetType())).Divide(
@@ -115,7 +115,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideKeyValuePair(writer, new TypeExtend(k1.GetType())).Divide(
@@ -154,7 +154,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideKeyValuePair(writer, new TypeExtend(k1.GetType())).Divide(
@@ -192,7 +192,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideKeyValuePair(writer, new TypeExtend(k1.GetType())).Divide(
@@ -232,7 +232,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideKeyValuePair(writer, new TypeExtend(k1.GetType())).Divide(

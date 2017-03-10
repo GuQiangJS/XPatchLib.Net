@@ -88,69 +88,8 @@ namespace XPatchLib
         /// <exception cref="PrimaryKeyException">默认在字符串与System.DateTime 之间转换时，转换时应保留时区信息。</exception>
         /// <exception cref="ArgumentException">待处理的类型不是字典类型时。</exception>
         /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="pType" /> 上无法获取元素类型时。</exception>
-        /// <remarks>
-        ///     <para> 默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。 </para>
-        ///     <para> 默认不序列化默认值。 </para>
-        /// </remarks>
         internal DivideIDictionary(ITextWriter pWriter, TypeExtend pType)
-            : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型及指定是否序列化默认值初始化 <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
-        /// <exception cref="ArgumentException">待处理的类型不是字典类型时。</exception>
-        /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="pType" /> 上无法获取元素类型时。</exception>
-        /// <remarks>
-        ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
-        /// </remarks>
-        internal DivideIDictionary(ITextWriter pWriter, TypeExtend pType, Boolean pSerializeDefalutValue)
-            : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind, pSerializeDefalutValue)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
-        ///     <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <param name="pMode">
-        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        ///     <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        /// <exception cref="ArgumentException">待处理的类型不是字典类型时。</exception>
-        /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="pType" /> 上无法获取元素类型时。</exception>
-        /// <remarks>
-        ///     默认不序列化默认值。
-        /// </remarks>
-        internal DivideIDictionary(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
-            : this(pWriter, pType, pMode, false)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型、指定是否序列化默认值和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
-        ///     <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <param name="pMode">
-        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        ///     <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
-        /// <exception cref="System.ArgumentException">类型需要是字典类型</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException"></exception>
-        /// <exception cref="ArgumentException">待处理的类型不是字典类型时。</exception>
-        /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="pType" /> 上无法获取元素类型时。</exception>
-        internal DivideIDictionary(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
-            Boolean pSerializeDefalutValue)
-            : base(pWriter, pType, pMode, pSerializeDefalutValue)
+            : base(pWriter, pType)
         {
             if (!Type.IsIDictionary)
                 throw new ArgumentException("类型需要是字典类型");
@@ -292,7 +231,7 @@ namespace XPatchLib
                 //开始遍历待处理的元素集合中的所有元素
 
                 //元素的类型未知，所以再次创建DivideCore实例，由此实例创建元素的增量结果。（递归方式）
-                DivideKeyValuePair ser = new DivideKeyValuePair(Writer, GenericArgumentType, Mode, SerializeDefaultValue);
+                DivideKeyValuePair ser = new DivideKeyValuePair(Writer, GenericArgumentType);
                 while (items.MoveNext())
                 {
                     pAttach.CurrentAction = pAction;

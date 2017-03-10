@@ -67,9 +67,12 @@ namespace XPatchLib.UnitTest.ForXml
 
             OrderInfo order3;
             var serializer = new XmlSerializer(typeof(OrderInfo));
-            using (var reader = new StringReader(ChangedContext))
+            using (XmlReader reader = XmlReader.Create(new StringReader(ChangedContext)))
             {
-                order3 = serializer.Combine(reader, order1) as OrderInfo;
+                using (XmlTextReader xmlReader = new XmlTextReader(reader))
+                {
+                    order3 = serializer.Combine(xmlReader, order1) as OrderInfo;
+                }
             }
 
             Assert.AreEqual(order3, order2);
@@ -119,11 +122,14 @@ namespace XPatchLib.UnitTest.ForXml
             string context;
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, order1, order2);
-                stream.Position = 0;
-                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    context = stremReader.ReadToEnd();
+                    serializer.Divide(writer, order1, order2);
+                    stream.Position = 0;
+                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        context = stremReader.ReadToEnd();
+                    }
                 }
             }
 
@@ -288,9 +294,12 @@ namespace XPatchLib.UnitTest.ForXml
 
             OrderList list3;
             var serializer = new XmlSerializer(typeof(OrderList));
-            using (var reader = new StringReader(ChangedContext))
+            using (XmlReader reader = XmlReader.Create(new StringReader(ChangedContext)))
             {
-                list3 = serializer.Combine(reader, list1) as OrderList;
+                using (XmlTextReader xmlReader = new XmlTextReader(reader))
+                {
+                    list3 = serializer.Combine(xmlReader, list1) as OrderList;
+                }
             }
 
             Assert.AreEqual(list3, list2);
@@ -364,11 +373,14 @@ namespace XPatchLib.UnitTest.ForXml
             string context;
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, list1, list2);
-                stream.Position = 0;
-                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    context = stremReader.ReadToEnd();
+                    serializer.Divide(writer, list1, list2);
+                    stream.Position = 0;
+                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        context = stremReader.ReadToEnd();
+                    }
                 }
             }
 
@@ -474,45 +486,60 @@ namespace XPatchLib.UnitTest.ForXml
             var serializer = new XmlSerializer(typeof(CreditCard));
 
             CreditCard card2;
-            using (var reader = new StringReader(RoundtripKindChangedContext))
+            using (XmlReader reader = XmlReader.Create(new StringReader(RoundtripKindChangedContext)))
             {
-                card2 = serializer.Combine(reader, null) as CreditCard;
+                using (XmlTextReader xmlReader = new XmlTextReader(reader))
+                {
+                    card2 = serializer.Combine(xmlReader, null) as CreditCard;
+                }
             }
 
             Assert.AreEqual(card2, card1);
             Debug.Assert(card2 != null, "card2 != null");
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
 
-            serializer = new XmlSerializer(typeof(CreditCard), XmlDateTimeSerializationMode.Local);
+            serializer = new XmlSerializer(typeof(CreditCard));
 
             card2 = null;
-            using (var reader = new StringReader(LocalChangedContext))
+            using (XmlReader reader = XmlReader.Create(new StringReader(LocalChangedContext)))
             {
-                card2 = serializer.Combine(reader, null) as CreditCard;
+                using (XmlTextReader xmlReader = new XmlTextReader(reader))
+                {
+                    xmlReader.Mode = DateTimeSerializationMode.Local;
+                    card2 = serializer.Combine(xmlReader, null) as CreditCard;
+                }
             }
 
             Assert.AreEqual(card2, card1);
             Debug.Assert(card2 != null, "card2 != null");
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
 
-            serializer = new XmlSerializer(typeof(CreditCard), XmlDateTimeSerializationMode.Unspecified);
+            serializer = new XmlSerializer(typeof(CreditCard));
 
             card2 = null;
-            using (var reader = new StringReader(UnspecifiedChangedContext))
+            using (XmlReader reader = XmlReader.Create(new StringReader(UnspecifiedChangedContext)))
             {
-                card2 = serializer.Combine(reader, null) as CreditCard;
+                using (XmlTextReader xmlReader = new XmlTextReader(reader))
+                {
+                    xmlReader.Mode = DateTimeSerializationMode.Unspecified;
+                    card2 = serializer.Combine(xmlReader, null) as CreditCard;
+                }
             }
 
             Assert.AreEqual(card2, card1);
             Debug.Assert(card2 != null, "card2 != null");
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
 
-            serializer = new XmlSerializer(typeof(CreditCard), XmlDateTimeSerializationMode.Utc);
+            serializer = new XmlSerializer(typeof(CreditCard));
 
             card2 = null;
-            using (var reader = new StringReader(UtcChangedContext))
+            using (XmlReader reader = XmlReader.Create(new StringReader(UtcChangedContext)))
             {
-                card2 = serializer.Combine(reader, null) as CreditCard;
+                using (XmlTextReader xmlReader = new XmlTextReader(reader))
+                {
+                    xmlReader.Mode = DateTimeSerializationMode.Utc;
+                    card2 = serializer.Combine(xmlReader, null) as CreditCard;
+                }
             }
 
             Assert.AreEqual(card2, card1);
@@ -534,59 +561,74 @@ namespace XPatchLib.UnitTest.ForXml
             context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, null, card1);
-                stream.Position = 0;
-                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    context = stremReader.ReadToEnd();
+                    serializer.Divide(writer, null, card1);
+                    stream.Position = 0;
+                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        context = stremReader.ReadToEnd();
+                    }
                 }
             }
 
             Assert.AreEqual(RoundtripKindChangedContext, context);
             Trace.WriteLine(context);
 
-            serializer = new XmlSerializer(typeof(CreditCard), XmlDateTimeSerializationMode.Local);
+            serializer = new XmlSerializer(typeof(CreditCard));
 
             context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, null, card1);
-                stream.Position = 0;
-                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    context = stremReader.ReadToEnd();
+                    writer.Mode = DateTimeSerializationMode.Local;
+                    serializer.Divide(writer, null, card1);
+                    stream.Position = 0;
+                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        context = stremReader.ReadToEnd();
+                    }
                 }
             }
 
             Assert.AreEqual(LocalChangedContext, context);
             Trace.WriteLine(context);
 
-            serializer = new XmlSerializer(typeof(CreditCard), XmlDateTimeSerializationMode.Unspecified);
+            serializer = new XmlSerializer(typeof(CreditCard));
 
             context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, null, card1);
-                stream.Position = 0;
-                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    context = stremReader.ReadToEnd();
+                    writer.Mode=DateTimeSerializationMode.Unspecified;
+                    serializer.Divide(writer, null, card1);
+                    stream.Position = 0;
+                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        context = stremReader.ReadToEnd();
+                    }
                 }
             }
 
             Assert.AreEqual(UnspecifiedChangedContext, context);
             Trace.WriteLine(context);
 
-            serializer = new XmlSerializer(typeof(CreditCard), XmlDateTimeSerializationMode.Utc);
+            serializer = new XmlSerializer(typeof(CreditCard));
 
             context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, null, card1);
-                stream.Position = 0;
-                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    context = stremReader.ReadToEnd();
+                    writer.Mode = DateTimeSerializationMode.Utc;
+                    serializer.Divide(writer, null, card1);
+                    stream.Position = 0;
+                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        context = stremReader.ReadToEnd();
+                    }
                 }
             }
 
@@ -636,9 +678,12 @@ namespace XPatchLib.UnitTest.ForXml
 
             CreditCard card3 = null;
             var serializer = new XmlSerializer(typeof(CreditCard));
-            using (var reader = new StringReader(ChangedContext))
+            using (XmlReader reader = XmlReader.Create(new StringReader(ChangedContext)))
             {
-                card3 = serializer.Combine(reader, card1) as CreditCard;
+                using (XmlTextReader xmlReader = new XmlTextReader(reader))
+                {
+                    card3 = serializer.Combine(xmlReader, card1) as CreditCard;
+                }
             }
 
             Assert.AreEqual(card3, card2);
@@ -664,11 +709,14 @@ namespace XPatchLib.UnitTest.ForXml
             var context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, card1, card2);
-                stream.Position = 0;
-                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    context = stremReader.ReadToEnd();
+                    serializer.Divide(writer, card1, card2);
+                    stream.Position = 0;
+                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        context = stremReader.ReadToEnd();
+                    }
                 }
             }
 
@@ -725,9 +773,12 @@ namespace XPatchLib.UnitTest.ForXml
 
             Warehouse w3;
             var serializer = new XmlSerializer(typeof(Warehouse));
-            using (var reader = new StringReader(ChangedContext))
+            using (XmlReader reader = XmlReader.Create(new StringReader(ChangedContext)))
             {
-                w3 = serializer.Combine(reader, w1) as Warehouse;
+                using (XmlTextReader xmlReader = new XmlTextReader(reader))
+                {
+                    w3 = serializer.Combine(xmlReader, w1) as Warehouse;
+                }
             }
 
             Assert.AreEqual(w3, w2);
@@ -754,11 +805,14 @@ namespace XPatchLib.UnitTest.ForXml
             var context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, w1, w2);
-                stream.Position = 0;
-                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    context = stremReader.ReadToEnd();
+                    serializer.Divide(writer, w1, w2);
+                    stream.Position = 0;
+                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        context = stremReader.ReadToEnd();
+                    }
                 }
             }
 
@@ -792,11 +846,14 @@ namespace XPatchLib.UnitTest.ForXml
             var context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, w1, w2);
-                stream.Position = 0;
-                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    context = stremReader.ReadToEnd();
+                    serializer.Divide(writer, w1, w2);
+                    stream.Position = 0;
+                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        context = stremReader.ReadToEnd();
+                    }
                 }
             }
 
@@ -862,21 +919,27 @@ namespace XPatchLib.UnitTest.ForXml
             var serializer = new XmlSerializer(typeof(CreditCard));
 
             CreditCard card2 = null;
-            using (var reader = new StringReader(NotSerializeDefaultValueChangedContext))
+            using (XmlReader reader = XmlReader.Create(new StringReader(NotSerializeDefaultValueChangedContext)))
             {
-                card2 = serializer.Combine(reader, null) as CreditCard;
+                using (XmlTextReader xmlReader = new XmlTextReader(reader))
+                {
+                    card2 = serializer.Combine(xmlReader, null) as CreditCard;
+                }
             }
 
             Assert.AreEqual(card2, card1);
             Debug.Assert(card2 != null, "card2 != null");
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
 
-            serializer = new XmlSerializer(typeof(CreditCard), true);
+            serializer = new XmlSerializer(typeof(CreditCard));
 
             card2 = null;
-            using (var reader = new StringReader(NotSerializeDefaultValueChangedContext))
+            using (XmlReader reader = XmlReader.Create(new StringReader(NotSerializeDefaultValueChangedContext)))
             {
-                card2 = serializer.Combine(reader, null) as CreditCard;
+                using (XmlTextReader xmlReader = new XmlTextReader(reader))
+                {
+                    card2 = serializer.Combine(xmlReader, null) as CreditCard;
+                }
             }
 
             Assert.AreEqual(card2, card1);
@@ -900,27 +963,34 @@ namespace XPatchLib.UnitTest.ForXml
             context = "";
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, null, card1);
-                stream.Position = 0;
-                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
-                    context = stremReader.ReadToEnd();
+                    serializer.Divide(writer, null, card1);
+                    stream.Position = 0;
+                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        context = stremReader.ReadToEnd();
+                    }
                 }
             }
 
             Assert.AreEqual(NotSerializeDefaultValueChangedContext, context);
             Trace.WriteLine(context);
 
-            serializer = new XmlSerializer(typeof(CreditCard), true);
+            serializer = new XmlSerializer(typeof(CreditCard));
 
             context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, null, card1);
-                stream.Position = 0;
-                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
-                    context = stremReader.ReadToEnd();
+                    writer.SerializeDefalutValue = true;
+                    serializer.Divide(writer, null, card1);
+                    stream.Position = 0;
+                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        context = stremReader.ReadToEnd();
+                    }
                 }
             }
 
@@ -968,11 +1038,14 @@ namespace XPatchLib.UnitTest.ForXml
             string changedContext;
             using (var stream = new MemoryStream())
             {
-                serializer.Divide(stream, null, c1);
-                stream.Position = 0;
-                using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
-                    changedContext = stremReader.ReadToEnd();
+                    serializer.Divide(writer, null, c1);
+                    stream.Position = 0;
+                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        changedContext = stremReader.ReadToEnd();
+                    }
                 }
             }
 

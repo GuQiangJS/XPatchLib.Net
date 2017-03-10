@@ -28,15 +28,15 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
   <OrderInfo Action=""Add"">
     <BillingAddress>
       <Address1>" + changedObjs[2].BillingAddress.Address1 + @"</Address1>
-      <Address2>" + changedObjs[2].BillingAddress.Address2 + @"</Address2>
+      <Address2 />
       <AddressId>" + changedObjs[2].BillingAddress.AddressId + @"</AddressId>
       <City>" + changedObjs[2].BillingAddress.City + @"</City>
       <Country>" + changedObjs[2].BillingAddress.Country + @"</Country>
-      <Email>" + changedObjs[2].BillingAddress.Email + @"</Email>
+      <Email />
       <FirstName>" + changedObjs[2].BillingAddress.FirstName + @"</FirstName>
       <LastName>" + changedObjs[2].BillingAddress.LastName + @"</LastName>
       <Phone>" + changedObjs[2].BillingAddress.Phone + @"</Phone>
-      <State>" + changedObjs[2].BillingAddress.State + @"</State>
+      <State />
       <Zip>" + changedObjs[2].BillingAddress.Zip + @"</Zip>
     </BillingAddress>
     <CreditCard>
@@ -74,15 +74,15 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
   <OrderInfo Action=""Add"">
     <BillingAddress>
       <Address1>" + changedObjs[1].BillingAddress.Address1 + @"</Address1>
-      <Address2>" + changedObjs[1].BillingAddress.Address2 + @"</Address2>
+      <Address2 />
       <AddressId>" + changedObjs[1].BillingAddress.AddressId + @"</AddressId>
       <City>" + changedObjs[1].BillingAddress.City + @"</City>
       <Country>" + changedObjs[1].BillingAddress.Country + @"</Country>
-      <Email>" + changedObjs[1].BillingAddress.Email + @"</Email>
+      <Email />
       <FirstName>" + changedObjs[1].BillingAddress.FirstName + @"</FirstName>
       <LastName>" + changedObjs[1].BillingAddress.LastName + @"</LastName>
       <Phone>" + changedObjs[1].BillingAddress.Phone + @"</Phone>
-      <State>" + changedObjs[1].BillingAddress.State + @"</State>
+      <State />
       <Zip>" + changedObjs[1].BillingAddress.Zip + @"</Zip>
     </BillingAddress>
     <CreditCard>

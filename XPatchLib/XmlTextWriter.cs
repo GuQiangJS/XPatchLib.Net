@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Text;
 using System.Xml;
 
 namespace XPatchLib
@@ -11,7 +12,7 @@ namespace XPatchLib
     ///     XML写入器。
     /// </summary>
     /// <seealso cref="XPatchLib.ITextWriter" />
-    internal class XmlTextWriter : ITextWriter
+    public class XmlTextWriter : ITextWriter
     {
         private readonly XmlWriter Writer;
 
@@ -19,7 +20,13 @@ namespace XPatchLib
         ///     以指定的 <paramref name="pWriter" /> 实例创建 <see cref="XmlTextWriter" /> 类型实例。
         /// </summary>
         /// <param name="pWriter">指定的 XML 编写器。</param>
-        internal XmlTextWriter(XmlWriter pWriter)
+        /// <remarks>
+        ///     <para>
+        ///         默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
+        ///     </para>
+        ///     <para> 默认不序列化默认值。 </para>
+        /// </remarks>
+        public XmlTextWriter(XmlWriter pWriter)
         {
             Guard.ArgumentNotNull(pWriter, "pWriter");
             Writer = pWriter;
@@ -172,14 +179,54 @@ namespace XPatchLib
         }
 
         /// <summary>
+        ///     获取或设置在字符串与 <see cref="DateTime" /> 之间转换时，如何处理时间值。
+        /// </summary>
+        /// <value>默认为 <see cref="DateTimeSerializationMode.RoundtripKind" />。</value>
+        public DateTimeSerializationMode Mode { get; set; } = DateTimeSerializationMode.RoundtripKind;
+
+
+        /// <summary>
+        ///     获取或设置是否序列化默认值。
+        /// </summary>
+        /// <value>默认为 <c>false</c>。</value>
+        public bool SerializeDefalutValue { get; set; }
+
+        /// <summary>
+        ///     获取或设置如何对输出进行格式设置。
+        /// </summary>
+        /// <value><see cref="Formatting" /> 值之一。 默认值是 <see cref="Formatting.None" /> （无特殊格式）。</value>
+        public Formatting Formatting
+        {
+            get { return Writer.Settings.Indent ? Formatting.Indented : Formatting.None; }
+            set { Writer.Settings.Indent = value == Formatting.Indented; }
+        }
+
+        /// <summary>
+        ///     获取或设置用于缩进时用于转换的字符 <see cref="Formatting" /> 设置为 <see cref="Formatting.Indented" />。
+        /// </summary>
+        public string IndentChars
+        {
+            get { return Writer.Settings.IndentChars; }
+            set { Writer.Settings.IndentChars = value; }
+        }
+
+        /// <summary>
+        ///     获取或设置要使用的文本编码的类型。
+        /// </summary>
+        public Encoding Encoding
+        {
+            get { return Writer.Settings.Encoding; }
+            set { Writer.Settings.Encoding = value; }
+        }
+
+        /// <summary>
         ///     执行与释放或重置非托管资源相关的应用程序定义的任务。
         /// </summary>
         protected void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                ((IDisposable) Writer)?.Dispose();
-            }
+            Writer.Flush();
+            //if (disposing)
+            //    ((IDisposable) Writer)?.Dispose();
         }
     }
 }

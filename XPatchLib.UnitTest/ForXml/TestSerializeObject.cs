@@ -27,61 +27,74 @@ namespace XPatchLib.UnitTest.ForXml
             XmlSerializer serializer = null;
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("fr-FR");
-            serializer = new XmlSerializer(typeof(CultureClass), XmlDateTimeSerializationMode.Unspecified);
+            serializer = new XmlSerializer(typeof(CultureClass));
             string frResult = string.Empty;
             using (MemoryStream stream = new MemoryStream())
             {
-                serializer.Divide(stream, null, CultureClass.GetSampleInstance());
-
-                stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    frResult = stremReader.ReadToEnd();
+                    writer.Mode=DateTimeSerializationMode.Unspecified;
+                    serializer.Divide(writer, null, CultureClass.GetSampleInstance());
+
+                    stream.Position = 0;
+                    using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        frResult = stremReader.ReadToEnd();
+                    }
                 }
             }
             Trace.WriteLine(frResult);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("fa-IR");
-            serializer = new XmlSerializer(typeof(CultureClass), XmlDateTimeSerializationMode.Unspecified);
             string faResult = string.Empty;
             using (MemoryStream stream = new MemoryStream())
             {
-                serializer.Divide(stream, null, CultureClass.GetSampleInstance());
-
-                stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    faResult = stremReader.ReadToEnd();
+                    writer.Mode = DateTimeSerializationMode.Unspecified;
+                    serializer.Divide(writer, null, CultureClass.GetSampleInstance());
+
+                    stream.Position = 0;
+                    using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        faResult = stremReader.ReadToEnd();
+                    }
                 }
             }
             Trace.WriteLine(faResult);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
-            serializer = new XmlSerializer(typeof(CultureClass), XmlDateTimeSerializationMode.Unspecified);
             string deResult = string.Empty;
             using (MemoryStream stream = new MemoryStream())
             {
-                serializer.Divide(stream, null, CultureClass.GetSampleInstance());
-
-                stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    deResult = stremReader.ReadToEnd();
+                    writer.Mode = DateTimeSerializationMode.Unspecified;
+                    serializer.Divide(writer, null, CultureClass.GetSampleInstance());
+
+                    stream.Position = 0;
+                    using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        deResult = stremReader.ReadToEnd();
+                    }
                 }
             }
             Trace.WriteLine(deResult);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
-            serializer = new XmlSerializer(typeof(CultureClass), XmlDateTimeSerializationMode.Unspecified);
             string usResult = string.Empty;
             using (MemoryStream stream = new MemoryStream())
             {
-                serializer.Divide(stream, null, CultureClass.GetSampleInstance());
-
-                stream.Position = 0;
-                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    usResult = stremReader.ReadToEnd();
+                    writer.Mode = DateTimeSerializationMode.Unspecified;
+                    serializer.Divide(writer, null, CultureClass.GetSampleInstance());
+
+                    stream.Position = 0;
+                    using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        usResult = stremReader.ReadToEnd();
+                    }
                 }
             }
             Trace.WriteLine(usResult);
@@ -408,7 +421,7 @@ namespace XPatchLib.UnitTest.ForXml
             result =
                 string.Format(@"<BookClass>
   <Author>
-    <Comments>{3}</Comments>
+    <Comments />
     <Name>{2}</Name>
   </Author>
   <Comments>{1}</Comments>
@@ -537,7 +550,7 @@ namespace XPatchLib.UnitTest.ForXml
             b2.Comments = @"";
             string result =
                 string.Format(@"<AuthorClass>
-  <Comments>{1}</Comments>
+  <Comments />
   <Name>{0}</Name>
 </AuthorClass>", b2.Name, b2.Comments);
 
@@ -688,9 +701,12 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (MemoryStream stream = new MemoryStream())
             {
-                serializer.Divide(stream, b1, b2);
-                string context = UnitTest.TestHelper.StreamToString(stream);
-                Assert.AreEqual(TestHelper.XmlHeaderContext, context);
+                using (var writer = TestHelper.CreateWriter(stream))
+                {
+                    serializer.Divide(writer, b1, b2);
+                    string context = UnitTest.TestHelper.StreamToString(stream);
+                    Assert.AreEqual(TestHelper.XmlHeaderContext, context);
+                }
             }
         }
 
@@ -735,18 +751,21 @@ namespace XPatchLib.UnitTest.ForXml
                             string changedContext = string.Empty;
                             using (MemoryStream stream = new MemoryStream())
                             {
-                                serializer.Divide(stream, null, BookClass.GetSampleInstance());
-
-                                stream.Position = 0;
-                                using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                                using (var writer = TestHelper.CreateWriter(stream))
                                 {
-                                    changedContext = stremReader.ReadToEnd();
+                                    serializer.Divide(writer, null, BookClass.GetSampleInstance());
+
+                                    stream.Position = 0;
+                                    using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                                    {
+                                        changedContext = stremReader.ReadToEnd();
+                                    }
                                 }
                             }
                             Trace.Write(changedContext);
                             XmlSerializer deserializer = new XmlSerializer(typeof(BookClass));
                             BookClass book = null;
-                            using (TextReader reader = new StringReader(changedContext))
+                            using (XmlTextReader reader = new XmlTextReader(XmlReader.Create(new StringReader(changedContext))))
                             {
                                 book = deserializer.Combine(reader, null) as BookClass;
                             }

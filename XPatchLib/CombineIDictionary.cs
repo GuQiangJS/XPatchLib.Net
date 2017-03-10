@@ -55,7 +55,7 @@ namespace XPatchLib
             CombineAttribute attrs = AnlysisAttributes(pReader, pName);
 
             //生成增量内容实例
-            object item = new CombineKeyValuePair(GenericArgumentType, Mode).Combine(pReader, null, pName);
+            object item = new CombineKeyValuePair(GenericArgumentType).Combine(pReader, null, pName);
 
             //增量内容实例Key值
             object key = GenericArgumentType.GetMemberValue(item, ConstValue.KEY);
@@ -119,9 +119,6 @@ namespace XPatchLib
         /// <param name="pType">
         ///     指定的类型。
         /// </param>
-        /// <remarks>
-        ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
-        /// </remarks>
         /// <exception cref="ArgumentException">
         ///     待处理的类型不是字典类型时。
         /// </exception>
@@ -129,29 +126,7 @@ namespace XPatchLib
         ///     当 <paramref name="pType" /> 上无法获取元素类型时。
         /// </exception>
         internal CombineIDictionary(TypeExtend pType)
-            : this(pType, XmlDateTimeSerializationMode.RoundtripKind)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
-        ///     <see cref="XPatchLib.CombineIEnumerable" /> 类的新实例。
-        /// </summary>
-        /// <param name="pType">
-        ///     指定的类型。
-        /// </param>
-        /// <param name="pMode">
-        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        ///     <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        /// <exception cref="ArgumentException">
-        ///     待处理的类型不是字典类型时。
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        ///     当 <paramref name="pType" /> 上无法获取元素类型时。
-        /// </exception>
-        internal CombineIDictionary(TypeExtend pType, XmlDateTimeSerializationMode pMode)
-            : base(pType, pMode)
+            : base(pType)
         {
             if (!Type.IsIDictionary)
                 throw new ArgumentException("类型需要是字典类型");

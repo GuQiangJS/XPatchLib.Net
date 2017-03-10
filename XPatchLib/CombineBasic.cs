@@ -21,7 +21,7 @@ namespace XPatchLib
         /// <param name="pMode">指定在字符串与 <see cref="T:System.DateTime" /> 之间转换时，如何处理时间值。</param>
         /// <param name="pValue">待合并的数据值。</param>
         /// <returns>返回合并后的数据。</returns>
-        internal static Object CombineAction(TypeCode pTypeCode, bool pIsGuid, XmlDateTimeSerializationMode pMode,
+        internal static Object CombineAction(TypeCode pTypeCode, bool pIsGuid, DateTimeSerializationMode pMode,
             string pValue)
         {
             switch (pTypeCode)
@@ -85,7 +85,7 @@ namespace XPatchLib
         /// <returns></returns>
         protected override object CombineAction(ITextReader pReader, object pOriObject, string pName)
         {
-            return CombineAction(Type.TypeCode, Type.IsGuid, Mode, pReader.ReadString());
+            return CombineAction(Type.TypeCode, Type.IsGuid, pReader.Mode, pReader.ReadString());
         }
 
         #region Internal Constructors
@@ -96,30 +96,8 @@ namespace XPatchLib
         /// <param name="pType">
         ///     指定的类型。
         /// </param>
-        /// <remarks>
-        ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
-        /// </remarks>
         internal CombineBasic(TypeExtend pType)
             : base(pType)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
-        ///     <see cref="XPatchLib.CombineBasic" /> 类的新实例。
-        /// </summary>
-        /// <param name="pType">
-        ///     指定的类型。
-        /// </param>
-        /// <param name="pMode">
-        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        ///     <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        /// <exception cref="PrimaryKeyException">
-        ///     当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。
-        /// </exception>
-        internal CombineBasic(TypeExtend pType, XmlDateTimeSerializationMode pMode)
-            : base(pType, pMode)
         {
         }
 
@@ -145,9 +123,9 @@ namespace XPatchLib
             //return (char)XmlConvert.ToUInt16(pValue);
         }
 
-        private static object CombineDateTime(string pValue, XmlDateTimeSerializationMode pMode)
+        private static object CombineDateTime(string pValue, DateTimeSerializationMode pMode)
         {
-            return XmlConvert.ToDateTime(pValue, pMode);
+            return XmlConvert.ToDateTime(pValue, pMode.Convert());
         }
 
         private static object CombineDecimal(string pValue)

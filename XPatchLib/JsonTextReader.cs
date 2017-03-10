@@ -8,6 +8,7 @@ using System.Xml;
 
 namespace XPatchLib
 {
+    //TODO:Not Complete
     /// <summary>
     /// 表示提供对 Json 数据进行快速、非缓存、只进访问的读取器。
     /// </summary>
@@ -15,16 +16,25 @@ namespace XPatchLib
     internal class JsonTextReader : ITextReader
     {
         private readonly XmlDictionaryReader _reader;
-
+        
         /// <summary>
         ///     以指定的 <paramref name="pStream" /> 实例创建 <see cref="JsonTextReader" /> 类型实例。
         /// </summary>
+        /// <param name="pStream">包含 Json 数据的流。</param>
+        public JsonTextReader(Stream pStream)
+            :this(pStream, DateTimeSerializationMode.RoundtripKind)
+        { }
+
+        /// <summary>
+        /// 以指定的 <paramref name="pStream" /> 实例创建 <see cref="JsonTextReader" /> 类型实例，同时指定字符串与 <see cref="DateTime" /> 之间转换时，如何处理时间值。
+        /// </summary>
         /// <param name="pStream">包含 Json 数据的流。。</param>
-        internal JsonTextReader(Stream pStream)
+        /// <param name="pMode">字符串与 <see cref="DateTime" /> 之间转换时，如何处理时间值。</param>
+        public JsonTextReader(Stream pStream, DateTimeSerializationMode pMode)
         {
             Guard.ArgumentNotNull(pStream, "pStream");
-
             _reader = JsonReaderWriterFactory.CreateJsonReader(pStream, new XmlDictionaryReaderQuotas());
+            Mode = pMode;
         }
 
         void IDisposable.Dispose()
@@ -175,5 +185,7 @@ namespace XPatchLib
             if (disposing)
                 ((IDisposable) _reader)?.Dispose();
         }
+
+        public DateTimeSerializationMode Mode { get; set; }
     }
 }

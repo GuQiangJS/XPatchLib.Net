@@ -140,62 +140,9 @@ namespace XPatchLib
         /// </summary>
         /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
-        /// <remarks>
-        ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
-        /// </remarks>
         internal DivideKeyValuePair(ITextWriter pWriter, TypeExtend pType)
-            : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind)
+            : base(pWriter, pType)
         {
-        }
-
-        /// <summary>
-        ///     使用指定的类型及指定是否序列化默认值初始化 <see cref="XPatchLib.DivideKeyValuePair" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
-        /// <remarks>
-        ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
-        /// </remarks>
-        internal DivideKeyValuePair(ITextWriter pWriter, TypeExtend pType, bool pSerializeDefalutValue)
-            : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind, pSerializeDefalutValue)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
-        ///     <see cref="XPatchLib.DivideKeyValuePair" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <param name="pMode">
-        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        ///     <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        /// <remarks>
-        ///     默认不序列化默认值。
-        /// </remarks>
-        internal DivideKeyValuePair(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
-            : this(pWriter, pType, pMode, false)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型、指定是否序列化默认值和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
-        ///     <see cref="XPatchLib.DivideKeyValuePair" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <param name="pMode">
-        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        ///     <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
-        internal DivideKeyValuePair(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
-            bool pSerializeDefalutValue)
-            : base(pWriter, pType, pMode, pSerializeDefalutValue)
-        {
-            //TODO:未判断是否为KeyValuePair类型
         }
 
         #endregion Internal Constructors

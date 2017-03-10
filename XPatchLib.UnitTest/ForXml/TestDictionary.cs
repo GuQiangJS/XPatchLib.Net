@@ -194,9 +194,12 @@ namespace XPatchLib.UnitTest.ForXml
             dic2.Add("Ekey", "EValue");
 
             Dictionary<string, string> newDic = null;
-            using (var reader = new StringReader(ComplexOperatorChangedContext))
+            using (XmlReader reader = XmlReader.Create(new StringReader(ComplexOperatorChangedContext)))
             {
-                newDic = new XmlSerializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
+                using (var xmlTextReader = new XmlTextReader(reader))
+                {
+                    newDic = new XmlSerializer(dic1.GetType()).Combine(xmlTextReader, dic1) as Dictionary<string, string>;
+                }
             }
             //newDic的长度应该为2，dic1的长度为4（因为dic1并未被改变）
             Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
@@ -232,11 +235,14 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                var serializer = new XmlSerializer(dic1.GetType());
-                serializer.Divide(stream, dic1, dic2);
-                var context = UnitTest.TestHelper.StreamToString(stream);
-                Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + ComplexOperatorChangedContext,
-                    context);
+                using (var writer = TestHelper.CreateWriter(stream))
+                {
+                    var serializer = new XmlSerializer(dic1.GetType());
+                    serializer.Divide(writer, dic1, dic2);
+                    var context = UnitTest.TestHelper.StreamToString(stream);
+                    Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + ComplexOperatorChangedContext,
+                        context);
+                }
             }
         }
 
@@ -319,9 +325,12 @@ namespace XPatchLib.UnitTest.ForXml
 
             Dictionary<string, string> oldDic = null;
             Dictionary<string, string> newDic = null;
-            using (var reader = new StringReader(CreateChangedContext))
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(CreateChangedContext)))
             {
-                newDic = new XmlSerializer(dic1.GetType()).Combine(reader, oldDic) as Dictionary<string, string>;
+                using (var reader = new XmlTextReader(xmlReader))
+                {
+                    newDic = new XmlSerializer(dic1.GetType()).Combine(reader, oldDic) as Dictionary<string, string>;
+                }
             }
             Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
             Assert.IsNotNull(newDic);
@@ -344,10 +353,13 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                var serializer = new XmlSerializer(dic1.GetType());
-                serializer.Divide(stream, null, dic1);
-                var context = UnitTest.TestHelper.StreamToString(stream);
-                Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + CreateChangedContext, context);
+                using (var writer = TestHelper.CreateWriter(stream))
+                {
+                    var serializer = new XmlSerializer(dic1.GetType());
+                    serializer.Divide(writer, null, dic1);
+                    var context = UnitTest.TestHelper.StreamToString(stream);
+                    Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + CreateChangedContext, context);
+                }
             }
         }
 
@@ -453,9 +465,12 @@ namespace XPatchLib.UnitTest.ForXml
             dic2.Add("Dkey", "newDvalue");
 
             Dictionary<string, string> newDic = null;
-            using (var reader = new StringReader(EditChangedContext))
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(EditChangedContext)))
             {
-                newDic = new XmlSerializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
+                using (var reader = new XmlTextReader(xmlReader))
+                {
+                    newDic = new XmlSerializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
+                }
             }
             //newDic的长度应该为2，dic1的长度为4（因为dic1并未被改变）
             Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
@@ -490,10 +505,13 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                var serializer = new XmlSerializer(dic1.GetType());
-                serializer.Divide(stream, dic1, dic2);
-                var context = UnitTest.TestHelper.StreamToString(stream);
-                Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + EditChangedContext, context);
+                using (var writer = TestHelper.CreateWriter(stream))
+                {
+                    var serializer = new XmlSerializer(dic1.GetType());
+                    serializer.Divide(writer, dic1, dic2);
+                    var context = UnitTest.TestHelper.StreamToString(stream);
+                    Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + EditChangedContext, context);
+                }
             }
         }
 
@@ -573,9 +591,12 @@ namespace XPatchLib.UnitTest.ForXml
             dic1.Add("Dkey", "Dvalue");
 
             Dictionary<string, string> newDic = null;
-            using (var reader = new StringReader(RemoveChangedContext))
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(RemoveChangedContext)))
             {
-                newDic = new XmlSerializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
+                using (var reader = new XmlTextReader(xmlReader))
+                {
+                    newDic = new XmlSerializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
+                }
             }
             //newDic的长度应该为2，dic1的长度为4（因为dic1并未被改变）
             Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
@@ -604,10 +625,13 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                var serializer = new XmlSerializer(dic1.GetType());
-                serializer.Divide(stream, dic1, dic2);
-                var context = UnitTest.TestHelper.StreamToString(stream);
-                Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + RemoveChangedContext, context);
+                using (var writer = TestHelper.CreateWriter(stream))
+                {
+                    var serializer = new XmlSerializer(dic1.GetType());
+                    serializer.Divide(writer, dic1, dic2);
+                    var context = UnitTest.TestHelper.StreamToString(stream);
+                    Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + RemoveChangedContext, context);
+                }
             }
         }
 
@@ -713,9 +737,12 @@ namespace XPatchLib.UnitTest.ForXml
             dic2.Add("Dkey", null);
 
             Dictionary<string, string> newDic = null;
-            using (var reader = new StringReader(SetNullChangedContext))
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(SetNullChangedContext)))
             {
-                newDic = new XmlSerializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
+                using (var reader = new XmlTextReader(xmlReader))
+                {
+                    newDic = new XmlSerializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
+                }
             }
             //newDic的长度应该为2，dic1的长度为4（因为dic1并未被改变）
             Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
@@ -750,10 +777,13 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                var serializer = new XmlSerializer(dic1.GetType());
-                serializer.Divide(stream, dic1, dic2);
-                var context = UnitTest.TestHelper.StreamToString(stream);
-                Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + SetNullChangedContext, context);
+                using (var writer = TestHelper.CreateWriter(stream))
+                {
+                    var serializer = new XmlSerializer(dic1.GetType());
+                    serializer.Divide(writer, dic1, dic2);
+                    var context = UnitTest.TestHelper.StreamToString(stream);
+                    Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + SetNullChangedContext, context);
+                }
             }
         }
 
@@ -774,7 +804,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideCore(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -803,7 +833,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideIDictionary(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -827,7 +857,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideCore(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -850,7 +880,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideIDictionary(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -880,7 +910,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideCore(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -910,7 +940,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideIDictionary(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -938,7 +968,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideCore(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -967,7 +997,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideIDictionary(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -997,7 +1027,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideCore(writer, new TypeExtend(dic1.GetType())).Divide(
@@ -1028,7 +1058,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
                         new DivideIDictionary(writer, new TypeExtend(dic1.GetType())).Divide(

@@ -90,68 +90,8 @@ namespace XPatchLib
         /// <param name="pType">指定的类型。</param>
         /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 元素类型的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
         /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="pType" /> 上无法获取元素类型时。</exception>
-        /// <remarks>
-        ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
-        /// </remarks>
         internal DivideIEnumerable(ITextWriter pWriter, TypeExtend pType)
-            : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型及指定是否序列化默认值初始化 <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
-        /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 元素类型的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
-        /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="pType" /> 上无法获取元素类型时。</exception>
-        /// <remarks>
-        ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
-        /// </remarks>
-        internal DivideIEnumerable(ITextWriter pWriter, TypeExtend pType, Boolean pSerializeDefalutValue)
-            : this(pWriter, pType, XmlDateTimeSerializationMode.RoundtripKind, pSerializeDefalutValue)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
-        ///     <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <param name="pMode">
-        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        ///     <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 元素类型的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
-        /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="pType" /> 上无法获取元素类型时。</exception>
-        /// <remarks>
-        ///     默认不序列化默认值。
-        /// </remarks>
-        internal DivideIEnumerable(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode)
-            : this(pWriter, pType, pMode, false)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型、指定是否序列化默认值和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
-        ///     <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <param name="pMode">
-        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        ///     <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        /// <param name="pSerializeDefalutValue">指定是否序列化默认值。</param>
-        /// <exception cref="AttributeMissException">PrimaryKeyAttribute</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException"></exception>
-        /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 元素类型的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
-        /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="pType" /> 上无法获取元素类型时。</exception>
-        internal DivideIEnumerable(ITextWriter pWriter, TypeExtend pType, XmlDateTimeSerializationMode pMode,
-            Boolean pSerializeDefalutValue)
-            : base(pWriter, pType, pMode, pSerializeDefalutValue)
+            : base(pWriter, pType)
         {
             Type t = null;
             if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, out t))
@@ -302,7 +242,7 @@ namespace XPatchLib
                 //开始遍历待处理的元素集合中的所有元素
 
                 //元素的类型未知，所以再次创建DivideCore实例，由此实例创建元素的增量结果。（递归方式）
-                DivideCore ser = new DivideCore(Writer, GenericArgumentType, Mode, SerializeDefaultValue);
+                DivideCore ser = new DivideCore(Writer, GenericArgumentType);
                 while (items.MoveNext())
                 {
                     bool itemResult = false;

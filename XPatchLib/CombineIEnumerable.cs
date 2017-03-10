@@ -48,37 +48,7 @@ namespace XPatchLib
         /// <param name="pType">
         ///     指定的类型。
         /// </param>
-        /// <remarks>
-        ///     默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。
-        /// </remarks>
-        internal CombineIEnumerable(TypeExtend pType)
-            : this(pType, XmlDateTimeSerializationMode.RoundtripKind)
-        {
-        }
-
-        /// <summary>
-        ///     使用指定的类型和指定的 <see cref="System.Xml.XmlDateTimeSerializationMode" /> 初始化
-        ///     <see cref="XPatchLib.CombineIEnumerable" /> 类的新实例。
-        /// </summary>
-        /// <param name="pType">
-        ///     指定的类型。
-        /// </param>
-        /// <param name="pMode">
-        ///     指定在字符串与 System.DateTime 之间转换时，如何处理时间值。
-        ///     <para> 是用 <see cref="XmlDateTimeSerializationMode.Utc" /> 方式转换时，需要自行进行转换。 </para>
-        /// </param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        ///     当无法取得 <paramref name="pType" /> 定义的集合内部的元素类型时。
-        /// </exception>
-        /// <exception cref="PrimaryKeyException">
-        ///     当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。
-        /// </exception>
-        /// <exception cref="AttributeMissException">
-        ///     当 <paramref name="pType" /> 定义的集合内部的元素类型不是基础类型，并且没有被标记
-        ///     <see cref="XPatchLib.PrimaryKeyAttribute" /> 时。
-        /// </exception>
-        internal CombineIEnumerable(TypeExtend pType, XmlDateTimeSerializationMode pMode)
-            : base(pType, pMode)
+        internal CombineIEnumerable(TypeExtend pType):base(pType)
         {
             Type t;
             if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, out t))

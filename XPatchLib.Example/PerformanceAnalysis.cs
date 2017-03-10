@@ -12,7 +12,7 @@ namespace XmlSerializerExample
 
         public static void Main()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(OrderedItem), XmlDateTimeSerializationMode.Utc, false);
+            XmlSerializer serializer = new XmlSerializer(typeof(OrderedItem), DateTimeSerializationMode.Utc, false);
 
             for (int i = 0; i < 100000; i++)
             {
