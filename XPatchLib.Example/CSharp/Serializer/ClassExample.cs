@@ -1,8 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Text;
+using System.Xml;
 using XPatchLib;
+using XmlTextReader = XPatchLib.XmlTextReader;
+using XmlTextWriter = XPatchLib.XmlTextWriter;
 
-namespace XmlSerializerExample
+namespace SerializerExample
 {
     public class Address
     {
@@ -44,11 +48,11 @@ namespace XmlSerializerExample
         {
             Test t = new Test();
 
-            t.Create("po.xml");
-            t.Read("po.xml");
+            t.Divide("po.xml");
+            t.Combine("po.xml");
         }
 
-        private void Create(string filename)
+        private void Divide(string filename)
         {
             //原始对象
             PurchaseOrder order = CreatePuchaseOrder();
@@ -69,10 +73,17 @@ namespace XmlSerializerExample
             newOrder.TotalCost = newOrder.SubTotal + newOrder.ShipCost;
 
             //产生增量内容
-            XmlSerializer serializer = new XmlSerializer(typeof(PurchaseOrder));
-            TextWriter writer = new StreamWriter(filename);
-            serializer.Divide(writer, order, newOrder);
-            writer.Close();
+            Serializer serializer = new Serializer(typeof(PurchaseOrder));
+            using (FileStream fs = new FileStream(filename, FileMode.CreateNew, FileAccess.ReadWrite))
+            {
+                using (System.Xml.XmlTextWriter xmlWriter = new System.Xml.XmlTextWriter(fs, Encoding.UTF8))
+                {
+                    using (XmlTextWriter writer = new XmlTextWriter(xmlWriter))
+                    {
+                        serializer.Divide(writer, order, newOrder);
+                    }
+                }
+            }
         }
 
         private void OuputPuchaseOrder(PurchaseOrder order)
@@ -92,13 +103,24 @@ namespace XmlSerializerExample
             Console.WriteLine("\t\t Total\t\t" + order.TotalCost);
         }
 
-        private void Read(string filename)
+        private void Combine(string filename)
         {
             //合并增量内容至原始对象
-            XmlSerializer serializer = new XmlSerializer(typeof(PurchaseOrder));
-            FileStream fs = new FileStream(filename, FileMode.Open);
+            Serializer serializer = new Serializer(typeof(PurchaseOrder));
+
             PurchaseOrder oldOrder = CreatePuchaseOrder();
-            PurchaseOrder newOrder = (PurchaseOrder) serializer.Combine(fs, oldOrder);
+            PurchaseOrder newOrder = null;
+
+            using (FileStream fs = new FileStream(filename, FileMode.Open))
+            {
+                using (XmlReader xmlReader = XmlReader.Create(fs))
+                {
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        newOrder = (PurchaseOrder) serializer.Combine(reader, oldOrder);
+                    }
+                }
+            }
 
             Console.WriteLine("OldOrder: ");
             OuputPuchaseOrder(oldOrder);

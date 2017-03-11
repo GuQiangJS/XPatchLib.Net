@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Comments>
+  <params>
+    <param class="Serializer" paramtype="ITextReader" method="Combine" paramname="pReader">
+      包含要反序列化的增量文档的 <see cref="ITextReader" /> 实例。
+    </param>
+    <param class="Serializer" paramtype="Object" method="Combine" paramname="pOriValue">
+      待进行数据合并的原始对象。
+    </param>
+    <param class="Serializer" paramtype="bool" method="Combine" paramname="pOverride">
+      是否对 <paramref name="pOriValue" /> 对象实例进行直接修改。
+      <para>如果为 <b>true</b> ，那么附加增量数据时将直接更新 <paramref name="pOriValue" /> 对象实例。（性能更加，在无需保留原始数据实例的情况下，建议使用此方式）</para>
+      <para>相反，如果为 <b>false</b> ，那么会在附加数据前根据 <paramref name="pOriValue" /> 创建新的对象实例 ，再在新的对象实例上附加增量数据。(适用于不希望原始数据被变更的情况)</para>
+    </param>
+    <param class="Serializer" paramtype="Object" method="Divide" paramname="pOriValue">
+      原始对象实例。
+    </param>
+    <param class="Serializer" paramtype="Object" method="Divide" paramname="pRevValue">
+      更新后对象实例。
+    </param>
+    <param class="Serializer" paramtype="ITextWriter" method="Divide" paramname="pWriter">
+      用于编写增量文档的 <see cref="ITextWriter" /> 实例。
+    </param>
+  </params>
+  <returns>
+    <return class="Serializer" method="Combine">
+      正被反序列化及合并后的 <see cref="System.Object" />。
+    </return>
+  </returns>
+  <remarks>
+    <remark class="Serializer" method="Combine">
+      <para>
+        在反序列化及合并之前，必须使用待合并的对象的类型构造一个 <see cref="XPatchLib.Serializer" /> 。
+      </para>
+    </remark>
+    <remark class="Serializer" method="Divide">
+      <para>
+        使用 Divide 方法将原始对象与更新后对象之间差异内容的的公共字段和读/写属性转换为 增量数据。它不转换方法、索引器、私有字段或只读属性。
+      </para>
+    </remark>
+  </remarks>
+  <examples>
+    <example class="Serializer" method="none">
+      <code language="c#" source="..\..\XPatchLib.Example\CSharp\Examples\ComplexObjCombineAndDivide.cs" />
+      <para>
+        序列化增量内容的 输出如下所示：
+      </para>
+      <code language="xml" title="patch.xml">
+        <![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<PurchaseOrder>
+  <OrderedItems>
+    <OrderedItem Action="Remove" ItemName="Widget S" />
+    <OrderedItem Action="Add">
+      <Description>Big widget</Description>
+      <ItemName>Widget B</ItemName>
+      <Quantity>5</Quantity>
+      <UnitPrice>26.78</UnitPrice>
+    </OrderedItem>
+  </OrderedItems>
+</PurchaseOrder>
+]]>
+      </code>
+      <para>
+        输出内容如下：
+      </para>
+      <code language="none">
+        <![CDATA[
+OldOrder:
+OrderDate: 2017年3月12日
+Ship To:
+        Teresa Atkinson
+        1 Main St.
+        AnyTown
+        WA
+        00000
+
+Items to be shipped:
+        Widget S        Small widget    5.23    3       15.69
+
+Subtotal:       15.69
+Shipping:       12.51
+Total:  28.20
+----------
+NewOrder:
+OrderDate: 2017年3月12日
+Ship To:
+        Teresa Atkinson
+        1 Main St.
+        AnyTown
+        WA
+        00000
+
+Items to be shipped:
+        Widget B        Big widget      26.78   5       133.90
+
+Subtotal:       133.90
+Shipping:       12.51
+Total:  146.41
+]]>
+      </code>
+    </example>
+    <example class="Serializer" method="Combine">
+      <para>
+        下面的示例使用 <see cref="XmlTextReader" /> 对象反序列化增量内容，并附加至原始对象。
+      </para>
+      <code language="c#" source="..\..\XPatchLib.Example\CSharp\Examples\Combine.cs" />
+      <code language="xml" title="patch.xml" source="..\..\XPatchLib.Example\xmls\CombineExamplePatch.xml" />
+      <para>
+        输出内容如下：
+      </para>
+      <code language="none">
+        <![CDATA[
+OldInstance:
+Widgt
+Big Widget
+4.7
+0
+21170186
+-----
+NewInstance:
+Widgt
+Small Widget
+2.30
+10
+13134304
+-----
+]]>
+      </code>
+    </example>
+    <example class="Serializer" method="Divide">
+      <para>
+        下面的示例使用 <see cref="XmlTextWriter" /> 序列化指定的 原始对象 与 更新对象 间的增量内容。
+      </para>
+      <code language="c#" source="..\..\XPatchLib.Example\CSharp\Examples\Divide.cs" />
+      <para>
+        输出内容如下：
+      </para>
+        <code language="xml">
+          <![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<OrderedItem>
+  <Description>Big Widget</Description>
+  <LineTotal>117.0</LineTotal>
+  <Quantity>15</Quantity>
+  <UnitPrice>7.8</UnitPrice>
+</OrderedItem>]]>
+        </code>
+    </example>
+    <example class="Serializer" method="RegisterTypes">
+      <para>
+        下面的示例使用 RegisterTypes 方法向 <see cref="Serializer" /> 注册待处理的类型的主键信息 。
+      </para>
+      <code language="c#" source="..\..\XPatchLib.Example\CSharp\Examples\RegisterTypes.cs" />
+      <para>
+        输出内容如下：
+      </para>
+        <code language="xml">
+        <![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<List_OrderedItem>
+  <OrderedItem>
+    <Quantity>5</Quantity>
+  </OrderedItem>
+</List_OrderedItem>]]>
+        </code>
+    </example>
+  </examples>
+</Comments>

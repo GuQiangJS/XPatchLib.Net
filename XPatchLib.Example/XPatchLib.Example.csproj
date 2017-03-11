@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>XmlSerializerExample.PerformanceBigCollectionAnalysis</StartupObject>
+    <StartupObject>XPatchLib.Example.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -50,41 +50,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CSharp\XmlSerializer\ClassExample.cs" />
-    <Compile Include="CSharp\XmlSerializer\ClassRemark.cs" />
-    <Compile Include="CSharp\XmlSerializer\CombineStreamOverrideExample.cs" />
-    <Compile Include="CSharp\XmlSerializer\CombineStreamExample.cs" />
-    <Compile Include="CSharp\XmlSerializer\CombineTextReaderOverrideExample.cs" />
-    <Compile Include="CSharp\XmlSerializer\CombineTextReaderExample.cs" />
-    <Compile Include="CSharp\XmlSerializer\CombineXmlReaderOverrideExample.cs" />
-    <Compile Include="CSharp\XmlSerializer\CombineXmlReaderExample.cs" />
-    <Compile Include="CSharp\XmlSerializer\ConstructorDateModeExample.cs" />
-    <Compile Include="CSharp\XmlSerializer\ConstructorDateModeSerializeDefalutValueExample.cs" />
-    <Compile Include="CSharp\XmlSerializer\ConstructorExample.cs" />
-    <Compile Include="CSharp\XmlSerializer\ConstructorSerializeDefalutValueExample.cs" />
-    <Compile Include="CSharp\XmlSerializer\DivideStreamExample.cs" />
-    <Compile Include="CSharp\XmlSerializer\DivideTextWriterExample.cs" />
-    <Compile Include="CSharp\XmlSerializer\DivideXmlWriterExample.cs" />
-    <Compile Include="CSharp\XmlSerializer\RegisteTypesExample.cs" />
-    <Compile Include="PerformanceAnalysis.cs" />
-    <Compile Include="PerformanceBigCollectionAnalysis.cs" />
+    <Compile Include="CSharp\Examples\Combine.cs" />
+    <Compile Include="CSharp\Examples\ComplexObjCombineAndDivide.cs" />
+    <Compile Include="CSharp\Examples\Divide.cs" />
+    <Compile Include="CSharp\Examples\RegisterTypes.cs" />
+    <Compile Include="program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="CSharp\XmlSerializer\ClassExampleOutPut.xml" />
-    <Content Include="CSharp\XmlSerializer\ClassRemarkOutPut.xml" />
-    <Content Include="CSharp\XmlSerializer\CombineStreamExampleInPut.xml" />
-    <Content Include="CSharp\XmlSerializer\CombineTextReaderExampleInPut.xml" />
-    <Content Include="CSharp\XmlSerializer\CombineXmlReaderExampleInPut.xml" />
-    <Content Include="CSharp\XmlSerializer\ConstructorDateModeExampleOutPut.xml" />
-    <Content Include="CSharp\XmlSerializer\ConstructorDateModeSerializeDefalutValueExampleOutPut.xml" />
-    <Content Include="CSharp\XmlSerializer\ConstructorExampleOutPut.xml" />
-    <Content Include="CSharp\XmlSerializer\ConstructorSerializeDefalutValueExampleOutPut.xml" />
-    <Content Include="CSharp\XmlSerializer\DivideStreamExampleOutPut.xml" />
-    <Content Include="CSharp\XmlSerializer\DivideTextWriterExampleOutPut.xml" />
-    <Content Include="CSharp\XmlSerializer\DivideXmlWriterExampleOutPut.xml" />
-    <Content Include="CSharp\XmlSerializer\RegisteTypesExampleOutPut.xml" />
+    <Content Include="xmls\CombineExamplePatch.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

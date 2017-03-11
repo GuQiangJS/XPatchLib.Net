@@ -47,17 +47,17 @@ namespace XPatchLib.UnitTest.ForXml
         #region Public Methods
 
         //[TestMethod]
-        //[Description("测试XmlSerializer中参数类型为Stream的Divide和Combine方法")]
+        //[Description("测试Serializer中参数类型为Stream的Divide和Combine方法")]
         //public void TestXmlSerializerStreamDivideAndCombine()
         //{
-        //    XmlSerializer serializer = new XmlSerializer(typeof(BookClass));
+        //    Serializer serializer = new Serializer(typeof(BookClass));
         //    using (var stream = new MemoryStream())
         //    {
         //        serializer.Divide(stream, OriObject, RevObject);
         //        var context = UnitTest.TestHelper.StreamToString(stream);
         //        Assert.AreEqual(ChangedContext, context);
         //    }
-        //    serializer = new XmlSerializer(typeof(BookClass));
+        //    serializer = new Serializer(typeof(BookClass));
         //    using (var stream = new MemoryStream())
         //    {
         //        serializer.Divide(stream, OriObject, RevObject);
@@ -68,10 +68,10 @@ namespace XPatchLib.UnitTest.ForXml
         //}
 
         [TestMethod]
-        [Description("测试XmlSerializer中参数类型为 XmlTextReader 和 XmlTextWriter 的Divide和Combine方法")]
+        [Description("测试Serializer中参数类型为 XmlTextReader 和 XmlTextWriter 的Divide和Combine方法")]
         public void TestXmlSerializerStreamDivideAndCombine()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(BookClass));
+            Serializer serializer = new Serializer(typeof(BookClass));
             using (var stream = new MemoryStream())
             {
                 using (var writer = TestHelper.CreateWriter(stream))
@@ -81,7 +81,7 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.AreEqual(ChangedContext, context);
                 }
             }
-            serializer = new XmlSerializer(typeof(BookClass));
+            serializer = new Serializer(typeof(BookClass));
             using (var stream = new MemoryStream())
             {
                 using (var writer = TestHelper.CreateWriter(stream))
@@ -98,10 +98,10 @@ namespace XPatchLib.UnitTest.ForXml
         }
 
         //[TestMethod]
-        //[Description("测试XmlSerializer中参数类型为TextWriter的Divide方法和TextReader的Combine方法")]
+        //[Description("测试Serializer中参数类型为TextWriter的Divide方法和TextReader的Combine方法")]
         //public void TestXmlSerializerTextWriterDivideAndTextReaderCombine()
         //{
-        //    XmlSerializer serializer = new XmlSerializer(typeof(BookClass));
+        //    Serializer serializer = new Serializer(typeof(BookClass));
         //    var sb = new StringBuilder();
         //    using (var swr = new StringWriter(sb))
         //    {
@@ -109,7 +109,7 @@ namespace XPatchLib.UnitTest.ForXml
         //        sb.Replace("utf-16", "utf-8");
         //        Assert.AreEqual(ChangedContext, sb.ToString());
         //    }
-        //    serializer = new XmlSerializer(typeof(BookClass));
+        //    serializer = new Serializer(typeof(BookClass));
         //    using (var reader = new StringReader(ChangedContext))
         //    {
         //        var changedObj = serializer.Combine(reader, OriObject) as BookClass;
@@ -118,10 +118,10 @@ namespace XPatchLib.UnitTest.ForXml
         //}
 
         //[TestMethod]
-        //[Description("测试XmlSerializer中参数类型为XmlWriter的Divide方法和XmlReader的Combine方法")]
+        //[Description("测试Serializer中参数类型为XmlWriter的Divide方法和XmlReader的Combine方法")]
         //public void TestXmlSerializerXmlWriterDivideAndXmlReaderCombine()
         //{
-        //    XmlSerializer serializer = new XmlSerializer(typeof(BookClass));
+        //    Serializer serializer = new Serializer(typeof(BookClass));
         //    using (var stream = new MemoryStream())
         //    {
         //        var setting = new XmlWriterSettings();
@@ -133,7 +133,7 @@ namespace XPatchLib.UnitTest.ForXml
         //            Assert.AreEqual(ChangedContext, Encoding.UTF8.GetString(stream.ToArray()));
         //        }
         //    }
-        //    serializer = new XmlSerializer(typeof(BookClass));
+        //    serializer = new Serializer(typeof(BookClass));
         //    using (var stream = new MemoryStream())
         //    {
         //        serializer.Divide(stream, OriObject, RevObject);

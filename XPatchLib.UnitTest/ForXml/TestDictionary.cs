@@ -128,7 +128,7 @@ namespace XPatchLib.UnitTest.ForXml
                         Assert.AreEqual(dic2[key], newDic[key]);
                     }
 
-                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
                     Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
                     Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
                 }
@@ -171,7 +171,7 @@ namespace XPatchLib.UnitTest.ForXml
                         Assert.AreEqual(dic2[key], newDic[key]);
                     }
 
-                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
                     Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
                     Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
                 }
@@ -198,7 +198,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var xmlTextReader = new XmlTextReader(reader))
                 {
-                    newDic = new XmlSerializer(dic1.GetType()).Combine(xmlTextReader, dic1) as Dictionary<string, string>;
+                    newDic = new Serializer(dic1.GetType()).Combine(xmlTextReader, dic1) as Dictionary<string, string>;
                 }
             }
             //newDic的长度应该为2，dic1的长度为4（因为dic1并未被改变）
@@ -213,7 +213,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.AreEqual(dic2[key], newDic[key]);
             }
 
-            //在使用XmlSerializer入口做增量内容合并时，会首先对原始对象进行深克隆，保证不影响到原有对象
+            //在使用Serializer入口做增量内容合并时，会首先对原始对象进行深克隆，保证不影响到原有对象
             Assert.AreNotEqual(dic1.GetHashCode(), newDic.GetHashCode());
             Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
         }
@@ -237,7 +237,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    var serializer = new XmlSerializer(dic1.GetType());
+                    var serializer = new Serializer(dic1.GetType());
                     serializer.Divide(writer, dic1, dic2);
                     var context = UnitTest.TestHelper.StreamToString(stream);
                     Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + ComplexOperatorChangedContext,
@@ -329,7 +329,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var reader = new XmlTextReader(xmlReader))
                 {
-                    newDic = new XmlSerializer(dic1.GetType()).Combine(reader, oldDic) as Dictionary<string, string>;
+                    newDic = new Serializer(dic1.GetType()).Combine(reader, oldDic) as Dictionary<string, string>;
                 }
             }
             Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
@@ -355,7 +355,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    var serializer = new XmlSerializer(dic1.GetType());
+                    var serializer = new Serializer(dic1.GetType());
                     serializer.Divide(writer, null, dic1);
                     var context = UnitTest.TestHelper.StreamToString(stream);
                     Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + CreateChangedContext, context);
@@ -399,7 +399,7 @@ namespace XPatchLib.UnitTest.ForXml
                         Assert.AreEqual(dic2[key], newDic[key]);
                     }
 
-                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
                     Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
                     Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
                 }
@@ -442,7 +442,7 @@ namespace XPatchLib.UnitTest.ForXml
                         Assert.AreEqual(dic2[key], newDic[key]);
                     }
 
-                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
                     Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
                     Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
                 }
@@ -469,7 +469,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var reader = new XmlTextReader(xmlReader))
                 {
-                    newDic = new XmlSerializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
+                    newDic = new Serializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
                 }
             }
             //newDic的长度应该为2，dic1的长度为4（因为dic1并未被改变）
@@ -483,7 +483,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.AreEqual(dic2[key], newDic[key]);
             }
 
-            //在使用XmlSerializer入口做增量内容合并时，会首先对原始对象进行深克隆，保证不影响到原有对象
+            //在使用Serializer入口做增量内容合并时，会首先对原始对象进行深克隆，保证不影响到原有对象
             Assert.AreNotEqual(dic1.GetHashCode(), newDic.GetHashCode());
             Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
         }
@@ -507,7 +507,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    var serializer = new XmlSerializer(dic1.GetType());
+                    var serializer = new Serializer(dic1.GetType());
                     serializer.Divide(writer, dic1, dic2);
                     var context = UnitTest.TestHelper.StreamToString(stream);
                     Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + EditChangedContext, context);
@@ -542,7 +542,7 @@ namespace XPatchLib.UnitTest.ForXml
                     foreach (var key in dic1.Keys)
                         Assert.AreEqual(dic1[key], newDic[key]);
 
-                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
                     Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
                 }
             }
@@ -575,7 +575,7 @@ namespace XPatchLib.UnitTest.ForXml
                     foreach (var key in dic1.Keys)
                         Assert.AreEqual(dic1[key], newDic[key]);
 
-                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
                     Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
                 }
             }
@@ -595,7 +595,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var reader = new XmlTextReader(xmlReader))
                 {
-                    newDic = new XmlSerializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
+                    newDic = new Serializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
                 }
             }
             //newDic的长度应该为2，dic1的长度为4（因为dic1并未被改变）
@@ -606,7 +606,7 @@ namespace XPatchLib.UnitTest.ForXml
             foreach (var key in newDic.Keys)
                 Assert.AreEqual(dic1[key], newDic[key]);
 
-            //在使用XmlSerializer入口做增量内容合并时，会首先对原始对象进行深克隆，保证不影响到原有对象
+            //在使用Serializer入口做增量内容合并时，会首先对原始对象进行深克隆，保证不影响到原有对象
             Assert.AreNotEqual(dic1.GetHashCode(), newDic.GetHashCode());
         }
 
@@ -627,7 +627,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    var serializer = new XmlSerializer(dic1.GetType());
+                    var serializer = new Serializer(dic1.GetType());
                     serializer.Divide(writer, dic1, dic2);
                     var context = UnitTest.TestHelper.StreamToString(stream);
                     Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + RemoveChangedContext, context);
@@ -671,7 +671,7 @@ namespace XPatchLib.UnitTest.ForXml
                         Assert.AreEqual(dic2[key], newDic[key]);
                     }
 
-                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
                     Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
                     Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
                 }
@@ -714,7 +714,7 @@ namespace XPatchLib.UnitTest.ForXml
                         Assert.AreEqual(dic2[key], newDic[key]);
                     }
 
-                    //在使用非XmlSerializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
+                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
                     Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
                     Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
                 }
@@ -741,7 +741,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var reader = new XmlTextReader(xmlReader))
                 {
-                    newDic = new XmlSerializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
+                    newDic = new Serializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
                 }
             }
             //newDic的长度应该为2，dic1的长度为4（因为dic1并未被改变）
@@ -755,7 +755,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.AreEqual(dic2[key], newDic[key]);
             }
 
-            //在使用XmlSerializer入口做增量内容合并时，会首先对原始对象进行深克隆，保证不影响到原有对象
+            //在使用Serializer入口做增量内容合并时，会首先对原始对象进行深克隆，保证不影响到原有对象
             Assert.AreNotEqual(dic1.GetHashCode(), newDic.GetHashCode());
             Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
         }
@@ -779,7 +779,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    var serializer = new XmlSerializer(dic1.GetType());
+                    var serializer = new Serializer(dic1.GetType());
                     serializer.Divide(writer, dic1, dic2);
                     var context = UnitTest.TestHelper.StreamToString(stream);
                     Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + SetNullChangedContext, context);

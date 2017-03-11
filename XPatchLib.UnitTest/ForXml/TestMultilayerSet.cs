@@ -17,7 +17,7 @@ namespace XPatchLib.UnitTest.ForXml
             var r1 = CreateRoot(10, 3);
             var r2 = CreateRoot(10, 4);
 
-            var serializer = new XmlSerializer(typeof(Root));
+            var serializer = new Serializer(typeof(Root));
 
             string context;
             using (var stream = new MemoryStream())
@@ -46,7 +46,7 @@ namespace XPatchLib.UnitTest.ForXml
             var r1 = CreateRoot(10, 4);
             var r2 = CreateRoot(10, 3);
 
-            var serializer = new XmlSerializer(typeof(Root));
+            var serializer = new Serializer(typeof(Root));
 
             string context;
             using (var stream = new MemoryStream())

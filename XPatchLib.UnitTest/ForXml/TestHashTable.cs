@@ -22,7 +22,7 @@ namespace XPatchLib.UnitTest.ForXml
             table.Add("aaa", "ccc");
             table.Add(123, "ddd");
 
-            var serializer = new XmlSerializer(typeof(Hashtable));
+            var serializer = new Serializer(typeof(Hashtable));
 
             var context = string.Empty;
             try
@@ -61,7 +61,7 @@ namespace XPatchLib.UnitTest.ForXml
             table.Enqueue("ccc");
             table.Enqueue("ddd");
 
-            var serializer = new XmlSerializer(typeof(Queue<string>));
+            var serializer = new Serializer(typeof(Queue<string>));
 
             var context = string.Empty;
             try

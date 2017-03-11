@@ -24,10 +24,10 @@ namespace XPatchLib.UnitTest.ForXml
         {
             CultureInfo curCulture = CultureInfo.CurrentCulture;
 
-            XmlSerializer serializer = null;
+            Serializer serializer = null;
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("fr-FR");
-            serializer = new XmlSerializer(typeof(CultureClass));
+            serializer = new Serializer(typeof(CultureClass));
             string frResult = string.Empty;
             using (MemoryStream stream = new MemoryStream())
             {
@@ -695,7 +695,7 @@ namespace XPatchLib.UnitTest.ForXml
         [TestMethod]
         public void TestDivideAndSerializeSimpleType()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(AuthorClass));
+            Serializer serializer = new Serializer(typeof(AuthorClass));
             AuthorClass b1 = AuthorClass.GetSampleInstance();
             AuthorClass b2 = AuthorClass.GetSampleInstance();
 
@@ -747,7 +747,7 @@ namespace XPatchLib.UnitTest.ForXml
                 {
                     var th = new Thread(() =>
                         {
-                            XmlSerializer serializer = new XmlSerializer(typeof(BookClass));
+                            Serializer serializer = new Serializer(typeof(BookClass));
                             string changedContext = string.Empty;
                             using (MemoryStream stream = new MemoryStream())
                             {
@@ -763,7 +763,7 @@ namespace XPatchLib.UnitTest.ForXml
                                 }
                             }
                             Trace.Write(changedContext);
-                            XmlSerializer deserializer = new XmlSerializer(typeof(BookClass));
+                            Serializer deserializer = new Serializer(typeof(BookClass));
                             BookClass book = null;
                             using (XmlTextReader reader = new XmlTextReader(XmlReader.Create(new StringReader(changedContext))))
                             {

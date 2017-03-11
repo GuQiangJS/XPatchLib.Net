@@ -10,7 +10,6 @@ namespace XPatchLib
     /// <summary>
     ///     表示提供对数据进行快速、非缓存、只进访问的读取器。
     /// </summary>
-    /// <seealso cref="System.IDisposable" />
     public interface ITextReader : IDisposable
     {
         /// <summary>

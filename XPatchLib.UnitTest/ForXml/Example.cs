@@ -66,7 +66,7 @@ namespace XPatchLib.UnitTest.ForXml
             };
 
             OrderInfo order3;
-            var serializer = new XmlSerializer(typeof(OrderInfo));
+            var serializer = new Serializer(typeof(OrderInfo));
             using (XmlReader reader = XmlReader.Create(new StringReader(ChangedContext)))
             {
                 using (XmlTextReader xmlReader = new XmlTextReader(reader))
@@ -117,7 +117,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Date = new DateTime(2010, 4, 30)
             };
 
-            var serializer = new XmlSerializer(typeof(OrderInfo));
+            var serializer = new Serializer(typeof(OrderInfo));
 
             string context;
             using (var stream = new MemoryStream())
@@ -293,7 +293,7 @@ namespace XPatchLib.UnitTest.ForXml
             };
 
             OrderList list3;
-            var serializer = new XmlSerializer(typeof(OrderList));
+            var serializer = new Serializer(typeof(OrderList));
             using (XmlReader reader = XmlReader.Create(new StringReader(ChangedContext)))
             {
                 using (XmlTextReader xmlReader = new XmlTextReader(reader))
@@ -368,7 +368,7 @@ namespace XPatchLib.UnitTest.ForXml
                 }
             };
 
-            var serializer = new XmlSerializer(typeof(OrderList));
+            var serializer = new Serializer(typeof(OrderList));
 
             string context;
             using (var stream = new MemoryStream())
@@ -483,7 +483,7 @@ namespace XPatchLib.UnitTest.ForXml
                 CardExpiration = new DateTime(2017, 05, 01, 20, 0, 0)
             };
 
-            var serializer = new XmlSerializer(typeof(CreditCard));
+            var serializer = new Serializer(typeof(CreditCard));
 
             CreditCard card2;
             using (XmlReader reader = XmlReader.Create(new StringReader(RoundtripKindChangedContext)))
@@ -498,7 +498,7 @@ namespace XPatchLib.UnitTest.ForXml
             Debug.Assert(card2 != null, "card2 != null");
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
 
-            serializer = new XmlSerializer(typeof(CreditCard));
+            serializer = new Serializer(typeof(CreditCard));
 
             card2 = null;
             using (XmlReader reader = XmlReader.Create(new StringReader(LocalChangedContext)))
@@ -514,7 +514,7 @@ namespace XPatchLib.UnitTest.ForXml
             Debug.Assert(card2 != null, "card2 != null");
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
 
-            serializer = new XmlSerializer(typeof(CreditCard));
+            serializer = new Serializer(typeof(CreditCard));
 
             card2 = null;
             using (XmlReader reader = XmlReader.Create(new StringReader(UnspecifiedChangedContext)))
@@ -530,7 +530,7 @@ namespace XPatchLib.UnitTest.ForXml
             Debug.Assert(card2 != null, "card2 != null");
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
 
-            serializer = new XmlSerializer(typeof(CreditCard));
+            serializer = new Serializer(typeof(CreditCard));
 
             card2 = null;
             using (XmlReader reader = XmlReader.Create(new StringReader(UtcChangedContext)))
@@ -555,7 +555,7 @@ namespace XPatchLib.UnitTest.ForXml
                 CardExpiration = new DateTime(2017, 05, 01, 20, 0, 0)
             };
 
-            var serializer = new XmlSerializer(typeof(CreditCard));
+            var serializer = new Serializer(typeof(CreditCard));
 
             string context;
             context = String.Empty;
@@ -575,7 +575,7 @@ namespace XPatchLib.UnitTest.ForXml
             Assert.AreEqual(RoundtripKindChangedContext, context);
             Trace.WriteLine(context);
 
-            serializer = new XmlSerializer(typeof(CreditCard));
+            serializer = new Serializer(typeof(CreditCard));
 
             context = String.Empty;
             using (var stream = new MemoryStream())
@@ -595,7 +595,7 @@ namespace XPatchLib.UnitTest.ForXml
             Assert.AreEqual(LocalChangedContext, context);
             Trace.WriteLine(context);
 
-            serializer = new XmlSerializer(typeof(CreditCard));
+            serializer = new Serializer(typeof(CreditCard));
 
             context = String.Empty;
             using (var stream = new MemoryStream())
@@ -615,7 +615,7 @@ namespace XPatchLib.UnitTest.ForXml
             Assert.AreEqual(UnspecifiedChangedContext, context);
             Trace.WriteLine(context);
 
-            serializer = new XmlSerializer(typeof(CreditCard));
+            serializer = new Serializer(typeof(CreditCard));
 
             context = String.Empty;
             using (var stream = new MemoryStream())
@@ -677,7 +677,7 @@ namespace XPatchLib.UnitTest.ForXml
             };
 
             CreditCard card3 = null;
-            var serializer = new XmlSerializer(typeof(CreditCard));
+            var serializer = new Serializer(typeof(CreditCard));
             using (XmlReader reader = XmlReader.Create(new StringReader(ChangedContext)))
             {
                 using (XmlTextReader xmlReader = new XmlTextReader(reader))
@@ -704,7 +704,7 @@ namespace XPatchLib.UnitTest.ForXml
                 CardNumber = "9876543210"
             };
 
-            var serializer = new XmlSerializer(typeof(CreditCard));
+            var serializer = new Serializer(typeof(CreditCard));
 
             var context = String.Empty;
             using (var stream = new MemoryStream())
@@ -772,7 +772,7 @@ namespace XPatchLib.UnitTest.ForXml
             };
 
             Warehouse w3;
-            var serializer = new XmlSerializer(typeof(Warehouse));
+            var serializer = new Serializer(typeof(Warehouse));
             using (XmlReader reader = XmlReader.Create(new StringReader(ChangedContext)))
             {
                 using (XmlTextReader xmlReader = new XmlTextReader(reader))
@@ -800,7 +800,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Items = new[] {"ItemA", "ItemC", "ItemD"}
             };
 
-            var serializer = new XmlSerializer(typeof(Warehouse));
+            var serializer = new Serializer(typeof(Warehouse));
 
             var context = String.Empty;
             using (var stream = new MemoryStream())
@@ -835,7 +835,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Items = null
             };
 
-            var serializer = new XmlSerializer(typeof(Warehouse));
+            var serializer = new Serializer(typeof(Warehouse));
 
             var changedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <Warehouse>
@@ -916,7 +916,7 @@ namespace XPatchLib.UnitTest.ForXml
                 CardCode = 0
             };
 
-            var serializer = new XmlSerializer(typeof(CreditCard));
+            var serializer = new Serializer(typeof(CreditCard));
 
             CreditCard card2 = null;
             using (XmlReader reader = XmlReader.Create(new StringReader(NotSerializeDefaultValueChangedContext)))
@@ -931,7 +931,7 @@ namespace XPatchLib.UnitTest.ForXml
             Debug.Assert(card2 != null, "card2 != null");
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
 
-            serializer = new XmlSerializer(typeof(CreditCard));
+            serializer = new Serializer(typeof(CreditCard));
 
             card2 = null;
             using (XmlReader reader = XmlReader.Create(new StringReader(NotSerializeDefaultValueChangedContext)))
@@ -957,7 +957,7 @@ namespace XPatchLib.UnitTest.ForXml
                 CardCode = 0
             };
 
-            var serializer = new XmlSerializer(typeof(CreditCard));
+            var serializer = new Serializer(typeof(CreditCard));
 
             string context;
             context = "";
@@ -977,7 +977,7 @@ namespace XPatchLib.UnitTest.ForXml
             Assert.AreEqual(NotSerializeDefaultValueChangedContext, context);
             Trace.WriteLine(context);
 
-            serializer = new XmlSerializer(typeof(CreditCard));
+            serializer = new Serializer(typeof(CreditCard));
 
             context = String.Empty;
             using (var stream = new MemoryStream())
@@ -1031,7 +1031,7 @@ namespace XPatchLib.UnitTest.ForXml
         [TestMethod]
         public void ExampleClassDef()
         {
-            var serializer = new XmlSerializer(typeof(MyClass));
+            var serializer = new Serializer(typeof(MyClass));
 
             var c1 = new MyClass {MyObjectProperty = {ObjectName = "My String"}};
 

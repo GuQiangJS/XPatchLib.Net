@@ -20,17 +20,17 @@ namespace XPatchLib.UnitTest.ForXml
   <Comments>&amp;'""</Comments>
   <Name>&lt;&gt;</Name>
 </AuthorClass>";
-            XmlSerializer XmlSerializer = new XmlSerializer(typeof(AuthorClass));
+            Serializer Serializer = new Serializer(typeof(AuthorClass));
             using (MemoryStream stream = new MemoryStream())
             {
                 using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    XmlSerializer.Divide(writer, null, authorClass1);
+                    Serializer.Divide(writer, null, authorClass1);
 
                     stream.Position = 0;
                     using (XmlTextReader xmlReader = new XmlTextReader(XmlReader.Create(stream)))
                     {
-                        AuthorClass authorClass2 = XmlSerializer.Combine(xmlReader, null, true) as AuthorClass;
+                        AuthorClass authorClass2 = Serializer.Combine(xmlReader, null, true) as AuthorClass;
                         Assert.AreEqual(authorClass1, authorClass2);
                     }
 

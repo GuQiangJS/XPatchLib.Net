@@ -103,7 +103,10 @@
     <Compile Include="XmlTextReader.cs" />
     <Compile Include="XmlTextWriter.cs" />
     <Compile Include="XmlWriterHelper.cs" />
-    <Compile Include="XmlSerializer.cs" />
+    <Compile Include="Serializer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="docs\docs.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

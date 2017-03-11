@@ -12,7 +12,7 @@ namespace XmlSerializerExample
 
         public static void Main()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(OrderedItem), DateTimeSerializationMode.Utc, false);
+            Serializer serializer = new Serializer(typeof(OrderedItem));
 
             for (int i = 0; i < 100000; i++)
             {
@@ -28,12 +28,12 @@ namespace XmlSerializerExample
             }
         }
 
-        public OrderedItem DeserializeObject(TextReader stream, XmlSerializer serialzier)
+        public OrderedItem DeserializeObject(TextReader stream, Serializer serialzier)
         {
             return serialzier.Combine(stream, CreateOriItem()) as OrderedItem;
         }
 
-        public string SerializeObject(XmlSerializer serializer)
+        public string SerializeObject(Serializer serializer)
         {
             string result = string.Empty;
 

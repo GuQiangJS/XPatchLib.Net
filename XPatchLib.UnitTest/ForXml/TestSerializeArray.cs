@@ -85,7 +85,7 @@ namespace XPatchLib.UnitTest.ForXml
                 a.Add(new AuthorClass {Name = "Author B"});
                 a.Add(new AuthorClass {Name = "Author C"});
 
-                var serializer = new XmlSerializer(typeof(List<AuthorClass>));
+                var serializer = new Serializer(typeof(List<AuthorClass>));
                 using (var stream = new MemoryStream())
                 {
                     using (var writer = TestHelper.CreateWriter(stream))
@@ -132,7 +132,7 @@ namespace XPatchLib.UnitTest.ForXml
   </AuthorClass>
 </List_AuthorClass>";
 
-            var serializer = new XmlSerializer(typeof(List<AuthorClass>));
+            var serializer = new Serializer(typeof(List<AuthorClass>));
 
             var types = new Dictionary<Type, string[]>();
             types.Add(typeof(AuthorClass), new[] {"Name"});
@@ -156,7 +156,7 @@ namespace XPatchLib.UnitTest.ForXml
         [Description("测试合并一个只有空白的根节点的内容")]
         public void TestCombineSameBookClassCollection()
         {
-            var serializer = new XmlSerializer(typeof(BookClassCollection));
+            var serializer = new Serializer(typeof(BookClassCollection));
 
             const string result = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <BookClassCollection />";
@@ -183,7 +183,7 @@ namespace XPatchLib.UnitTest.ForXml
         {
             var b = new BookClassCollection();
 
-            var serializer = new XmlSerializer(typeof(BookClassCollection));
+            var serializer = new Serializer(typeof(BookClassCollection));
 
             const string result = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <BookClassCollection>
@@ -253,7 +253,7 @@ namespace XPatchLib.UnitTest.ForXml
         {
             var b = new BookClassCollection();
 
-            var serializer = new XmlSerializer(typeof(BookClassCollection));
+            var serializer = new Serializer(typeof(BookClassCollection));
 
             const string result = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <BookClassCollection />";
@@ -310,7 +310,7 @@ namespace XPatchLib.UnitTest.ForXml
             b.Add(new BookClass {Name = "C"});
             b.Add(new BookClass {Name = "D"});
 
-            var serializer = new XmlSerializer(typeof(BookClassCollection));
+            var serializer = new Serializer(typeof(BookClassCollection));
 
             using (var stream = new MemoryStream())
             {
@@ -363,7 +363,7 @@ namespace XPatchLib.UnitTest.ForXml
             var exceptionCatched = false;
             try
             {
-                new XmlSerializer(typeof(List<AuthorClass>)).Divide(new XmlTextWriter(XmlWriter.Create(new MemoryStream())), null, new List<AuthorClass>());
+                new Serializer(typeof(List<AuthorClass>)).Divide(new XmlTextWriter(XmlWriter.Create(new MemoryStream())), null, new List<AuthorClass>());
             }
             catch (AttributeMissException ex)
             {
