@@ -3,12 +3,11 @@ using System.Runtime.InteropServices;
 
 // 有关程序集的常规信息通过以下特性集 控制。更改这些特性值可修改 与程序集关联的信息。 
 
-[assembly: AssemblyTitle("Serializer.UnitTest")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("XPatchLib.UnitTest")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Serializer.UnitTest")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCompany("Qiang Gu")]
+[assembly: AssemblyProduct("XPatchLib .Net Patch XML Serialization Library")]
+[assembly: AssemblyCopyright("Copyright © 2013-2017 - GuQiang")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
