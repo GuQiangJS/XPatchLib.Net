@@ -51,8 +51,8 @@
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <WorkingPath>WorkingPath\</WorkingPath>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\..\XPatchLib.Output\Debug\XPatchLib.dll" />
-      <DocumentationSource sourceFile="..\..\XPatchLib.Output\Debug\XPatchLib.xml" />
+      <DocumentationSource sourceFile="..\..\XPatchLib.Output\Release\XPatchLib.dll" />
+      <DocumentationSource sourceFile="..\..\XPatchLib.Output\Release\XPatchLib.xml" />
     </DocumentationSources>
     <HtmlHelp1xCompilerPath>C:\Program Files (x86)\HTML Help Workshop\</HtmlHelp1xCompilerPath>
     <HtmlHelp2xCompilerPath>C:\Program Files (x86)\Microsoft Help Viewer\v2.0\</HtmlHelp2xCompilerPath>

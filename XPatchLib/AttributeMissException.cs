@@ -10,6 +10,9 @@ namespace XPatchLib
     /// <summary>
     ///     自定义属性未找到异常。
     /// </summary>
+    /// <example>
+    ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="AttributeMissException" and @method="none"]/*' />
+    /// </example>
     [Serializable]
     public class AttributeMissException : Exception
     {

@@ -1,6 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <Comments>
+  <paras>
+    <para name="IsBasicType">
+      <para>
+        基础类型包含 <see cref="string" />、<see cref="DateTime" />、<see cref="decimal" />、<see cref="Guid" />、
+        <see cref="System.Drawing.Color" />、<see cref="Enum" />，或者<see cref="Type.IsPrimitive" /> == <b>true</b> 的类型。
+      </para>
+      <para>
+        当类型为<see cref="Nullable{T}" />时，对 <b>T</b> 进行判断。
+      </para>
+    </para>
+  </paras>
   <params>
     <param class="Serializer" paramtype="ITextReader" method="Combine" paramname="pReader">
       包含要反序列化的增量文档的 <see cref="ITextReader" /> 实例。
@@ -41,6 +52,18 @@
     </remark>
   </remarks>
   <examples>
+    <example class="AttributeMissException" method="none">
+      <para>
+        当集合元素类型没有定义主键时，在序列化/反序列化 集合对象时会抛出 AttributeMissException 异常。
+      </para>
+      <code language="c#" source="..\..\XPatchLib.Example\CSharp\Examples\AttributeMissException.cs" />
+    </example>
+    <example class="PrimaryKeyException" method="none">
+      <para>
+        当类型定义主键特性时，被标记的主键类型只能是基础类型，否则会抛出异常。
+      </para>
+      <code language="c#" source="..\..\XPatchLib.Example\CSharp\Examples\PrimaryKeyException.cs" />
+    </example>
     <example class="Serializer" method="none">
       <code language="c#" source="..\..\XPatchLib.Example\CSharp\Examples\ComplexObjCombineAndDivide.cs" />
       <para>
@@ -137,8 +160,8 @@ Small Widget
       <para>
         输出内容如下：
       </para>
-        <code language="xml">
-          <![CDATA[
+      <code language="xml">
+        <![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
 <OrderedItem>
   <Description>Big Widget</Description>
@@ -146,7 +169,7 @@ Small Widget
   <Quantity>15</Quantity>
   <UnitPrice>7.8</UnitPrice>
 </OrderedItem>]]>
-        </code>
+      </code>
     </example>
     <example class="Serializer" method="RegisterTypes">
       <para>
@@ -156,7 +179,7 @@ Small Widget
       <para>
         输出内容如下：
       </para>
-        <code language="xml">
+      <code language="xml">
         <![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
 <List_OrderedItem>
@@ -164,7 +187,7 @@ Small Widget
     <Quantity>5</Quantity>
   </OrderedItem>
 </List_OrderedItem>]]>
-        </code>
+      </code>
     </example>
   </examples>
 </Comments>

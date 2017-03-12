@@ -130,18 +130,22 @@ namespace XPatchLib
                         settings.OmitXmlDeclaration = false;
                         using (var xmlWriter = XmlWriter.Create(stream, settings))
                         {
-                            ITextWriter writer = new XmlTextWriter(xmlWriter);
-                            new DivideCore(writer, _type).Divide(_type.TypeFriendlyName, null, pOriValue);
+                            using (ITextWriter writer = new XmlTextWriter(xmlWriter))
+                            {
+                                new DivideCore(writer, _type).Divide(_type.TypeFriendlyName, null, pOriValue);
+                            }
                         }
 #if DEBUG
                         stream.Position = 0;
                         XElement ele = XElement.Load(stream);
 #endif
                         stream.Position = 0;
-                        using (XmlReader reader = XmlReader.Create(stream))
+                        using (XmlReader xmlReader = XmlReader.Create(stream))
                         {
-                            cloneObjValue = new CombineCore(_type).Combine(new XmlTextReader(reader), null,
-                                _type.TypeFriendlyName);
+                            using (ITextReader reader = new XmlTextReader(xmlReader))
+                            {
+                                cloneObjValue = new CombineCore(_type).Combine(reader, null, _type.TypeFriendlyName);
+                            }
                         }
                     }
                     finally

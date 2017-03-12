@@ -9,7 +9,7 @@ using System.Xml;
 namespace XPatchLib
 {
     /// <summary>
-    ///     XML写入器。
+    ///     表示提供快速、非缓存、只进方法的写入器，该方法生成包含 XML 数据（这些数据符合 W3C 可扩展标记语言 (XML) 1.0 和“XML 命名空间”建议）的流或文件。
     /// </summary>
     /// <seealso cref="XPatchLib.ITextWriter" />
     public class XmlTextWriter : ITextWriter
@@ -172,7 +172,10 @@ namespace XPatchLib
 #endif
         }
 
-        void IDisposable.Dispose()
+        /// <summary>
+        /// 执行与释放或重置非托管资源相关的应用程序定义的任务。
+        /// </summary>
+        public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
@@ -222,7 +225,7 @@ namespace XPatchLib
         /// <summary>
         ///     执行与释放或重置非托管资源相关的应用程序定义的任务。
         /// </summary>
-        protected void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             Writer.Flush();
             //if (disposing)

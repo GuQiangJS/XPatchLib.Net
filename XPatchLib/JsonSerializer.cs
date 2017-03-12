@@ -12,7 +12,9 @@ namespace XPatchLib
     //TODO:Not Complete
     internal class JsonSerializer
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         private readonly DateTimeSerializationMode _mode = DateTimeSerializationMode.RoundtripKind;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         private readonly bool _serializeDefalutValue;
         private readonly TypeExtend _type;
 
@@ -58,6 +60,7 @@ namespace XPatchLib
             //xmlReader.XmlResolver = null;
             return Combine(xmlReader, pOriValue, pOverride);
         }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:不要多次释放对象")]
         public object Combine(XmlReader pReader, object pOriValue, bool pOverride)
         {
             Guard.ArgumentNotNull(pReader, "pReader");
@@ -115,6 +118,7 @@ namespace XPatchLib
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:丢失范围之前释放对象")]
         static Stream GenerateStreamFromString(string s)
         {
             MemoryStream stream = new MemoryStream();

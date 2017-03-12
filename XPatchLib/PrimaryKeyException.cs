@@ -11,8 +11,12 @@ namespace XPatchLib
     ///     主键定义异常。
     /// </summary>
     /// <remarks>
-    ///     主键只能够设置为基础类型。
+    ///     主键的数据类型只能够设置为基础类型。
+    ///     <include file='docs/docs.xml' path='Comments/paras/para[@name="IsBasicType"]/*' />
     /// </remarks>
+    /// <example>
+    ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="PrimaryKeyException" and @method="none"]/*' />
+    /// </example>
     [Serializable]
     public class PrimaryKeyException : Exception
     {

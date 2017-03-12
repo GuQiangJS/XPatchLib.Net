@@ -5,59 +5,11 @@ using System.Xml;
 
 namespace XPatchLib.Example
 {
-    public class Address
-    {
-        public string City;
-        public string Line1;
-        public string Name;
-        public string State;
-        public string Zip;
-    }
-
-    [PrimaryKey("ItemName")]
-    public class OrderedItem
-    {
-        public string Description { get; set; }
-        public string ItemName { get; set; }
-
-        public decimal LineTotal
-        {
-            get { return UnitPrice * Quantity; }
-        }
-
-        public int Quantity { get; set; }
-        public decimal UnitPrice { get; set; }
-    }
-
-    public class PurchaseOrder
-    {
-        public OrderedItem[] OrderedItems;
-        public string OrderDate { get; set; }
-        public decimal ShipCost { get; set; }
-        public Address ShipTo { get; set; }
-
-        public decimal SubTotal
-        {
-            get
-            {
-                var subTotal = new decimal();
-                foreach (var oi in OrderedItems)
-                    subTotal += oi.LineTotal;
-                return subTotal;
-            }
-        }
-
-        public decimal TotalCost
-        {
-            get { return SubTotal + ShipCost; }
-        }
-    }
-
-    public class Test
+    public class ComplexObjCombineAndDivide
     {
         public static void Main()
         {
-            var t = new Test();
+            var t = new ComplexObjCombineAndDivide();
 
             t.Divide("patch.xml");
             t.Combine("patch.xml");
@@ -176,5 +128,53 @@ namespace XPatchLib.Example
 
             return result;
         }
+        public class Address
+        {
+            public string City;
+            public string Line1;
+            public string Name;
+            public string State;
+            public string Zip;
+        }
+
+        [PrimaryKey("ItemName")]
+        public class OrderedItem
+        {
+            public string Description { get; set; }
+            public string ItemName { get; set; }
+
+            public decimal LineTotal
+            {
+                get { return UnitPrice * Quantity; }
+            }
+
+            public int Quantity { get; set; }
+            public decimal UnitPrice { get; set; }
+        }
+
+        public class PurchaseOrder
+        {
+            public OrderedItem[] OrderedItems;
+            public string OrderDate { get; set; }
+            public decimal ShipCost { get; set; }
+            public Address ShipTo { get; set; }
+
+            public decimal SubTotal
+            {
+                get
+                {
+                    var subTotal = new decimal();
+                    foreach (var oi in OrderedItems)
+                        subTotal += oi.LineTotal;
+                    return subTotal;
+                }
+            }
+
+            public decimal TotalCost
+            {
+                get { return SubTotal + ShipCost; }
+            }
+        }
+
     }
 }

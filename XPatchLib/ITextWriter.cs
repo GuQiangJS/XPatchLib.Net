@@ -7,7 +7,7 @@ using System.Text;
 namespace XPatchLib
 {
     /// <summary>
-    ///     表示提供快速、非缓存、只进方法的写入器，该方法生成包含 制定数据结构的流或文件。
+    ///     表示提供快速、非缓存、只进方法的写入器，该方法生成包含指定数据结构的流或文件。
     /// </summary>
     public interface ITextWriter : IDisposable
     {

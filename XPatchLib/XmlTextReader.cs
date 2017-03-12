@@ -24,7 +24,10 @@ namespace XPatchLib
             Reader = pReader;
         }
 
-        void IDisposable.Dispose()
+        /// <summary>
+        /// 执行与释放或重置非托管资源相关的应用程序定义的任务。
+        /// </summary>
+        public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
@@ -185,7 +188,7 @@ namespace XPatchLib
         /// <summary>
         ///     执行与释放或重置非托管资源相关的应用程序定义的任务。
         /// </summary>
-        protected void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (disposing)
                 ((IDisposable) Reader)?.Dispose();

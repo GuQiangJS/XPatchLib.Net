@@ -50,9 +50,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSharp\Examples\AttributeMissException.cs" />
     <Compile Include="CSharp\Examples\Combine.cs" />
     <Compile Include="CSharp\Examples\ComplexObjCombineAndDivide.cs" />
     <Compile Include="CSharp\Examples\Divide.cs" />
+    <Compile Include="CSharp\Examples\PrimaryKeyException.cs" />
     <Compile Include="CSharp\Examples\RegisterTypes.cs" />
     <Compile Include="program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
