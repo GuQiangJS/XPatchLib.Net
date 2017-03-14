@@ -126,9 +126,9 @@ namespace XPatchLib
         {
             get
             {
-                //TODO:多语言
-                return string.Format(CultureInfo.InvariantCulture, "类型 {0} 上没有定义 '{1}' Attribute .", ErrorType.FullName,
-                    AttributeName);
+                CultureInfo culture = CultureInfo.CurrentCulture;
+                string message = ResourceHelper.GetResourceString("Exp_String_AttributeMiss", culture);
+                return string.Format(culture, message, ErrorType.FullName, AttributeName);
             }
         }
 
