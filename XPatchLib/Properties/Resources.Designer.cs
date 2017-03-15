@@ -68,5 +68,14 @@ namespace XPatchLib.Properties {
                 return ResourceManager.GetString("Exp_String_AttributeMiss", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   查找类似 &apos;{0}&apos; 的 主键 {1} 设置异常。 的本地化字符串。
+        /// </summary>
+        internal static string Exp_String_PrimaryKey {
+            get {
+                return ResourceManager.GetString("Exp_String_PrimaryKey", resourceCulture);
+            }
+        }
     }
 }

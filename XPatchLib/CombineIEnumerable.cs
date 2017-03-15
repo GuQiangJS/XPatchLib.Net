@@ -15,6 +15,8 @@ namespace XPatchLib
     /// <seealso cref="XPatchLib.CombineBase" />
     internal class CombineIEnumerable : CombineBase
     {
+        private static readonly string PRIMARY_KEY_MISS = typeof(PrimaryKeyAttribute).Name;
+
         /// <summary>
         ///     根据增量内容创建基础类型实例。
         /// </summary>
@@ -58,7 +60,7 @@ namespace XPatchLib
                 GenericArgumentTypePrimaryKeyAttribute = GenericArgumentType.PrimaryKeyAttr;
 
                 if (GenericArgumentTypePrimaryKeyAttribute == null && !GenericArgumentType.IsBasicType)
-                    throw new AttributeMissException(GenericArgumentType.OriType, "PrimaryKeyAttribute");
+                    throw new AttributeMissException(GenericArgumentType.OriType, PRIMARY_KEY_MISS);
             }
             else
             {

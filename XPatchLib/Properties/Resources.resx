@@ -120,4 +120,7 @@
   <data name="Exp_String_AttributeMiss" xml:space="preserve">
     <value>类型 {0} 上没有定义 '{1}' Attribute 。</value>
   </data>
+  <data name="Exp_String_PrimaryKey" xml:space="preserve">
+    <value>'{0}' 的 主键 {1} 设置异常。</value>
+  </data>
 </root>

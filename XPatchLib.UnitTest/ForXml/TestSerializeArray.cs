@@ -61,7 +61,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.AreEqual("PrimaryKeyAttribute", ex.AttributeName);
                 Assert.AreEqual(typeof(AuthorClass), ex.ErrorType);
                 Assert.AreEqual(
-                    string.Format(CultureInfo.InvariantCulture, "类型 {0} 上没有定义 '{1}' Attribute .", ex.ErrorType.FullName,
+                    string.Format(CultureInfo.InvariantCulture, "类型 {0} 上没有定义 '{1}' Attribute 。", ex.ErrorType.FullName,
                         ex.AttributeName), ex.Message);
                 exceptionCatched = true;
             }
@@ -99,7 +99,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.AreEqual("PrimaryKeyAttribute", ex.AttributeName);
                 Assert.AreEqual(typeof(AuthorClass), ex.ErrorType);
                 Assert.AreEqual(
-                    string.Format(CultureInfo.InvariantCulture, "类型 {0} 上没有定义 '{1}' Attribute .", ex.ErrorType.FullName,
+                    string.Format(CultureInfo.InvariantCulture, "类型 {0} 上没有定义 '{1}' Attribute 。", ex.ErrorType.FullName,
                         ex.AttributeName), ex.Message);
                 exceptionCatched = true;
             }
@@ -370,7 +370,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.AreEqual("PrimaryKeyAttribute", ex.AttributeName);
                 Assert.AreEqual(typeof(AuthorClass), ex.ErrorType);
                 Assert.AreEqual(
-                    string.Format(CultureInfo.InvariantCulture, "类型 {0} 上没有定义 '{1}' Attribute .", ex.ErrorType.FullName,
+                    string.Format(CultureInfo.InvariantCulture, "类型 {0} 上没有定义 '{1}' Attribute 。", ex.ErrorType.FullName,
                         ex.AttributeName), ex.Message);
                 exceptionCatched = true;
             }

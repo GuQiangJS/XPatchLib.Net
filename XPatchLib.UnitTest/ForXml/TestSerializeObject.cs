@@ -683,7 +683,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.AreEqual(typeof(ErrorPrimaryKeyDefineClass), ex.SourceType);
                 Assert.AreEqual("Author", ex.PrimaryKeyName);
                 Assert.AreEqual(
-                    string.Format(CultureInfo.InvariantCulture, " '{0}' 的 主键 {1} 设置异常.", ex.SourceType.Name,
+                    string.Format(CultureInfo.InvariantCulture, "'{0}' 的 主键 {1} 设置异常。", ex.SourceType.FullName,
                         ex.PrimaryKeyName), ex.Message);
             }
             catch (Exception)
@@ -729,7 +729,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.AreEqual(typeof(ErrorPrimaryKeyDefineClass), ex.SourceType);
                 Assert.AreEqual("Author", ex.PrimaryKeyName);
                 Assert.AreEqual(
-                    string.Format(CultureInfo.InvariantCulture, " '{0}' 的 主键 {1} 设置异常.", ex.SourceType.Name,
+                    string.Format(CultureInfo.InvariantCulture, "'{0}' 的 主键 {1} 设置异常。", ex.SourceType.FullName,
                         ex.PrimaryKeyName), ex.Message);
             }
             catch (Exception)

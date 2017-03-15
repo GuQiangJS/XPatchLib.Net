@@ -13,14 +13,54 @@ namespace XPatchLib.UnitTest
         [TestMethod]
         public void TestAttributeMissException()
         {
-            Type type = typeof(AuthorClass);
-            string proName = "Comments";
-            AttributeMissException attributeMissException = new AttributeMissException(type, proName);
-            Assert.AreEqual(attributeMissException.ErrorType, type);
-            Assert.AreEqual(attributeMissException.AttributeName, proName);
-            string msg = string.Format(CultureInfo.CurrentCulture, Properties.Resources.Exp_String_AttributeMiss, type,
-                proName);
-            Assert.AreEqual(attributeMissException.Message, msg);
+            bool errorCatched = false;
+            AuthorClass author = new AuthorClass();
+            string attrName = typeof(PrimaryKeyAttribute).Name;
+            try
+            {
+                new KeyValuesObject(author);
+            }
+            catch (AttributeMissException ex)
+            {
+                Assert.AreEqual(ex.ErrorType, author.GetType());
+                Assert.AreEqual(ex.AttributeName, attrName);
+                string msg = string.Format(CultureInfo.CurrentCulture, Properties.Resources.Exp_String_AttributeMiss, author.GetType(),
+                    attrName);
+                Assert.AreEqual(ex.Message, msg);
+                errorCatched = true;
+            }
+            catch (Exception)
+            {
+                Assert.Fail();
+            }
+            Assert.IsTrue(errorCatched);
+
+        }
+
+        [TestMethod]
+        public void TestPrimaryKeyException()
+        {
+            Type type = typeof(ErrorPrimaryKeyDefineClass);
+
+            bool errorCatched = false;
+            try
+            {
+                new Serializer(type);
+            }
+            catch (PrimaryKeyException ex)
+            {
+                Assert.AreEqual(ex.SourceType, type);
+                Assert.AreEqual(ex.PrimaryKeyName, "Author");
+                string msg = string.Format(CultureInfo.CurrentCulture, Properties.Resources.Exp_String_PrimaryKey, type.FullName,
+                    "Author");
+                Assert.AreEqual(ex.Message, msg);
+                errorCatched = true;
+            }
+            catch (Exception)
+            {
+                Assert.Fail();
+            }
+            Assert.IsTrue(errorCatched);
         }
 
         #endregion Public Methods

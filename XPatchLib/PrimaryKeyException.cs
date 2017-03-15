@@ -94,9 +94,9 @@ namespace XPatchLib
         {
             get
             {
-                //TODO:多语言
-                return string.Format(CultureInfo.InvariantCulture, " '{0}' 的 主键 {1} 设置异常.", SourceType.Name,
-                    PrimaryKeyName);
+                CultureInfo culture = CultureInfo.CurrentCulture;
+                string message = ResourceHelper.GetResourceString("Exp_String_PrimaryKey", culture);
+                return string.Format(culture, message, SourceType.FullName, PrimaryKeyName);
             }
         }
 

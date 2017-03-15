@@ -10,6 +10,7 @@ namespace XPatchLib
     internal class KeyValuesObject
     {
         private static readonly int EMPTY_STRING_HASHCODE = string.Empty.GetHashCode();
+        private static readonly string PRIMARY_KEY_MISS = typeof(PrimaryKeyAttribute).Name;
 
         public KeyValuesObject(Object pValue, Object pKey)
         {
@@ -88,6 +89,10 @@ namespace XPatchLib
                 if (!typeExtend.IsBasicType)
                 {
                     PrimaryKeyAttribute keyAttr = typeExtend.PrimaryKeyAttr;
+                    if (keyAttr == null)
+                    {
+                        throw new AttributeMissException(pValue.GetType(), PRIMARY_KEY_MISS);
+                    }
                     string[] primaryKeys = keyAttr.GetPrimaryKeys();
                     if (primaryKeys.Length > 0)
                     {
@@ -101,7 +106,7 @@ namespace XPatchLib
                     }
                     else
                     {
-                        throw new AttributeMissException(pValue.GetType(), "PrimaryKeyAttribute");
+                        throw new AttributeMissException(pValue.GetType(), PRIMARY_KEY_MISS);
                     }
                 }
                 else

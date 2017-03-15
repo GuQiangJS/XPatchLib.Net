@@ -15,6 +15,8 @@ namespace XPatchLib
     /// <seealso cref="XPatchLib.DivideBase" />
     internal class DivideIEnumerable : DivideBase
     {
+        private static readonly string PRIMARY_KEY_MISS = typeof(PrimaryKeyAttribute).Name;
+
         /// <summary>
         ///     产生增量内容的实际方法。
         /// </summary>
@@ -101,7 +103,7 @@ namespace XPatchLib
                 GenericArgumentTypePrimaryKeyAttribute = GenericArgumentType.PrimaryKeyAttr;
 
                 if (GenericArgumentTypePrimaryKeyAttribute == null && !GenericArgumentType.IsBasicType)
-                    throw new AttributeMissException(GenericArgumentType.OriType, "PrimaryKeyAttribute");
+                    throw new AttributeMissException(GenericArgumentType.OriType, PRIMARY_KEY_MISS);
             }
             else
             {
