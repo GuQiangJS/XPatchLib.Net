@@ -49,7 +49,7 @@ namespace XPatchLib.UnitTest
             }
             catch (PrimaryKeyException ex)
             {
-                Assert.AreEqual(ex.SourceType, type);
+                Assert.AreEqual(ex.ErrorType, type);
                 Assert.AreEqual(ex.PrimaryKeyName, "Author");
                 string msg = string.Format(CultureInfo.CurrentCulture, Properties.Resources.Exp_String_PrimaryKey, type.FullName,
                     "Author");

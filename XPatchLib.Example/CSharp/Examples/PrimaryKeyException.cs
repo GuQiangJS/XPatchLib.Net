@@ -14,7 +14,7 @@ namespace XPatchLib.Example
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.PrimaryKeyName);
-                Console.WriteLine(ex.SourceType);
+                Console.WriteLine(ex.ErrorType);
             }
         }
 

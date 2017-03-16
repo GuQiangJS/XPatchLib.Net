@@ -26,14 +26,14 @@ namespace XPatchLib
         ///     使用指定的类型及指定的主键名称创建主键定义异常的实例。
         /// </summary>
         /// <param name="pType">
-        ///     有问题的类型。
+        ///     异常的类型。
         /// </param>
         /// <param name="pKeyName">
-        ///     有问题的主键名称。
+        ///     异常的主键名称。
         /// </param>
         public PrimaryKeyException(Type pType, string pKeyName)
         {
-            SourceType = pType;
+            ErrorType = pType;
             PrimaryKeyName = pKeyName;
         }
 
@@ -96,19 +96,19 @@ namespace XPatchLib
             {
                 CultureInfo culture = CultureInfo.CurrentCulture;
                 string message = ResourceHelper.GetResourceString("Exp_String_PrimaryKey", culture);
-                return string.Format(culture, message, SourceType.FullName, PrimaryKeyName);
+                return string.Format(culture, message, ErrorType.FullName, PrimaryKeyName);
             }
         }
 
         /// <summary>
-        ///     获取有问题的主键名称。
+        ///     获取异常的主键名称。
         /// </summary>
         public string PrimaryKeyName { get; set; }
 
         /// <summary>
-        ///     获取有问题的类型。
+        ///     获取异常的类型。
         /// </summary>
-        public Type SourceType { get; set; }
+        public Type ErrorType { get; set; }
 
         /// <summary>
         ///     用关于异常的信息设置 <see cref="System.Runtime.Serialization.SerializationInfo" /> 。
@@ -122,7 +122,7 @@ namespace XPatchLib
             base.GetObjectData(info, context);
 
             info.AddValue("PrimaryKeyName", PrimaryKeyName);
-            info.AddValue("SourceType", SourceType);
+            info.AddValue("ErrorType", ErrorType);
         }
 
         #endregion Public Properties
