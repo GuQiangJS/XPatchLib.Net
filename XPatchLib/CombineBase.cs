@@ -2,6 +2,7 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
 
@@ -67,8 +68,8 @@ namespace XPatchLib
         protected virtual CombineAttribute AnlysisAttributes(ITextReader pReader, string pName)
         {
             CombineAttribute result = new CombineAttribute(Action.Edit, pReader.AttributeCount);
-            if (pReader.NodeType == NodeType.Element &&
-                pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) && pReader.AttributeCount > 0)
+            if (pReader.AttributeCount > 0 && pReader.NodeType == NodeType.Element &&
+                pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase))
             {
                 //读取除Action以外的所有Action，将其赋值给属性
                 while (pReader.MoveToNextAttribute())
@@ -103,10 +104,10 @@ namespace XPatchLib
 
         protected virtual MemberWrapper FindMember(string pMemberName)
         {
-            for (int i = 0; i < Type.FieldsToBeSerialized.Length; i++)
-                if (Type.FieldsToBeSerialized[i].Name.Equals(pMemberName, StringComparison.OrdinalIgnoreCase))
-                    return Type.FieldsToBeSerialized[i];
-            return null;
+            MemberWrapper result = null;
+            if (_fieldsToBeSerialized != null && _fieldsToBeSerialized.Count > 0)
+                _fieldsToBeSerialized.TryGetValue(pMemberName, out result);
+            return result;
         }
 
         protected virtual bool TryFindMember(string pMemberName, out MemberWrapper pMember)
@@ -135,6 +136,15 @@ namespace XPatchLib
         internal CombineBase(TypeExtend pType)
         {
             Type = pType;
+
+            if (Type.FieldsToBeSerialized.Length > 0)
+            {
+                _fieldsToBeSerialized = new Dictionary<string, MemberWrapper>(Type.FieldsToBeSerialized.Length);
+                foreach (MemberWrapper mw in Type.FieldsToBeSerialized)
+                {
+                    _fieldsToBeSerialized.Add(mw.Name, mw);
+                }
+            }
             Attributes = new CombineAttribute(Action.Edit, 0);
         }
 
@@ -149,5 +159,7 @@ namespace XPatchLib
         protected CombineAttribute Attributes { get; private set; }
 
         #endregion Internal Properties
+
+        private Dictionary<string, MemberWrapper> _fieldsToBeSerialized;
     }
 }

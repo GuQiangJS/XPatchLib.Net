@@ -19,15 +19,35 @@ namespace XPatchLib
         public CombineAttribute(Action pAction, int capacity)
         {
             Action = pAction;
-            KeysValuePairs = new KeyValuePairs<String, Object>(capacity);
-            KeysValuePairs.OnAdd += _keysValuePairs_OnAdd;
+            if (capacity > 0)
+            {
+                InitKeysValuePairs(capacity);
+            }
             _keys = new Queue<int>();
             _values = new Queue<int>();
         }
 
+        private void InitKeysValuePairs(int capacity)
+        {
+            _keysValuePairs = new KeyValuePairs<String, Object>(capacity);
+            _keysValuePairs.OnAdd += _keysValuePairs_OnAdd;
+        }
+
         public Action Action { get; set; }
 
-        public KeyValuePairs<String, Object> KeysValuePairs { get; }
+        private KeyValuePairs<String, Object> _keysValuePairs;
+
+        public KeyValuePairs<String, Object> KeysValuePairs
+        {
+            get
+            {
+                if (_keysValuePairs == null)
+                {
+                    InitKeysValuePairs(0);
+                }
+                return _keysValuePairs;
+            }
+        }
 
         public int[] Keys
         {
