@@ -1,4 +1,9 @@
-﻿using System.IO;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,10 +31,7 @@ namespace XPatchLib.UnitTest.ForXml
 
         private BookClass OriObject
         {
-            get
-            {
-                return BookClass.GetSampleInstance();
-            }
+            get { return BookClass.GetSampleInstance(); }
         }
 
         private BookClass RevObject
@@ -37,7 +39,7 @@ namespace XPatchLib.UnitTest.ForXml
             get
             {
                 BookClass revObj = BookClass.GetSampleInstance();
-                    revObj.Author.Name = newAuthorName;
+                revObj.Author.Name = newAuthorName;
                 return revObj;
             }
         }
@@ -74,7 +76,7 @@ namespace XPatchLib.UnitTest.ForXml
             Serializer serializer = new Serializer(typeof(BookClass));
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, OriObject, RevObject);
                     var context = UnitTest.TestHelper.StreamToString(stream);
@@ -84,7 +86,7 @@ namespace XPatchLib.UnitTest.ForXml
             serializer = new Serializer(typeof(BookClass));
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, OriObject, RevObject);
                     stream.Position = 0;
@@ -93,6 +95,60 @@ namespace XPatchLib.UnitTest.ForXml
                         var changedObj = serializer.Combine(reader, OriObject) as BookClass;
                         Assert.AreEqual(RevObject, changedObj);
                     }
+                }
+            }
+        }
+
+        [TestMethod]
+        [Description("测试序列化时指定的XmlTextWriter，更改了Encoding")]
+        public void TestXmlSerializerStreamDivideAndCombineChangedEncoding()
+        {
+            var settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.OmitXmlDeclaration = false;
+            ;
+            settings.Encoding = Encoding.ASCII;
+
+            Serializer serializer = new Serializer(typeof(BookClass));
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = TestHelper.CreateWriter(stream, settings))
+                {
+                    serializer.Divide(writer, OriObject, RevObject);
+                    var context = UnitTest.TestHelper.StreamToString(stream);
+                    Debug.WriteLine(context);
+                    Assert.AreEqual(ChangedContext.Replace("utf-8", "us-ascii"), context);
+                }
+            }
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = TestHelper.CreateWriter(stream, settings))
+                {
+                    serializer.Divide(writer, OriObject, RevObject);
+                    stream.Position = 0;
+                    using (XmlTextReader reader = new XmlTextReader(XmlReader.Create(stream)))
+                    {
+                        var changedObj = serializer.Combine(reader, OriObject) as BookClass;
+                        Assert.AreEqual(RevObject, changedObj);
+                    }
+                }
+            }
+
+            settings.Indent = false;
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = TestHelper.CreateWriter(stream, settings))
+                {
+                    serializer.Divide(writer, OriObject, RevObject);
+                    var context = UnitTest.TestHelper.StreamToString(stream);
+                    Debug.WriteLine(context);
+                    Assert.AreEqual(
+                        ChangedContext.Replace("utf-8", "us-ascii")
+                            .Replace(Environment.NewLine, "")
+                            .Replace(" ", "")
+                            .Replace("BarackObama", "Barack Obama")
+                            .Replace(@"xmlversion=""1.0""encoding=""us-ascii""",
+                                @"xml version=""1.0"" encoding=""us-ascii"""), context);
                 }
             }
         }

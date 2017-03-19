@@ -88,7 +88,7 @@ namespace XPatchLib.UnitTest.ForXml
                 var serializer = new Serializer(typeof(List<AuthorClass>));
                 using (var stream = new MemoryStream())
                 {
-                    using (var writer = TestHelper.CreateWriter(stream))
+                    using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                     {
                         serializer.Divide(writer, null, a);
                     }
@@ -142,7 +142,7 @@ namespace XPatchLib.UnitTest.ForXml
             serializer.RegisterTypes(types);
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, null, a);
                     context = UnitTest.TestHelper.StreamToString(stream);
@@ -208,7 +208,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, null, b);
                     var context = UnitTest.TestHelper.StreamToString(stream);
@@ -216,7 +216,7 @@ namespace XPatchLib.UnitTest.ForXml
                 }
             }
 
-            
+
             using (XmlReader reader = XmlReader.Create(new StringReader(result)))
             {
                 using (XmlTextReader xmlReader = new XmlTextReader(reader))
@@ -229,7 +229,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, new BookClassCollection(), b);
                     var context = UnitTest.TestHelper.StreamToString(stream);
@@ -260,7 +260,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, null, b);
                     var context = UnitTest.TestHelper.StreamToString(stream);
@@ -280,7 +280,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     //b是空白集合，与空白集合产生增量内容，为空白内容。
                     serializer.Divide(writer, new BookClassCollection(), b);
@@ -314,7 +314,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     var c = new BookClassCollection();
                     c.Add(new BookClass {Name = "A"});
@@ -363,7 +363,8 @@ namespace XPatchLib.UnitTest.ForXml
             var exceptionCatched = false;
             try
             {
-                new Serializer(typeof(List<AuthorClass>)).Divide(new XmlTextWriter(XmlWriter.Create(new MemoryStream())), null, new List<AuthorClass>());
+                new Serializer(typeof(List<AuthorClass>)).Divide(
+                    new XmlTextWriter(XmlWriter.Create(new MemoryStream())), null, new List<AuthorClass>());
             }
             catch (AttributeMissException ex)
             {
@@ -627,6 +628,46 @@ namespace XPatchLib.UnitTest.ForXml
                 {
                     using (ITextReader reader = new XmlTextReader(xmlReader))
                     {
+                        var com = new CombineIEnumerable(new TypeExtend(typeof(BookClassCollection)));
+                        var b3 =
+                            com.Combine(reader, s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as
+                                BookClassCollection;
+
+                        Assert.AreEqual(null, b3);
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void TestSerializeSimpleArraySetNullByChangedAction()
+        {
+            string[] s1 = {"ABC", "DEF"};
+
+            const string newActionName = "Action123";
+
+            const string result =
+                "<Array1OfString " + newActionName + "=\"SetNull\" />";
+
+            using (var stream = new MemoryStream())
+            {
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
+                {
+                    writer.Setting.ActionName = newActionName;
+                    var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[])));
+                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, null));
+                }
+                stream.Position = 0;
+                var ele = XElement.Load(stream);
+
+                Assert.AreEqual(result, ele.ToString());
+
+                stream.Position = 0;
+                using (XmlReader xmlReader = XmlReader.Create(stream))
+                {
+                    using (ITextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        reader.Setting.ActionName = newActionName;
                         var com = new CombineIEnumerable(new TypeExtend(typeof(BookClassCollection)));
                         var b3 =
                             com.Combine(reader, s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as

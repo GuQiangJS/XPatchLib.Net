@@ -122,7 +122,7 @@ namespace XPatchLib.UnitTest.ForXml
             string context;
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, order1, order2);
                     stream.Position = 0;
@@ -373,7 +373,7 @@ namespace XPatchLib.UnitTest.ForXml
             string context;
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, list1, list2);
                     stream.Position = 0;
@@ -561,7 +561,7 @@ namespace XPatchLib.UnitTest.ForXml
             context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, null, card1);
                     stream.Position = 0;
@@ -580,7 +580,7 @@ namespace XPatchLib.UnitTest.ForXml
             context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     writer.Setting.Mode = DateTimeSerializationMode.Local;
                     serializer.Divide(writer, null, card1);
@@ -600,9 +600,9 @@ namespace XPatchLib.UnitTest.ForXml
             context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
-                    writer.Setting.Mode=DateTimeSerializationMode.Unspecified;
+                    writer.Setting.Mode = DateTimeSerializationMode.Unspecified;
                     serializer.Divide(writer, null, card1);
                     stream.Position = 0;
                     using (var stremReader = new StreamReader(stream, Encoding.UTF8))
@@ -620,7 +620,7 @@ namespace XPatchLib.UnitTest.ForXml
             context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     writer.Setting.Mode = DateTimeSerializationMode.Utc;
                     serializer.Divide(writer, null, card1);
@@ -709,7 +709,7 @@ namespace XPatchLib.UnitTest.ForXml
             var context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, card1, card2);
                     stream.Position = 0;
@@ -805,7 +805,7 @@ namespace XPatchLib.UnitTest.ForXml
             var context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, w1, w2);
                     stream.Position = 0;
@@ -846,7 +846,7 @@ namespace XPatchLib.UnitTest.ForXml
             var context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, w1, w2);
                     stream.Position = 0;
@@ -963,7 +963,7 @@ namespace XPatchLib.UnitTest.ForXml
             context = "";
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, null, card1);
                     stream.Position = 0;
@@ -982,7 +982,7 @@ namespace XPatchLib.UnitTest.ForXml
             context = String.Empty;
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     writer.Setting.SerializeDefalutValue = true;
                     serializer.Divide(writer, null, card1);
@@ -1038,7 +1038,7 @@ namespace XPatchLib.UnitTest.ForXml
             string changedContext;
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, null, c1);
                     stream.Position = 0;

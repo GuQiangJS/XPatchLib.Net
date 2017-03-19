@@ -1,10 +1,12 @@
-﻿using System;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace XPatchLib.UnitTest.ForXml
@@ -29,7 +31,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var stream = new MemoryStream())
                 {
-                    using (var writer = TestHelper.CreateWriter(stream))
+                    using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                     {
                         serializer.Divide(writer, null, table);
                         stream.Position = 0;
@@ -68,7 +70,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var stream = new MemoryStream())
                 {
-                    using (var writer = TestHelper.CreateWriter(stream))
+                    using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                     {
                         serializer.Divide(writer, null, table);
                         stream.Position = 0;

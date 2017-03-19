@@ -2,7 +2,6 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -15,6 +14,17 @@ namespace XPatchLib.UnitTest.ForXml
     internal static class TestHelper
     {
         internal const string XmlHeaderContext = @"<?xml version=""1.0"" encoding=""utf-8""?>";
+
+        internal static XmlWriterSettings DocumentSetting
+        {
+            get
+            {
+                var settings = new XmlWriterSettings();
+                settings.Indent = true;
+                settings.OmitXmlDeclaration = false;
+                return settings;
+            }
+        }
 
         internal static XmlWriterSettings FlagmentSetting
         {
@@ -36,6 +46,9 @@ namespace XPatchLib.UnitTest.ForXml
 
         internal static ITextWriter CreateWriter(Stream output, XmlWriterSettings settings)
         {
+            return new XmlTextWriter(XmlWriter.Create(output, settings));
+
+
             System.Xml.XmlTextWriter writer = new System.Xml.XmlTextWriter(output, settings.Encoding);
             writer.Formatting = System.Xml.Formatting.Indented;
             return new XmlTextWriter(writer);
@@ -95,7 +108,7 @@ namespace XPatchLib.UnitTest.ForXml
         {
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = CreateWriter(stream))
+                using (ITextWriter writer = CreateWriter(stream, DocumentSetting))
                 {
                     writer.Setting.Mode = pMode;
                     Assert.IsTrue(

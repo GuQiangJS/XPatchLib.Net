@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -22,7 +25,7 @@ namespace XPatchLib.UnitTest.ForXml
             string context;
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, r1, r2);
                     context = UnitTest.TestHelper.StreamToString(stream);
@@ -51,7 +54,7 @@ namespace XPatchLib.UnitTest.ForXml
             string context;
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, r1, r2);
                     context = UnitTest.TestHelper.StreamToString(stream);

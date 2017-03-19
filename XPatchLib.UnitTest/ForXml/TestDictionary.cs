@@ -108,7 +108,7 @@ namespace XPatchLib.UnitTest.ForXml
             dic2.Add("Ekey", "EValue");
 
             var changedEle = XElement.Load(new StringReader(ComplexOperatorChangedContext));
-            
+
             using (XmlReader xmlReader = XmlReader.Create(new StringReader(ComplexOperatorChangedContext)))
             {
                 using (var reader = new XmlTextReader(xmlReader))
@@ -235,7 +235,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     var serializer = new Serializer(dic1.GetType());
                     serializer.Divide(writer, dic1, dic2);
@@ -353,7 +353,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     var serializer = new Serializer(dic1.GetType());
                     serializer.Divide(writer, null, dic1);
@@ -505,7 +505,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     var serializer = new Serializer(dic1.GetType());
                     serializer.Divide(writer, dic1, dic2);
@@ -625,7 +625,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     var serializer = new Serializer(dic1.GetType());
                     serializer.Divide(writer, dic1, dic2);
@@ -777,7 +777,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     var serializer = new Serializer(dic1.GetType());
                     serializer.Divide(writer, dic1, dic2);

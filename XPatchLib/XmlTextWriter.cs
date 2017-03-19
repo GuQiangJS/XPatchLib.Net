@@ -2,7 +2,6 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
 using System.Xml;
 
 namespace XPatchLib
@@ -15,7 +14,7 @@ namespace XPatchLib
     {
         private readonly XmlWriter _writer;
 
-        private ISerializeSetting _setting;
+        private ISerializeSetting _setting = new XmlSerializeSetting();
 
         /// <summary>
         ///     以指定的 <paramref name="pWriter" /> 实例创建 <see cref="XmlTextWriter" /> 类型实例。
@@ -31,7 +30,6 @@ namespace XPatchLib
         {
             Guard.ArgumentNotNull(pWriter, "pWriter");
             _writer = pWriter;
-            Setting=new XmlSerializeSetting(pWriter);
         }
 
         /// <summary>
@@ -184,9 +182,9 @@ namespace XPatchLib
         }
 
         /// <summary>
-        /// 获取或设置写入器设置。
+        ///     获取或设置写入器设置。
         /// </summary>
-        /// <value>默认返回以构造函数中传入的<see cref="XmlWriter"/>作为参数创建的<see cref="XmlSerializeSetting"/>实例。</value>
+        /// <value>默认返回以构造函数中传入的<see cref="XmlWriter" />作为参数创建的<see cref="XmlSerializeSetting" />实例。</value>
         public ISerializeSetting Setting
         {
             get { return _setting; }
@@ -201,7 +199,13 @@ namespace XPatchLib
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
-            _writer.Flush();
+            try
+            {
+                _writer.Flush();
+            }
+            catch (ObjectDisposedException)
+            {
+            }
             //if (disposing)
             //    ((IDisposable) Writer)?.Dispose();
         }

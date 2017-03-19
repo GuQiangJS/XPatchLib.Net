@@ -31,9 +31,9 @@ namespace XPatchLib.UnitTest.ForXml
             string frResult = string.Empty;
             using (MemoryStream stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
-                    writer.Setting.Mode=DateTimeSerializationMode.Unspecified;
+                    writer.Setting.Mode = DateTimeSerializationMode.Unspecified;
                     serializer.Divide(writer, null, CultureClass.GetSampleInstance());
 
                     stream.Position = 0;
@@ -49,7 +49,7 @@ namespace XPatchLib.UnitTest.ForXml
             string faResult = string.Empty;
             using (MemoryStream stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     writer.Setting.Mode = DateTimeSerializationMode.Unspecified;
                     serializer.Divide(writer, null, CultureClass.GetSampleInstance());
@@ -67,7 +67,7 @@ namespace XPatchLib.UnitTest.ForXml
             string deResult = string.Empty;
             using (MemoryStream stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     writer.Setting.Mode = DateTimeSerializationMode.Unspecified;
                     serializer.Divide(writer, null, CultureClass.GetSampleInstance());
@@ -85,7 +85,7 @@ namespace XPatchLib.UnitTest.ForXml
             string usResult = string.Empty;
             using (MemoryStream stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     writer.Setting.Mode = DateTimeSerializationMode.Unspecified;
                     serializer.Divide(writer, null, CultureClass.GetSampleInstance());
@@ -421,12 +421,12 @@ namespace XPatchLib.UnitTest.ForXml
             result =
                 string.Format(@"<BookClass>
   <Author>
-    <Comments />
+    <Comments></Comments>
     <Name>{2}</Name>
   </Author>
   <Comments>{1}</Comments>
   <Name>{0}</Name>
-</BookClass>", b2.Name, b2.Comments, b2.Author.Name, b2.Author.Comments);
+</BookClass>", b2.Name, b2.Comments, b2.Author.Name);
 
             using (MemoryStream stream = new MemoryStream())
             {
@@ -550,7 +550,7 @@ namespace XPatchLib.UnitTest.ForXml
             b2.Comments = @"";
             string result =
                 string.Format(@"<AuthorClass>
-  <Comments />
+  <Comments></Comments>
   <Name>{0}</Name>
 </AuthorClass>", b2.Name, b2.Comments);
 
@@ -701,7 +701,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (MemoryStream stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream))
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
                     serializer.Divide(writer, b1, b2);
                     string context = UnitTest.TestHelper.StreamToString(stream);
@@ -765,7 +765,9 @@ namespace XPatchLib.UnitTest.ForXml
                             Trace.Write(changedContext);
                             Serializer deserializer = new Serializer(typeof(BookClass));
                             BookClass book = null;
-                            using (XmlTextReader reader = new XmlTextReader(XmlReader.Create(new StringReader(changedContext))))
+                            using (
+                                XmlTextReader reader =
+                                    new XmlTextReader(XmlReader.Create(new StringReader(changedContext))))
                             {
                                 book = deserializer.Combine(reader, null) as BookClass;
                             }

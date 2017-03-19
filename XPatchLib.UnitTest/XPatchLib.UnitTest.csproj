@@ -79,6 +79,7 @@
     <Compile Include="ForXml\PetShopModelTests\CollectionModelTest.cs" />
     <Compile Include="ForXml\PetShopModelTests\ListModelTest.cs" />
     <Compile Include="ForXml\TestSpecialCharacters.cs" />
+    <Compile Include="ForXml\TestXmlSerializeSetting.cs" />
     <Compile Include="PetShopModelTests\Models\AddressInfo.cs" />
     <Compile Include="PetShopModelTests\Models\CreditCardInfo.cs" />
     <Compile Include="PetShopModelTests\Models\LineItemInfo.cs" />
