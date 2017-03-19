@@ -57,7 +57,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = CreateWriter(stream))
                 {
-                    writer.Mode = pMode;
+                    writer.Setting.Mode = pMode;
                     Assert.IsTrue(
                         new DivideCore(writer, new TypeExtend(pType)).Divide(
                             ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj));
@@ -69,7 +69,7 @@ namespace XPatchLib.UnitTest.ForXml
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
                     {
-                        reader.Mode = pMode;
+                        reader.Setting.Mode = pMode;
                         var combinedObj = new CombineCore(new TypeExtend(pType)).Combine(reader, pOriObj,
                             ReflectionUtils.GetTypeFriendlyName(pType));
 
@@ -97,7 +97,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = CreateWriter(stream))
                 {
-                    writer.Mode = pMode;
+                    writer.Setting.Mode = pMode;
                     Assert.IsTrue(
                         new DivideCore(writer, new TypeExtend(pType)).Divide(
                             ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj));
@@ -110,7 +110,7 @@ namespace XPatchLib.UnitTest.ForXml
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
                     {
-                        reader.Mode = pMode;
+                        reader.Setting.Mode = pMode;
                         var combinedObj = new CombineCore(new TypeExtend(pType)).Combine(reader, pOriObj,
                             ReflectionUtils.GetTypeFriendlyName(pType));
 

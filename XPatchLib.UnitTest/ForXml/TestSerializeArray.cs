@@ -456,7 +456,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
-                    writer.SerializeDefalutValue = true;
+                    writer.Setting.SerializeDefalutValue = true;
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(BookClassCollection)));
 
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection)), b1, b2));

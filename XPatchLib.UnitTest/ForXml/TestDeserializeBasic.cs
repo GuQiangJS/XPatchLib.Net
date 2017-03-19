@@ -12,10 +12,10 @@ namespace XPatchLib.UnitTest.ForXml
         public void BasicDeserializeCtorTest()
         {
             //var ser = new CombineBasic(new TypeExtend(typeof(string)));
-            //ser.Mode = DateTimeSerializationMode.RoundtripKind;
+            //ser.Setting.Mode = DateTimeSerializationMode.RoundtripKind;
 
             //ser = new CombineBasic(new TypeExtend(typeof(string)), DateTimeSerializationMode.Unspecified);
-            //ser.Mode = DateTimeSerializationMode.Unspecified;
+            //ser.Setting.Mode = DateTimeSerializationMode.Unspecified;
         }
 
         #endregion Public Methods

@@ -10,23 +10,25 @@ namespace XPatchLib
 {
     //TODO:Not Complete
     /// <summary>
-    /// 表示提供对 Json 数据进行快速、非缓存、只进访问的读取器。
+    ///     表示提供对 Json 数据进行快速、非缓存、只进访问的读取器。
     /// </summary>
     /// <seealso cref="XPatchLib.ITextReader" />
     internal class JsonTextReader : ITextReader
     {
         private readonly XmlDictionaryReader _reader;
-        
+
         /// <summary>
         ///     以指定的 <paramref name="pStream" /> 实例创建 <see cref="JsonTextReader" /> 类型实例。
         /// </summary>
         /// <param name="pStream">包含 Json 数据的流。</param>
         public JsonTextReader(Stream pStream)
-            :this(pStream, DateTimeSerializationMode.RoundtripKind)
-        { }
+            : this(pStream, DateTimeSerializationMode.RoundtripKind)
+        {
+        }
 
         /// <summary>
-        /// 以指定的 <paramref name="pStream" /> 实例创建 <see cref="JsonTextReader" /> 类型实例，同时指定字符串与 <see cref="DateTime" /> 之间转换时，如何处理时间值。
+        ///     以指定的 <paramref name="pStream" /> 实例创建 <see cref="JsonTextReader" /> 类型实例，同时指定字符串与 <see cref="DateTime" />
+        ///     之间转换时，如何处理时间值。
         /// </summary>
         /// <param name="pStream">包含 Json 数据的流。。</param>
         /// <param name="pMode">字符串与 <see cref="DateTime" /> 之间转换时，如何处理时间值。</param>
@@ -35,7 +37,10 @@ namespace XPatchLib
             Guard.ArgumentNotNull(pStream, "pStream");
             _reader = JsonReaderWriterFactory.CreateJsonReader(pStream, new XmlDictionaryReaderQuotas());
             Mode = pMode;
+            Setting = new XmlSerializeSetting();
         }
+
+        public DateTimeSerializationMode Mode { get; set; }
 
         void IDisposable.Dispose()
         {
@@ -128,6 +133,9 @@ namespace XPatchLib
             return _reader.MoveToElement();
         }
 
+        /// <summary>
+        /// 获取当前节点的类型。
+        /// </summary>
         public NodeType NodeType
         {
             get
@@ -176,6 +184,12 @@ namespace XPatchLib
             }
         }
 
+        /// <summary>
+        /// 获取或设置读取器设置。
+        /// </summary>
+        /// <value><see cref="XmlSerializeSetting"/></value>
+        public ISerializeSetting Setting { get; set; }
+
 
         /// <summary>
         ///     执行与释放或重置非托管资源相关的应用程序定义的任务。
@@ -185,7 +199,5 @@ namespace XPatchLib
             if (disposing)
                 ((IDisposable) _reader)?.Dispose();
         }
-
-        public DateTimeSerializationMode Mode { get; set; }
     }
 }

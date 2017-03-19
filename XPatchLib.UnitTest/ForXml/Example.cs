@@ -505,7 +505,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (XmlTextReader xmlReader = new XmlTextReader(reader))
                 {
-                    xmlReader.Mode = DateTimeSerializationMode.Local;
+                    xmlReader.Setting.Mode = DateTimeSerializationMode.Local;
                     card2 = serializer.Combine(xmlReader, null) as CreditCard;
                 }
             }
@@ -521,7 +521,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (XmlTextReader xmlReader = new XmlTextReader(reader))
                 {
-                    xmlReader.Mode = DateTimeSerializationMode.Unspecified;
+                    xmlReader.Setting.Mode = DateTimeSerializationMode.Unspecified;
                     card2 = serializer.Combine(xmlReader, null) as CreditCard;
                 }
             }
@@ -537,7 +537,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (XmlTextReader xmlReader = new XmlTextReader(reader))
                 {
-                    xmlReader.Mode = DateTimeSerializationMode.Utc;
+                    xmlReader.Setting.Mode = DateTimeSerializationMode.Utc;
                     card2 = serializer.Combine(xmlReader, null) as CreditCard;
                 }
             }
@@ -582,7 +582,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    writer.Mode = DateTimeSerializationMode.Local;
+                    writer.Setting.Mode = DateTimeSerializationMode.Local;
                     serializer.Divide(writer, null, card1);
                     stream.Position = 0;
                     using (var stremReader = new StreamReader(stream, Encoding.UTF8))
@@ -602,7 +602,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    writer.Mode=DateTimeSerializationMode.Unspecified;
+                    writer.Setting.Mode=DateTimeSerializationMode.Unspecified;
                     serializer.Divide(writer, null, card1);
                     stream.Position = 0;
                     using (var stremReader = new StreamReader(stream, Encoding.UTF8))
@@ -622,7 +622,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    writer.Mode = DateTimeSerializationMode.Utc;
+                    writer.Setting.Mode = DateTimeSerializationMode.Utc;
                     serializer.Divide(writer, null, card1);
                     stream.Position = 0;
                     using (var stremReader = new StreamReader(stream, Encoding.UTF8))
@@ -984,7 +984,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
-                    writer.SerializeDefalutValue = true;
+                    writer.Setting.SerializeDefalutValue = true;
                     serializer.Divide(writer, null, card1);
                     stream.Position = 0;
                     using (var stremReader = new StreamReader(stream, Encoding.UTF8))

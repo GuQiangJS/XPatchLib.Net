@@ -140,7 +140,7 @@ namespace XPatchLib
                 if (pOriObject == null && TypeExtend.Equals(Type.DefaultValue, pRevObject))
                 {
                     //原始对象为null，且更新后的对象为类型初始值时，需要判断_SerializeDefaultValue属性来确定是否序列化初始值。
-                    if (Writer.SerializeDefalutValue)
+                    if (Writer.Setting.SerializeDefalutValue)
                         return DivideAction(pName, TransToString<T>(pRevObject), pAttach);
                 }
                 else
@@ -200,7 +200,7 @@ namespace XPatchLib
                     return XmlConvert.ToString((UInt64) pObj);
 
                 case TypeCode.DateTime:
-                    return XmlConvert.ToString((DateTime) pObj, Writer.Mode.Convert());
+                    return XmlConvert.ToString((DateTime) pObj, Writer.Setting.Mode.Convert());
 
                 case TypeCode.String:
                     return (string) pObj;

@@ -13,9 +13,9 @@ namespace XPatchLib
     public interface ITextReader : IDisposable
     {
         /// <summary>
-        /// 获取或设置在字符串与 <see cref="DateTime"/> 之间转换时，如何处理时间值。
+        ///     获取或设置读取器设置。
         /// </summary>
-        DateTimeSerializationMode Mode { get; set; }
+        ISerializeSetting Setting { get; set; }
 
         /// <summary>
         ///     获取读取器的状态。

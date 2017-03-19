@@ -33,7 +33,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    writer.Mode=DateTimeSerializationMode.Unspecified;
+                    writer.Setting.Mode=DateTimeSerializationMode.Unspecified;
                     serializer.Divide(writer, null, CultureClass.GetSampleInstance());
 
                     stream.Position = 0;
@@ -51,7 +51,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    writer.Mode = DateTimeSerializationMode.Unspecified;
+                    writer.Setting.Mode = DateTimeSerializationMode.Unspecified;
                     serializer.Divide(writer, null, CultureClass.GetSampleInstance());
 
                     stream.Position = 0;
@@ -69,7 +69,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    writer.Mode = DateTimeSerializationMode.Unspecified;
+                    writer.Setting.Mode = DateTimeSerializationMode.Unspecified;
                     serializer.Divide(writer, null, CultureClass.GetSampleInstance());
 
                     stream.Position = 0;
@@ -87,7 +87,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (var writer = TestHelper.CreateWriter(stream))
                 {
-                    writer.Mode = DateTimeSerializationMode.Unspecified;
+                    writer.Setting.Mode = DateTimeSerializationMode.Unspecified;
                     serializer.Divide(writer, null, CultureClass.GetSampleInstance());
 
                     stream.Position = 0;

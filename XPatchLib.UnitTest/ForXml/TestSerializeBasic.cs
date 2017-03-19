@@ -22,12 +22,12 @@ namespace XPatchLib.UnitTest.ForXml
         public void BasicSerializeCtorTest()
         {
             var writer = new XmlTextWriter(new System.Xml.XmlTextWriter(new MemoryStream(), Encoding.UTF8));
-            Assert.AreEqual(writer.Mode, DateTimeSerializationMode.RoundtripKind);
-            Assert.AreEqual(writer.Mode.Convert(),XmlDateTimeSerializationMode.RoundtripKind);
+            Assert.AreEqual(writer.Setting.Mode, DateTimeSerializationMode.RoundtripKind);
+            Assert.AreEqual(writer.Setting.Mode.Convert(),XmlDateTimeSerializationMode.RoundtripKind);
             
-            writer.Mode=DateTimeSerializationMode.Unspecified;
-            Assert.AreEqual(writer.Mode, DateTimeSerializationMode.Unspecified);
-            Assert.AreEqual(writer.Mode.Convert(), XmlDateTimeSerializationMode.Unspecified);
+            writer.Setting.Mode=DateTimeSerializationMode.Unspecified;
+            Assert.AreEqual(writer.Setting.Mode, DateTimeSerializationMode.Unspecified);
+            Assert.AreEqual(writer.Setting.Mode.Convert(), XmlDateTimeSerializationMode.Unspecified);
         }
 
 
@@ -262,7 +262,7 @@ namespace XPatchLib.UnitTest.ForXml
                 {
                     using (ITextWriter writer = TestHelper.CreateWriter(stream))
                     {
-                        writer.SerializeDefalutValue = true;
+                        writer.Setting.SerializeDefalutValue = true;
                         var ser = new DivideBasic(writer, new TypeExtend(types[i]));
                         //原始值为null，如果更新值为默认值时，如果设置为序列化默认值，则做序列化
                         if (types[i] != typeof(string))

@@ -251,5 +251,7 @@ namespace XPatchLib
             StartProperty,
             EndProperty
         }
+
+        public ISerializeSetting Setting { get; set; }
     }
 }

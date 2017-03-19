@@ -22,6 +22,7 @@ namespace XPatchLib
         {
             Guard.ArgumentNotNull(pReader, "pReader");
             Reader = pReader;
+            Setting = new XmlSerializeSetting();
         }
 
         /// <summary>
@@ -180,12 +181,6 @@ namespace XPatchLib
         }
 
         /// <summary>
-        /// 获取或设置在字符串与 <see cref="DateTime" /> 之间转换时，如何处理时间值。
-        /// </summary>
-        /// <value>默认在字符串与 System.DateTime 之间转换时，转换时应保留时区信息。</value>
-        public DateTimeSerializationMode Mode { get; set; }
-
-        /// <summary>
         ///     执行与释放或重置非托管资源相关的应用程序定义的任务。
         /// </summary>
         protected virtual void Dispose(bool disposing)
@@ -193,5 +188,11 @@ namespace XPatchLib
             if (disposing)
                 ((IDisposable) Reader)?.Dispose();
         }
+
+        /// <summary>
+        /// 获取或设置读取器设置。
+        /// </summary>
+        /// <value><see cref="XmlSerializeSetting"/></value>
+        public ISerializeSetting Setting { get; set; }
     }
 }

@@ -85,7 +85,7 @@ namespace XPatchLib
         /// <returns></returns>
         protected override object CombineAction(ITextReader pReader, object pOriObject, string pName)
         {
-            return CombineAction(Type.TypeCode, Type.IsGuid, pReader.Mode, pReader.ReadString());
+            return CombineAction(Type.TypeCode, Type.IsGuid, pReader.Setting.Mode, pReader.ReadString());
         }
 
         #region Internal Constructors
