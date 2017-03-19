@@ -14,6 +14,7 @@ namespace XPatchLib
     public class XmlSerializeSetting : ISerializeSetting
     {
         private readonly XmlWriter _writer;
+        private string _actionName = "Action";
 
         private Encoding _encoding = Encoding.UTF8;
 
@@ -57,10 +58,12 @@ namespace XPatchLib
         /// <value>
         ///     <para><see cref="Formatting" /> 值之一。</para>
         ///     <para>
-        ///         如果创建实例时传入了指定的<see cref="XmlWriter" />实例，那么会根据指定实例的<see cref="XmlWriter" />.<see cref="XmlWriterSettings.Indent"/>的设置返回内容。
-        ///         当指定实例的<see cref="XmlWriter" />.<see cref="XmlWriterSettings.Indent"/> 为 <b>true</b> 时，返回<see cref="Formatting.Indented" /> ，否则返回
+        ///         如果创建实例时传入了指定的<see cref="XmlWriter" />实例，那么会根据指定实例的<see cref="XmlWriter" />.
+        ///         <see cref="XmlWriterSettings.Indent" />的设置返回内容。
+        ///         当指定实例的<see cref="XmlWriter" />.<see cref="XmlWriterSettings.Indent" /> 为 <b>true</b> 时，返回
+        ///         <see cref="Formatting.Indented" /> ，否则返回
         ///         <see cref="Formatting.None" /> ,
-        /// 同时，设置值时会根据设置值将对应的值赋值至指定实例的<see cref="XmlWriter" />.<see cref="XmlWriterSettings.Indent"/>属性。
+        ///         同时，设置值时会根据设置值将对应的值赋值至指定实例的<see cref="XmlWriter" />.<see cref="XmlWriterSettings.Indent" />属性。
         ///     </para>
         ///     <para>默认值是 <see cref="Formatting.None" /> （当创建实例时没有指定<see cref="XmlWriter" />实例时）。</para>
         /// </value>
@@ -84,8 +87,9 @@ namespace XPatchLib
         /// </summary>
         /// <value>
         ///     <para>
-        ///         如果创建实例时传入了指定的<see cref="XmlWriter" />实例，那么会返回指定实例的<see cref="XmlWriter" />.<see cref="XmlWriterSettings.IndentChars"/>的设置值,
-        /// 同时，设置值时会将值赋值至指定实例的<see cref="XmlWriter" />.<see cref="XmlWriterSettings.IndentChars"/>属性。
+        ///         如果创建实例时传入了指定的<see cref="XmlWriter" />实例，那么会返回指定实例的<see cref="XmlWriter" />.
+        ///         <see cref="XmlWriterSettings.IndentChars" />的设置值,
+        ///         同时，设置值时会将值赋值至指定实例的<see cref="XmlWriter" />.<see cref="XmlWriterSettings.IndentChars" />属性。
         ///     </para>
         ///     <para>默认值是 <see cref="string.Empty" /> （当创建实例时没有指定<see cref="XmlWriter" />实例时）。</para>
         /// </value>
@@ -108,8 +112,9 @@ namespace XPatchLib
         /// </summary>
         /// <value>
         ///     <para>
-        ///         如果创建实例时传入了指定的<see cref="XmlWriter" />实例，那么会返回指定实例的<see cref="XmlWriter" />.<see cref="XmlWriterSettings.Encoding"/>的设置值,
-        /// 同时，设置值时会将值赋值至指定实例的<see cref="XmlWriter" />.<see cref="XmlWriterSettings.Encoding"/>属性。
+        ///         如果创建实例时传入了指定的<see cref="XmlWriter" />实例，那么会返回指定实例的<see cref="XmlWriter" />.
+        ///         <see cref="XmlWriterSettings.Encoding" />的设置值,
+        ///         同时，设置值时会将值赋值至指定实例的<see cref="XmlWriter" />.<see cref="XmlWriterSettings.Encoding" />属性。
         ///     </para>
         ///     <para>默认值是 <see cref="Encoding.UTF8" /> （当创建实例时没有指定<see cref="XmlWriter" />实例时）。</para>
         /// </value>
@@ -124,6 +129,24 @@ namespace XPatchLib
             {
                 if (_writer.Settings != null) _writer.Settings.Encoding = value;
                 else _encoding = value;
+            }
+        }
+
+        /// <summary>
+        ///     获取或设置序列化/反序列化时，文本中标记 '<b>动作</b>' 的文本。
+        /// </summary>
+        /// <value>
+        ///     默认值是 "<b>Action</b>" 。
+        /// </value>
+        /// <exception cref="ArgumentNullException">当设置值是传入 <b>null</b> 时。</exception>
+        /// <exception cref="ArgumentException">当设置值为空时。</exception>
+        public string ActionName
+        {
+            get { return _actionName; }
+            set
+            {
+                Guard.ArgumentNotNullOrEmpty(value, "value");
+                _actionName = value;
             }
         }
     }

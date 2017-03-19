@@ -9,9 +9,14 @@ namespace XPatchLib
     /// <summary>
     ///     序列化/反序列化时的设置。
     /// </summary>
-    /// <seealso cref="XmlSerializeSetting"/>
+    /// <seealso cref="XmlSerializeSetting" />
     public interface ISerializeSetting
     {
+        /// <summary>
+        ///     获取或设置序列化/反序列化时，文本中标记 '<b>动作</b>' 的文本。
+        /// </summary>
+        string ActionName { get; set; }
+
         /// <summary>
         ///     获取或设置要使用的文本编码的类型。
         /// </summary>

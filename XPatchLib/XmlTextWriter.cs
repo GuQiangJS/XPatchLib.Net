@@ -186,7 +186,7 @@ namespace XPatchLib
         /// <summary>
         /// 获取或设置写入器设置。
         /// </summary>
-        /// <value><see cref="XmlSerializeSetting"/></value>
+        /// <value>默认返回以构造函数中传入的<see cref="XmlWriter"/>作为参数创建的<see cref="XmlSerializeSetting"/>实例。</value>
         public ISerializeSetting Setting
         {
             get { return _setting; }

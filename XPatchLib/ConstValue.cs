@@ -11,14 +11,6 @@ namespace XPatchLib
     internal class ConstValue
     {
         /// <summary>
-        ///     生成或读取XML时，Action属性的名称。
-        /// </summary>
-        internal static String ACTION_NAME
-        {
-            get { return "Action"; }
-        }
-
-        /// <summary>
         ///     <see cref="System.Drawing.Color" />类型的格式化字符串。
         /// </summary>
         internal static String COLOR_FORMAT

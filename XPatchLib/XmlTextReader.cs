@@ -12,7 +12,7 @@ namespace XPatchLib
     /// <seealso cref="XPatchLib.ITextReader" />
     public class XmlTextReader : ITextReader
     {
-        private readonly XmlReader Reader;
+        private readonly XmlReader _reader;
 
         /// <summary>
         ///     以指定的 <paramref name="pReader" /> 实例创建 <see cref="XmlTextReader" /> 类型实例。
@@ -21,7 +21,7 @@ namespace XPatchLib
         public XmlTextReader(XmlReader pReader)
         {
             Guard.ArgumentNotNull(pReader, "pReader");
-            Reader = pReader;
+            _reader = pReader;
             Setting = new XmlSerializeSetting();
         }
 
@@ -40,7 +40,7 @@ namespace XPatchLib
         /// <returns></returns>
         public bool Read()
         {
-            return Reader.Read();
+            return _reader.Read();
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace XPatchLib
         {
             get
             {
-                switch (Reader.ReadState)
+                switch (_reader.ReadState)
                 {
                     case System.Xml.ReadState.Closed:
                         return ReadState.Closed;
@@ -64,7 +64,7 @@ namespace XPatchLib
                     case System.Xml.ReadState.Interactive:
                         return ReadState.Interactive;
                     default:
-                        throw new NotSupportedException(Reader.ReadState.ToString());
+                        throw new NotSupportedException(_reader.ReadState.ToString());
                 }
             }
         }
@@ -75,7 +75,7 @@ namespace XPatchLib
         /// <returns></returns>
         public string ReadString()
         {
-            return Reader.ReadString();
+            return _reader.ReadString();
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace XPatchLib
         /// </summary>
         public bool EOF
         {
-            get { return Reader.EOF; }
+            get { return _reader.EOF; }
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace XPatchLib
         /// </summary>
         public string Name
         {
-            get { return Reader.Name; }
+            get { return _reader.Name; }
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace XPatchLib
         /// </summary>
         public string Value
         {
-            get { return Reader.Value; }
+            get { return _reader.Value; }
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace XPatchLib
         /// </summary>
         public int AttributeCount
         {
-            get { return Reader.AttributeCount; }
+            get { return _reader.AttributeCount; }
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace XPatchLib
         /// <returns></returns>
         public bool MoveToNextAttribute()
         {
-            return Reader.MoveToNextAttribute();
+            return _reader.MoveToNextAttribute();
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace XPatchLib
         /// <returns></returns>
         public bool MoveToElement()
         {
-            return Reader.MoveToElement();
+            return _reader.MoveToElement();
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace XPatchLib
         {
             get
             {
-                switch (Reader.NodeType)
+                switch (_reader.NodeType)
                 {
                     case XmlNodeType.None:
                         return NodeType.None;
@@ -175,7 +175,7 @@ namespace XPatchLib
                     case XmlNodeType.XmlDeclaration:
                         return NodeType.XmlDeclaration;
                     default:
-                        throw new NotSupportedException(Reader.NodeType.ToString());
+                        throw new NotSupportedException(_reader.NodeType.ToString());
                 }
             }
         }
@@ -186,13 +186,13 @@ namespace XPatchLib
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
-                ((IDisposable) Reader)?.Dispose();
+                ((IDisposable) _reader)?.Dispose();
         }
 
         /// <summary>
         /// 获取或设置读取器设置。
         /// </summary>
-        /// <value><see cref="XmlSerializeSetting"/></value>
+        /// <value>默认返回以无参数构造函数创建的<see cref="XmlSerializeSetting"/>实例。</value>
         public ISerializeSetting Setting { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace XPatchLib
         {
             if (pAction != Action.Edit)
                 if (pWriter is XmlTextWriter)
-                    pWriter.WriteAttribute(ConstValue.ACTION_NAME, ActionHelper.ToString(pAction));
+                    pWriter.WriteAttribute(pWriter.Setting.ActionName, ActionHelper.ToString(pAction));
         }
     }
 }

@@ -77,7 +77,7 @@ namespace XPatchLib
 #if DEBUG
                     Debug.WriteLine("Attributes of <" + pReader.Name + "," + pReader.Value + "<");
 #endif
-                    if (ConstValue.ACTION_NAME.Equals(pReader.Name))
+                    if (pReader.Setting.ActionName.Equals(pReader.Name))
                     {
                         Action action;
                         if (ActionHelper.TryParse(pReader.Value, out action))
