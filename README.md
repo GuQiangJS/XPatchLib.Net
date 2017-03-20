@@ -1,7 +1,7 @@
 # XPatchLib - .Net 增量内容 序列化/反序列化 工具
 本项目旨在基于 .Net Framework 创建一套 将指定的两个同一类型的对象实例间增量的内容序列化为指定格式文档，也可以将包含增量内容的文档反序列化并附加至原始的对象实例上 的工具。 
 
-### **Example**
+## **Example**
 
 让我们看一个如何使用XPatchLib在两个类型相同但内容不同的对象间，创建增量内容以及合并增量内容的例子。
 首先，我们定义了一个简单的CreditCard类：
@@ -36,7 +36,7 @@ CreditCard card2 = new CreditCard()
 };
 ```
 
-### **产生增量内容**
+## **产生增量内容**
 使用默认提供的 XML格式文档写入器 XmlTextWriter， 调用XPatchLib.Serializer对两个对象的增量内容进行序列化。
 
 ```cs
@@ -70,7 +70,7 @@ using (MemoryStream stream = new MemoryStream())
 ```
 通过以上代码，我们实现了两个同类型的对象实例间，增量的序列化。记录了两个对象之间增量的内容。
 
-### **合并增量内容**
+## **合并增量内容**
 下面将介绍如何使用默认提供的 XML格式文档读取器 XmlTextReader， 将已序列化的增量内容附加回原始对象实例，使其与修改后的对象实例形成两个值相同的对象实例。
 ```cs
 CreditCard card3 = null;
@@ -90,11 +90,11 @@ using (var fs = new FileStream(filename, FileMode.Open))
 
 
 
-### **Download**
+## **Download**
 [Download the latest version.](https://www.nuget.org/packages/XPatchLib/)
 
 
 
-### **Documentation**
+## **Documentation**
 
 [Read the documentation.](http://www.cnblogs.com/guqiangjs/p/4616442.html)
