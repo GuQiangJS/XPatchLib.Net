@@ -2,7 +2,9 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace XPatchLib
 {
@@ -29,6 +31,7 @@ namespace XPatchLib
         public XmlTextWriter(XmlWriter pWriter)
         {
             Guard.ArgumentNotNull(pWriter, "pWriter");
+            IgnoreAttributeType = typeof(XmlIgnoreAttribute);
             _writer = pWriter;
         }
 
@@ -193,6 +196,17 @@ namespace XPatchLib
                 if (value != null) _setting = value;
             }
         }
+
+        /// <summary>
+        ///     获取指示 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 进行序列化的公共字段或公共读/写属性值。
+        /// </summary>
+        /// <remarks>
+        ///     用于控制如何 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 序列化对象。
+        /// </remarks>
+        /// <value>
+        ///     <see cref="XmlIgnoreAttribute" />
+        /// </value>
+        public Type IgnoreAttributeType { get; internal set; }
 
         /// <summary>
         ///     执行与释放或重置非托管资源相关的应用程序定义的任务。

@@ -98,7 +98,7 @@ namespace XPatchLib
             Type t = null;
             if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, out t))
             {
-                GenericArgumentType = TypeExtendContainer.GetTypeExtend(t, pType);
+                GenericArgumentType = TypeExtendContainer.GetTypeExtend(t, Writer.IgnoreAttributeType, pType);
 
                 GenericArgumentTypePrimaryKeyAttribute = GenericArgumentType.PrimaryKeyAttr;
 

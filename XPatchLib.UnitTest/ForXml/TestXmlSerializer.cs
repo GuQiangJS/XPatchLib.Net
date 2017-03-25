@@ -70,6 +70,46 @@ namespace XPatchLib.UnitTest.ForXml
         //}
 
         [TestMethod]
+        [Description("测试Serializer中参数类型为 XmlTextReader 和 XmlTextWriter 的Divide和Combine方法。测试对象包含 XmlIgnoreAttribute")]
+        public void TestXmlSerializerStreamDivideAndCombineForIgnoreAttribute()
+        {
+            XmlIgnoreClass c1 = new XmlIgnoreClass() {A = "A", B = "B"};
+            XmlIgnoreClass c2 = new XmlIgnoreClass() { A = "C", B = "D" };
+            //因为属性A不参与序列化，所以应该还是原值
+            XmlIgnoreClass c3 = new XmlIgnoreClass() { A = "A", B = "D" };
+
+            string changedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
+<XmlIgnoreClass>
+  <B>D</B>
+</XmlIgnoreClass>";
+
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
+                {
+                    Serializer serializer = new Serializer(typeof(XmlIgnoreClass));
+                    serializer.Divide(writer, c1, c2);
+                    var context = UnitTest.TestHelper.StreamToString(stream);
+                    Assert.AreEqual(changedContext, context);
+                }
+            }
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
+                {
+                    Serializer serializer = new Serializer(typeof(XmlIgnoreClass));
+                    serializer.Divide(writer, c1, c2);
+                    stream.Position = 0;
+                    using (XmlTextReader reader = new XmlTextReader(XmlReader.Create(stream)))
+                    {
+                        var changedObj = serializer.Combine(reader, c1) as XmlIgnoreClass;
+                        Assert.AreEqual(c3, changedObj);
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
         [Description("测试Serializer中参数类型为 XmlTextReader 和 XmlTextWriter 的Divide和Combine方法")]
         public void TestXmlSerializerStreamDivideAndCombine()
         {

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
@@ -31,7 +32,12 @@ namespace XPatchLib
     {
         #region Private Fields
 
-        private readonly TypeExtend _type;
+        /// <summary>
+        /// 初始类型。
+        /// </summary>
+        private readonly Type _initialType;
+
+        private TypeExtend _type;
 
         #endregion Private Fields
 
@@ -44,7 +50,7 @@ namespace XPatchLib
         public Serializer(Type pType)
         {
             TypeExtendContainer.Clear();
-            _type = TypeExtendContainer.GetTypeExtend(pType, null);
+            _initialType = pType;
         }
 
         #endregion Public Constructors
@@ -109,6 +115,8 @@ namespace XPatchLib
         public object Combine(ITextReader pReader, object pOriValue, bool pOverride)
         {
             Guard.ArgumentNotNull(pReader, "pReader");
+            
+            InitType(_initialType, null);
 
             object cloneObjValue = null;
             //当原始值不为Null时，需要先对原始值进行克隆，否则做数据合并时会侵入到原始数据
@@ -124,15 +132,14 @@ namespace XPatchLib
                     {
                         stream = new MemoryStream();
                         var settings = new XmlWriterSettings();
-                        settings.ConformanceLevel = ConformanceLevel.Fragment;
-                        settings.Indent = true;
                         settings.Encoding = Encoding.UTF8;
                         settings.OmitXmlDeclaration = false;
                         using (var xmlWriter = XmlWriter.Create(stream, settings))
                         {
-                            using (ITextWriter writer = new XmlTextWriter(xmlWriter))
+                            using (XmlTextWriter writer = new XmlTextWriter(xmlWriter))
                             {
-                                new DivideCore(writer, _type).Divide(_type.TypeFriendlyName, null, pOriValue);
+                                writer.IgnoreAttributeType = null;
+                                new Serializer(_initialType).Divide(writer, null, pOriValue);
                             }
                         }
 #if DEBUG
@@ -144,7 +151,7 @@ namespace XPatchLib
                         {
                             using (ITextReader reader = new XmlTextReader(xmlReader))
                             {
-                                cloneObjValue = new CombineCore(_type).Combine(reader, null, _type.TypeFriendlyName);
+                                cloneObjValue = new Serializer(_initialType).Combine(reader, null, true);
                             }
                         }
                     }
@@ -187,6 +194,8 @@ namespace XPatchLib
         {
             Guard.ArgumentNotNull(pWriter, "pWriter");
 
+            InitType(_initialType, pWriter.IgnoreAttributeType);
+
             pWriter.WriteStartDocument();
             if (new DivideCore(pWriter, _type).Divide(_type.TypeFriendlyName,
                 pOriValue, pRevValue))
@@ -222,5 +231,10 @@ namespace XPatchLib
         }
 
         #endregion Public Methods
+
+        void InitType(Type pType,Type pIgnoreAttributeType)
+        {
+            _type = TypeExtendContainer.GetTypeExtend(pType, pIgnoreAttributeType, null);
+        }
     }
 }

@@ -253,5 +253,6 @@ namespace XPatchLib
         }
 
         public ISerializeSetting Setting { get; set; }
+        public Type IgnoreAttributeType { get; }
     }
 }

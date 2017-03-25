@@ -95,7 +95,7 @@ namespace XPatchLib
                 throw new ArgumentException("类型需要是字典类型");
             Type t = null;
             if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, out t))
-                GenericArgumentType = TypeExtendContainer.GetTypeExtend(t, pType);
+                GenericArgumentType = TypeExtendContainer.GetTypeExtend(t, Writer.IgnoreAttributeType, pType);
             else
                 throw new ArgumentOutOfRangeException(pType.OriType.FullName);
         }

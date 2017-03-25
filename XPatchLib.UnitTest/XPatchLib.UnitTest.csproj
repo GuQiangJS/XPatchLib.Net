@@ -54,10 +54,6 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml.Serialization" />
     <Reference Include="WindowsBase" />
-    <Reference Include="XPatchLib, Version=1.0.0.1, Culture=neutral, PublicKeyToken=ba48c1962d234d2a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Bin\XPatchLib.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -104,6 +100,7 @@
     <Compile Include="TestClass\NullableClass.cs" />
     <Compile Include="ForXml\TestDeserializeBasic.cs" />
     <Compile Include="ForXml\TestDictionary.cs" />
+    <Compile Include="TestClass\XmlIgnoreClass.cs" />
     <Compile Include="TestEnumWrapper.cs" />
     <Compile Include="ForXml\TestHelper.cs" />
     <Compile Include="ForXml\TestKeyValuePair.cs" />
@@ -121,6 +118,12 @@
     <Compile Include="ForXml\TestSerializeObject.cs" />
     <Compile Include="ForJson\TestJsonSerializer.cs" />
     <Compile Include="ForXml\TestXmlSerializer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XPatchLib\XPatchLib.csproj">
+      <Project>{5401dab2-5f83-4309-a9bf-5653caa1d878}</Project>
+      <Name>XPatchLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

@@ -69,7 +69,7 @@ namespace XPatchLib
                                 new EnumWrapper(memberType).TransFromString(pReader.ReadString()));
                         else
                             Type.SetMemberValue(pOriObject, member.Name,
-                                new CombineBasic(TypeExtendContainer.GetTypeExtend(memberType, Type)).Combine(pReader,
+                                new CombineBasic(TypeExtendContainer.GetTypeExtend(memberType, null, Type)).Combine(pReader,
                                     pOriObject, member.Name));
                     }
                     else if (member.IsIEnumerable)
@@ -78,7 +78,7 @@ namespace XPatchLib
                         Object memberObj = Type.GetMemberValue(pOriObject, member.Name);
 
                         memberObj =
-                            new CombineIEnumerable(TypeExtendContainer.GetTypeExtend(memberType, Type)).Combine(
+                            new CombineIEnumerable(TypeExtendContainer.GetTypeExtend(memberType, null, Type)).Combine(
                                 pReader, memberObj, member.Name);
                         Type.SetMemberValue(pOriObject, member.Name, memberObj);
                     }
@@ -89,9 +89,9 @@ namespace XPatchLib
                         Object memberObj = Type.GetMemberValue(pOriObject, member.Name);
                         //如果当前正在处理的属性的现有属性值实例为null时，先创建一个新的实例。
                         if (memberObj == null)
-                            memberObj = TypeExtendContainer.GetTypeExtend(memberType, Type).CreateInstance();
+                            memberObj = TypeExtendContainer.GetTypeExtend(memberType, null, Type).CreateInstance();
                         //调用CombineObject类型的Combine方法，对现有属性实例（或新创建的属性实例）进行增量数据合并。
-                        new CombineCore(TypeExtendContainer.GetTypeExtend(memberType, Type)).Combine(pReader, memberObj,
+                        new CombineCore(TypeExtendContainer.GetTypeExtend(memberType, null, Type)).Combine(pReader, memberObj,
                             member.Name);
                         //将数据合并后的实例赋值给当前正在处理的属性，替换原有的数据实例。实现数据合并功能。
 

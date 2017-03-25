@@ -114,7 +114,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (var reader = new XmlTextReader(xmlReader))
                 {
                     var newDic =
-                        new CombineCore(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                        new CombineCore(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
                                 ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
                             Dictionary<string, string>;
 
@@ -157,7 +157,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (var reader = new XmlTextReader(xmlReader))
                 {
                     var newDic =
-                        new CombineIDictionary(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                        new CombineIDictionary(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
                                 ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
                             Dictionary<string, string>;
 
@@ -264,7 +264,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (var reader = new XmlTextReader(xmlReader))
                 {
                     var newDic =
-                        new CombineCore(new TypeExtend(dic1.GetType())).Combine(reader, oldDic,
+                        new CombineCore(new TypeExtend(dic1.GetType(), null)).Combine(reader, oldDic,
                                 ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
                             Dictionary<string, string>;
 
@@ -298,7 +298,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (var reader = new XmlTextReader(xmlReader))
                 {
                     var newDic =
-                        new CombineIDictionary(new TypeExtend(dic1.GetType())).Combine(reader, oldDic,
+                        new CombineIDictionary(new TypeExtend(dic1.GetType(), null)).Combine(reader, oldDic,
                                 ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
                             Dictionary<string, string>;
 
@@ -385,7 +385,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (var reader = new XmlTextReader(xmlReader))
                 {
                     var newDic =
-                        new CombineCore(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                        new CombineCore(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
                                 ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
                             Dictionary<string, string>;
 
@@ -428,7 +428,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (var reader = new XmlTextReader(xmlReader))
                 {
                     var newDic =
-                        new CombineIDictionary(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                        new CombineIDictionary(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
                                 ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
                             Dictionary<string, string>;
 
@@ -531,7 +531,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (var reader = new XmlTextReader(xmlReader))
                 {
                     var newDic =
-                        new CombineCore(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                        new CombineCore(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
                                 ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
                             Dictionary<string, string>;
 
@@ -564,7 +564,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (var reader = new XmlTextReader(xmlReader))
                 {
                     var newDic =
-                        new CombineIDictionary(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                        new CombineIDictionary(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
                                 ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
                             Dictionary<string, string>;
 
@@ -657,7 +657,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (var reader = new XmlTextReader(xmlReader))
                 {
                     var newDic =
-                        new CombineCore(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                        new CombineCore(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
                                 ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
                             Dictionary<string, string>;
 
@@ -700,7 +700,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (var reader = new XmlTextReader(xmlReader))
                 {
                     var newDic =
-                        new CombineIDictionary(new TypeExtend(dic1.GetType())).Combine(reader, dic1,
+                        new CombineIDictionary(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
                                 ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
                             Dictionary<string, string>;
 
@@ -807,7 +807,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
-                        new DivideCore(writer, new TypeExtend(dic1.GetType())).Divide(
+                        new DivideCore(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide(
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;
@@ -836,7 +836,8 @@ namespace XPatchLib.UnitTest.ForXml
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
-                        new DivideIDictionary(writer, new TypeExtend(dic1.GetType())).Divide(
+                        new DivideIDictionary(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide
+                        (
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;
@@ -860,7 +861,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
-                        new DivideCore(writer, new TypeExtend(dic1.GetType())).Divide(
+                        new DivideCore(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide(
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), null, dic1));
                 }
                 stream.Position = 0;
@@ -883,7 +884,8 @@ namespace XPatchLib.UnitTest.ForXml
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
-                        new DivideIDictionary(writer, new TypeExtend(dic1.GetType())).Divide(
+                        new DivideIDictionary(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide
+                        (
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), null, dic1));
                 }
                 stream.Position = 0;
@@ -913,7 +915,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
-                        new DivideCore(writer, new TypeExtend(dic1.GetType())).Divide(
+                        new DivideCore(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide(
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;
@@ -943,7 +945,8 @@ namespace XPatchLib.UnitTest.ForXml
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
-                        new DivideIDictionary(writer, new TypeExtend(dic1.GetType())).Divide(
+                        new DivideIDictionary(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide
+                        (
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;
@@ -971,7 +974,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
-                        new DivideCore(writer, new TypeExtend(dic1.GetType())).Divide(
+                        new DivideCore(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide(
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;
@@ -1000,7 +1003,8 @@ namespace XPatchLib.UnitTest.ForXml
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
-                        new DivideIDictionary(writer, new TypeExtend(dic1.GetType())).Divide(
+                        new DivideIDictionary(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide
+                        (
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;
@@ -1030,7 +1034,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
-                        new DivideCore(writer, new TypeExtend(dic1.GetType())).Divide(
+                        new DivideCore(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide(
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;
@@ -1061,7 +1065,8 @@ namespace XPatchLib.UnitTest.ForXml
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     Assert.IsTrue(
-                        new DivideIDictionary(writer, new TypeExtend(dic1.GetType())).Divide(
+                        new DivideIDictionary(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide
+                        (
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;

@@ -8,8 +8,18 @@ namespace XPatchLib
     /// <summary>
     ///     表示提供快速、非缓存、只进方法的写入器，该方法生成包含指定数据结构的流或文件。
     /// </summary>
+    /// <seealso cref="XmlTextWriter"/>
     public interface ITextWriter : IDisposable
     {
+        /// <summary>
+        ///     获取指示 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 进行序列化的公共字段或公共读/写属性值。
+        /// </summary>
+        /// <remarks>
+        ///     用于控制如何 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 序列化对象。
+        /// </remarks>
+        /// <seealso cref="XmlTextWriter.IgnoreAttributeType"/>
+        Type IgnoreAttributeType { get; }
+
         /// <summary>
         ///     获取或设置写入器设置。
         /// </summary>

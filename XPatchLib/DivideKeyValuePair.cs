@@ -57,8 +57,8 @@ namespace XPatchLib
             DivideAttachment pAttach = null)
         {
             //获取KeyValuePair类型对象的Key值与Value值的类型
-            var keyType = TypeExtendContainer.GetTypeExtend(Type.KeyArgumentType, Type);
-            var valueType = TypeExtendContainer.GetTypeExtend(Type.KeyArgumentType, Type);
+            var keyType = TypeExtendContainer.GetTypeExtend(Type.KeyArgumentType, Writer.IgnoreAttributeType, Type);
+            var valueType = TypeExtendContainer.GetTypeExtend(Type.KeyArgumentType, Writer.IgnoreAttributeType, Type);
 
             //分别获取原始值与修改后的值的Key值和Value值
             object oriKeyObj = null;

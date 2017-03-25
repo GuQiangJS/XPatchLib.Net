@@ -24,20 +24,20 @@ namespace XPatchLib
         }
 
         /// <summary>
-        ///     获取一个类型上需要序列化的属性或字段集合。
+        /// 获取一个类型上需要序列化的属性或字段集合。
         /// </summary>
-        /// <param name="pObjType">
-        /// </param>
-        /// <returns>
-        /// </returns>
-        internal static MemberWrapper[] GetFieldsToBeSerialized(Type pObjType)
+        /// <param name="pObjType">Type of the p object.</param>
+        /// <param name="pIngoreAttributeType">不序列化的特性类型定义。</param>
+        /// <returns></returns>
+        internal static MemberWrapper[] GetFieldsToBeSerialized(Type pObjType,Type pIngoreAttributeType)
         {
             Queue<MemberWrapper> r = new Queue<MemberWrapper>();
             foreach (MemberInfo memberInfo in pObjType.GetMembers(BindingFlags.Instance | BindingFlags.Public))
                 if (memberInfo.MemberType == MemberTypes.Property || memberInfo.MemberType == MemberTypes.Field)
                 {
                     MemberWrapper wrapper = new MemberWrapper(memberInfo);
-                    if (wrapper.XmlIgnore == null && wrapper.HasPublicGetter && wrapper.HasPublicSetter)
+                    if (wrapper.GetIgnore(pIngoreAttributeType) == null && wrapper.HasPublicGetter &&
+                        wrapper.HasPublicSetter)
                         r.Enqueue(wrapper);
                 }
             return r.OrderBy(x => x.Name).ToArray();
@@ -269,7 +269,7 @@ namespace XPatchLib
 
             foreach (KeyValuePair<Type, string[]> kv in pTypes)
             {
-                TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(kv.Key);
+                TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(kv.Key, null);
                 typeExtend.UpdatePrimaryKeyAttributes(new PrimaryKeyAttribute(kv.Value));
             }
         }

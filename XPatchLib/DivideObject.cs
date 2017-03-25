@@ -59,16 +59,16 @@ namespace XPatchLib
                         memberType = typeof(string);
                     }
 
-                    divide = new DivideBasic(Writer, TypeExtendContainer.GetTypeExtend(memberType, Type));
+                    divide = new DivideBasic(Writer, TypeExtendContainer.GetTypeExtend(memberType, Writer.IgnoreAttributeType, Type));
                 }
                 //集合类型
                 else if (member.IsIEnumerable)
                 {
-                    divide = new DivideIEnumerable(Writer, TypeExtendContainer.GetTypeExtend(memberType, Type));
+                    divide = new DivideIEnumerable(Writer, TypeExtendContainer.GetTypeExtend(memberType, Writer.IgnoreAttributeType, Type));
                 }
                 else
                 {
-                    divide = new DivideCore(Writer, TypeExtendContainer.GetTypeExtend(memberType, Type));
+                    divide = new DivideCore(Writer, TypeExtendContainer.GetTypeExtend(memberType, Writer.IgnoreAttributeType, Type));
                 }
 
                 if (pAttach == null)

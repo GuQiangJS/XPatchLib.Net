@@ -43,8 +43,6 @@ namespace XPatchLib
 
             MemberInfo = pMemberInfo;
 
-            XmlIgnore = MemberInfo.GetCustomAttribute<XmlIgnoreAttribute>();
-
             Name = MemberInfo.Name;
 
             InitType();
@@ -147,9 +145,14 @@ namespace XPatchLib
         internal Type Type { get; private set; }
 
         /// <summary>
-        ///     获取当前成员的 <see cref="System.Xml.Serialization.XmlIgnoreAttribute" /> 特性标记。
+        ///     获取当前成员的 <b>跳过序列化</b> 特性标记。
         /// </summary>
-        internal XmlIgnoreAttribute XmlIgnore { get; private set; }
+        internal Attribute GetIgnore(Type pIngoreAttributeType)
+        {
+            if (pIngoreAttributeType == null)
+                return null;
+            return MemberInfo.GetCustomAttribute(pIngoreAttributeType);
+        }
 
         #region Private Methods
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XPatchLib.UnitTest.TestClass;
 
@@ -45,13 +46,23 @@ namespace XPatchLib.UnitTest
             bool errorCatched = false;
             try
             {
-                new Serializer(type);
+                Serializer serializer = new Serializer(type);
+                using (var stream = new MemoryStream())
+                {
+                    using (var writer = ForXml.TestHelper.CreateWriter(stream, ForXml.TestHelper.DocumentSetting))
+                    {
+                        ErrorPrimaryKeyDefineClass c1 = new ErrorPrimaryKeyDefineClass();
+                        ErrorPrimaryKeyDefineClass c2 = new ErrorPrimaryKeyDefineClass();
+                        serializer.Divide(writer, c1, c2);
+                    }
+                }
             }
             catch (PrimaryKeyException ex)
             {
                 Assert.AreEqual(ex.ErrorType, type);
                 Assert.AreEqual(ex.PrimaryKeyName, "Author");
-                string msg = string.Format(CultureInfo.CurrentCulture, Properties.Resources.Exp_String_PrimaryKey, type.FullName,
+                string msg = string.Format(CultureInfo.CurrentCulture, Properties.Resources.Exp_String_PrimaryKey,
+                    type.FullName,
                     "Author");
                 Assert.AreEqual(ex.Message, msg);
                 errorCatched = true;

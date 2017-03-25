@@ -21,14 +21,14 @@ namespace XPatchLib
             }
         }
 
-        internal static TypeExtend GetTypeExtend(Type pType, TypeExtend pParentType = null)
+        internal static TypeExtend GetTypeExtend(Type pType, Type pIgnoreAttributeType, TypeExtend pParentType = null)
         {
             TypeExtend result = null;
             lock (_innerDic)
             {
                 if (!_innerDic.TryGetValue(pType.GetHashCode(), out result))
                 {
-                    result = new TypeExtend(pType, pParentType);
+                    result = new TypeExtend(pType, pIgnoreAttributeType, pParentType);
                     lock (_innerDic)
                     {
                         _innerDic.Add(pType.GetHashCode(), result);
@@ -50,7 +50,7 @@ namespace XPatchLib
 
         private readonly Dictionary<String, Action<Object, Object>> SetValueFuncs;
 
-        internal TypeExtend(Type pType, TypeExtend pParentType = null)
+        internal TypeExtend(Type pType,Type pIgnoreAttributeType, TypeExtend pParentType = null)
         {
             ParentType = pParentType;
 
@@ -66,7 +66,7 @@ namespace XPatchLib
             IsICollection = ReflectionUtils.IsICollection(pType);
 
             IsIEnumerable = ReflectionUtils.IsIEnumerable(pType);
-            FieldsToBeSerialized = ReflectionUtils.GetFieldsToBeSerialized(pType);
+            FieldsToBeSerialized = ReflectionUtils.GetFieldsToBeSerialized(pType, pIgnoreAttributeType);
             DefaultValue = ReflectionUtils.GetDefaultValue(pType);
             IsArray = ReflectionUtils.IsArray(pType);
             TypeCode = Type.GetTypeCode(pType);

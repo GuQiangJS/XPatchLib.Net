@@ -129,7 +129,8 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
-                    DivideObject ser = new DivideObject(writer, new TypeExtend(typeof(MultilevelClass)));
+                    DivideObject ser = new DivideObject(writer,
+                        new TypeExtend(typeof(MultilevelClass), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(typeof(MultilevelClass).Name, MultilevelClass.GetSampleInstance(), c));
                 }
                 stream.Position = 0;
@@ -144,7 +145,7 @@ namespace XPatchLib.UnitTest.ForXml
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
                     {
-                        CombineObject dSer = new CombineObject(new TypeExtend(typeof(MultilevelClass)));
+                        CombineObject dSer = new CombineObject(new TypeExtend(typeof(MultilevelClass), null));
                         MultilevelClass newItem =
                             dSer.Combine(reader, MultilevelClass.GetSampleInstance(), typeof(MultilevelClass).Name) as
                                 MultilevelClass;
@@ -179,7 +180,8 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
-                    DivideObject ser = new DivideObject(writer, new TypeExtend(typeof(MultilevelClass)));
+                    DivideObject ser = new DivideObject(writer,
+                        new TypeExtend(typeof(MultilevelClass), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(typeof(MultilevelClass).Name, MultilevelClass.GetSampleInstance(), c));
                 }
                 stream.Position = 0;
@@ -192,7 +194,7 @@ namespace XPatchLib.UnitTest.ForXml
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
                     {
-                        CombineObject dSer = new CombineObject(new TypeExtend(typeof(MultilevelClass)));
+                        CombineObject dSer = new CombineObject(new TypeExtend(typeof(MultilevelClass), null));
                         MultilevelClass newItem =
                             dSer.Combine(reader, MultilevelClass.GetSampleInstance(), typeof(MultilevelClass).Name) as
                                 MultilevelClass;
@@ -228,7 +230,8 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
-                    DivideObject ser = new DivideObject(writer, new TypeExtend(typeof(MultilevelClass)));
+                    DivideObject ser = new DivideObject(writer,
+                        new TypeExtend(typeof(MultilevelClass), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(typeof(MultilevelClass).Name, null, MultilevelClass.GetSampleInstance()));
                 }
                 stream.Position = 0;
@@ -241,7 +244,7 @@ namespace XPatchLib.UnitTest.ForXml
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
                     {
-                        CombineObject dSer = new CombineObject(new TypeExtend(typeof(MultilevelClass)));
+                        CombineObject dSer = new CombineObject(new TypeExtend(typeof(MultilevelClass), null));
                         MultilevelClass newItem =
                             dSer.Combine(reader, null, typeof(MultilevelClass).Name) as MultilevelClass;
 
@@ -271,7 +274,8 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
-                    DivideObject ser = new DivideObject(writer, new TypeExtend(typeof(MultilevelClass)));
+                    DivideObject ser = new DivideObject(writer,
+                        new TypeExtend(typeof(MultilevelClass), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(typeof(MultilevelClass).Name, MultilevelClass.GetSampleInstance(), c));
                 }
                 stream.Position = 0;
@@ -285,7 +289,7 @@ namespace XPatchLib.UnitTest.ForXml
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
                     {
                         //Assert.Fail("缺少分序列化部分。");
-                        CombineObject com = new CombineObject(new TypeExtend(typeof(MultilevelClass)));
+                        CombineObject com = new CombineObject(new TypeExtend(typeof(MultilevelClass), null));
                         MultilevelClass combineObj =
                             com.Combine(reader, MultilevelClass.GetSampleInstance(), typeof(MultilevelClass).Name) as
                                 MultilevelClass;
@@ -312,12 +316,13 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
-                    DivideObject ser = new DivideObject(writer, new TypeExtend(typeof(NullableClass)));
+                    DivideObject ser = new DivideObject(writer,
+                        new TypeExtend(typeof(NullableClass), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(NullableClass)), b1, b2));
                 }
                 stream.Position = 0;
                 XElement ele = XElement.Load(stream);
-                CombineObject dser = new CombineObject(new TypeExtend(typeof(NullableClass)));
+                CombineObject dser = new CombineObject(new TypeExtend(typeof(NullableClass), null));
 
                 Assert.IsNotNull(ele);
                 Assert.AreEqual(result, ele.ToString());
@@ -352,13 +357,14 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
-                    DivideObject ser = new DivideObject(writer, new TypeExtend(typeof(NullableClass)));
+                    DivideObject ser = new DivideObject(writer,
+                        new TypeExtend(typeof(NullableClass), writer.IgnoreAttributeType));
                     //原始对象（null）与更新对象产生增量内容
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(NullableClass)), null, b1));
                 }
                 stream.Position = 0;
                 XElement ele = XElement.Load(stream);
-                CombineObject dser = new CombineObject(new TypeExtend(typeof(NullableClass)));
+                CombineObject dser = new CombineObject(new TypeExtend(typeof(NullableClass), null));
 
                 Assert.IsNotNull(ele);
                 Assert.AreEqual(result, ele.ToString());
@@ -400,7 +406,8 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
-                    DivideObject ser = new DivideObject(writer, new TypeExtend(typeof(BookClass)));
+                    DivideObject ser = new DivideObject(writer,
+                        new TypeExtend(typeof(BookClass), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(BookClass)), null, b1));
                 }
                 stream.Position = 0;
@@ -432,7 +439,8 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
-                    DivideObject ser = new DivideObject(writer, new TypeExtend(typeof(BookClass)));
+                    DivideObject ser = new DivideObject(writer,
+                        new TypeExtend(typeof(BookClass), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(BookClass)), b1, b2));
                 }
                 stream.Position = 0;
@@ -460,10 +468,11 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (MemoryStream stream = new MemoryStream())
             {
-                CombineObject dser = new CombineObject(new TypeExtend(typeof(BookClassWithDecimalPrice)));
+                CombineObject dser = new CombineObject(new TypeExtend(typeof(BookClassWithDecimalPrice), null));
                 using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
-                    DivideObject ser = new DivideObject(writer, new TypeExtend(typeof(BookClassWithDecimalPrice)));
+                    DivideObject ser = new DivideObject(writer,
+                        new TypeExtend(typeof(BookClassWithDecimalPrice), writer.IgnoreAttributeType));
                     //原始对象（null）与更新对象产生增量内容
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(BookClassWithDecimalPrice)),
                         null, b1));
@@ -506,12 +515,13 @@ namespace XPatchLib.UnitTest.ForXml
   <Name>{0}</Name>
 </AuthorStruct>", b1.Name, b1.Comments);
 
-            CombineObject dser = new CombineObject(new TypeExtend(typeof(AuthorStruct)));
+            CombineObject dser = new CombineObject(new TypeExtend(typeof(AuthorStruct), null));
             using (MemoryStream stream = new MemoryStream())
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
-                    DivideObject ser = new DivideObject(writer, new TypeExtend(typeof(AuthorStruct)));
+                    DivideObject ser = new DivideObject(writer,
+                        new TypeExtend(typeof(AuthorStruct), writer.IgnoreAttributeType));
                     //原始对象（null）与更新对象产生增量内容
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(AuthorStruct)), null, b1));
                 }
@@ -543,7 +553,7 @@ namespace XPatchLib.UnitTest.ForXml
         public void SerializeSimpleType_OriValueIsNotNull()
         {
             AuthorClass b1 = AuthorClass.GetSampleInstance();
-            CombineObject dser = new CombineObject(new TypeExtend(typeof(AuthorClass)));
+            CombineObject dser = new CombineObject(new TypeExtend(typeof(AuthorClass), null));
 
             AuthorClass b2 = AuthorClass.GetSampleInstance();
             b2.Name = "西蒙·蒙蒂菲奥里 (Simon Sebag Montefiore)";
@@ -558,7 +568,8 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
-                    DivideObject ser = new DivideObject(writer, new TypeExtend(typeof(AuthorClass)));
+                    DivideObject ser = new DivideObject(writer,
+                        new TypeExtend(typeof(AuthorClass), writer.IgnoreAttributeType));
                     //原始对象与更新对象产生增量内容
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(AuthorClass)), b1, b2));
                 }
@@ -598,12 +609,13 @@ namespace XPatchLib.UnitTest.ForXml
   <Name>{0}</Name>
 </AuthorClass>", b1.Name, b1.Comments);
 
-            CombineObject dser = new CombineObject(new TypeExtend(typeof(AuthorClass)));
+            CombineObject dser = new CombineObject(new TypeExtend(typeof(AuthorClass), null));
             using (MemoryStream stream = new MemoryStream())
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
-                    DivideObject ser = new DivideObject(writer, new TypeExtend(typeof(AuthorClass)));
+                    DivideObject ser = new DivideObject(writer,
+                        new TypeExtend(typeof(AuthorClass), writer.IgnoreAttributeType));
 
                     //原始对象（null）与更新对象产生增量内容
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(AuthorClass)), null, b1));
@@ -635,14 +647,15 @@ namespace XPatchLib.UnitTest.ForXml
         {
             AuthorClass b1 = AuthorClass.GetSampleInstance();
 
-            CombineObject dser = new CombineObject(new TypeExtend(typeof(AuthorClass)));
+            CombineObject dser = new CombineObject(new TypeExtend(typeof(AuthorClass), null));
             string result = @"<AuthorClass Action=""SetNull"" />";
 
             using (MemoryStream stream = new MemoryStream())
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                 {
-                    DivideObject ser = new DivideObject(writer, new TypeExtend(typeof(AuthorClass)));
+                    DivideObject ser = new DivideObject(writer,
+                        new TypeExtend(typeof(AuthorClass), writer.IgnoreAttributeType));
 
                     //原始对象与更新对象产生增量内容
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(AuthorClass)), b1, null));
@@ -676,7 +689,7 @@ namespace XPatchLib.UnitTest.ForXml
         {
             try
             {
-                new CombineObject(new TypeExtend(typeof(ErrorPrimaryKeyDefineClass)));
+                new CombineObject(new TypeExtend(typeof(ErrorPrimaryKeyDefineClass), null));
             }
             catch (PrimaryKeyException ex)
             {
@@ -720,7 +733,8 @@ namespace XPatchLib.UnitTest.ForXml
                 {
                     using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
                     {
-                        new DivideObject(writer, new TypeExtend(typeof(ErrorPrimaryKeyDefineClass)));
+                        new DivideObject(writer,
+                            new TypeExtend(typeof(ErrorPrimaryKeyDefineClass), writer.IgnoreAttributeType));
                     }
                 }
             }
@@ -751,7 +765,10 @@ namespace XPatchLib.UnitTest.ForXml
                             string changedContext = string.Empty;
                             using (MemoryStream stream = new MemoryStream())
                             {
-                                using (var writer = TestHelper.CreateWriter(stream))
+                                var settings = new XmlWriterSettings();
+                                settings.Encoding = Encoding.UTF8;
+                                settings.OmitXmlDeclaration = false;
+                                using (var writer = TestHelper.CreateWriter(stream, settings))
                                 {
                                     serializer.Divide(writer, null, BookClass.GetSampleInstance());
 

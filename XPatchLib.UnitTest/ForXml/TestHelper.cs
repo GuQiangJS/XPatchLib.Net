@@ -72,7 +72,7 @@ namespace XPatchLib.UnitTest.ForXml
                 {
                     writer.Setting.Mode = pMode;
                     Assert.IsTrue(
-                        new DivideCore(writer, new TypeExtend(pType)).Divide(
+                        new DivideCore(writer, new TypeExtend(pType, writer.IgnoreAttributeType)).Divide(
                             ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj));
                 }
                 stream.Position = 0;
@@ -83,7 +83,7 @@ namespace XPatchLib.UnitTest.ForXml
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
                     {
                         reader.Setting.Mode = pMode;
-                        var combinedObj = new CombineCore(new TypeExtend(pType)).Combine(reader, pOriObj,
+                        var combinedObj = new CombineCore(new TypeExtend(pType, null)).Combine(reader, pOriObj,
                             ReflectionUtils.GetTypeFriendlyName(pType));
 
                         Trace.Write(pChangedContext);
@@ -112,7 +112,7 @@ namespace XPatchLib.UnitTest.ForXml
                 {
                     writer.Setting.Mode = pMode;
                     Assert.IsTrue(
-                        new DivideCore(writer, new TypeExtend(pType)).Divide(
+                        new DivideCore(writer, new TypeExtend(pType, writer.IgnoreAttributeType)).Divide(
                             ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj));
                 }
                 stream.Position = 0;
@@ -124,7 +124,7 @@ namespace XPatchLib.UnitTest.ForXml
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
                     {
                         reader.Setting.Mode = pMode;
-                        var combinedObj = new CombineCore(new TypeExtend(pType)).Combine(reader, pOriObj,
+                        var combinedObj = new CombineCore(new TypeExtend(pType, null)).Combine(reader, pOriObj,
                             ReflectionUtils.GetTypeFriendlyName(pType));
 
                         Trace.Write(pChangedContext);
