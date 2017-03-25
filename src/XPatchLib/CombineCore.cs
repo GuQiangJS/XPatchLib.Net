@@ -28,15 +28,7 @@ namespace XPatchLib
             if (pOriObject == null)
                 pOriObject = Type.CreateInstance();
 
-            if (Type.IsBasicType)
-                return new CombineBasic(Type).Combine(pReader, pOriObject, pName);
-            if (Type.IsIDictionary)
-                return new CombineIDictionary(Type).Combine(pReader, pOriObject, pName);
-            if (Type.IsIEnumerable)
-                return new CombineIEnumerable(Type).Combine(pReader, pOriObject, pName);
-            if (Type.IsGenericType && Type.OriType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
-                return new CombineKeyValuePair(Type).Combine(pReader, pOriObject, pName);
-            return new CombineObject(Type).Combine(pReader, pOriObject, pName);
+            return CombineInstanceContainer.GetCombineInstance(Type).Combine(pReader, pOriObject, pName);
         }
 
         #region Internal Constructors

@@ -11,7 +11,7 @@ namespace XPatchLib
     /// <summary>
     ///     增量内容文档合并基础类。
     /// </summary>
-    internal abstract class CombineBase
+    internal abstract class CombineBase:ICombineBase
     {
         /// <summary>
         ///     根据增量内容创建基础类型实例。
@@ -23,7 +23,7 @@ namespace XPatchLib
         /// <exception cref="ArgumentNullException">当参数 <paramref name="pReader" /> is null 时。</exception>
         /// <exception cref="ArgumentNullException">当参数 <paramref name="pReader" /> is null 时。</exception>
         /// <exception cref="ArgumentException">当参数 <paramref name="pName" /> 长度为 0 时。</exception>
-        internal virtual object Combine(ITextReader pReader, Object pOriObject, string pName)
+        public virtual object Combine(ITextReader pReader, Object pOriObject, string pName)
         {
             Guard.ArgumentNotNull(pReader, "pReader");
             Guard.ArgumentNotNullOrEmpty(pName, "pName");

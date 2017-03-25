@@ -55,7 +55,7 @@ namespace XPatchLib
             CombineAttribute attrs = AnlysisAttributes(pReader, pName);
 
             //生成增量内容实例
-            object item = new CombineKeyValuePair(GenericArgumentType).Combine(pReader, null, pName);
+            object item = CombineInstanceContainer.GetCombineInstance(GenericArgumentType).Combine(pReader, null, pName);
 
             //增量内容实例Key值
             object key = GenericArgumentType.GetMemberValue(item, ConstValue.KEY);

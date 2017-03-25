@@ -54,9 +54,9 @@ namespace XPatchLib
                     pReader.NodeType == NodeType.EndElement)
                     break;
                 if (pReader.Name.Equals(ConstValue.KEY) && pReader.NodeType == NodeType.Element)
-                    revKey = new CombineCore(keyType).Combine(pReader, null, pReader.Name);
+                    revKey = CombineInstanceContainer.GetCombineInstance(keyType).Combine(pReader, null, pReader.Name);
                 if (pReader.Name.Equals(ConstValue.VALUE) && pReader.NodeType == NodeType.Element)
-                    revValue = new CombineCore(valueType).Combine(pReader, null, pReader.Name);
+                    revValue = CombineInstanceContainer.GetCombineInstance(valueType).Combine(pReader, null, pReader.Name);
                 pReader.Read();
             }
 

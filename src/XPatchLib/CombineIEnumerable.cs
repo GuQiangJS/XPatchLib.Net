@@ -100,7 +100,7 @@ namespace XPatchLib
             //原始集合对象的类型。
             var listType = pOriObject.GetType();
             //创建集合元素实例,根据增量内容内容向集合元素实例赋值。
-            var obj = new CombineCore(GenericArgumentType).Combine(pReader, null, pName);
+            var obj = CombineInstanceContainer.GetCombineInstance(GenericArgumentType).Combine(pReader, null, pName);
 
             if (Type.IsArray)
             {
@@ -215,7 +215,7 @@ namespace XPatchLib
                     var obj = ((Array) pOriObject).GetValue(pIndex);
 
                     //创建集合元素实例,根据增量内容内容向集合元素实例赋值。
-                    obj = new CombineCore(GenericArgumentType).Combine(pReader, obj, pName);
+                    obj = CombineInstanceContainer.GetCombineInstance(GenericArgumentType).Combine(pReader, obj, pName);
 
                     ((Array) pOriObject).SetValue(obj, pIndex);
                 }
@@ -226,7 +226,7 @@ namespace XPatchLib
                         new object[] {pIndex}, CultureInfo.InvariantCulture);
 
                     //创建集合元素实例,根据增量内容内容向集合元素实例赋值。
-                    obj = new CombineCore(GenericArgumentType).Combine(pReader, obj, pName);
+                    obj = CombineInstanceContainer.GetCombineInstance(GenericArgumentType).Combine(pReader, obj, pName);
 
                     Type.InvokeMember(ConstValue.OPERATOR_SET, BindingFlags.InvokeMethod, null, pOriObject,
                         new[] {pIndex, obj}, CultureInfo.InvariantCulture);

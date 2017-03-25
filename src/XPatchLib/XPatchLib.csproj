@@ -74,6 +74,7 @@
     <Compile Include="CombineCore.cs" />
     <Compile Include="CombineIDictionary.cs" />
     <Compile Include="CombineIEnumerable.cs" />
+    <Compile Include="CombineInstanceContainer.cs" />
     <Compile Include="CombineKeyValuePair.cs" />
     <Compile Include="CombineObject.cs" />
     <Compile Include="ConstValue.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Formatting.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Guard.cs" />
+    <Compile Include="ICombineBase.cs" />
     <Compile Include="IDivide.cs" />
     <Compile Include="IEnumerableHelper.cs" />
     <Compile Include="IEnumeratorHelper.cs" />
@@ -115,6 +117,7 @@
     <Compile Include="ResourceHelper.cs" />
     <Compile Include="TypeExtend.cs" />
     <Compile Include="JsonTextWriter.cs" />
+    <Compile Include="TypeExtendContainer.cs" />
     <Compile Include="XmlSerializeSetting.cs" />
     <Compile Include="XmlTextReader.cs" />
     <Compile Include="XmlTextWriter.cs" />

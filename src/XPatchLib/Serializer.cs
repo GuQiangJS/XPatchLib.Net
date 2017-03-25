@@ -165,7 +165,7 @@ namespace XPatchLib
                 cloneObjValue = _type.CreateInstance();
 
             //var ele = XElement.Load(pReader, LoadOptions.None);
-            return new CombineCore(_type).Combine(pReader, cloneObjValue, _type.TypeFriendlyName);
+            return CombineInstanceContainer.GetCombineInstance(_type).Combine(pReader, cloneObjValue, _type.TypeFriendlyName);
         }
 
         /// <summary>

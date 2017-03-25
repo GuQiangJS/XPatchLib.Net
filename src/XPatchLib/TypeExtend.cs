@@ -9,36 +9,6 @@ using System.Reflection;
 
 namespace XPatchLib
 {
-    internal static class TypeExtendContainer
-    {
-        private static readonly Dictionary<int, TypeExtend> _innerDic = new Dictionary<int, TypeExtend>();
-
-        internal static void Clear()
-        {
-            lock (_innerDic)
-            {
-                _innerDic.Clear();
-            }
-        }
-
-        internal static TypeExtend GetTypeExtend(Type pType, Type pIgnoreAttributeType, TypeExtend pParentType = null)
-        {
-            TypeExtend result = null;
-            lock (_innerDic)
-            {
-                if (!_innerDic.TryGetValue(pType.GetHashCode(), out result))
-                {
-                    result = new TypeExtend(pType, pIgnoreAttributeType, pParentType);
-                    lock (_innerDic)
-                    {
-                        _innerDic.Add(pType.GetHashCode(), result);
-                    }
-                }
-            }
-            return result;
-        }
-    }
-
     /// <summary>
     ///     Type扩展
     /// </summary>
