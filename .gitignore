@@ -255,3 +255,6 @@ paket-files/
 /HelperBuilder/CHMBuilder/WorkingPath
 /HelperBuilder/WebBuilder/WorkingPath
 /HelperBuilder/MarkdownBuilder/WorkingPath
+/src/HelperBuilder/CHMBuilder/WorkingPath
+/src/HelperBuilder/MarkdownBuilder/WorkingPath
+/src/HelperBuilder/WebBuilder/WorkingPath

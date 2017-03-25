@@ -133,8 +133,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)Bin\$(TargetFileName)"
-echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)XPatchLib.Output\$(ConfigurationName)\$(TargetFileName)"
-echo f | xcopy /D /F /Y "$(TargetDir)$(TargetName).xml" "$(SolutionDir)XPatchLib.Output\$(ConfigurationName)\$(TargetName).xml"</PostBuildEvent>
+echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\$(TargetFileName)"
+echo f | xcopy /D /F /Y "$(TargetDir)$(TargetName).xml" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\$(TargetName).xml"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
