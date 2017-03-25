@@ -90,11 +90,11 @@ using (var fs = new FileStream(filename, FileMode.Open))
 
 
 
-## **Download**
-[Download the latest version.](https://www.nuget.org/packages/XPatchLib/)
+## **下载**
+[从Nuget上下载最新版本](https://www.nuget.org/packages/XPatchLib/)
 
 
 
-## **Documentation**
+## **文档**
 
-[Read the documentation.](http://www.cnblogs.com/guqiangjs/p/4616442.html)
+[在线帮助](https://guqiangjs.github.io/XPatchLib.Net)
