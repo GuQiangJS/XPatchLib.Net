@@ -1,0 +1,94 @@
+﻿<html><head><meta http-equiv="X-UA-Compatible" content="IE=edge" /><link rel="shortcut icon" /><link rel="stylesheet" type="text/css" /><link rel="stylesheet" type="text/css" /><script type="text/javascript"> </script><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title /><meta name="Language" content="zh-cn" /><meta name="System.Keywords" /><meta name="System.Keywords" /><meta name="Microsoft.Help.F1" content="XPatchLib.Serializer.Divide" /><meta name="Microsoft.Help.Id" content="M:XPatchLib.Serializer.Divide(XPatchLib.ITextWriter,System.Object,System.Object)" /><meta name="Description" content="使用指定的 序列化指定的 原始对象 与 更新对象 间的增量内容。" /><meta name="Microsoft.Help.ContentType" content="Reference" /><meta name="BrandingAware" content="true" /><meta name="container" content="XPatchLib" /><meta name="file" content="08160979-d0b7-0d98-dc68-ad063bbf89d3" /><meta name="guid" content="08160979-d0b7-0d98-dc68-ad063bbf89d3" /><link type="text/css" rel="stylesheet" /><script type="text/javascript"> </script><link rel="stylesheet" type="text/css" href="../styles/branding-Website.css" /><script type="text/javascript" src="../scripts/jquery-1.11.0.min.js"></script><script type="text/javascript" src="../scripts/branding-Website.js"></script><script type="text/javascript" src="../scripts/clipboard.min.js"></script></head><body onload="OnLoad('cs')"><input type="hidden" id="userDataCache" class="userDataStyle" /><div class="pageHeader" id="PageHeader">XPatchLib Library<form id="SearchForm" method="get" action="#" onsubmit="javascript:TransferToSearchPage(); return false;"><input id="SearchTextBox" type="text" maxlength="200" /><button id="SearchButton" type="submit"></button></form></div><div class="pageBody"><div class="leftNav" id="leftNav"><div id="tocNav"><div class="toclevel0" data-toclevel="0"><a class="tocCollapsed" onclick="javascript: Toggle(this);" href="#!" /><a data-tochassubtree="true" href="683748d6-c9bf-2af3-65d3-7ad60286cfbe.htm" title="XPatchLib Library" tocid="roottoc">XPatchLib Library</a></div><div class="toclevel0" data-toclevel="0"><a class="tocCollapsed" onclick="javascript: Toggle(this);" href="#!" /><a data-tochassubtree="true" href="683748d6-c9bf-2af3-65d3-7ad60286cfbe.htm" title="" tocid="683748d6-c9bf-2af3-65d3-7ad60286cfbe"></a></div><div class="toclevel0" data-toclevel="0"><a class="tocCollapsed" onclick="javascript: Toggle(this);" href="#!" /><a data-tochassubtree="true" href="7ed2eca1-d11b-c466-dc5b-cd04008966ee.htm" title="" tocid="7ed2eca1-d11b-c466-dc5b-cd04008966ee"></a></div><div class="toclevel1" data-toclevel="1" data-childrenloaded="true"><a class="tocExpanded" onclick="javascript: Toggle(this);" href="#!" /><a data-tochassubtree="true" href="b649727d-4604-25ec-d488-d4638470293b.htm" title="" tocid="b649727d-4604-25ec-d488-d4638470293b"></a></div><div class="toclevel2" data-toclevel="2"><a class="tocCollapsed" onclick="javascript: Toggle(this);" href="#!" /><a data-tochassubtree="true" href="cbbe5e2a-ab13-596a-4515-833ae721bf51.htm" title="" tocid="cbbe5e2a-ab13-596a-4515-833ae721bf51"></a></div><div class="toclevel2 current" data-toclevel="2"><a data-tochassubtree="false" href="08160979-d0b7-0d98-dc68-ad063bbf89d3.htm" title="" tocid="08160979-d0b7-0d98-dc68-ad063bbf89d3"></a></div><div class="toclevel2" data-toclevel="2"><a data-tochassubtree="false" href="26487e8f-eeb7-0812-23e2-0133a6f217fb.htm" title="" tocid="26487e8f-eeb7-0812-23e2-0133a6f217fb"></a></div></div><div id="tocResizableEW" onmousedown="OnMouseDown(event);"></div><div id="TocResize" class="tocResize"><img id="ResizeImageIncrease" src="../icons/TocOpen.gif" onclick="OnIncreaseToc()" alt="Click or drag to resize" title="Click or drag to resize" /><img id="ResizeImageReset" src="../icons/TocClose.gif" style="display:none" onclick="OnResetToc()" alt="Click or drag to resize" title="Click or drag to resize" /></div></div><div class="topicContent" id="TopicContent"><table class="titleTable"><tr><td class="titleColumn" /></tr></table><span class="introStyle"></span> <div class="summary">
+                使用指定的 <a href="ea9c2cea-fb3c-0dcd-6dad-a54f7f0f476d.htm">ITextWriter</a> 序列化指定的 原始对象 <span class="parameter">pOriValue</span> 与 更新对象 <span class="parameter">pRevValue</span>
+                间的增量内容。
+            </div><p> </p> <a href="683748d6-c9bf-2af3-65d3-7ad60286cfbe.htm">XPatchLib</a><br /> <div class="collapsibleAreaRegion"><span class="collapsibleRegionTitle" onclick="SectionExpandCollapse('ID1RB')" onkeypress="SectionExpandCollapse_CheckKey('ID1RB', event)" tabindex="0"><img id="ID1RBToggle" class="collapseToggle" /></span></div><div id="ID1RBSection" class="collapsibleSection"><div class="codeSnippetContainer"><div class="codeSnippetContainerTabs"><div id="ID0EBCA_tab1" class="codeSnippetContainerTab"><a href="#" onclick="javascript:ChangeTab('ID0EBCA','cs','1','2');return false;">CS</a></div><div id="ID0EBCA_tab2" class="codeSnippetContainerTab"><a href="#" onclick="javascript:ChangeTab('ID0EBCA','vb','2','2');return false;">VB</a></div></div><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetToolBar"><div class="codeSnippetToolBarText"><a id="ID0EBCA_copyCode" href="#" class="copyCodeSnippet" onclick="javascript:CopyToClipboard('ID0EBCA');return false;" /></div></div><div id="ID0EBCA_code_Div1" class="codeSnippetContainerCode" style="display: block"><pre xml:space="preserve"><span class="keyword">public</span> <span class="keyword">void</span> <span class="identifier">Divide</span>(
+	<span class="identifier">ITextWriter</span> <span class="parameter">pWriter</span>,
+	<span class="identifier">Object</span> <span class="parameter">pOriValue</span>,
+	<span class="identifier">Object</span> <span class="parameter">pRevValue</span>
+)</pre></div><div id="ID0EBCA_code_Div2" class="codeSnippetContainerCode" style="display: none"><pre xml:space="preserve"><span class="keyword">Public</span> <span class="keyword">Sub</span> <span class="identifier">Divide</span> ( 
+	<span class="parameter">pWriter</span> <span class="keyword">As</span> <span class="identifier">ITextWriter</span>,
+	<span class="parameter">pOriValue</span> <span class="keyword">As</span> <span class="identifier">Object</span>,
+	<span class="parameter">pRevValue</span> <span class="keyword">As</span> <span class="identifier">Object</span>
+)</pre></div></div></div><script type="text/javascript">AddLanguageTabSet("ID0EBCA");</script><h4 class="subHeading" /><dl><dt><span class="parameter">pWriter</span></dt><dd><br />
+      用于编写增量文档的 <a href="ea9c2cea-fb3c-0dcd-6dad-a54f7f0f476d.htm">ITextWriter</a> 实例。
+    </dd><dt><span class="parameter">pOriValue</span></dt><dd><br />
+      原始对象实例。
+    </dd><dt><span class="parameter">pRevValue</span></dt><dd><br />
+      更新后对象实例。
+    </dd></dl></div><div class="collapsibleAreaRegion"><span class="collapsibleRegionTitle" onclick="SectionExpandCollapse('ID2RB')" onkeypress="SectionExpandCollapse_CheckKey('ID2RB', event)" tabindex="0"><img id="ID2RBToggle" class="collapseToggle" /></span></div><div id="ID2RBSection" class="collapsibleSection"><p>
+        使用 Divide 方法将原始对象与更新后对象之间差异内容的的公共字段和读/写属性转换为 增量数据。它不转换方法、索引器、私有字段或只读属性。
+      </p></div><div class="collapsibleAreaRegion"><span class="collapsibleRegionTitle" onclick="SectionExpandCollapse('ID3RB')" onkeypress="SectionExpandCollapse_CheckKey('ID3RB', event)" tabindex="0"><img id="ID3RBToggle" class="collapseToggle" /></span></div><div id="ID3RBSection" class="collapsibleSection"><p>
+        下面的示例使用 <a href="498babb9-7293-5749-a9c5-d6f351d4facd.htm">XmlTextWriter</a> 序列化指定的 原始对象 与 更新对象 间的增量内容。
+      </p><div class="codeSnippetContainer"><div class="codeSnippetContainerTabs"><div id="ID0EACABA_tab1" class="codeSnippetContainerTabSingle">CS</div></div><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetToolBar"><div class="codeSnippetToolBarText"><a id="ID0EACABA_copyCode" href="#" class="copyCodeSnippet" onclick="javascript:CopyToClipboard('ID0EACABA');return false;" /></div></div><div id="ID0EACABA_code_Div1" class="codeSnippetContainerCode" style="display: block"><pre xml:space="preserve"><span class="highlight-keyword">using</span> System;
+<span class="highlight-keyword">using</span> System.IO;
+<span class="highlight-keyword">using</span> System.Text;
+<span class="highlight-keyword">using</span> System.Xml;
+
+<span class="highlight-keyword">namespace</span> XPatchLib.Example
+{
+    <span class="highlight-keyword">public</span> <span class="highlight-keyword">class</span> DivideExample
+    {
+        <span class="highlight-keyword">public</span> <span class="highlight-keyword">static</span> <span class="highlight-keyword">void</span> Main(<span class="highlight-keyword">string</span>[] args)
+        {
+            <span class="highlight-keyword">var</span> t = <span class="highlight-keyword">new</span> DivideExample();
+            t.Divide();
+        }
+
+        <span class="highlight-keyword">private</span> <span class="highlight-keyword">void</span> Divide()
+        {
+            <span class="highlight-keyword">var</span> serializer = <span class="highlight-keyword">new</span> Serializer(<span class="highlight-keyword">typeof</span>(OrderedItem));
+            <span class="highlight-comment">//原始对象</span>
+            <span class="highlight-keyword">var</span> oldOrderItem = <span class="highlight-keyword">new</span> OrderedItem();
+            oldOrderItem.ItemName = <span class="highlight-literal">"Widget"</span>;
+            oldOrderItem.Description = <span class="highlight-literal">"Small Widget"</span>;
+            oldOrderItem.Quantity = <span class="highlight-number">10</span>;
+            oldOrderItem.UnitPrice = (<span class="highlight-keyword">decimal</span>) <span class="highlight-number">2.30</span>;
+            oldOrderItem.Calculate();
+            <span class="highlight-comment">//更新后对象</span>
+            <span class="highlight-keyword">var</span> newOrderItem = <span class="highlight-keyword">new</span> OrderedItem();
+            newOrderItem.ItemName = <span class="highlight-literal">"Widget"</span>;
+            newOrderItem.Description = <span class="highlight-literal">"Big Widget"</span>;
+            newOrderItem.Quantity = <span class="highlight-number">15</span>;
+            newOrderItem.UnitPrice = (<span class="highlight-keyword">decimal</span>) <span class="highlight-number">7.80</span>;
+            newOrderItem.Calculate();
+
+            <span class="highlight-keyword">using</span> (<span class="highlight-keyword">var</span> ms = <span class="highlight-keyword">new</span> MemoryStream())
+            {
+                <span class="highlight-keyword">var</span> settings = <span class="highlight-keyword">new</span> XmlWriterSettings();
+                settings.Encoding = Encoding.UTF8;
+                settings.Indent = <span class="highlight-keyword">true</span>;
+                <span class="highlight-keyword">using</span> (<span class="highlight-keyword">var</span> writer = <span class="highlight-keyword">new</span> XmlTextWriter(XmlWriter.Create(ms, settings)))
+                {
+                    serializer.Divide(writer, oldOrderItem, newOrderItem);
+                }
+                ms.Position = <span class="highlight-number">0</span>;
+                <span class="highlight-keyword">using</span> (<span class="highlight-keyword">var</span> stremReader = <span class="highlight-keyword">new</span> StreamReader(ms, Encoding.UTF8))
+                {
+                    Console.WriteLine(stremReader.ReadToEnd());
+                }
+            }
+        }
+
+        <span class="highlight-keyword">public</span> <span class="highlight-keyword">class</span> OrderedItem
+        {
+            <span class="highlight-keyword">public</span> <span class="highlight-keyword">string</span> Description;
+            <span class="highlight-keyword">public</span> <span class="highlight-keyword">string</span> ItemName;
+            <span class="highlight-keyword">public</span> <span class="highlight-keyword">decimal</span> LineTotal;
+            <span class="highlight-keyword">public</span> <span class="highlight-keyword">int</span> Quantity;
+            <span class="highlight-keyword">public</span> <span class="highlight-keyword">decimal</span> UnitPrice;
+
+            <span class="highlight-keyword">public</span> <span class="highlight-keyword">void</span> Calculate()
+            {
+                LineTotal = UnitPrice * Quantity;
+            }
+        }
+    }
+}</pre></div></div></div><script type="text/javascript">AddLanguageTabSet("ID0EACABA");</script><p>
+        输出内容如下：
+      </p><div class="codeSnippetContainer"><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetToolBar"><div class="codeSnippetToolBarText"><a id="ID0EAAABA_copyCode" href="#" class="copyCodeSnippet" onclick="javascript:CopyToClipboard('ID0EAAABA');return false;" /></div></div><div id="ID0EAAABA_code_Div1" class="codeSnippetContainerCode" style="display: block"><pre xml:space="preserve"><span class="highlight-xml-bracket">&lt;?</span><span class="highlight-xml-tag">xml</span> <span class="highlight-xml-attribute-name">version</span><span class="highlight-xml-attribute-equal">=</span><span class="highlight-xml-attribute-value">"1.0"</span> <span class="highlight-xml-attribute-name">encoding</span><span class="highlight-xml-attribute-equal">=</span><span class="highlight-xml-attribute-value">"utf-8"</span><span class="highlight-xml-bracket">?&gt;</span>
+<span class="highlight-xml-bracket">&lt;</span><span class="highlight-xml-tag">OrderedItem</span><span class="highlight-xml-bracket">&gt;</span>
+  <span class="highlight-xml-bracket">&lt;</span><span class="highlight-xml-tag">Description</span><span class="highlight-xml-bracket">&gt;</span>Big Widget<span class="highlight-xml-bracket">&lt;/</span><span class="highlight-xml-tag">Description</span><span class="highlight-xml-bracket">&gt;</span>
+  <span class="highlight-xml-bracket">&lt;</span><span class="highlight-xml-tag">LineTotal</span><span class="highlight-xml-bracket">&gt;</span>117.0<span class="highlight-xml-bracket">&lt;/</span><span class="highlight-xml-tag">LineTotal</span><span class="highlight-xml-bracket">&gt;</span>
+  <span class="highlight-xml-bracket">&lt;</span><span class="highlight-xml-tag">Quantity</span><span class="highlight-xml-bracket">&gt;</span>15<span class="highlight-xml-bracket">&lt;/</span><span class="highlight-xml-tag">Quantity</span><span class="highlight-xml-bracket">&gt;</span>
+  <span class="highlight-xml-bracket">&lt;</span><span class="highlight-xml-tag">UnitPrice</span><span class="highlight-xml-bracket">&gt;</span>7.8<span class="highlight-xml-bracket">&lt;/</span><span class="highlight-xml-tag">UnitPrice</span><span class="highlight-xml-bracket">&gt;</span>
+<span class="highlight-xml-bracket">&lt;/</span><span class="highlight-xml-tag">OrderedItem</span><span class="highlight-xml-bracket">&gt;</span></pre></div></div></div><script type="text/javascript">AddLanguageTabSet("ID0EAAABA");</script></div><div class="collapsibleAreaRegion" id="seeAlsoSection"><span class="collapsibleRegionTitle" onclick="SectionExpandCollapse('ID4RB')" onkeypress="SectionExpandCollapse_CheckKey('ID4RB', event)" tabindex="0"><img id="ID4RBToggle" class="collapseToggle" /></span></div><div id="ID4RBSection" class="collapsibleSection"><h4 class="subHeading" /><div class="seeAlsoStyle"><a href="7ed2eca1-d11b-c466-dc5b-cd04008966ee.htm">[format]</a></div><div class="seeAlsoStyle"><a href="683748d6-c9bf-2af3-65d3-7ad60286cfbe.htm">[format]</a></div></div></div></div><div id="pageFooter" class="pageFooter"> </div></body></html>
