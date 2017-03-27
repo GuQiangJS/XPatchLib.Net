@@ -91,7 +91,7 @@ using (var fs = new FileStream(filename, FileMode.Open))
 
 
 ## **下载**
-[从Nuget上下载最新版本](https://www.nuget.org/packages/XPatchLib/)
+[从Nuget下载最新版本](https://www.nuget.org/packages/XPatchLib/)
 
 
 
