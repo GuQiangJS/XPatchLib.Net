@@ -34,8 +34,8 @@ namespace XPatchLib
 
             IEnumerable pOriItems = pOriObject as IEnumerable;
             IEnumerable pRevItems = pRevObject as IEnumerable;
-            KeyValuesObject[] oriObjects = KeyValuesObject.Translate(pOriItems);
-            KeyValuesObject[] revObjects = KeyValuesObject.Translate(pRevItems);
+            IEnumerable<KeyValuesObject> oriObjects = KeyValuesObject.Translate(pOriItems);
+            IEnumerable<KeyValuesObject> revObjects = KeyValuesObject.Translate(pRevItems);
 
             if (pAttach == null)
                 pAttach = new DivideAttachment();
@@ -152,8 +152,8 @@ namespace XPatchLib
         /// <returns>
         ///     当找到一个或多个被添加的元素时，返回 true 否则 返回 false 。
         /// </returns>
-        private static Boolean TryGetAddedItems(KeyValuesObject[] pOriItems,
-            KeyValuesObject[] pRevItems, out IEnumerable<KeyValuesObject> pFoundItems)
+        private static Boolean TryGetAddedItems(IEnumerable<KeyValuesObject> pOriItems,
+            IEnumerable<KeyValuesObject> pRevItems, out IEnumerable<KeyValuesObject> pFoundItems)
         {
             //查找存在于更新后的集合中但是不存在于原始集合中的元素。
             //pFoundItems = pOriItems.Except(pRevItems, GenericArgumentType, GenericArgumentPrimaryKeys);
@@ -179,8 +179,8 @@ namespace XPatchLib
         /// <remarks>
         ///     返回的集合是即存在于原始集合又存在于更新后集合的对象。
         /// </remarks>
-        private static Boolean TryGetEditedItems(KeyValuesObject[] pOriItems,
-            KeyValuesObject[] pRevItems, out IEnumerable<KeyValuesObject> pFoundItems)
+        private static Boolean TryGetEditedItems(IEnumerable<KeyValuesObject> pOriItems,
+            IEnumerable<KeyValuesObject> pRevItems, out IEnumerable<KeyValuesObject> pFoundItems)
         {
             pFoundItems = null;
             if (pOriItems != null && pRevItems != null)
@@ -198,8 +198,8 @@ namespace XPatchLib
         /// <returns>
         ///     当找到一个或多个被删除的元素时，返回 true 否则 返回 false 。
         /// </returns>
-        private static Boolean TryGetRemovedItems(KeyValuesObject[] pOriItems,
-            KeyValuesObject[] pRevItems, out IEnumerable<KeyValuesObject> pFoundItems)
+        private static Boolean TryGetRemovedItems(IEnumerable<KeyValuesObject> pOriItems,
+            IEnumerable<KeyValuesObject> pRevItems, out IEnumerable<KeyValuesObject> pFoundItems)
         {
             //查找存在于原始集合中但是不存在于更新后的集合中的元素。
             //pFoundItems = pRevItems.Except(pOriItems, GenericArgumentType, GenericArgumentPrimaryKeys);
@@ -212,7 +212,7 @@ namespace XPatchLib
             return pFoundItems != null;
         }
 
-        private Boolean DivideItems(KeyValuesObject[] pOriItems, KeyValuesObject[] pRevItems,
+        private Boolean DivideItems(IEnumerable<KeyValuesObject> pOriItems, IEnumerable<KeyValuesObject> pRevItems,
             Action pAction, DivideAttachment pAttach = null)
         {
             IEnumerable<KeyValuesObject> pFoundItems = null;

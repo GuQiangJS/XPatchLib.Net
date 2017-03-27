@@ -2,6 +2,8 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 
 namespace XPatchLib
@@ -120,12 +122,9 @@ namespace XPatchLib
         protected abstract bool DivideAction(string pName, object pOriObject, object pRevObject,
             DivideAttachment pAttach = null);
 
-        protected static KeyValuesObject Find(KeyValuesObject[] pArray, KeyValuesObject pItem)
+        protected static KeyValuesObject Find(IEnumerable<KeyValuesObject> pArray, KeyValuesObject pItem)
         {
-            for (int i = 0; i < pArray.Length; i++)
-                if (pArray[i].Equals(pItem))
-                    return pArray[i];
-            return null;
+            return pArray.FirstOrDefault(x => x.Equals(pItem));
         }
 
         #region Protected Constructors

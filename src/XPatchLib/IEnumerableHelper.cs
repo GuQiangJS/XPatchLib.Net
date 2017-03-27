@@ -10,7 +10,14 @@ namespace XPatchLib
     {
         public static int FindIndex<T>(this IEnumerable<T> items, Predicate<T> predicate)
         {
-            return items.GetEnumerator().FindIndex(predicate);
+            int index = -1;
+            foreach (T item in items)
+            {
+                index++;
+                if (predicate(item))
+                    break;
+            }
+            return index;
         }
     }
 }

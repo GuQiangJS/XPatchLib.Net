@@ -31,18 +31,25 @@ namespace XPatchLib
         //public Object[] KeyValues { get; private set; }
         public int[] ValuesHash { get; private set; }
 
-        public static KeyValuesObject[] Translate(IEnumerable pValue)
+        public static IEnumerable<KeyValuesObject> Translate(IEnumerable pValue)
         {
             if (pValue != null)
             {
                 Queue<KeyValuesObject> result = new Queue<KeyValuesObject>();
-
-                IEnumerator enumerator = pValue.GetEnumerator();
-                if (enumerator != null)
-                    while (enumerator.MoveNext())
-                        result.Enqueue(new KeyValuesObject(enumerator.Current));
-                return result.ToArray();
+                foreach (var VARIABLE in pValue)
+                {
+                    result.Enqueue(new KeyValuesObject(VARIABLE));
+                }
+                return result;
             }
+            return null;
+        }
+
+        public static IEnumerator<KeyValuesObject> TranslateEnumerator(IEnumerable pValue)
+        {
+            IEnumerable<KeyValuesObject> v = Translate(pValue);
+            if (v != null)
+                return v.GetEnumerator();
             return null;
         }
 

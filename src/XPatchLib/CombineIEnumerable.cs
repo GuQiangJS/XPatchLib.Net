@@ -3,7 +3,9 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Xml;
 
@@ -136,7 +138,7 @@ namespace XPatchLib
         /// <param name="pOriObject">待合并数据的原始对象。</param>
         /// <param name="pOriEnumerable">当前正在处理的集合对象。</param>
         /// <param name="pName">当前正在解析的节点名称。</param>
-        private void CombineCore(ITextReader pReader, ref object pOriObject, KeyValuesObject[] pOriEnumerable,
+        private void CombineCore(ITextReader pReader, ref object pOriObject, IEnumerable<KeyValuesObject> pOriEnumerable,
             string pName)
         {
             var attrs = AnlysisAttributes(pReader, pName);
@@ -175,7 +177,7 @@ namespace XPatchLib
         /// <param name="pOriEnumerable">当前正在处理的集合对象。</param>
         /// <param name="pName">当前正在解析的节点名称。</param>
         private void CombineEditItem(ITextReader pReader, CombineAttribute pAttribute, ref object pOriObject,
-            KeyValuesObject[] pOriEnumerable, string pName)
+            IEnumerable<KeyValuesObject> pOriEnumerable, string pName)
         {
             //当前编辑的对象在原始集合对象中以零开始的索引。
             int index = -1;
@@ -252,37 +254,30 @@ namespace XPatchLib
         /// <param name="pOriObject">待合并数据的原始对象。</param>
         /// <param name="pOriEnumerable">当前正在处理的集合对象。</param>
         private void CombineRemovedItem(ITextReader pReader, CombineAttribute pAttribute, ref object pOriObject,
-            KeyValuesObject[] pOriEnumerable)
+            IEnumerable<KeyValuesObject> pOriEnumerable)
         {
             //在集合中找到的待删除的元素实例。
             object foundItem = null;
 
             if (pOriEnumerable != null)
             {
+                KeyValuesObject o = null;
                 //当当前集合是数组类型时
                 if (GenericArgumentType.IsBasicType)
                 {
                     var value = pReader.ReadString();
                     //当时基础类型时，按照基础类型获取所有的方式查找索引。
-                    for (int i = 0; i < pOriEnumerable.Length; i++)
-                        if (pOriEnumerable[i].Equals(value))
-                        {
-                            foundItem = pOriEnumerable[i].OriValue;
-                            break;
-                        }
+
+                    o = pOriEnumerable.FirstOrDefault(x => x.Equals(value));
+                    if (o != null)
+                        foundItem = o.OriValue;
                 }
                 else
                 {
-                    KeyValuesObject keyValuesObject = null;
-                    for (int i = 0; i < pOriEnumerable.Length; i++)
-                        if (pOriEnumerable[i].EqualsByKeys(pAttribute.Keys, pAttribute.Values))
-                        {
-                            keyValuesObject = pOriEnumerable[i];
-                            break;
-                        }
-                    if (keyValuesObject != null)
-                        foundItem = keyValuesObject.OriValue;
+                    o = pOriEnumerable.FirstOrDefault(x => x.EqualsByKeys(pAttribute.Keys, pAttribute.Values));
                 }
+                if (o != null)
+                    foundItem = o.OriValue;
                 CombineRemovedItem(ref pOriObject, foundItem);
             }
             else
