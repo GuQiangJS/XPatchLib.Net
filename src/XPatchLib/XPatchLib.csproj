@@ -89,7 +89,6 @@
     <Compile Include="Guard.cs" />
     <Compile Include="ICombineBase.cs" />
     <Compile Include="IDivide.cs" />
-    <Compile Include="IEnumerableHelper.cs" />
     <Compile Include="ITextReader.cs" />
     <Compile Include="ITextWriter.cs" />
     <Compile Include="ISerializeSetting.cs" />

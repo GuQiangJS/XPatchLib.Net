@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 
 namespace XPatchLib
 {
@@ -15,6 +14,30 @@ namespace XPatchLib
     /// <seealso cref="XPatchLib.DivideBase" />
     internal class DivideIDictionary : DivideBase
     {
+        #region Internal Constructors
+
+        /// <summary>
+        ///     使用指定的类型初始化 <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
+        /// </summary>
+        /// <param name="pWriter">写入器。</param>
+        /// <param name="pType">指定的类型。</param>
+        /// <exception cref="PrimaryKeyException">默认在字符串与System.DateTime 之间转换时，转换时应保留时区信息。</exception>
+        /// <exception cref="ArgumentException">待处理的类型不是字典类型时。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="pType" /> 上无法获取元素类型时。</exception>
+        internal DivideIDictionary(ITextWriter pWriter, TypeExtend pType)
+            : base(pWriter, pType)
+        {
+            if (!Type.IsIDictionary)
+                throw new ArgumentException("类型需要是字典类型");
+            Type t = null;
+            if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, out t))
+                GenericArgumentType = TypeExtendContainer.GetTypeExtend(t, Writer.IgnoreAttributeType, pType);
+            else
+                throw new ArgumentOutOfRangeException(pType.OriType.FullName);
+        }
+
+        #endregion Internal Constructors
+
         #region Protected Properties
 
         /// <summary>
@@ -77,30 +100,6 @@ namespace XPatchLib
 
             return result;
         }
-
-        #region Internal Constructors
-
-        /// <summary>
-        ///     使用指定的类型初始化 <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <exception cref="PrimaryKeyException">默认在字符串与System.DateTime 之间转换时，转换时应保留时区信息。</exception>
-        /// <exception cref="ArgumentException">待处理的类型不是字典类型时。</exception>
-        /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="pType" /> 上无法获取元素类型时。</exception>
-        internal DivideIDictionary(ITextWriter pWriter, TypeExtend pType)
-            : base(pWriter, pType)
-        {
-            if (!Type.IsIDictionary)
-                throw new ArgumentException("类型需要是字典类型");
-            Type t = null;
-            if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, out t))
-                GenericArgumentType = TypeExtendContainer.GetTypeExtend(t, Writer.IgnoreAttributeType, pType);
-            else
-                throw new ArgumentOutOfRangeException(pType.OriType.FullName);
-        }
-
-        #endregion Internal Constructors
 
         #region Private Methods
 
@@ -240,7 +239,7 @@ namespace XPatchLib
                     {
                         //当前元素是新增操作时
                         //再次调用DivideCore.Divide的方法，传入空的原始对象，生成新增的增量节点。
-                        KeyValuesObject obj = Find(pRevItems, items.Current);
+                        KeyValuesObject obj = pRevItems.FirstOrDefault(x => x.Equals(items.Current));
                         bool itemResult = ser.Divide(GenericArgumentType.TypeFriendlyName, null, obj.OriValue,
                             pAttach);
                         if (!result)
@@ -250,7 +249,7 @@ namespace XPatchLib
                     {
                         //当前元素是删除操作时
                         //再次调用DivideCore.Divide的方法，传入空的更新后对象，生成删除的增量节点。
-                        KeyValuesObject obj = Find(pOriItems, items.Current);
+                        KeyValuesObject obj = pOriItems.FirstOrDefault(x => x.Equals(items.Current));
 
                         if (pAttach == null)
                             pAttach = new DivideAttachment();
@@ -263,8 +262,8 @@ namespace XPatchLib
                     else if (pAction == Action.Edit)
                     {
                         //将此元素与当前正在遍历的元素作为参数调用序列化，看是否产生增量内容内容（如果没有产生增量内容内容则说明两个对象需要序列化的内容完全一样）
-                        KeyValuesObject oldObj = Find(pOriItems, items.Current);
-                        KeyValuesObject newObj = Find(pRevItems, items.Current);
+                        KeyValuesObject oldObj = pOriItems.FirstOrDefault(x => x.Equals(items.Current));
+                        KeyValuesObject newObj = pRevItems.FirstOrDefault(x => x.Equals(items.Current));
                         bool itemResult = ser.Divide(GenericArgumentType.TypeFriendlyName, oldObj.OriValue,
                             newObj.OriValue,
                             pAttach);

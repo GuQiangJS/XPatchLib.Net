@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 
 namespace XPatchLib
 {
@@ -16,6 +15,37 @@ namespace XPatchLib
     internal class DivideIEnumerable : DivideBase
     {
         private static readonly string PRIMARY_KEY_MISS = typeof(PrimaryKeyAttribute).Name;
+
+        #region Internal Constructors
+
+        /// <summary>
+        ///     使用指定的类型初始化 <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
+        /// </summary>
+        /// <param name="pWriter">写入器。</param>
+        /// <param name="pType">指定的类型。</param>
+        /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 元素类型的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="pType" /> 上无法获取元素类型时。</exception>
+        internal DivideIEnumerable(ITextWriter pWriter, TypeExtend pType)
+            : base(pWriter, pType)
+        {
+            Type t = null;
+            if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, out t))
+            {
+                GenericArgumentType = TypeExtendContainer.GetTypeExtend(t, Writer.IgnoreAttributeType, pType);
+
+                GenericArgumentTypePrimaryKeyAttribute = GenericArgumentType.PrimaryKeyAttr;
+
+                if (GenericArgumentTypePrimaryKeyAttribute == null && !GenericArgumentType.IsBasicType)
+                    throw new AttributeMissException(GenericArgumentType.OriType, PRIMARY_KEY_MISS);
+            }
+            else
+            {
+                //传入参数 pType 无法解析内部元素对象。
+                throw new ArgumentOutOfRangeException(pType.OriType.FullName);
+            }
+        }
+
+        #endregion Internal Constructors
 
         /// <summary>
         ///     产生增量内容的实际方法。
@@ -82,37 +112,6 @@ namespace XPatchLib
 
             return result;
         }
-
-        #region Internal Constructors
-
-        /// <summary>
-        ///     使用指定的类型初始化 <see cref="XPatchLib.DivideIEnumerable" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 元素类型的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
-        /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="pType" /> 上无法获取元素类型时。</exception>
-        internal DivideIEnumerable(ITextWriter pWriter, TypeExtend pType)
-            : base(pWriter, pType)
-        {
-            Type t = null;
-            if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, out t))
-            {
-                GenericArgumentType = TypeExtendContainer.GetTypeExtend(t, Writer.IgnoreAttributeType, pType);
-
-                GenericArgumentTypePrimaryKeyAttribute = GenericArgumentType.PrimaryKeyAttr;
-
-                if (GenericArgumentTypePrimaryKeyAttribute == null && !GenericArgumentType.IsBasicType)
-                    throw new AttributeMissException(GenericArgumentType.OriType, PRIMARY_KEY_MISS);
-            }
-            else
-            {
-                //传入参数 pType 无法解析内部元素对象。
-                throw new ArgumentOutOfRangeException(pType.OriType.FullName);
-            }
-        }
-
-        #endregion Internal Constructors
 
         #region Protected Properties
 
@@ -283,7 +282,7 @@ namespace XPatchLib
                         //当前元素是编辑操作时
                         //从原始集合中找到当前正在遍历的元素相同的元素
                         //pOriItems.GetEnumerator().TryGetItem(GenericArgumentType, items.Current, out oriItem, GenericArgumentPrimaryKeys);
-                        KeyValuesObject oriItem = Find(pOriItems, items.Current);
+                        KeyValuesObject oriItem = pOriItems.FirstOrDefault(x => x.Equals(items.Current));
 
                         if (pAttach == null)
                             pAttach = new DivideAttachment();

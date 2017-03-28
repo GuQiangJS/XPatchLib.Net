@@ -2,9 +2,6 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
 
 namespace XPatchLib
 {
@@ -13,6 +10,24 @@ namespace XPatchLib
     /// </summary>
     internal abstract class DivideBase : IDivide
     {
+        #region Protected Constructors
+
+        /// <summary>
+        ///     使用指定的类型初始化 <see cref="XPatchLib.DivideBase" /> 类的新实例。
+        /// </summary>
+        /// <param name="pWriter">写入器。</param>
+        /// <param name="pType">指定的类型。</param>
+        /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
+        /// <exception cref="ArgumentNullException">当参数 <paramref name="pWriter" /> is null 时。</exception>
+        protected DivideBase(ITextWriter pWriter, TypeExtend pType)
+        {
+            Guard.ArgumentNotNull(pWriter, "pWriter");
+            Writer = pWriter;
+            Type = pType;
+        }
+
+        #endregion Protected Constructors
+
         /// <summary>
         ///     产生增量内容。
         /// </summary>
@@ -121,29 +136,6 @@ namespace XPatchLib
         /// <returns>返回是否成功写入内容。如果成功写入返回 <c>true</c> ，否则返回 <c>false</c> 。</returns>
         protected abstract bool DivideAction(string pName, object pOriObject, object pRevObject,
             DivideAttachment pAttach = null);
-
-        protected static KeyValuesObject Find(IEnumerable<KeyValuesObject> pArray, KeyValuesObject pItem)
-        {
-            return pArray.FirstOrDefault(x => x.Equals(pItem));
-        }
-
-        #region Protected Constructors
-
-        /// <summary>
-        ///     使用指定的类型初始化 <see cref="XPatchLib.DivideBase" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
-        /// <exception cref="ArgumentNullException">当参数 <paramref name="pWriter" /> is null 时。</exception>
-        protected DivideBase(ITextWriter pWriter, TypeExtend pType)
-        {
-            Guard.ArgumentNotNull(pWriter, "pWriter");
-            Writer = pWriter;
-            Type = pType;
-        }
-
-        #endregion Protected Constructors
 
         #region Internal Properties
 

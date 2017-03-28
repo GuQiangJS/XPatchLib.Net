@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Xml;
 
 namespace XPatchLib
 {
@@ -18,6 +17,35 @@ namespace XPatchLib
     internal class CombineIEnumerable : CombineBase
     {
         private static readonly string PRIMARY_KEY_MISS = typeof(PrimaryKeyAttribute).Name;
+
+        #region Internal Constructors
+
+        /// <summary>
+        ///     使用指定的类型初始化 <see cref="XPatchLib.CombineIEnumerable" /> 类的新实例。
+        /// </summary>
+        /// <param name="pType">
+        ///     指定的类型。
+        /// </param>
+        internal CombineIEnumerable(TypeExtend pType) : base(pType)
+        {
+            Type t;
+            if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, out t))
+            {
+                GenericArgumentType = TypeExtendContainer.GetTypeExtend(t, null, pType);
+
+                GenericArgumentTypePrimaryKeyAttribute = GenericArgumentType.PrimaryKeyAttr;
+
+                if (GenericArgumentTypePrimaryKeyAttribute == null && !GenericArgumentType.IsBasicType)
+                    throw new AttributeMissException(GenericArgumentType.OriType, PRIMARY_KEY_MISS);
+            }
+            else
+            {
+                //TODO：传入参数 pType 无法解析内部元素对象。
+                throw new ArgumentOutOfRangeException(pType.OriType.FullName);
+            }
+        }
+
+        #endregion Internal Constructors
 
         /// <summary>
         ///     根据增量内容创建基础类型实例。
@@ -43,35 +71,6 @@ namespace XPatchLib
             }
             return pOriObject;
         }
-
-        #region Internal Constructors
-
-        /// <summary>
-        ///     使用指定的类型初始化 <see cref="XPatchLib.CombineIEnumerable" /> 类的新实例。
-        /// </summary>
-        /// <param name="pType">
-        ///     指定的类型。
-        /// </param>
-        internal CombineIEnumerable(TypeExtend pType):base(pType)
-        {
-            Type t;
-            if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, out t))
-            {
-                GenericArgumentType = TypeExtendContainer.GetTypeExtend(t, null, pType);
-
-                GenericArgumentTypePrimaryKeyAttribute = GenericArgumentType.PrimaryKeyAttr;
-
-                if (GenericArgumentTypePrimaryKeyAttribute == null && !GenericArgumentType.IsBasicType)
-                    throw new AttributeMissException(GenericArgumentType.OriType, PRIMARY_KEY_MISS);
-            }
-            else
-            {
-                //TODO：传入参数 pType 无法解析内部元素对象。
-                throw new ArgumentOutOfRangeException(pType.OriType.FullName);
-            }
-        }
-
-        #endregion Internal Constructors
 
         #region Protected Properties
 
@@ -150,7 +149,7 @@ namespace XPatchLib
                     break;
 
                 case Action.Edit:
-                    CombineEditItem(pReader, attrs, ref pOriObject, pOriEnumerable, pName);
+                    CombineEditItem(pReader, attrs, pOriEnumerable, pName);
                     break;
 
                 case Action.Remove:
@@ -173,76 +172,29 @@ namespace XPatchLib
         /// </summary>
         /// <param name="pReader">Xml读取器。</param>
         /// <param name="pAttribute">当前正在解析的Attributes。（包含了Action和主键集合）</param>
-        /// <param name="pOriObject">待合并数据的原始对象。</param>
         /// <param name="pOriEnumerable">当前正在处理的集合对象。</param>
         /// <param name="pName">当前正在解析的节点名称。</param>
-        private void CombineEditItem(ITextReader pReader, CombineAttribute pAttribute, ref object pOriObject,
+        private void CombineEditItem(ITextReader pReader, CombineAttribute pAttribute,
             IEnumerable<KeyValuesObject> pOriEnumerable, string pName)
         {
-            //当前编辑的对象在原始集合对象中以零开始的索引。
-            int index = -1;
-            if (GenericArgumentType.IsBasicType && pOriEnumerable != null)
+            if (pOriEnumerable != null)
             {
-                var value = pReader.ReadString();
-                //当集合的元素类型是基础类型时，按照基础类型获取所有的方式查找索引。
-                //基础类型不存在Edit动作，所以看上去永远不会执行到这段
-                //index = existsList.GetIndex(GenericArgumentType, pElement.Value);
-                index = pOriEnumerable.FindIndex(x => x.Equals(value));
-            }
-            else
-            {
-                //当集合的元素类型不是基础类型时，先获取当前集合元素类型上标记的PrimaryKeyAttribute，然后根据PrimaryKeyAttribute查找索引。
-                index = pOriEnumerable.FindIndex(x => x.EqualsByKeys(pAttribute.Keys, pAttribute.Values));
-            }
-            CombineEditItem(pReader, ref pOriObject, index, pName);
-        }
-
-        /// <summary>
-        ///     根据指定的<paramref name="pIndex" />更新对应的集合中的元素。
-        /// </summary>
-        /// <param name="pReader">Xml读取器。</param>
-        /// <param name="pOriObject">待合并数据的原始对象。</param>
-        /// <param name="pIndex">待变更对象在集合中的位置。</param>
-        /// <param name="pName">当前正在解析的节点名称。</param>
-        private void CombineEditItem(ITextReader pReader, ref object pOriObject, int pIndex, string pName)
-        {
-            if (pIndex >= 0)
-            {
-                //原始集合对象的类型。
-                var listType = pOriObject.GetType();
-                //当在原始集合中找到了索引时
-                if (Type.IsArray)
+                KeyValuesObject o = null;
+                if (GenericArgumentType.IsBasicType && pOriEnumerable != null)
                 {
-                    //当当前集合是数组类型时
-                    var obj = ((Array) pOriObject).GetValue(pIndex);
-
-                    //创建集合元素实例,根据增量内容内容向集合元素实例赋值。
-                    obj = CombineInstanceContainer.GetCombineInstance(GenericArgumentType).Combine(pReader, obj, pName);
-
-                    ((Array) pOriObject).SetValue(obj, pIndex);
-                }
-                else if (listType.GetMethod(ConstValue.OPERATOR_SET) != null)
-                {
-                    //当当前集合不是数组类型时
-                    var obj = Type.InvokeMember(ConstValue.OPERATOR_GET, BindingFlags.InvokeMethod, null, pOriObject,
-                        new object[] {pIndex}, CultureInfo.InvariantCulture);
-
-                    //创建集合元素实例,根据增量内容内容向集合元素实例赋值。
-                    obj = CombineInstanceContainer.GetCombineInstance(GenericArgumentType).Combine(pReader, obj, pName);
-
-                    Type.InvokeMember(ConstValue.OPERATOR_SET, BindingFlags.InvokeMethod, null, pOriObject,
-                        new[] {pIndex, obj}, CultureInfo.InvariantCulture);
+                    var value = pReader.ReadString();
+                    o = pOriEnumerable.FirstOrDefault(x => x.Equals(value));
                 }
                 else
                 {
-                    //TODO:未实现
-                    throw new NotImplementedException();
+                    o = pOriEnumerable.FirstOrDefault(x => x.EqualsByKeys(pAttribute.Keys, pAttribute.Values));
                 }
-            }
-            else
-            {
-                //TODO:未实现
-                throw new NotImplementedException();
+                if (o != null)
+                {
+                    object foundItem = o.OriValue;
+                    foundItem = CombineInstanceContainer.GetCombineInstance(GenericArgumentType)
+                        .Combine(pReader, foundItem, pName);
+                }
             }
         }
 
