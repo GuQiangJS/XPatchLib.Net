@@ -238,13 +238,13 @@ namespace XPatchLib
             //找到待处理的元素集合时
             if (found)
             {
-                IEnumerator<KeyValuesObject> items = pFoundItems.GetEnumerator();
+                //IEnumerator<KeyValuesObject> items = pFoundItems.GetEnumerator();
 
                 //开始遍历待处理的元素集合中的所有元素
 
                 //元素的类型未知，所以再次创建DivideCore实例，由此实例创建元素的增量结果。（递归方式）
                 DivideCore ser = new DivideCore(Writer, GenericArgumentType);
-                while (items.MoveNext())
+                foreach (var keyValuesObject in pFoundItems)
                 {
                     bool itemResult = false;
                     pAttach.CurrentAction = pAction;
@@ -253,7 +253,7 @@ namespace XPatchLib
                         //当前元素是新增操作时
                         //再次调用DivideCore.Divide的方法，传入空的原始对象，生成新增的增量节点。
                         itemResult = ser.Divide(GenericArgumentType.TypeFriendlyName, null,
-                            items.Current.OriValue, pAttach);
+                            keyValuesObject.OriValue, pAttach);
                         if (!result)
                             result = itemResult;
                     }
@@ -266,11 +266,11 @@ namespace XPatchLib
                         Writer.WriteActionAttribute(Action.Remove);
 
                         if (GenericArgumentType.IsBasicType)
-                            Writer.WriteValue(items.Current.OriValue.ToString());
+                            Writer.WriteValue(keyValuesObject.OriValue.ToString());
                         else
                             WriteKeyAttributes(new DivideAttachment
                             {
-                                CurrentObj = items.Current.OriValue,
+                                CurrentObj = keyValuesObject.OriValue,
                                 CurrentType = GenericArgumentType,
                                 PrimaryKeys = GenericArgumentPrimaryKeys
                             });
@@ -282,7 +282,7 @@ namespace XPatchLib
                         //当前元素是编辑操作时
                         //从原始集合中找到当前正在遍历的元素相同的元素
                         //pOriItems.GetEnumerator().TryGetItem(GenericArgumentType, items.Current, out oriItem, GenericArgumentPrimaryKeys);
-                        KeyValuesObject oriItem = pOriItems.FirstOrDefault(x => x.Equals(items.Current));
+                        KeyValuesObject oriItem = pOriItems.FirstOrDefault(x => x.Equals(keyValuesObject));
 
                         if (pAttach == null)
                             pAttach = new DivideAttachment();
@@ -292,7 +292,7 @@ namespace XPatchLib
 
                         //将此元素与当前正在遍历的元素作为参数调用序列化，看是否产生增量内容内容（如果没有产生增量内容内容则说明两个对象需要序列化的内容完全一样）
                         itemResult = ser.Divide(GenericArgumentType.TypeFriendlyName, oriItem.OriValue,
-                            items.Current.OriValue, pAttach);
+                            keyValuesObject.OriValue, pAttach);
 
                         if (!result)
                             result = itemResult;

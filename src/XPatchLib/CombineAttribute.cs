@@ -16,6 +16,8 @@ namespace XPatchLib
 
         private readonly Queue<object> _values;
 
+        private readonly Queue<int> _valuesHash;
+
         public CombineAttribute(Action pAction, int capacity)
         {
             Action = pAction;
@@ -25,6 +27,7 @@ namespace XPatchLib
             }
             _keys = new Queue<string>();
             _values = new Queue<object>();
+            _valuesHash = new Queue<int>();
         }
 
         private void InitKeysValuePairs(int capacity)
@@ -49,22 +52,22 @@ namespace XPatchLib
             }
         }
 
-        public string[] Keys
-        {
-            get { return _keys.ToArray(); }
-        }
+        public string[] Keys { get; private set; }
 
-        public object[] Values
-        {
-            get { return _values.ToArray(); }
-        }
+        public int[] ValuesHash { get; private set; }
+
+        public object[] Values { get; private set; }
 
         private void _keysValuePairs_OnAdd(object sender, AddEventArgs<String, Object> e)
         {
             _keys.Enqueue(e.Item.Key);
             _values.Enqueue(e.Item.Value);
+            _valuesHash.Enqueue(e.Item.Value.GetHashCode());
 
-            //TODO:其他可能未处理
+
+            Keys = _keys.ToArray();
+            Values = _values.ToArray();
+            ValuesHash = _valuesHash.ToArray();
         }
     }
 

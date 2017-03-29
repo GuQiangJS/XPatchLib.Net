@@ -187,7 +187,7 @@ namespace XPatchLib
                 }
                 else
                 {
-                    o = pOriEnumerable.FirstOrDefault(x => x.EqualsByKeys(pAttribute.Keys, pAttribute.Values));
+                    o = pOriEnumerable.FirstOrDefault(x => x.EqualsByKeys(pAttribute.Keys, pAttribute.ValuesHash));
                 }
                 if (o != null)
                 {
@@ -226,7 +226,7 @@ namespace XPatchLib
                 }
                 else
                 {
-                    o = pOriEnumerable.FirstOrDefault(x => x.EqualsByKeys(pAttribute.Keys, pAttribute.Values));
+                    o = pOriEnumerable.FirstOrDefault(x => x.EqualsByKeys(pAttribute.Keys, pAttribute.ValuesHash));
                 }
                 if (o != null)
                     foundItem = o.OriValue;

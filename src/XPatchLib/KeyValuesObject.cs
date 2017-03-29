@@ -28,9 +28,7 @@ namespace XPatchLib
         public Object OriValue { get; private set; }
 
         //public Object[] KeyValues { get; private set; }
-        public object[] Values { get; private set; }
-
-        private IComparable[] comparableValues;
+        public int[] ValuesHash { get; private set; }
 
         public static IEnumerable<KeyValuesObject> Translate(IEnumerable pValue)
         {
@@ -38,9 +36,7 @@ namespace XPatchLib
             {
                 Queue<KeyValuesObject> result = new Queue<KeyValuesObject>();
                 foreach (var VARIABLE in pValue)
-                {
                     result.Enqueue(new KeyValuesObject(VARIABLE));
-                }
                 return result;
             }
             return null;
@@ -61,32 +57,21 @@ namespace XPatchLib
                 return false;
             KeyValuesObject o = obj as KeyValuesObject;
             if (o == null)
-                return Equals(Values[0], obj);
+                return Equals(ValuesHash[0], obj.GetHashCode());
 
-            return EqualsByKeys(o.Keys, o.Values);
+            return EqualsByKeys(o.Keys, o.ValuesHash);
         }
 
         //public string[] KeyNames { get; private set; }
-        public bool EqualsByKeys(string[] pKeys, object[] pValues)
+        public bool EqualsByKeys(string[] pKeys, int[] pValuesHash)
         {
-            if (pKeys == null || pValues == null || Keys.Length != pKeys.Length ||
-                Values.Length != pValues.Length)
+            if (pKeys == null || ValuesHash == null || Keys.Length != pKeys.Length ||
+                ValuesHash.Length != pValuesHash.Length)
                 return false;
 
             for (int i = 0; i < Keys.Length; i++)
-                if (Keys[i] == pKeys[i]) {
-                    if (comparableValues[i] != null) {
-                        if (comparableValues[i].CompareTo(pValues[i]) != 0)
-                            return false;
-                    }
-                    else {
-                        if (!Values[i].Equals(pValues[i]))
-                            return false;
-                    }
-                }
-                else {
+                if (!string.Equals(Keys[i], pKeys[i]) || ValuesHash[i] != pValuesHash[i])
                     return false;
-                }
             return true;
         }
 
@@ -95,8 +80,8 @@ namespace XPatchLib
         {
             int result = 0;
 
-            for (int i = 0; i < Values.Length; i++)
-                result ^= Values[i].GetHashCode();
+            for (int i = 0; i < ValuesHash.Length; i++)
+                result ^= ValuesHash[i];
             return result;
         }
 
@@ -109,20 +94,16 @@ namespace XPatchLib
                 {
                     PrimaryKeyAttribute keyAttr = typeExtend.PrimaryKeyAttr;
                     if (keyAttr == null)
-                    {
                         throw new AttributeMissException(pValue.GetType(), PRIMARY_KEY_MISS);
-                    }
                     string[] primaryKeys = keyAttr.GetPrimaryKeys();
                     if (primaryKeys.Length > 0)
                     {
                         Keys = new string[primaryKeys.Length];
-                        Values = new object[primaryKeys.Length];
-                        comparableValues=new IComparable[Values.Length];
+                        ValuesHash = new int[primaryKeys.Length];
                         for (int i = 0; i < primaryKeys.Length; i++)
                         {
                             Keys[i] = primaryKeys[i];
-                            Values[i] = typeExtend.GetMemberValue(pValue, primaryKeys[i]);
-                            comparableValues[i] = Values[i] as IComparable;
+                            ValuesHash[i] = typeExtend.GetMemberValue(pValue, primaryKeys[i]).GetHashCode();
                         }
                     }
                     else
@@ -132,9 +113,8 @@ namespace XPatchLib
                 }
                 else
                 {
-                    Keys = new [] {string.Empty};
-                    Values = new[] {pValue};
-                    comparableValues = new[] {pValue as IComparable};
+                    Keys = new[] {string.Empty};
+                    ValuesHash = new[] {pValue.GetHashCode()};
                 }
             }
         }
