@@ -43,7 +43,7 @@ namespace XPatchLib
         /// <summary>
         ///     集合类型中元素的类型。
         /// </summary>
-        protected TypeExtend GenericArgumentType { get; }
+        protected TypeExtend GenericArgumentType { get; private set; }
 
         #endregion Protected Properties
 

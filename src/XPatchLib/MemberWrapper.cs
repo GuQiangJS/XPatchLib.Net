@@ -132,7 +132,7 @@ namespace XPatchLib
         /// <summary>
         ///     获取当前成员属性实例。
         /// </summary>
-        internal MemberInfo MemberInfo { get; }
+        internal MemberInfo MemberInfo { get; private set; }
 
         /// <summary>
         ///     获取当前成员的名称。

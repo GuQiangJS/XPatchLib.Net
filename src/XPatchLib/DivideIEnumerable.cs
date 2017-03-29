@@ -131,12 +131,12 @@ namespace XPatchLib
         /// <summary>
         ///     集合类型中元素的类型。
         /// </summary>
-        protected TypeExtend GenericArgumentType { get; }
+        protected TypeExtend GenericArgumentType { get; private set; }
 
         /// <summary>
         ///     集合类型中元素的类型所标记的主键特性。
         /// </summary>
-        protected PrimaryKeyAttribute GenericArgumentTypePrimaryKeyAttribute { get; }
+        protected PrimaryKeyAttribute GenericArgumentTypePrimaryKeyAttribute { get; private set; }
 
         #endregion Protected Properties
 

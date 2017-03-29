@@ -85,17 +85,24 @@ namespace XPatchLib
         /// <summary>
         ///     获取当前节点的限定名。
         /// </summary>
-        public string Name => _reader.Name;
+        public string Name {
+            get { return _reader.Name; }
+        }
 
         /// <summary>
         ///     获取当前节点的文本值。
         /// </summary>
-        public string Value => _reader.Value;
+        public string Value {
+            get { return _reader.Value; }
+        }
 
         /// <summary>
         ///     获取当前节点上的属性数。
         /// </summary>
-        public int AttributeCount => _reader.AttributeCount;
+        public int AttributeCount
+        {
+            get { return _reader.AttributeCount; }
+        }
 
         /// <summary>
         ///     从流中读取下一个节点。
@@ -196,8 +203,11 @@ namespace XPatchLib
         /// </summary>
         protected void Dispose(bool disposing)
         {
-            if (disposing)
-                ((IDisposable) _reader)?.Dispose();
+            if (disposing) {
+                IDisposable d = _reader as IDisposable;
+                if(d!=null)
+                    d.Dispose();
+            }
         }
     }
 }

@@ -12,9 +12,9 @@ namespace XPatchLib
     /// </summary>
     internal class CombineAttribute
     {
-        private readonly Queue<int> _keys;
+        private readonly Queue<string> _keys;
 
-        private readonly Queue<int> _values;
+        private readonly Queue<object> _values;
 
         public CombineAttribute(Action pAction, int capacity)
         {
@@ -23,8 +23,8 @@ namespace XPatchLib
             {
                 InitKeysValuePairs(capacity);
             }
-            _keys = new Queue<int>();
-            _values = new Queue<int>();
+            _keys = new Queue<string>();
+            _values = new Queue<object>();
         }
 
         private void InitKeysValuePairs(int capacity)
@@ -49,20 +49,20 @@ namespace XPatchLib
             }
         }
 
-        public int[] Keys
+        public string[] Keys
         {
             get { return _keys.ToArray(); }
         }
 
-        public int[] Values
+        public object[] Values
         {
             get { return _values.ToArray(); }
         }
 
         private void _keysValuePairs_OnAdd(object sender, AddEventArgs<String, Object> e)
         {
-            _keys.Enqueue(e.Item.Key.GetHashCode());
-            _values.Enqueue(e.Item.Value.GetHashCode());
+            _keys.Enqueue(e.Item.Key);
+            _values.Enqueue(e.Item.Value);
 
             //TODO:其他可能未处理
         }
@@ -75,7 +75,7 @@ namespace XPatchLib
             Item = new KeyValuePair<TKey, TValue>(key, value);
         }
 
-        public KeyValuePair<TKey, TValue> Item { get; }
+        public KeyValuePair<TKey, TValue> Item { get; private set; }
     }
 
     internal class KeyValuePairs<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>

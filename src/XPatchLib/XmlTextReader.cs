@@ -186,7 +186,11 @@ namespace XPatchLib
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
-                ((IDisposable) _reader)?.Dispose();
+            {
+                IDisposable d = _reader as IDisposable;
+                if (d != null)
+                    d.Dispose();
+            }
         }
 
         /// <summary>

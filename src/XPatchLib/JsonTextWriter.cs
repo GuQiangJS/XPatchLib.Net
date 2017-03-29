@@ -188,11 +188,16 @@ namespace XPatchLib
             GC.SuppressFinalize(this);
         }
 
+        DateTimeSerializationMode _mode=DateTimeSerializationMode.RoundtripKind;
+
         /// <summary>
         ///     获取或设置在字符串与 <see cref="DateTime" /> 之间转换时，如何处理时间值。
         /// </summary>
         /// <value>默认值 <see cref="DateTimeSerializationMode.RoundtripKind" /> 。</value>
-        public DateTimeSerializationMode Mode { get; set; } = DateTimeSerializationMode.RoundtripKind;
+        public DateTimeSerializationMode Mode {
+            get { return _mode; }
+            set { _mode = value; }
+        }
 
         /// <summary>
         ///     获取或设置是否序列化默认值。
@@ -200,23 +205,39 @@ namespace XPatchLib
         /// <value>默认值 <c>false</c> 。</value>
         public bool SerializeDefalutValue { get; set; }
 
+        private Encoding _encoding = Encoding.UTF8;
+
         /// <summary>
         ///     获取或设置要使用的文本编码的类型。
         /// </summary>
         /// <value>默认值 <see cref="Encoding.UTF8" /> 。</value>
-        public Encoding Encoding { get; set; } = Encoding.UTF8;
+        public Encoding Encoding {
+            get { return _encoding; }
+            set { _encoding = value; }
+        }
+
+        private Formatting _formatting = Formatting.None;
 
         /// <summary>
         ///     获取或设置如何对输出进行格式设置。
         /// </summary>
         /// <value><see cref="Formatting" /> 值之一。 默认值是 <see cref="Formatting.None" /> （无特殊格式）。</value>
-        public Formatting Formatting { get; set; } = Formatting.None;
+        public Formatting Formatting {
+            get { return _formatting; }
+            set { _formatting = value; }
+        }
+
+        private string _indentChars = " ";
 
         /// <summary>
         ///     获取或设置用于缩进时用于转换的字符 <see cref="Formatting" /> 设置为 <see cref="Formatting.Indented" />。
         /// </summary>
         /// <value>默认值是 空格 。</value>
-        public string IndentChars { get; set; } = " ";
+        public string IndentChars
+        {
+            get { return _indentChars; }
+            set { _indentChars = value; }
+        }
 
         private void WritePropertyDelimiter()
         {
@@ -235,7 +256,11 @@ namespace XPatchLib
         protected void Dispose(bool disposing)
         {
             if (disposing)
-                ((IDisposable) Writer)?.Dispose();
+            {
+                IDisposable d = Writer as IDisposable;
+                if (d != null)
+                    d.Dispose();
+            }
         }
 
         private enum State
@@ -253,6 +278,6 @@ namespace XPatchLib
         }
 
         public ISerializeSetting Setting { get; set; }
-        public Type IgnoreAttributeType { get; }
+        public Type IgnoreAttributeType { get { return typeof(object); }}
     }
 }

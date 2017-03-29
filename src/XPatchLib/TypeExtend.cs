@@ -103,14 +103,14 @@ namespace XPatchLib
         /// <summary>
         ///     获取该类型下可以被序列化的字段。
         /// </summary>
-        internal MemberWrapper[] FieldsToBeSerialized { get; }
+        internal MemberWrapper[] FieldsToBeSerialized { get; private set; }
 
-        internal Boolean IsArray { get; }
+        internal Boolean IsArray { get; private set; }
 
         /// <summary>
         ///     获取是否为基础类型。
         /// </summary>
-        internal Boolean IsBasicType { get; }
+        internal Boolean IsBasicType { get; private set; }
 
         internal Boolean IsGenericType { get; private set; }
 
@@ -118,11 +118,11 @@ namespace XPatchLib
 
         internal Boolean IsICollection { get; private set; }
 
-        internal Boolean IsIDictionary { get; }
+        internal Boolean IsIDictionary { get; private set; }
 
         internal Boolean IsIEnumerable { get; private set; }
 
-        internal Boolean IsKeyValuePair { get; }
+        internal Boolean IsKeyValuePair { get; private set; }
 
         /// <summary>
         ///     只有当是字典类型或KeyValue类型时才会有值
@@ -132,7 +132,7 @@ namespace XPatchLib
         /// <summary>
         ///     获取原始类型定义。
         /// </summary>
-        internal Type OriType { get; }
+        internal Type OriType { get; private set; }
 
         internal PrimaryKeyAttribute PrimaryKeyAttr { get; private set; }
 

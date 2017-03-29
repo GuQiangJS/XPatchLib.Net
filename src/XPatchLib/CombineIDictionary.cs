@@ -17,7 +17,7 @@ namespace XPatchLib
         /// <summary>
         ///     集合类型中元素的类型。
         /// </summary>
-        protected TypeExtend GenericArgumentType { get; }
+        protected TypeExtend GenericArgumentType { get; private set; }
 
         /// <summary>
         ///     根据增量内容创建基础类型实例。

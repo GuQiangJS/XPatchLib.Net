@@ -77,9 +77,9 @@ namespace XPatchLib
         /// <summary>
         ///     获取集合中的元素类型。
         /// </summary>
-        protected TypeExtend GenericArgumentType { get; }
+        protected TypeExtend GenericArgumentType { get; private set; }
 
-        protected PrimaryKeyAttribute GenericArgumentTypePrimaryKeyAttribute { get; }
+        protected PrimaryKeyAttribute GenericArgumentTypePrimaryKeyAttribute { get; private set; }
 
         #endregion Protected Properties
 

@@ -112,12 +112,12 @@ namespace XPatchLib
         /// <summary>
         ///     获取当前未找到的自定义特性的名称。
         /// </summary>
-        public string AttributeName { get; }
+        public string AttributeName { get; private set; }
 
         /// <summary>
         ///     获取当前未找到特性的类型。
         /// </summary>
-        public Type ErrorType { get; }
+        public Type ErrorType { get; private set; }
 
         /// <summary>
         ///     获取描述当前异常的消息。

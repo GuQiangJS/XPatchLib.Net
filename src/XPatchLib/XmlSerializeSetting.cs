@@ -35,7 +35,7 @@ namespace XPatchLib
                 if (_mode != value)
                 {
                     _mode = value;
-                    OnPropertyChanged(nameof(Mode));
+                    OnPropertyChanged("Mode");
                 }
             }
         }
@@ -52,7 +52,7 @@ namespace XPatchLib
                 if (_serializeDefalutValue != value)
                 {
                     _serializeDefalutValue = value;
-                    OnPropertyChanged(nameof(SerializeDefalutValue));
+                    OnPropertyChanged("SerializeDefalutValue");
                 }
             }
         }
@@ -74,14 +74,14 @@ namespace XPatchLib
                 if (_actionName != value)
                 {
                     _actionName = value;
-                    OnPropertyChanged(nameof(ActionName));
+                    OnPropertyChanged("ActionName");
                 }
             }
         }
 
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        protected virtual void OnPropertyChanged(string propertyName) {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
