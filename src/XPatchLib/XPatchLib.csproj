@@ -92,8 +92,6 @@
     <Compile Include="ITextReader.cs" />
     <Compile Include="ITextWriter.cs" />
     <Compile Include="ISerializeSetting.cs" />
-    <Compile Include="JsonSerializer.cs" />
-    <Compile Include="JsonTextReader.cs" />
     <Compile Include="KeyValuesObject.cs" />
     <Compile Include="MemberWrapper.cs" />
     <Compile Include="NodeType.cs" />
@@ -114,7 +112,6 @@
     <Compile Include="DivideObject.cs" />
     <Compile Include="ResourceHelper.cs" />
     <Compile Include="TypeExtend.cs" />
-    <Compile Include="JsonTextWriter.cs" />
     <Compile Include="TypeExtendContainer.cs" />
     <Compile Include="XmlSerializeSetting.cs" />
     <Compile Include="XmlTextReader.cs" />
