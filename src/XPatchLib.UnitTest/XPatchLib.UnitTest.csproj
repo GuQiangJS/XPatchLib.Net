@@ -116,7 +116,6 @@
     <Compile Include="TestGuard.cs" />
     <Compile Include="ForXml\TestHashTable.cs" />
     <Compile Include="ForXml\TestSerializeObject.cs" />
-    <Compile Include="ForJson\TestJsonSerializer.cs" />
     <Compile Include="ForXml\TestXmlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
