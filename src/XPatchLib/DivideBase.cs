@@ -59,7 +59,12 @@ namespace XPatchLib
             finally
             {
                 if (result)
-                    Writer.WriteEndObject();
+                {
+                    if (Type.IsArray || Type.IsICollection || Type.IsIEnumerable)
+                        Writer.WriteEndArray();
+                    else
+                        Writer.WriteEndObject();
+                }
             }
         }
 
@@ -89,7 +94,10 @@ namespace XPatchLib
                 while (true)
                 {
                     var parent = pAttach.ParentQuere.Dequeue();
-                    Writer.WriteStartObject(parent.Name);
+                    if (parent.Type.IsArray || parent.Type.IsICollection || parent.Type.IsIEnumerable)
+                        Writer.WriteStartArray(parent.Name);
+                    else
+                        Writer.WriteStartObject(parent.Name);
                     Writer.WriteActionAttribute(parent.Action);
 
                     if (parent.Type.PrimaryKeyAttr != null && parent.CurrentObj != null && parent.Type != null &&
