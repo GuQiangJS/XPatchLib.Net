@@ -47,6 +47,11 @@ namespace XPatchLib
 
         #endregion Internal Constructors
 
+        protected override void WriteEnd()
+        {
+            Writer.WriteEndArray();
+        }
+
         /// <summary>
         ///     产生增量内容的实际方法。
         /// </summary>

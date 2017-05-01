@@ -60,12 +60,14 @@ namespace XPatchLib
             {
                 if (result)
                 {
-                    if (Type.IsArray || Type.IsICollection || Type.IsIEnumerable)
-                        Writer.WriteEndArray();
-                    else
-                        Writer.WriteEndObject();
+                    WriteEnd();
                 }
             }
+        }
+
+        protected virtual void WriteEnd()
+        {
+            Writer.WriteEndObject();
         }
 
         /// <summary>
