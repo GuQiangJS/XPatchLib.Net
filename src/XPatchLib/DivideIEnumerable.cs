@@ -52,6 +52,11 @@ namespace XPatchLib
             Writer.WriteEndArray();
         }
 
+        protected override void WriteStart(ParentObject pParentObject)
+        {
+            Writer.WriteStartArray(pParentObject.Name);
+        }
+
         /// <summary>
         ///     产生增量内容的实际方法。
         /// </summary>

@@ -84,6 +84,11 @@ namespace XPatchLib
                 }
         }
 
+        protected virtual void WriteStart(ParentObject pParentObject)
+        {
+            Writer.WriteStartObject(pParentObject.Name);
+        }
+
         /// <summary>
         ///     写入父级节点开始标记
         /// </summary>
@@ -96,10 +101,7 @@ namespace XPatchLib
                 while (true)
                 {
                     var parent = pAttach.ParentQuere.Dequeue();
-                    if (parent.Type.IsArray || parent.Type.IsICollection || parent.Type.IsIEnumerable)
-                        Writer.WriteStartArray(parent.Name);
-                    else
-                        Writer.WriteStartObject(parent.Name);
+                    WriteStart(parent);
                     Writer.WriteActionAttribute(parent.Action);
 
                     if (parent.Type.PrimaryKeyAttr != null && parent.CurrentObj != null && parent.Type != null &&
