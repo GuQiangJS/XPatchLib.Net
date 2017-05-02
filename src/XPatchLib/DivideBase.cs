@@ -86,6 +86,11 @@ namespace XPatchLib
 
         protected virtual void WriteStart(ParentObject pParentObject)
         {
+            if (pParentObject.Type.IsArray || pParentObject.Type.IsICollection || pParentObject.Type.IsIEnumerable)
+            {
+                Writer.WriteStartArray(pParentObject.Name);
+                return;
+            }
             Writer.WriteStartObject(pParentObject.Name);
         }
 

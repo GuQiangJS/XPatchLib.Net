@@ -19,8 +19,7 @@ namespace XPatchLib
         internal static void WriteActionAttribute(this ITextWriter pWriter, Action pAction)
         {
             if (pAction != Action.Edit)
-                if (pWriter is XmlTextWriter)
-                    pWriter.WriteAttribute(pWriter.Setting.ActionName, ActionHelper.ToString(pAction));
+                pWriter.WriteAttribute(pWriter.Setting.ActionName, ActionHelper.ToString(pAction));
         }
     }
 }
