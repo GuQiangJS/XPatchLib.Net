@@ -78,9 +78,20 @@ namespace XPatchLib
 
         /// <summary>
         ///     写入列表类型对象开始标记。
-        ///     <param name="pName">列表类型对象实例名称。</param>
         /// </summary>
+        ///     <param name="pName">列表类型对象实例名称。</param>
         void WriteStartArray(string pName);
+
+        /// <summary>
+        /// 写入列表元素对象开始标记。
+        /// </summary>
+        /// <param name="pName">列表元素对象实例名称。</param>
+        void WriteStartArrayItem(string pName);
+
+        /// <summary>
+        /// 写入列表元素结束标记。
+        /// </summary>
+        void WriteEndArrayItem();
 
         /// <summary>
         ///     写入列表对象结束标记。

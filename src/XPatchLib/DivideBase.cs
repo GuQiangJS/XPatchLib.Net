@@ -65,9 +65,16 @@ namespace XPatchLib
             }
         }
 
-        protected virtual void WriteEnd()
-        {
-            Writer.WriteEndObject();
+        protected virtual void WriteEnd() {
+            if (Type != null && Type.ParentType != null &&
+                (Type.ParentType.IsArray || Type.ParentType.IsICollection || Type.ParentType.IsIEnumerable))
+                Writer.WriteEndArrayItem();
+            else if(Type!=null && Type.IsBasicType)
+                Writer.WriteEndProperty();
+            else if (Type!=null && (Type.IsArray || Type.IsICollection || Type.IsIEnumerable))
+                Writer.WriteEndArray();
+            else
+                Writer.WriteEndObject();
         }
 
         /// <summary>
@@ -84,14 +91,22 @@ namespace XPatchLib
                 }
         }
 
-        protected virtual void WriteStart(ParentObject pParentObject)
-        {
-            if (pParentObject.Type.IsArray || pParentObject.Type.IsICollection || pParentObject.Type.IsIEnumerable)
-            {
-                Writer.WriteStartArray(pParentObject.Name);
-                return;
-            }
-            Writer.WriteStartObject(pParentObject.Name);
+        protected virtual void WriteStart(TypeExtend pType,string pName) {
+            if (pType != null && pType.ParentType != null && (pType.ParentType.IsArray || pType.ParentType.IsICollection || pType.ParentType.IsIEnumerable))
+                Writer.WriteStartArrayItem(pName);
+            else if (pType != null && pType.IsBasicType && pType.ParentType != null && (pType.ParentType.IsArray || pType.ParentType.IsICollection || pType.ParentType.IsIEnumerable))
+                Writer.WriteStartArrayItem(pName);
+            //string类型也是IsIEnumerable，所以要写在前面
+            else if (pType != null && pType.IsBasicType)
+                Writer.WriteStartProperty(pName);
+            else if (pType != null && (pType.IsArray || pType.IsICollection || pType.IsIEnumerable))
+                Writer.WriteStartArray(pName);
+            else
+                Writer.WriteStartObject(pName);
+        }
+
+        protected virtual void WriteStart(ParentObject pParentObject) {
+            WriteStart(pParentObject.Type, pParentObject.Name);
         }
 
         /// <summary>

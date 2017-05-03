@@ -114,6 +114,7 @@
     <Compile Include="DivideBasic.cs" />
     <Compile Include="DivideIEnumerable.cs" />
     <Compile Include="DivideObject.cs" />
+    <Compile Include="RegistryKey.cs" />
     <Compile Include="ResourceHelper.cs" />
     <Compile Include="TypeExtend.cs" />
     <Compile Include="TypeExtendContainer.cs" />

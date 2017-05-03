@@ -270,7 +270,9 @@ namespace XPatchLib
             foreach (KeyValuePair<Type, string[]> kv in pTypes)
             {
                 TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(kv.Key, null);
-                typeExtend.UpdatePrimaryKeyAttributes(new PrimaryKeyAttribute(kv.Value));
+                PrimaryKeyAttribute attr = new PrimaryKeyAttribute(kv.Value);
+                typeExtend.UpdatePrimaryKeyAttributes(attr);
+                TypeExtendContainer.AddPrimaryKeyAttribute(kv.Key, attr);
             }
         }
 

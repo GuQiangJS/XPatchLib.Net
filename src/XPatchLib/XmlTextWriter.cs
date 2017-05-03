@@ -223,5 +223,31 @@ namespace XPatchLib
             //if (disposing)
             //    ((IDisposable) Writer)?.Dispose();
         }
+
+        /// <summary>
+        /// 写入列表元素对象开始标记。
+        /// </summary>
+        /// <param name="pName">列表元素对象实例名称。</param>
+        public void WriteStartArrayItem(string pName)
+        {
+            _writer.WriteStartElement(pName);
+#if DEBUG
+            Debug.WriteLine(string.Format("WriteStartArrayItem '{0}'.", pName));
+#endif
+        }
+
+        /// <summary>
+        /// 写入列表元素结束标记。
+        /// </summary>
+        public void WriteEndArrayItem()
+        {
+            if (_writer.WriteState == WriteState.Content || _writer.WriteState == WriteState.Element)
+            {
+                _writer.WriteEndElement();
+#if DEBUG
+                Debug.WriteLine("WriteEndArrayItem.");
+#endif
+            }
+        }
     }
 }

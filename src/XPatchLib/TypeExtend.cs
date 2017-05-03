@@ -28,6 +28,10 @@ namespace XPatchLib
             CustomAttributes = pType.GetCustomAttributes();
             PrimaryKeyAttr = GetCustomAttribute<PrimaryKeyAttribute>();
 
+            if (PrimaryKeyAttr == null) {
+                PrimaryKeyAttr = TypeExtendContainer.GetPrimaryKeyAttribute(pType);
+            }
+
             GetValueFuncs = new Dictionary<string, Func<object, object>>();
             SetValueFuncs = new Dictionary<string, Action<object, object>>();
 

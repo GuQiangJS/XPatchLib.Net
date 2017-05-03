@@ -267,7 +267,7 @@ namespace XPatchLib
                         //当前元素是删除操作时
 
                         WriteParentElementStart(pAttach);
-                        Writer.WriteStartObject(GenericArgumentType.TypeFriendlyName);
+                        Writer.WriteStartArrayItem(GenericArgumentType.TypeFriendlyName);
                         Writer.WriteActionAttribute(Action.Remove);
 
                         if (GenericArgumentType.IsBasicType)
@@ -280,7 +280,7 @@ namespace XPatchLib
                                 PrimaryKeys = GenericArgumentPrimaryKeys
                             });
                         result = itemResult = true;
-                        Writer.WriteEndProperty();
+                        Writer.WriteEndArrayItem();
                     }
                     else if (pAction == Action.Edit)
                     {
