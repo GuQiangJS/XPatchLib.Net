@@ -13,7 +13,7 @@
     <RootNamespace>CHMBilder</RootNamespace>
     <Name>CHMBuilder</Name>
     <!-- SHFB properties -->
-    <FrameworkVersion>.NET Framework 4.5</FrameworkVersion>
+    <FrameworkVersion>.NET Framework 4.0</FrameworkVersion>
     <OutputPath>..\..\..\XPatchLib.Output\Doc\Helper\Chm\</OutputPath>
     <HtmlHelpName>XPatchLib Helper</HtmlHelpName>
     <Language>zh-CN</Language>
@@ -59,6 +59,7 @@
     <VisibleItems>ProtectedInternalAsProtected</VisibleItems>
     <HelpFileVersion>1.0.0.0</HelpFileVersion>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
+    <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

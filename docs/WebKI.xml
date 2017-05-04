@@ -103,11 +103,13 @@
   <HelpKINode Title="ITextWriter.Setting 属性" Url="html/554d4bcd-a959-0a61-9e10-d379e7dd6389.htm" />
   <HelpKINode Title="ITextWriter.WriteAttribute 方法" Url="html/647c24c5-c100-a01b-64fa-ca9beed2014e.htm" />
   <HelpKINode Title="ITextWriter.WriteEndArray 方法" Url="html/a9183197-0e2a-f77d-4ebc-3c15f15636c1.htm" />
+  <HelpKINode Title="ITextWriter.WriteEndArrayItem 方法" Url="html/87cf9589-2eb3-4137-8f3b-5ecbde92f15e.htm" />
   <HelpKINode Title="ITextWriter.WriteEndDocument 方法" Url="html/36af8d37-6f11-d54c-6aad-532ba0554b57.htm" />
   <HelpKINode Title="ITextWriter.WriteEndObject 方法" Url="html/f36b8a8b-1819-bffd-0cdc-1f06a2f09b56.htm" />
   <HelpKINode Title="ITextWriter.WriteEndProperty 方法" Url="html/227286a6-1c36-a01f-15ee-b83708279fd5.htm" />
   <HelpKINode Title="ITextWriter.WriteProperty 方法" Url="html/d128df2c-bf0a-3c6d-97d2-c50dd705c93f.htm" />
   <HelpKINode Title="ITextWriter.WriteStartArray 方法" Url="html/2030ac4c-0fe6-d495-83c8-58f79c6370f9.htm" />
+  <HelpKINode Title="ITextWriter.WriteStartArrayItem 方法" Url="html/5bd4413e-d28f-0bb3-4e72-690f2d23adb1.htm" />
   <HelpKINode Title="ITextWriter.WriteStartDocument 方法" Url="html/81c1955a-fcde-1463-48c0-0b892a525d6b.htm" />
   <HelpKINode Title="ITextWriter.WriteStartObject 方法" Url="html/99e73450-e4da-8a4f-f930-8c9658e90014.htm" />
   <HelpKINode Title="ITextWriter.WriteStartProperty 方法" Url="html/93ed79e8-d1c9-2704-ff43-d4bda9d60efd.htm" />
@@ -219,6 +221,10 @@
     <HelpKINode Title="ITextWriter.WriteEndArray 方法 " Url="html/a9183197-0e2a-f77d-4ebc-3c15f15636c1.htm" />
     <HelpKINode Title="XmlTextWriter.WriteEndArray 方法 " Url="html/641aec44-cc0b-457f-6d02-484f9121ce07.htm" />
   </HelpKINode>
+  <HelpKINode Title="WriteEndArrayItem 方法">
+    <HelpKINode Title="ITextWriter.WriteEndArrayItem 方法 " Url="html/87cf9589-2eb3-4137-8f3b-5ecbde92f15e.htm" />
+    <HelpKINode Title="XmlTextWriter.WriteEndArrayItem 方法 " Url="html/4e71747b-2abc-d59c-8d78-0d9d4df21e7d.htm" />
+  </HelpKINode>
   <HelpKINode Title="WriteEndDocument 方法">
     <HelpKINode Title="ITextWriter.WriteEndDocument 方法 " Url="html/36af8d37-6f11-d54c-6aad-532ba0554b57.htm" />
     <HelpKINode Title="XmlTextWriter.WriteEndDocument 方法 " Url="html/e860c98a-41b2-b399-db1b-2366ea3261f1.htm" />
@@ -238,6 +244,10 @@
   <HelpKINode Title="WriteStartArray 方法">
     <HelpKINode Title="ITextWriter.WriteStartArray 方法 " Url="html/2030ac4c-0fe6-d495-83c8-58f79c6370f9.htm" />
     <HelpKINode Title="XmlTextWriter.WriteStartArray 方法 " Url="html/ba2d35d0-1060-4477-c37c-e6b3386cbb23.htm" />
+  </HelpKINode>
+  <HelpKINode Title="WriteStartArrayItem 方法">
+    <HelpKINode Title="ITextWriter.WriteStartArrayItem 方法 " Url="html/5bd4413e-d28f-0bb3-4e72-690f2d23adb1.htm" />
+    <HelpKINode Title="XmlTextWriter.WriteStartArrayItem 方法 " Url="html/07f5f3e7-fdf2-2304-52a3-0ee1c3fd11bc.htm" />
   </HelpKINode>
   <HelpKINode Title="WriteStartDocument 方法">
     <HelpKINode Title="ITextWriter.WriteStartDocument 方法 " Url="html/81c1955a-fcde-1463-48c0-0b892a525d6b.htm" />
@@ -303,11 +313,13 @@
   <HelpKINode Title="XmlTextWriter.Setting 属性" Url="html/593dfde9-4120-5a93-45c7-450f14778cc4.htm" />
   <HelpKINode Title="XmlTextWriter.WriteAttribute 方法" Url="html/829a2b3a-00bd-9d9d-2ffd-d420aa8fb0e5.htm" />
   <HelpKINode Title="XmlTextWriter.WriteEndArray 方法" Url="html/641aec44-cc0b-457f-6d02-484f9121ce07.htm" />
+  <HelpKINode Title="XmlTextWriter.WriteEndArrayItem 方法" Url="html/4e71747b-2abc-d59c-8d78-0d9d4df21e7d.htm" />
   <HelpKINode Title="XmlTextWriter.WriteEndDocument 方法" Url="html/e860c98a-41b2-b399-db1b-2366ea3261f1.htm" />
   <HelpKINode Title="XmlTextWriter.WriteEndObject 方法" Url="html/d5c39421-573b-51de-5ded-2d3a7d81c810.htm" />
   <HelpKINode Title="XmlTextWriter.WriteEndProperty 方法" Url="html/e4913634-0fb5-5eae-6e6d-122ef36c25db.htm" />
   <HelpKINode Title="XmlTextWriter.WriteProperty 方法" Url="html/b524e909-ff86-56b5-62bb-809f77018e41.htm" />
   <HelpKINode Title="XmlTextWriter.WriteStartArray 方法" Url="html/ba2d35d0-1060-4477-c37c-e6b3386cbb23.htm" />
+  <HelpKINode Title="XmlTextWriter.WriteStartArrayItem 方法" Url="html/07f5f3e7-fdf2-2304-52a3-0ee1c3fd11bc.htm" />
   <HelpKINode Title="XmlTextWriter.WriteStartDocument 方法" Url="html/a0c8fde1-c820-783c-342f-70a46ccd8e97.htm" />
   <HelpKINode Title="XmlTextWriter.WriteStartObject 方法" Url="html/6aabddc0-24a0-1cb5-8886-28b06c420971.htm" />
   <HelpKINode Title="XmlTextWriter.WriteStartProperty 方法" Url="html/10b876f2-2eb4-6a5d-105b-a4816a18b350.htm" />
