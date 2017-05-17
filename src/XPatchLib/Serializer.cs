@@ -142,6 +142,7 @@ namespace XPatchLib
                             using (XmlTextWriter writer = new XmlTextWriter(xmlWriter))
                             {
                                 writer.IgnoreAttributeType = null;
+                                writer.Setting.SerializeDefalutValue = true;
                                 new Serializer(_initialType, false).Divide(writer, null, pOriValue);
                             }
                         }
