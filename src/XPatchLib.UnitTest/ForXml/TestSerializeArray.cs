@@ -449,6 +449,10 @@ namespace XPatchLib.UnitTest.ForXml
                 @"<BookClassCollection>
   <BookClass Action=""Remove"" Name=""A"" />
   <BookClass Action=""Add"">
+    <Author>
+      <Comments Action=""SetNull"" />
+      <Name Action=""SetNull"" />
+    </Author>
     <Comments Action=""SetNull"" />
     <Name>C</Name>
     <Price>0</Price>
@@ -467,7 +471,6 @@ namespace XPatchLib.UnitTest.ForXml
                 }
                 stream.Position = 0;
                 var ele = XElement.Load(stream);
-
 
                 Assert.AreEqual(result, ele.ToString());
 
