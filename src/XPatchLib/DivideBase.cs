@@ -52,7 +52,7 @@ namespace XPatchLib
                     Writer.WriteActionAttribute(Action.SetNull);
                     return result = true;
                 }
-                if (!TypeExtend.NeedSerialize(Type.OriType, pOriObject, pRevObject,
+                if (!TypeExtend.NeedSerialize(Type.DefaultValue, pOriObject, pRevObject,
                     Writer.Setting.SerializeDefalutValue))
                     return result = false;
                 return result = DivideAction(pName, pOriObject, pRevObject, pAttach);

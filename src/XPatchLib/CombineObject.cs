@@ -87,15 +87,20 @@ namespace XPatchLib
                         //当前处理的属性的类型是 复杂 类型时
                         //当前正在处理的属性的现有属性值实例
                         Object memberObj = Type.GetMemberValue(pOriObject, member.Name);
+                        bool created = false;
                         //如果当前正在处理的属性的现有属性值实例为null时，先创建一个新的实例。
                         if (memberObj == null)
+                        {
                             memberObj = TypeExtendContainer.GetTypeExtend(memberType, null, Type).CreateInstance();
+                            created = true;
+                        }
                         //调用CombineObject类型的Combine方法，对现有属性实例（或新创建的属性实例）进行增量数据合并。
                         CombineInstanceContainer.GetCombineInstance(TypeExtendContainer.GetTypeExtend(memberType, null, Type)).Combine(pReader, memberObj,
                             member.Name);
                         //将数据合并后的实例赋值给当前正在处理的属性，替换原有的数据实例。实现数据合并功能。
 
-                        Type.SetMemberValue(pOriObject, member.Name, memberObj);
+                        if (!(created && TypeExtendContainer.GetTypeExtend(memberType, null, Type).CreateInstance().Equals(memberObj)))
+                            Type.SetMemberValue(pOriObject, member.Name, memberObj);
                     }
                 }
 

@@ -34,7 +34,7 @@ namespace XPatchLib
                 var pOriMemberValue = Type.GetMemberValue(pOriObject, member.Name);
                 var pRevMemberValue = Type.GetMemberValue(pRevObject, member.Name);
 
-                if (!TypeExtend.NeedSerialize(member.MemberType, pOriMemberValue, pRevMemberValue,
+                if (!TypeExtend.NeedSerialize(member.DefaultValue, pOriMemberValue, pRevMemberValue,
                     Writer.Setting.SerializeDefalutValue))
                     continue;
 

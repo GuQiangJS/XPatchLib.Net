@@ -263,10 +263,19 @@ namespace XPatchLib
             return objA.Equals(objB);
         }
 
-        internal static Boolean NeedSerialize(Type type, object objA, object objB, bool serializeDefaultValue)
+        internal static Boolean IsDefaultValue(object defaultValue, object value)
+        {
+            if (defaultValue == null && value == null)
+                return true;
+            else if (defaultValue != null)
+                return defaultValue.Equals(value);
+            return value.Equals(defaultValue);
+        }
+
+        internal static Boolean NeedSerialize(object defaultValue, object objA, object objB, bool serializeDefaultValue)
         {
             bool result = Equals(objA, objB);
-            if (result && type == typeof(string) && serializeDefaultValue && objA == null)
+            if (result && IsDefaultValue(defaultValue, objA) && serializeDefaultValue)
                 return true;
             return !result;
         }

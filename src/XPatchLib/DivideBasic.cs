@@ -132,7 +132,7 @@ namespace XPatchLib
         /// </returns>
         private Boolean DivideAction<T>(string pName, Object pOriObject, Object pRevObject, DivideAttachment pAttach)
         {
-            if (TypeExtend.NeedSerialize(Type.OriType, pOriObject, pRevObject, Writer.Setting.SerializeDefalutValue))
+            if (TypeExtend.NeedSerialize(Type.DefaultValue, pOriObject, pRevObject, Writer.Setting.SerializeDefalutValue))
             {
                 //只有当原始对象与变更后的对象不相等时才需要产生增量内容。
                 if (pRevObject == null)
