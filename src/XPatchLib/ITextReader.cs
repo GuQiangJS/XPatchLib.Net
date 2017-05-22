@@ -46,22 +46,26 @@ namespace XPatchLib
         /// <summary>
         ///     从流中读取下一个节点。
         /// </summary>
+        /// <returns>如果成功读取了下一个节点，则为 <c>true</c>；如果没有其他节点可读取，则为 <c>false</c>。</returns>
         bool Read();
 
         /// <summary>
         ///     将元素或文本节点的内容当做字符串读取。
         /// </summary>
+        /// <returns>该元素或文本节点的内容。如果读取器定位在元素或文本节点以外的位置，或者当前上下文中没有其他文本内容可返回，则这可以是空字符串。 
+        /// <para>Note: 文本节点可以是元素或属性文本节点。</para></returns>
         string ReadString();
 
         /// <summary>
         ///     移动到下一个属性。
         /// </summary>
+        /// <returns>如果存在下一个属性，则为 <c>true</c>；如果没有其他属性，则为 <c>false</c>。</returns>
         bool MoveToNextAttribute();
 
         /// <summary>
         ///     移动到包含当前属性节点的元素。
         /// </summary>
-        /// <returns></returns>
+        /// <returns>如果读取器定位在属性上，则为 <c>true</c>（读取器移动到拥有该属性的元素）；如果读取器不是定位在属性上，则为 <c>false</c>（读取器的位置不改变）。</returns>
         bool MoveToElement();
 
         /// <summary>

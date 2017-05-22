@@ -37,7 +37,7 @@ namespace XPatchLib
         /// <summary>
         ///     从流中读取下一个节点。
         /// </summary>
-        /// <returns></returns>
+        /// <returns>如果成功读取了下一个节点，则为 <c>true</c>；如果没有其他节点可读取，则为 <c>false</c>。</returns>
         public bool Read()
         {
             return _reader.Read();
@@ -46,7 +46,14 @@ namespace XPatchLib
         /// <summary>
         ///     获取读取器的状态。
         /// </summary>
-        /// <exception cref="System.NotSupportedException"></exception>
+        /// <exception cref="System.NotSupportedException">
+        ///<para>当 内部读取器 <see cref="System.Xml.XmlReader"/> 的状态不包含在以下状态中时：</para>
+        /// <para><see cref="System.Xml.ReadState.Closed"/></para>
+        /// <para><see cref="System.Xml.ReadState.EndOfFile"/></para>
+        /// <para><see cref="System.Xml.ReadState.Error"/></para>
+        /// <para><see cref="System.Xml.ReadState.Initial"/></para>
+        /// <para><see cref="System.Xml.ReadState.Interactive"/></para>
+        /// </exception>
         public ReadState ReadState
         {
             get
@@ -72,7 +79,8 @@ namespace XPatchLib
         /// <summary>
         ///     将元素或文本节点的内容当做字符串读取。
         /// </summary>
-        /// <returns></returns>
+        /// <returns>该元素或文本节点的内容。如果读取器定位在元素或文本节点以外的位置，或者当前上下文中没有其他文本内容可返回，则这可以是空字符串。 
+        /// <para>Note: 文本节点可以是元素或属性文本节点。</para></returns>
         public string ReadString()
         {
             return _reader.ReadString();
@@ -113,7 +121,7 @@ namespace XPatchLib
         /// <summary>
         ///     移动到下一个属性。
         /// </summary>
-        /// <returns></returns>
+        /// <returns>如果存在下一个属性，则为 <c>true</c>；如果没有其他属性，则为 <c>false</c>。</returns>
         public bool MoveToNextAttribute()
         {
             return _reader.MoveToNextAttribute();
@@ -122,7 +130,7 @@ namespace XPatchLib
         /// <summary>
         ///     移动到包含当前属性节点的元素。
         /// </summary>
-        /// <returns></returns>
+        /// <returns>如果读取器定位在属性上，则为 <c>true</c>（读取器移动到拥有该属性的元素）；如果读取器不是定位在属性上，则为 <c>false</c>（读取器的位置不改变）。</returns>
         public bool MoveToElement()
         {
             return _reader.MoveToElement();
@@ -131,7 +139,27 @@ namespace XPatchLib
         /// <summary>
         ///     获取当前节点的类型。
         /// </summary>
-        /// <exception cref="System.NotSupportedException"></exception>
+        /// <exception cref="System.NotSupportedException">
+        ///<para>当 内部读取器 <see cref="System.Xml.XmlReader"/> 的读取的节点类型不包含在以下状态中时：</para>
+        /// <para><see cref="System.Xml.XmlNodeType.None"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.Element"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.Attribute"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.Text"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.CDATA"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.EntityReference"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.Entity"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.ProcessingInstruction"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.Comment"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.Document"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.DocumentType"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.DocumentFragment"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.Notation"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.Whitespace"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.SignificantWhitespace"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.EndElement"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.EndEntity"/></para>
+        /// <para><see cref="System.Xml.XmlNodeType.XmlDeclaration"/></para>
+        /// </exception>
         public NodeType NodeType
         {
             get

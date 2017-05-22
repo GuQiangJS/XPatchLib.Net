@@ -29,11 +29,11 @@
     <NamespaceGrouping>False</NamespaceGrouping>
     <SyntaxFilters>C#, Visual Basic</SyntaxFilters>
     <SdkLinkTarget>Blank</SdkLinkTarget>
-    <RootNamespaceContainer>False</RootNamespaceContainer>
+    <RootNamespaceContainer>True</RootNamespaceContainer>
     <PresentationStyle>VS2013</PresentationStyle>
     <Preliminary>False</Preliminary>
     <NamingMethod>Guid</NamingMethod>
-    <HelpTitle>XPatchLib Library</HelpTitle>
+    <HelpTitle>XPatchLib - .Net增量内容序列化/反序列化工工具</HelpTitle>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <WorkingPath>WorkingPath\</WorkingPath>
     <DocumentationSources>
@@ -50,6 +50,15 @@
     <PostBuildEvent>echo f | xcopy /D /E /Y "$(OutputPath)*.*" "$(SolutionDir)..\docs\"</PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
+    <ProjectSummary>
+    </ProjectSummary>
+    <RootNamespaceTitle>
+    </RootNamespaceTitle>
+    <NamespaceSummaries>
+      <NamespaceSummaryItem name="XPatchLib" isDocumented="True">XPatchLib 命名空间为处理 对象增量序列化/反序列化 提供接口及基于 XML 格式的支持。</NamespaceSummaryItem>
+    </NamespaceSummaries>
+    <HeaderText>
+    </HeaderText>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

@@ -79,6 +79,10 @@ namespace XPatchLib
             }
         }
 
+        /// <summary>
+        /// 播发属性变更后事件。
+        /// </summary>
+        /// <param name="propertyName">被变更的属性名称。</param>
         protected virtual void OnPropertyChanged(string propertyName) {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
