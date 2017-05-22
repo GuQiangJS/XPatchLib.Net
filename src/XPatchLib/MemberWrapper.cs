@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Reflection;
 using System.Xml.Serialization;
+using XPatchLib.Properties;
 
 namespace XPatchLib
 {
@@ -36,8 +37,7 @@ namespace XPatchLib
 
             if (pMemberInfo.MemberType != MemberTypes.Property && pMemberInfo.MemberType != MemberTypes.Field)
                 throw new ArgumentException(
-                    string.Format(CultureInfo.InvariantCulture,
-                        "{0}.MemberType 既不是 MemberTypes.Property 也不是 MemberTypes.Field。而是 {1} 。", pMemberInfo,
+                    string.Format(CultureInfo.InvariantCulture, Resources.Exp_String_MemberType, pMemberInfo,
                         pMemberInfo.MemberType)
                     , "pMemberInfo");
 

@@ -4,6 +4,7 @@
 using System;
 using System.Drawing;
 using System.Globalization;
+using XPatchLib.Properties;
 
 namespace XPatchLib
 {
@@ -30,7 +31,7 @@ namespace XPatchLib
         {
             Color result;
             if (!TryTransFromString(pColorString, out result))
-                throw new FormatException(string.Format(CultureInfo.InvariantCulture, "{0} 不能被转换成 Color 对象。",
+                throw new FormatException(string.Format(CultureInfo.InvariantCulture, Resources.Exp_String_IsNotColor,
                     pColorString));
             return result;
         }

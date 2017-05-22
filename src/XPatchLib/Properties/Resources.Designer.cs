@@ -70,6 +70,42 @@ namespace XPatchLib.Properties {
         }
         
         /// <summary>
+        ///   查找类似 文件 {0} 不存在。 的本地化字符串。
+        /// </summary>
+        internal static string Exp_String_FileNotExists {
+            get {
+                return ResourceManager.GetString("Exp_String_FileNotExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0} 不能被转换成 Color 对象。 的本地化字符串。
+        /// </summary>
+        internal static string Exp_String_IsNotColor {
+            get {
+                return ResourceManager.GetString("Exp_String_IsNotColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 类型 {0} 不是枚举类型。 的本地化字符串。
+        /// </summary>
+        internal static string Exp_String_IsNotEnum {
+            get {
+                return ResourceManager.GetString("Exp_String_IsNotEnum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0}.MemberType 既不是 MemberTypes.Property 也不是 MemberTypes.Field。而是 {1} 。 的本地化字符串。
+        /// </summary>
+        internal static string Exp_String_MemberType {
+            get {
+                return ResourceManager.GetString("Exp_String_MemberType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &apos;{0}&apos; 的 主键 {1} 设置异常。 的本地化字符串。
         /// </summary>
         internal static string Exp_String_PrimaryKey {

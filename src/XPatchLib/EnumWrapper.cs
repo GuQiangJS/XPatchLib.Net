@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using XPatchLib.Properties;
 
 namespace XPatchLib
 {
@@ -42,7 +43,7 @@ namespace XPatchLib
         {
             if (!pType.IsEnum)
                 throw new ArgumentException(
-                    string.Format(CultureInfo.InvariantCulture, "类型 {0} 不是枚举类型。", pType.FullName), "pType");
+                    string.Format(CultureInfo.InvariantCulture, Resources.Exp_String_IsNotEnum, pType.FullName), "pType");
 
             _type = pType;
         }

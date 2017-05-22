@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Globalization;
 using System.IO;
+using XPatchLib.Properties;
 
 namespace XPatchLib
 {
@@ -79,7 +80,7 @@ namespace XPatchLib
             ArgumentNotNullOrEmpty(pFileFullName, "pFileFullName");
             if (!File.Exists(pFileFullName))
                 throw new FileNotFoundException(
-                    string.Format(CultureInfo.InvariantCulture, "文件 {0} 不存在。", pFileFullName), pFileFullName);
+                    string.Format(CultureInfo.InvariantCulture, Resources.Exp_String_FileNotExists, pFileFullName), pFileFullName);
         }
 
         #endregion Public Methods
