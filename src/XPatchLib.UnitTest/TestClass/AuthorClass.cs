@@ -1,9 +1,16 @@
-﻿namespace XPatchLib.UnitTest.TestClass
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+namespace XPatchLib.UnitTest.TestClass
 {
     internal class AuthorClass
     {
         #region Public Methods
 
+        /// <summary>Determines whether the specified object is equal to the current object.</summary>
+        /// <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        /// <param name="obj">The object to compare with the current object. </param>
+        /// <filterpriority>2</filterpriority>
         public override bool Equals(object obj)
         {
             var b = obj as AuthorClass;

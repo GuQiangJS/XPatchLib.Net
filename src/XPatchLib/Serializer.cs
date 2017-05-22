@@ -47,12 +47,15 @@ namespace XPatchLib
         ///     初始化 <c> Serializer </c> 类的新实例。
         /// </summary>
         /// <param name="pType">此 <see cref="Serializer" /> 可序列化的对象的类型。</param>
-        public Serializer(Type pType) : this(pType, true) {
-        }
+        public Serializer(Type pType) : this(pType, true, true) { }
 
-        private Serializer(Type pType,bool pClearTypeExtendContainer) {
-            if(pClearTypeExtendContainer)
-                TypeExtendContainer.Clear();
+        private Serializer(Type pType,bool pClearTypeExtends,bool pClearKeyAttributes) {
+            if(pClearTypeExtends && pClearKeyAttributes)
+                TypeExtendContainer.ClearAll();
+            else if(pClearTypeExtends)
+                TypeExtendContainer.ClearTypeExtends();
+            else if(pClearKeyAttributes)
+                TypeExtendContainer.ClearKeyAttributes();
             _initialType = pType;
         }
 
@@ -143,7 +146,7 @@ namespace XPatchLib
                             {
                                 writer.IgnoreAttributeType = null;
                                 writer.Setting.SerializeDefalutValue = true;
-                                new Serializer(_initialType, false).Divide(writer, null, pOriValue);
+                                new Serializer(_initialType, true, false).Divide(writer, null, pOriValue);
                             }
                         }
 #if DEBUG
@@ -155,7 +158,7 @@ namespace XPatchLib
                         {
                             using (ITextReader reader = new XmlTextReader(xmlReader))
                             {
-                                cloneObjValue = new Serializer(_initialType, false).Combine(reader, null, true);
+                                cloneObjValue = new Serializer(_initialType, true, false).Combine(reader, null, true);
                             }
                         }
                     }

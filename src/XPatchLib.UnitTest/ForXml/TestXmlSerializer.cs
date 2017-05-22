@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XPatchLib.UnitTest.TestClass;
@@ -295,6 +296,70 @@ namespace XPatchLib.UnitTest.ForXml
                     var result = UnitTest.TestHelper.StreamToString(stream);
                     Debug.WriteLine(context);
                     Assert.AreEqual(context,result);
+                }
+            }
+        }
+
+        [TestMethod]
+        [Description("测试使用同一Serializer实例，对没有标记PrimaryKey的对象集合，先做增量序列化，后做增量反序列化（反序列化时不覆盖原有对象实例）")]
+        public void TestCallDivideAndCombineNotMergeDataWithoutPrimaryKeyAttribute() {
+            List<AuthorClass> authors1 = new List<AuthorClass>();
+            authors1.Add(new AuthorClass() { Name = "A1" });
+            authors1.Add(new AuthorClass() { Name = "A2" });
+            authors1.Add(new AuthorClass() { Name = "A3" });
+
+            Serializer serializer=new Serializer(typeof(List<AuthorClass>));
+
+            IDictionary<Type,string[]> keys=new Dictionary<Type, string[]>();
+            keys.Add(typeof(AuthorClass), new string[] {"Name"});
+            serializer.RegisterTypes(keys);
+
+            string divideString = string.Empty;
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
+                {
+                    serializer.Divide(writer, new List<AuthorClass>(), authors1);
+                    //divideString = UnitTest.TestHelper.StreamToString(stream);
+                    stream.Position = 0;
+
+                    using (var reader = new XmlTextReader(XmlReader.Create(stream)))
+                    {
+                        var changedObj = serializer.Combine(reader, new List<AuthorClass>()) as List<AuthorClass>;
+                        Assert.IsNotNull(changedObj);
+                        Assert.AreEqual(authors1.Count, changedObj.Count);
+                        for (int i = 0; i < authors1.Count; i++) {
+                            Assert.AreEqual(authors1[0], changedObj[0]);
+                        }
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        [Description("")]
+        public void TestCallDivideAndCombineNotMergeDataWithDefaultValue() {
+
+            AuthorClass emptyAuthor = new AuthorClass();
+            AuthorClass author = AuthorClass.GetSampleInstance();
+
+            Serializer serializer = new Serializer(typeof(AuthorClass));
+
+            string divideString = string.Empty;
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
+                {
+                    serializer.Divide(writer, emptyAuthor, author);
+                    //divideString = UnitTest.TestHelper.StreamToString(stream);
+                    stream.Position = 0;
+
+                    using (var reader = new XmlTextReader(XmlReader.Create(stream)))
+                    {
+                        var changedObj = serializer.Combine(reader, new AuthorClass()) as AuthorClass;
+                        Assert.IsNotNull(changedObj);
+                        Assert.AreEqual(author, changedObj);
+                    }
                 }
             }
         }

@@ -263,6 +263,14 @@ namespace XPatchLib
             return objA.Equals(objB);
         }
 
+        internal static Boolean NeedSerialize(Type type, object objA, object objB, bool serializeDefaultValue)
+        {
+            bool result = Equals(objA, objB);
+            if (result && type == typeof(string) && serializeDefaultValue && objA == null)
+                return true;
+            return !result;
+        }
+
         internal Object InvokeMember(string name, BindingFlags invokeAttr, Binder binder, object target, object[] args,
             CultureInfo culture)
         {

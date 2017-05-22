@@ -38,7 +38,7 @@ namespace XPatchLib
                 Writer.WriteActionAttribute(Action.SetNull);
                 return true;
             }
-            if (Equals(pOriObject, pRevObject))
+            if (!TypeExtend.NeedSerialize(Type.OriType, pOriObject, pRevObject, Writer.Setting.SerializeDefalutValue))
                 return false;
             return DivideAction(pName, pOriObject, pRevObject, pAttach);
         }

@@ -20,7 +20,7 @@ namespace XPatchLib.UnitTest.ForXml
         [TestInitialize]
         public void TestInitialize()
         {
-            TypeExtendContainer.Clear();
+            TypeExtendContainer.ClearAll();
         }
 
         #region Public Methods
@@ -449,6 +449,7 @@ namespace XPatchLib.UnitTest.ForXml
                 @"<BookClassCollection>
   <BookClass Action=""Remove"" Name=""A"" />
   <BookClass Action=""Add"">
+    <Comments Action=""SetNull"" />
     <Name>C</Name>
     <Price>0</Price>
     <PublishYear>0</PublishYear>

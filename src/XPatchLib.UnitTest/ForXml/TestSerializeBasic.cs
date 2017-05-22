@@ -147,7 +147,7 @@ namespace XPatchLib.UnitTest.ForXml
                 "<Boolean>" + XmlConvert.ToString(false) + "</Boolean>"
                 , "<Int32>" + 0 + "</Int32>"
                 , "<Double>" + XmlConvert.ToString(0D) + "</Double>"
-                , ""
+                , @"<String Action=""SetNull"" />"
                 , "<Int64>" + 0 + "</Int64>"
                 , "<Int16>" + 0 + "</Int16>"
                 , "<SByte>" + 0 + "</SByte>"
@@ -265,8 +265,7 @@ namespace XPatchLib.UnitTest.ForXml
                         writer.Setting.SerializeDefalutValue = true;
                         var ser = new DivideBasic(writer, new TypeExtend(types[i], writer.IgnoreAttributeType));
                         //原始值为null，如果更新值为默认值时，如果设置为序列化默认值，则做序列化
-                        if (types[i] != typeof(string))
-                        {
+
                             Assert.IsTrue(ser.Divide(types[i].Name, null, ReflectionUtils.GetDefaultValue(types[i])));
                             //writer.WriteEndObject();
                             writer.Flush();
@@ -276,11 +275,7 @@ namespace XPatchLib.UnitTest.ForXml
                             var s = ele.ToString();
                             Debug.WriteLine(s);
                             Assert.AreEqual(serializedDefaultValues[i], s);
-                        }
-                        else
-                        {
-                            Assert.IsFalse(ser.Divide(types[i].Name, null, ReflectionUtils.GetDefaultValue(types[i])));
-                        }
+
                     }
                 }
             }
