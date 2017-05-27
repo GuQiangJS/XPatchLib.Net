@@ -27,7 +27,7 @@
     <CleanIntermediates>False</CleanIntermediates>
     <MaximumGroupParts>2</MaximumGroupParts>
     <NamespaceGrouping>False</NamespaceGrouping>
-    <SyntaxFilters>C#, Visual Basic</SyntaxFilters>
+    <SyntaxFilters>C#</SyntaxFilters>
     <SdkLinkTarget>Blank</SdkLinkTarget>
     <RootNamespaceContainer>True</RootNamespaceContainer>
     <PresentationStyle>VS2013</PresentationStyle>
@@ -37,14 +37,14 @@
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <WorkingPath>WorkingPath\</WorkingPath>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\..\..\XPatchLib.Output\Release\XPatchLib.dll" />
-      <DocumentationSource sourceFile="..\..\..\XPatchLib.Output\Release\XPatchLib.xml" />
+      <DocumentationSource sourceFile="..\..\..\XPatchLib.Output\Release\Net40\XPatchLib.dll" />
+      <DocumentationSource sourceFile="..\..\..\XPatchLib.Output\Release\Net40\XPatchLib.xml" />
     </DocumentationSources>
     <SccProjectName>$/XmlSerializer/HelperBuilder/WebBuilder</SccProjectName>
     <SccProvider>{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}</SccProvider>
     <SccAuxPath>https://tfs.codeplex.com/tfs/tfs37</SccAuxPath>
     <SccLocalPath>.</SccLocalPath>
-    <VisibleItems>Protected, ProtectedInternalAsProtected</VisibleItems>
+    <VisibleItems>ProtectedInternalAsProtected</VisibleItems>
     <HelpFileVersion>1.0.0.0</HelpFileVersion>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
     <PostBuildEvent>echo f | xcopy /D /E /Y "$(OutputPath)*.*" "$(SolutionDir)..\docs\"</PostBuildEvent>

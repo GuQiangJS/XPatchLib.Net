@@ -119,7 +119,7 @@
     <Compile Include="ForXml\TestXmlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XPatchLib\XPatchLib.csproj">
+    <ProjectReference Include="..\XPatchLib\XPatchLib.Net40.csproj">
       <Project>{5401dab2-5f83-4309-a9bf-5653caa1d878}</Project>
       <Name>XPatchLib</Name>
     </ProjectReference>

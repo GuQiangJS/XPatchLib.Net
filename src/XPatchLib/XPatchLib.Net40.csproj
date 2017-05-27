@@ -16,15 +16,6 @@
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
     <TargetFrameworkProfile />
-    <UpdateAssemblyVersion>False</UpdateAssemblyVersion>
-    <UpdateAssemblyFileVersion>False</UpdateAssemblyFileVersion>
-    <UpdateAssemblyInfoVersion>False</UpdateAssemblyInfoVersion>
-    <AssemblyVersionSettings>
-    </AssemblyVersionSettings>
-    <AssemblyFileVersionSettings>
-    </AssemblyFileVersionSettings>
-    <AssemblyInfoVersionSettings>
-    </AssemblyInfoVersionSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,12 +37,6 @@
     <DocumentationFile>bin\Release\XPatchLib.xml</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\Docs\Release.AllRules.Error.ruleset</CodeAnalysisRuleSet>
-    <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
-    <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
-    <UpdateAssemblyInfoVersion>True</UpdateAssemblyInfoVersion>
-    <AssemblyVersionSettings>None.None.None.Increment</AssemblyVersionSettings>
-    <AssemblyFileVersionSettings>None.None.None.Increment</AssemblyFileVersionSettings>
-    <AssemblyInfoVersionSettings>None.None.None.Increment</AssemblyInfoVersionSettings>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -134,9 +119,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)Bin\$(TargetFileName)"
-echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\$(TargetFileName)"
-echo f | xcopy /D /F /Y "$(TargetDir)$(TargetName).xml" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\$(TargetName).xml"</PostBuildEvent>
+    <PostBuildEvent>echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)Bin\Net40\$(TargetFileName)"
+echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\Net40\$(TargetFileName)"
+echo f | xcopy /D /F /Y "$(TargetDir)$(TargetName).xml" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\Net40\$(TargetName).xml"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
