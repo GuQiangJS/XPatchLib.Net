@@ -4,7 +4,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+#if HAVE_LINQ
 using System.Linq;
+#endif
 
 namespace XPatchLib
 {

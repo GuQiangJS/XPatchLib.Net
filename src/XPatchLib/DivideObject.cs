@@ -2,8 +2,9 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+#if HAVE_LINQ
 using System.Linq;
-using System.Xml;
+#endif
 
 namespace XPatchLib
 {
@@ -13,6 +14,18 @@ namespace XPatchLib
     /// <seealso cref="XPatchLib.DivideBase" />
     internal class DivideObject : DivideBase
     {
+        #region Internal Constructors
+
+        /// <summary>
+        ///     使用指定的类型初始化 <see cref="XPatchLib.DivideObject" /> 类的新实例。
+        /// </summary>
+        /// <param name="pWriter">写入器。</param>
+        /// <param name="pType">指定的类型。</param>
+        internal DivideObject(ITextWriter pWriter, TypeExtend pType)
+            : base(pWriter, pType) { }
+
+        #endregion Internal Constructors
+
         /// <summary>
         ///     产生增量内容的实际方法。
         /// </summary>
@@ -60,16 +73,19 @@ namespace XPatchLib
                         memberType = typeof(string);
                     }
 
-                    divide = new DivideBasic(Writer, TypeExtendContainer.GetTypeExtend(memberType, Writer.IgnoreAttributeType, Type));
+                    divide = new DivideBasic(Writer,
+                        TypeExtendContainer.GetTypeExtend(memberType, Writer.IgnoreAttributeType, Type));
                 }
                 //集合类型
                 else if (member.IsIEnumerable)
                 {
-                    divide = new DivideIEnumerable(Writer, TypeExtendContainer.GetTypeExtend(memberType, Writer.IgnoreAttributeType, Type));
+                    divide = new DivideIEnumerable(Writer,
+                        TypeExtendContainer.GetTypeExtend(memberType, Writer.IgnoreAttributeType, Type));
                 }
                 else
                 {
-                    divide = new DivideCore(Writer, TypeExtendContainer.GetTypeExtend(memberType, Writer.IgnoreAttributeType, Type));
+                    divide = new DivideCore(Writer,
+                        TypeExtendContainer.GetTypeExtend(memberType, Writer.IgnoreAttributeType, Type));
                 }
 
                 if (pAttach == null)
@@ -106,19 +122,5 @@ namespace XPatchLib
             //        Writer.WriteEndObject();
             return result;
         }
-
-        #region Internal Constructors
-
-        /// <summary>
-        ///     使用指定的类型初始化 <see cref="XPatchLib.DivideObject" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        internal DivideObject(ITextWriter pWriter, TypeExtend pType)
-            : base(pWriter, pType)
-        {
-        }
-
-        #endregion Internal Constructors
     }
 }

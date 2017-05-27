@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XPatchLib</RootNamespace>
     <AssemblyName>XPatchLib</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -21,20 +21,20 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\NET40\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET40;HAVE_LINQ</DefineConstants>
+    <OutputPath>bin\Debug\NET20\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NET20</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\NET40\XPatchLib.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\NET20\XPatchLib.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\NET40\</OutputPath>
-    <DefineConstants>TRACE;NET40;HAVE_LINQ</DefineConstants>
+    <OutputPath>bin\Release\NET20\</OutputPath>
+    <DefineConstants>TRACE;NET20</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\NET40\XPatchLib.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\NET20\XPatchLib.xml</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\Docs\Release.AllRules.Error.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -46,11 +46,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
@@ -83,6 +80,7 @@
     <Compile Include="ITextWriter.cs" />
     <Compile Include="ISerializeSetting.cs" />
     <Compile Include="KeyValuesObject.cs" />
+    <Compile Include="LinqBridge.cs" />
     <Compile Include="MemberWrapper.cs" />
     <Compile Include="NodeType.cs" />
     <Compile Include="PrimaryKeyAttribute.cs" />
@@ -112,17 +110,17 @@
   <ItemGroup>
     <Content Include="docs\docs.xml" />
   </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)..\Bin\Net40\$(TargetFileName)"
-echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\Net40\$(TargetFileName)"
-echo f | xcopy /D /F /Y "$(TargetDir)$(TargetName).xml" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\Net40\$(TargetName).xml"</PostBuildEvent>
+    <PostBuildEvent>echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)..\Bin\Net20\$(TargetFileName)"
+echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\Net20\$(TargetFileName)"
+echo f | xcopy /D /F /Y "$(TargetDir)$(TargetName).xml" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\Net20\$(TargetName).xml"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

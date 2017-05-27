@@ -4,7 +4,9 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+#if HAVE_LINQ
 using System.Linq;
+#endif
 
 namespace XPatchLib
 {

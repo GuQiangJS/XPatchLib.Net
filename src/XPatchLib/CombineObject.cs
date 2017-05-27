@@ -38,8 +38,8 @@ namespace XPatchLib
                     {
                         Type.SetMemberValue(pOriObject, variable.Key, variable.Value);
 #if DEBUG
-                        Debug.WriteLine("{2} SetMemberValue: {0}={1}", variable.Key, variable.Value,
-                            Type.TypeFriendlyName);
+                        Debug.WriteLine(string.Format("{2} SetMemberValue: {0}={1}", variable.Key, variable.Value,
+                            Type.TypeFriendlyName));
 #endif
                     }
                 }

@@ -139,8 +139,13 @@ namespace XPatchLib
         {
             pColor = Color.Black;
 
+#if HAVE_LINQ
             if (string.IsNullOrWhiteSpace(pColorString))
                 return false;
+#else
+            if (String.IsNullOrEmpty(pColorString) && pColorString.Trim().Length == 0)
+                return false;
+#endif
 
             pColorString = pColorString.Trim();
             if (pColorString.StartsWith(ConstValue.COLOR_STARTCHAR, StringComparison.OrdinalIgnoreCase))

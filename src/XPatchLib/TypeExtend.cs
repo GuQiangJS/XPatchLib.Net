@@ -4,7 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+#if HAVE_LINQ
 using System.Linq;
+#else
+using XPatchLib.NoLinq;
+#endif
 using System.Reflection;
 
 namespace XPatchLib

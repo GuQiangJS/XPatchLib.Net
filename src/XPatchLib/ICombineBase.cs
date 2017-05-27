@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
 
 namespace XPatchLib
 {

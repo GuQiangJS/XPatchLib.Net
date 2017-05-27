@@ -94,7 +94,7 @@ namespace XPatchLib
         {
             _writer.WriteAttributeString(pName, pValue);
 #if DEBUG
-            Debug.WriteLine("WriteAttribute '{0}'='{1}'.", pName, pValue);
+            Debug.WriteLine(string.Format("WriteAttribute '{0}'='{1}'.", pName, pValue));
 #endif
         }
 
@@ -107,7 +107,7 @@ namespace XPatchLib
         {
             _writer.WriteElementString(pName, pValue);
 #if DEBUG
-            Debug.WriteLine("WriteProperty '{0}'='{1}'.", pName, pValue);
+            Debug.WriteLine(string.Format("WriteProperty '{0}'='{1}'.", pName, pValue));
 #endif
         }
 

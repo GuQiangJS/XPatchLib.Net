@@ -7,8 +7,13 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // 有关程序集的常规信息通过以下 特性集控制。更改这些特性值可修改 与程序集关联的信息。
-
-[assembly: AssemblyTitle("XPatchLib")]
+#if NET20
+[assembly: AssemblyTitle("XPatchLib 2.0")]
+#elif NET35
+[assembly: AssemblyTitle("XPatchLib 3.5")]
+#elif NET40
+[assembly: AssemblyTitle("XPatchLib 4.0")]
+#endif
 [assembly: AssemblyDescription("Patch Serialization Library for the .Net Framework")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Qiang Gu")]

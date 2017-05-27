@@ -26,7 +26,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\NET40\</OutputPath>
+    <OutputPath>bin\Debug\NET20\</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -34,7 +34,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\NET40\</OutputPath>
+    <OutputPath>bin\Release\NET20\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -53,7 +53,6 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Xml.Serialization" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <Choose>
@@ -120,9 +119,9 @@
     <Compile Include="ForXml\TestXmlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XPatchLib\XPatchLib.Net40.csproj">
+    <ProjectReference Include="..\XPatchLib\XPatchLib.Net20.csproj">
       <Project>{5401dab2-5f83-4309-a9bf-5653caa1d878}</Project>
-      <Name>XPatchLib.Net40</Name>
+      <Name>XPatchLib.Net20</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

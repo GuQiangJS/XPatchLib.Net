@@ -6,7 +6,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+#if HAVE_LINQ
 using System.Linq;
+#endif
 using System.Reflection;
 
 namespace XPatchLib

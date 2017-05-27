@@ -2,6 +2,7 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
 namespace XPatchLib
 {
@@ -27,7 +28,7 @@ namespace XPatchLib
         }
 
         /// <summary>
-        ///     生成或读取XML时，<see cref="System.Collections.Generic.KeyValuePair&lt;,&gt;" />类型的Key值的字符串。
+        ///     生成或读取XML时，<see cref="KeyValuePair{TKey,TValue}" />类型的Key值的字符串。
         /// </summary>
         internal static String KEY
         {
@@ -75,7 +76,7 @@ namespace XPatchLib
         }
 
         /// <summary>
-        ///     生成或读取XML时，<see cref="System.Collections.Generic.KeyValuePair&lt;,&gt;" />类型的Value值的字符串。
+        ///     生成或读取XML时，<see cref="KeyValuePair{TKey,TValue}" />类型的Value值的字符串。
         /// </summary>
         internal static String VALUE
         {

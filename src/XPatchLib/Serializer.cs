@@ -8,7 +8,9 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml;
+#if HAVE_LINQ
 using System.Xml.Linq;
+#endif
 
 namespace XPatchLib
 {
@@ -151,7 +153,13 @@ namespace XPatchLib
                         }
 #if DEBUG
                         stream.Position = 0;
+#if (NET35 || NET40)
                         XElement ele = XElement.Load(stream);
+#else
+                        XmlDocument xDoc = new XmlDocument();
+                        xDoc.Load(stream);
+                        xDoc = null;
+#endif
 #endif
                         stream.Position = 0;
                         using (XmlReader xmlReader = XmlReader.Create(stream))

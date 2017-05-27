@@ -3,7 +3,11 @@
 
 using System;
 using System.Diagnostics;
+#if HAVE_LINQ
 using System.Linq.Expressions;
+#else 
+using XPatchLib.NoLinq;
+#endif
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -66,6 +70,7 @@ namespace XPatchLib
 
         public static Func<Object, Object> GetValueFunc(this FieldInfo fieldInfo)
         {
+#if HAVE_LINQ
             try
             {
                 //if (!fieldInfo.IsPublic) return null;
@@ -82,6 +87,9 @@ namespace XPatchLib
             {
                 return null;
             }
+#else
+            return null;
+#endif
         }
 
         public static Action<object, object> SetValueFunc(this PropertyInfo pProperty)
@@ -119,6 +127,7 @@ namespace XPatchLib
 
         public static Action<Object, Object> SetValueFunc(this FieldInfo fieldInfo)
         {
+#if HAVE_LINQ
             try
             {
                 if (!fieldInfo.IsPublic || fieldInfo.IsInitOnly) return null;
@@ -137,6 +146,9 @@ namespace XPatchLib
             {
                 return null;
             }
+#else
+            return null;
+#endif
         }
     }
 }
