@@ -14,7 +14,7 @@
     <Name>MarkdownBuilder</Name>
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 4.0</FrameworkVersion>
-    <OutputPath>..\..\..\XPatchLib.Output\Doc\Helper\Markdown\</OutputPath>
+    <OutputPath>..\..\..\XPatchLib.Output\Doc\Helper\Markdown\Net40\</OutputPath>
     <HtmlHelpName>XPatchLib Helper</HtmlHelpName>
     <Language>zh-CN</Language>
     <TransformComponentArguments>

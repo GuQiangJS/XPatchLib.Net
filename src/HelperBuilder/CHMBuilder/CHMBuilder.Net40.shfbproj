@@ -14,7 +14,7 @@
     <Name>CHMBuilder</Name>
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 4.0</FrameworkVersion>
-    <OutputPath>..\..\..\XPatchLib.Output\Doc\Helper\Chm\</OutputPath>
+    <OutputPath>..\..\..\XPatchLib.Output\Doc\Helper\Chm\Net40\</OutputPath>
     <HtmlHelpName>XPatchLib Helper</HtmlHelpName>
     <Language>zh-CN</Language>
     <TransformComponentArguments>

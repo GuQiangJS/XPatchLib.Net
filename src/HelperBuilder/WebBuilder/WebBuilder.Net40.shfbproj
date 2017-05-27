@@ -14,7 +14,7 @@
     <Name>WebBuilder</Name>
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 4.0</FrameworkVersion>
-    <OutputPath>..\..\..\XPatchLib.Output\Doc\Helper\Web\</OutputPath>
+    <OutputPath>..\..\..\XPatchLib.Output\Doc\Helper\Web\Net40\</OutputPath>
     <HtmlHelpName>XPatchLib Helper</HtmlHelpName>
     <Language>zh-CN</Language>
     <BuildAssemblerVerbosity>AllMessages</BuildAssemblerVerbosity>
