@@ -16,25 +16,26 @@
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
     <TargetFrameworkProfile />
+	<Version>NET20</Version>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\NET20\</OutputPath>
+    <OutputPath>bin\Debug\$(Version)\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NET20</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\NET20\XPatchLib.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\$(Version)\XPatchLib.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\NET20\</OutputPath>
+    <OutputPath>bin\Release\$(Version)\</OutputPath>
     <DefineConstants>TRACE;NET20</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\NET20\XPatchLib.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\$(Version)\XPatchLib.xml</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\Docs\Release.AllRules.Error.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -118,9 +119,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)..\Bin\Net20\$(TargetFileName)"
-echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\Net20\$(TargetFileName)"
-echo f | xcopy /D /F /Y "$(TargetDir)$(TargetName).xml" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\Net20\$(TargetName).xml"</PostBuildEvent>
+    <PostBuildEvent>echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)..\Bin\$(Version)\$(TargetFileName)"
+echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\$(Version)\$(TargetFileName)"
+echo f | xcopy /D /F /Y "$(TargetDir)$(TargetName).xml" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\$(Version)\$(TargetName).xml"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

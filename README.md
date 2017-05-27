@@ -4,6 +4,20 @@
 
 本项目旨在基于 .Net Framework 创建一套 将指定的两个同一类型的对象实例间增量的内容序列化为指定格式文档，也可以将包含增量内容的文档反序列化并附加至原始的对象实例上 的工具。 
 
+## **支持版本**
+
+.NET 2.0, .NET 3.5, .NET 4
+
+## 编译
+
+使用 Visual Studio 2015 及以上版本打开 src 目录下不同的解决方案。
+
+* XPatchLib.Net20.sln  ->  .NET 2.0
+
+* XPatchLib.Net35.sln  ->  .NET 3.5
+
+* XPatchLib.Net40.sln  ->  .NET 4.0
+
 ## **Example**
 
 让我们看一个如何使用XPatchLib在两个类型相同但内容不同的对象间，创建增量内容以及合并增量内容的例子。

@@ -176,12 +176,12 @@ namespace XPatchLib.UnitTest.ForXml
                         Assert.IsTrue(ser.Divide(types[i].Name, oriObjs[i], revObjs[i]));
                     }
                     stream.Position = 0;
-                    var ele = XElement.Load(stream);
-
                     var der = new CombineBasic(new TypeExtend(types[i], null));
-                    var s = ele.ToString();
-                    Debug.WriteLine(s);
-                    Assert.AreEqual(serializedResults[i], s, "输出内容与预期不符");
+
+                    var changedEle = XElement.Load(new StreamReader(stream));
+
+                    Debug.WriteLine(changedEle.ToString());
+                    Assert.AreEqual(serializedResults[i], changedEle.ToString(), "输出内容与预期不符");
                     stream.Position = 0;
                     using (XmlReader xmlReader = XmlReader.Create(stream))
                     {
@@ -201,13 +201,13 @@ namespace XPatchLib.UnitTest.ForXml
                         Assert.IsTrue(ser.Divide(types[i].Name, oriObjs[i], null));
                     }
                     stream.Position = 0;
-                    var ele = XElement.Load(stream);
-
                     var der = new CombineBasic(new TypeExtend(types[i], null));
-                    var s = ele.ToString();
-                    Debug.WriteLine(s);
 
-                    Assert.AreEqual(serializedSetNullResults[i], s, "输出内容与预期不符");
+                    var changedEle = XElement.Load(new StreamReader(stream));
+
+                    Debug.WriteLine(changedEle.ToString());
+
+                    Assert.AreEqual(serializedSetNullResults[i], changedEle.ToString(), "输出内容与预期不符");
                     stream.Position = 0;
                     using (XmlReader xmlReader = XmlReader.Create(stream))
                     {
@@ -227,13 +227,14 @@ namespace XPatchLib.UnitTest.ForXml
                         Assert.IsTrue(ser.Divide(types[i].Name, null, revObjs[i]));
                     }
                     stream.Position = 0;
-                    var ele = XElement.Load(stream);
-
                     var der = new CombineBasic(new TypeExtend(types[i], null));
-                    var s = ele.ToString();
-                    Debug.WriteLine(s);
 
-                    Assert.AreEqual(serializedResults[i], s, "输出内容与预期不符");
+                    var changedEle = XElement.Load(new StreamReader(stream));
+                    
+                    Debug.WriteLine(changedEle.ToString());
+
+
+                    Assert.AreEqual(serializedResults[i], changedEle.ToString(), "输出内容与预期不符");
                     stream.Position = 0;
                     using (XmlReader xmlReader = XmlReader.Create(stream))
                     {
@@ -270,11 +271,13 @@ namespace XPatchLib.UnitTest.ForXml
                             //writer.WriteEndObject();
                             writer.Flush();
                             stream.Position = 0;
-                            var ele = XElement.Load(stream);
-                            Assert.IsNotNull(ele);
-                            var s = ele.ToString();
-                            Debug.WriteLine(s);
-                            Assert.AreEqual(serializedDefaultValues[i], s);
+                        var der = new CombineBasic(new TypeExtend(types[i], null));
+
+                        var changedEle = XElement.Load(new StreamReader(stream));
+
+                        Debug.WriteLine(changedEle.ToString());
+                        
+                        Assert.AreEqual(serializedDefaultValues[i], changedEle.ToString());
 
                     }
                 }
@@ -297,9 +300,12 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)), null, c1));
                 }
                 stream.Position = 0;
-                var ele = XElement.Load(stream);
-                Debug.WriteLine(ele.ToString());
-                Assert.AreEqual(result, ele.ToString());
+
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Debug.WriteLine(changedEle.ToString());
+
+                Assert.AreEqual(result, changedEle.ToString());
 
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
@@ -333,10 +339,13 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)), null, c1));
                 }
                 stream.Position = 0;
-                var ele = XElement.Load(stream);
 
-                Assert.AreEqual(result, ele.ToString());
-                Debug.WriteLine(ele.ToString());
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Debug.WriteLine(changedEle.ToString());
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
 
                 var c2 = ColorClass.GetSampleInstance();
                 c2.Color = Color.AntiqueWhite;
@@ -374,10 +383,11 @@ namespace XPatchLib.UnitTest.ForXml
                 }
 
                 stream.Position = 0;
-                var ele = XElement.Load(stream);
 
-                Assert.AreEqual(result, ele.ToString());
-                Debug.WriteLine(ele.ToString());
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
             }
 
             var c1 = EnumClass.GetSampleInstance();
@@ -398,9 +408,11 @@ namespace XPatchLib.UnitTest.ForXml
                 }
 
                 stream.Position = 0;
-                var ele = XElement.Load(stream);
-                Assert.AreEqual(result, ele.ToString());
-                Debug.WriteLine(ele.ToString());
+
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {

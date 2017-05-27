@@ -811,7 +811,7 @@ namespace XPatchLib.UnitTest.ForXml
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(ComplexOperatorChangedContext, changedEle.ToString());
             }
         }
@@ -841,7 +841,7 @@ namespace XPatchLib.UnitTest.ForXml
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(ComplexOperatorChangedContext, changedEle.ToString());
             }
         }
@@ -865,7 +865,7 @@ namespace XPatchLib.UnitTest.ForXml
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), null, dic1));
                 }
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(CreateChangedContext, changedEle.ToString());
             }
         }
@@ -889,8 +889,7 @@ namespace XPatchLib.UnitTest.ForXml
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), null, dic1));
                 }
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
-
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(CreateChangedContext, changedEle.ToString());
             }
         }
@@ -919,7 +918,7 @@ namespace XPatchLib.UnitTest.ForXml
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(EditChangedContext, changedEle.ToString());
             }
         }
@@ -950,8 +949,7 @@ namespace XPatchLib.UnitTest.ForXml
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
-
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(EditChangedContext, changedEle.ToString());
             }
         }
@@ -978,8 +976,7 @@ namespace XPatchLib.UnitTest.ForXml
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
-
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(RemoveChangedContext, changedEle.ToString());
             }
         }
@@ -1008,8 +1005,7 @@ namespace XPatchLib.UnitTest.ForXml
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
-
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(RemoveChangedContext, changedEle.ToString());
             }
         }
@@ -1038,8 +1034,7 @@ namespace XPatchLib.UnitTest.ForXml
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
-
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(SetNullChangedContext, changedEle.ToString());
             }
         }
@@ -1070,8 +1065,7 @@ namespace XPatchLib.UnitTest.ForXml
                             ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
                 }
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
-
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(SetNullChangedContext, changedEle.ToString());
             }
         }

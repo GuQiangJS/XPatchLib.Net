@@ -136,19 +136,32 @@ namespace XPatchLib
                 var castedInstance = Expression.ConvertChecked
                     (instance, fieldInfo.DeclaringType);
                 var argument = Expression.Parameter(typeof(Object), "a");
+#if NET40
                 var setter = Expression.Assign(
                     Expression.Field(castedInstance, fieldInfo),
                     Expression.Convert(argument, fieldInfo.FieldType));
                 return Expression.Lambda<Action<object, Object>>
                     (setter, instance, argument).Compile();
+#else
+                DynamicMethod m = new DynamicMethod("setter", typeof(void), SetValueParameterTypes, typeof(void));
+                ILGenerator cg = m.GetILGenerator();
+
+                // arg0.<field> = arg1
+                cg.Emit(OpCodes.Ldarg_0);
+                cg.Emit(OpCodes.Ldarg_1);
+                cg.Emit(OpCodes.Stfld, fieldInfo);
+                cg.Emit(OpCodes.Ret);
+
+                return (Action<Object, Object>)m.CreateDelegate(typeof(Action<Object, Object>));
+#endif
             }
             catch (InvalidProgramException)
             {
                 return null;
             }
 #else
-            return null;
+                return null;
 #endif
-        }
+            }
     }
 }

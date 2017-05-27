@@ -4,6 +4,7 @@
 using System;
 using System.Globalization;
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 namespace XPatchLib
 {
@@ -117,6 +118,7 @@ namespace XPatchLib
         /// </param>
         /// <param name="context">
         /// </param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);

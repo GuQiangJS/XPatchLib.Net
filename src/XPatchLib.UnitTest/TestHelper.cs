@@ -1,17 +1,16 @@
-﻿using System;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace XPatchLib.UnitTest
 {
     internal static class TestHelper
     {
-
         internal static string StreamToString(Stream stream)
         {
             stream.Position = 0;

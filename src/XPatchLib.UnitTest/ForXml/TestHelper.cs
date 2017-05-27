@@ -33,7 +33,7 @@ namespace XPatchLib.UnitTest.ForXml
                 var settings = new XmlWriterSettings();
                 settings.ConformanceLevel = ConformanceLevel.Fragment;
                 settings.Indent = true;
-                settings.Encoding = Encoding.UTF8;
+                settings.Encoding = new UTF8Encoding(false);
                 settings.OmitXmlDeclaration = false;
                 return settings;
             }
@@ -76,7 +76,7 @@ namespace XPatchLib.UnitTest.ForXml
                             ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj));
                 }
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
+                var changedEle = XElement.Load(new StreamReader(stream));
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
@@ -108,7 +108,7 @@ namespace XPatchLib.UnitTest.ForXml
         {
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = CreateWriter(stream, DocumentSetting))
+                using (ITextWriter writer = CreateWriter(stream, FlagmentSetting))
                 {
                     writer.Setting.Mode = pMode;
                     Assert.IsTrue(
@@ -116,8 +116,7 @@ namespace XPatchLib.UnitTest.ForXml
                             ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj));
                 }
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
-
+                var changedEle = XElement.Load(new StreamReader(stream));
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
@@ -137,6 +136,6 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        #endregion Internal Methods
+#endregion Internal Methods
     }
 }

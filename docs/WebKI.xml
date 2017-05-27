@@ -28,8 +28,8 @@
   <HelpKINode Title="Comment 枚举成员" Url="html/d26514da-b1b6-ab56-4861-ea10f7f0ef24.htm" />
   <HelpKINode Title="DateTimeSerializationMode 枚举" Url="html/68b3b5cc-fbc3-5d97-6944-8a3f714a3ca4.htm" />
   <HelpKINode Title="Dispose 方法">
-    <HelpKINode Title="XmlTextReader.Dispose 方法 " Url="html/6956d610-3bff-c86a-6d33-d27eb7b4efb3.htm" />
-    <HelpKINode Title="XmlTextWriter.Dispose 方法 " Url="html/b4c4ba5c-622b-8cd0-e9b2-410b7ab4ca75.htm" />
+    <HelpKINode Title="XmlTextReader.Dispose 方法 " Url="html/89128139-84aa-571e-9999-8e33f6b0a9b3.htm" />
+    <HelpKINode Title="XmlTextWriter.Dispose 方法 " Url="html/d37d2ed7-fdae-6d50-9a96-92966f437ff0.htm" />
   </HelpKINode>
   <HelpKINode Title="Divide 方法" Url="html/08160979-d0b7-0d98-dc68-ad063bbf89d3.htm" />
   <HelpKINode Title="Document 枚举成员" Url="html/d26514da-b1b6-ab56-4861-ea10f7f0ef24.htm" />
@@ -145,7 +145,6 @@
     <HelpKINode Title="NodeType 枚举" Url="html/d26514da-b1b6-ab56-4861-ea10f7f0ef24.htm" />
   </HelpKINode>
   <HelpKINode Title="Notation 枚举成员" Url="html/d26514da-b1b6-ab56-4861-ea10f7f0ef24.htm" />
-  <HelpKINode Title="OnPropertyChanged 方法" Url="html/8b32eb4a-cf54-c1f2-005a-47ef6346feae.htm" />
   <HelpKINode Title="PrimaryKeyAttribute 类">
     <HelpKINode Title="PrimaryKeyAttribute 类" Url="html/53117201-5b8a-2b64-a6c8-d27fbcaed554.htm" />
     <HelpKINode Title="关于 PrimaryKeyAttribute 类" Url="html/53117201-5b8a-2b64-a6c8-d27fbcaed554.htm" />
@@ -271,12 +270,10 @@
     <HelpKINode Title="事件" Url="html/876104d5-ce2b-9c81-1731-5fa3315e90f8.htm" />
     <HelpKINode Title="关于 XmlSerializeSetting 类" Url="html/80f918a6-2ba9-c1f7-44e2-cc1fa46be1b4.htm" />
     <HelpKINode Title="属性" Url="html/a8fb20ce-757f-3dba-7a02-6087e16493a7.htm" />
-    <HelpKINode Title="方法" Url="html/6b95d52b-0eca-f394-c4ee-17d8795b9c76.htm" />
     <HelpKINode Title="构造函数" Url="html/f6f5d84e-4deb-db73-436a-887933c47470.htm" />
   </HelpKINode>
   <HelpKINode Title="XmlSerializeSetting.ActionName 属性" Url="html/1c7bd8f3-1fd1-f26c-9b0e-54335b95f73e.htm" />
   <HelpKINode Title="XmlSerializeSetting.Mode 属性" Url="html/07af392d-30a5-efb3-7865-3b0b634e2d9a.htm" />
-  <HelpKINode Title="XmlSerializeSetting.OnPropertyChanged 方法" Url="html/8b32eb4a-cf54-c1f2-005a-47ef6346feae.htm" />
   <HelpKINode Title="XmlSerializeSetting.PropertyChanged 事件" Url="html/eb9d8bdc-27f1-67b6-ef07-94d4bcaf380f.htm" />
   <HelpKINode Title="XmlSerializeSetting.SerializeDefalutValue 属性" Url="html/fe3319d3-bdea-09eb-57ec-e60e5d6573bb.htm" />
   <HelpKINode Title="XmlSerializeSetting.XmlSerializeSetting 构造函数" Url="html/f6f5d84e-4deb-db73-436a-887933c47470.htm" />
@@ -288,7 +285,7 @@
     <HelpKINode Title="构造函数" Url="html/e4dbdbf7-d0f3-c694-97c8-f52fd5883202.htm" />
   </HelpKINode>
   <HelpKINode Title="XmlTextReader.AttributeCount 属性" Url="html/6ff36278-a3b2-6ac5-2795-420c6ca8968b.htm" />
-  <HelpKINode Title="XmlTextReader.Dispose 方法" Url="html/6956d610-3bff-c86a-6d33-d27eb7b4efb3.htm" />
+  <HelpKINode Title="XmlTextReader.Dispose 方法" Url="html/89128139-84aa-571e-9999-8e33f6b0a9b3.htm" />
   <HelpKINode Title="XmlTextReader.EOF 属性" Url="html/0461518b-3c04-d2f3-8755-0e8218fca3de.htm" />
   <HelpKINode Title="XmlTextReader.MoveToElement 方法" Url="html/08855d65-64ff-65a5-c204-22bd41904bd6.htm" />
   <HelpKINode Title="XmlTextReader.MoveToNextAttribute 方法" Url="html/53db2bb0-59c5-9d2b-1cb4-74d9a27ceb6d.htm" />
@@ -307,7 +304,7 @@
     <HelpKINode Title="方法" Url="html/4cc9f3fa-1afe-f05d-35e4-203e48c338dc.htm" />
     <HelpKINode Title="构造函数" Url="html/a5fb4425-57fa-9b70-e8e7-7139bfb205fd.htm" />
   </HelpKINode>
-  <HelpKINode Title="XmlTextWriter.Dispose 方法" Url="html/b4c4ba5c-622b-8cd0-e9b2-410b7ab4ca75.htm" />
+  <HelpKINode Title="XmlTextWriter.Dispose 方法" Url="html/d37d2ed7-fdae-6d50-9a96-92966f437ff0.htm" />
   <HelpKINode Title="XmlTextWriter.Flush 方法" Url="html/e8c3d45e-299b-4870-f012-85e99301b00e.htm" />
   <HelpKINode Title="XmlTextWriter.IgnoreAttributeType 属性" Url="html/c93887bb-a453-dc88-84a6-a0f44c764d13.htm" />
   <HelpKINode Title="XmlTextWriter.Setting 属性" Url="html/593dfde9-4120-5a93-45c7-450f14778cc4.htm" />

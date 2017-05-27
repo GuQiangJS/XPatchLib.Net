@@ -54,8 +54,7 @@ namespace XPatchLib.UnitTest.ForXml
                 }
 
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
-
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(changedContext, changedEle.ToString());
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
@@ -86,12 +85,11 @@ namespace XPatchLib.UnitTest.ForXml
                 }
 
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
 
                 var changedContext = @"<KeyValuePair_String_String Action=""Remove"">
   <Key>" + k1.Key + @"</Key>
 </KeyValuePair_String_String>";
-
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(changedContext, changedEle.ToString());
 
                 stream.Position = 0;
@@ -124,15 +122,12 @@ namespace XPatchLib.UnitTest.ForXml
                 }
 
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
-
                 var changedContext = @"<KeyValuePair_String_String>
   <Key>" + k2.Key + @"</Key>
   <Value>" + k2.Value + @"</Value>
 </KeyValuePair_String_String>";
-
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(changedContext, changedEle.ToString());
-
 
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
@@ -163,15 +158,12 @@ namespace XPatchLib.UnitTest.ForXml
                 }
 
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
-
                 var changedContext = @"<KeyValuePair_String_String>
   <Key>" + k2.Key + @"</Key>
   <Value>" + k2.Value + @"</Value>
 </KeyValuePair_String_String>";
-
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(changedContext, changedEle.ToString());
-
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
@@ -201,15 +193,11 @@ namespace XPatchLib.UnitTest.ForXml
                 }
 
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
-
                 var changedContext = @"<KeyValuePair_String_String Action=""SetNull"">
   <Key>" + k2.Key + @"</Key>
 </KeyValuePair_String_String>";
-
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(changedContext, changedEle.ToString());
-
-
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
@@ -241,14 +229,11 @@ namespace XPatchLib.UnitTest.ForXml
                 }
 
                 stream.Position = 0;
-                var changedEle = XElement.Load(stream);
-
                 var changedContext = @"<KeyValuePair_String_String Action=""Remove"">
   <Key>" + k1.Key + @"</Key>
 </KeyValuePair_String_String>";
-
+                var changedEle = XElement.Load(new StreamReader(stream));
                 Assert.AreEqual(changedContext, changedEle.ToString());
-
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {

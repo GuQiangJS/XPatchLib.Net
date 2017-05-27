@@ -134,11 +134,11 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(typeof(MultilevelClass).Name, MultilevelClass.GetSampleInstance(), c));
                 }
                 stream.Position = 0;
-                XElement ele = XElement.Load(stream);
 
-                Assert.IsNotNull(ele);
-                Assert.AreEqual(result, ele.ToString());
-                Debug.WriteLine(ele.ToString());
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
 
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
@@ -185,9 +185,11 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(typeof(MultilevelClass).Name, MultilevelClass.GetSampleInstance(), c));
                 }
                 stream.Position = 0;
-                XElement ele = XElement.Load(stream);
-                Assert.IsNotNull(ele);
-                Assert.AreEqual(result, ele.ToString());
+
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
 
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
@@ -235,9 +237,11 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(typeof(MultilevelClass).Name, null, MultilevelClass.GetSampleInstance()));
                 }
                 stream.Position = 0;
-                XElement ele = XElement.Load(stream);
-                Assert.IsNotNull(ele);
-                Assert.AreEqual(result, ele.ToString());
+
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
 
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
@@ -279,9 +283,11 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(typeof(MultilevelClass).Name, MultilevelClass.GetSampleInstance(), c));
                 }
                 stream.Position = 0;
-                XElement ele = XElement.Load(stream);
-                Assert.IsNotNull(ele);
-                Assert.AreEqual(result, ele.ToString());
+
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
 
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
@@ -321,11 +327,12 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(NullableClass)), b1, b2));
                 }
                 stream.Position = 0;
-                XElement ele = XElement.Load(stream);
                 CombineObject dser = new CombineObject(new TypeExtend(typeof(NullableClass), null));
 
-                Assert.IsNotNull(ele);
-                Assert.AreEqual(result, ele.ToString());
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
 
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
@@ -363,11 +370,12 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(NullableClass)), null, b1));
                 }
                 stream.Position = 0;
-                XElement ele = XElement.Load(stream);
                 CombineObject dser = new CombineObject(new TypeExtend(typeof(NullableClass), null));
 
-                Assert.IsNotNull(ele);
-                Assert.AreEqual(result, ele.ToString());
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
 
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
@@ -411,10 +419,12 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(BookClass)), null, b1));
                 }
                 stream.Position = 0;
-                XElement ele = XElement.Load(stream);
 
-                Assert.IsNotNull(ele);
-                Assert.AreEqual(result, ele.ToString());
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
+
             }
 
             BookClass b2 = BookClass.GetSampleInstance();
@@ -444,9 +454,12 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(BookClass)), b1, b2));
                 }
                 stream.Position = 0;
-                XElement ele = XElement.Load(stream);
-                Assert.IsNotNull(ele);
-                Assert.AreEqual(result, ele.ToString());
+
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
+
             }
         }
 
@@ -478,10 +491,12 @@ namespace XPatchLib.UnitTest.ForXml
                         null, b1));
                 }
                 stream.Position = 0;
-                XElement ele = XElement.Load(stream);
 
-                Assert.IsNotNull(ele);
-                Assert.AreEqual(result, ele.ToString());
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
+
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
@@ -526,10 +541,12 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(AuthorStruct)), null, b1));
                 }
                 stream.Position = 0;
-                XElement ele = XElement.Load(stream);
 
-                Assert.IsNotNull(ele);
-                Assert.AreEqual(result, ele.ToString());
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
+
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
@@ -574,10 +591,12 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(AuthorClass)), b1, b2));
                 }
                 stream.Position = 0;
-                XElement ele = XElement.Load(stream);
 
-                Assert.IsNotNull(ele);
-                Assert.AreEqual(result, ele.ToString());
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
+
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
@@ -621,9 +640,12 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(AuthorClass)), null, b1));
                 }
                 stream.Position = 0;
-                XElement ele = XElement.Load(stream);
-                Assert.IsNotNull(ele);
-                Assert.AreEqual(result, ele.ToString());
+
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
+
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
@@ -662,9 +684,11 @@ namespace XPatchLib.UnitTest.ForXml
                 }
                 stream.Position = 0;
 
-                XElement ele = XElement.Load(stream);
-                Assert.IsNotNull(ele);
-                Assert.AreEqual(result, ele.ToString());
+                var changedEle = XElement.Load(new StreamReader(stream));
+
+                Assert.AreEqual(result, changedEle.ToString());
+                Debug.WriteLine(changedEle.ToString());
+
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
