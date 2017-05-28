@@ -1,7 +1,7 @@
 ﻿// Copyright © 2013-2017 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
-#if !HAVE_LINQ
+#if !SYSTEM_LINQ_EXPRESSIONS
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -457,27 +457,33 @@ namespace System.Runtime.CompilerServices
     ///     issue <a href="http://msdn.microsoft.com/en-us/magazine/cc135410.aspx">Nov 2007</a>.
     /// </remarks>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Assembly)]
-    public class ExtensionAttribute : Attribute { }
+    public sealed class ExtensionAttribute : Attribute { }
 }
 
 namespace XPatchLib.NoLinq
 {
     public delegate TResult Func<TResult>();
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "a")]
     public delegate TResult Func<T, TResult>(T a);
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
     public delegate TResult Func<T1, T2, TResult>(T1 arg1, T2 arg2);
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
     public delegate TResult Func<T1, T2, T3, TResult>(T1 arg1, T2 arg2, T3 arg3);
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
     public delegate TResult Func<T1, T2, T3, T4, TResult>(T1 arg1, T2 arg2, T3 arg3, T4 arg4);
 
     public delegate void Action();
 
     public delegate void Action<T1, T2>(T1 arg1, T2 arg2);
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
     public delegate void Action<T1, T2, T3>(T1 arg1, T2 arg2, T3 arg3);
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
     public delegate void Action<T1, T2, T3, T4>(T1 arg1, T2 arg2, T3 arg3, T4 arg4);
 }
 #endif

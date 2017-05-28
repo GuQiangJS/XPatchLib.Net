@@ -148,7 +148,7 @@ namespace XPatchLib
 
         private static object CombineGuid(string pValue)
         {
-#if NET40
+#if GUID_PARSE  //.NET4.0
             return Guid.Parse(pValue);
 #else
             return ConvertHelper.ConvertGuidFromString(pValue);

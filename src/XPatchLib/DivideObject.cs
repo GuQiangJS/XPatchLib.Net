@@ -2,7 +2,7 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-#if HAVE_LINQ
+#if SYSTEM_LINQ  //.NET 3.5
 using System.Linq;
 #endif
 

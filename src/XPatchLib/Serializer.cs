@@ -5,10 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml;
-#if HAVE_LINQ
+#if SYSTEM_LINQ  //.NET 3.5
 using System.Xml.Linq;
 #endif
 
@@ -153,8 +152,8 @@ namespace XPatchLib
                         }
 #if DEBUG
                         stream.Position = 0;
-#if XElement
-                        XElement ele = XElement.Load(stream);
+#if NET35
+                        XElement ele = XElement.Load(new StreamReader(stream));
 #else
                         XmlDocument xDoc = new XmlDocument();
                         xDoc.Load(stream);

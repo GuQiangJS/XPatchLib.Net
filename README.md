@@ -6,13 +6,13 @@
 
 ## **支持版本**
 
-.NET 2.0, .NET 3.5, .NET 4
+.NET 2.0 SP1, .NET 3.5, .NET 4
 
 ## 编译
 
 使用 Visual Studio 2015 及以上版本打开 src 目录下不同的解决方案。
 
-* XPatchLib.Net20.sln  ->  .NET 2.0
+* XPatchLib.Net20.sln  ->  .NET 2.0 SP1
 
 * XPatchLib.Net35.sln  ->  .NET 3.5
 

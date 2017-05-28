@@ -4,7 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-#if HAVE_LINQ
+#if SYSTEM_LINQ  //.NET 3.5
 using System.Linq;
 #endif
 

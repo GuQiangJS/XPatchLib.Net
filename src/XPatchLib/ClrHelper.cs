@@ -3,7 +3,7 @@
 
 using System;
 using System.Diagnostics;
-#if HAVE_LINQ
+#if SYSTEM_LINQ_EXPRESSIONS  //.NET 3.5
 using System.Linq.Expressions;
 #else 
 using XPatchLib.NoLinq;
@@ -19,6 +19,7 @@ namespace XPatchLib
 
         private static readonly Type[] SetValueParameterTypes = {typeof(object), typeof(object)};
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Portability", "CA1903:UseOnlyApiFromTargetedFramework", MessageId = "System.Reflection.Emit.DynamicMethod.#.ctor(System.String,System.Type,System.Type[],System.Boolean)")]
         public static Func<Object> CreateInstanceFunc(Type pType)
         {
             ConstructorInfo emptyConstructor = pType.GetConstructor(Type.EmptyTypes);
@@ -38,6 +39,7 @@ namespace XPatchLib
         /// </param>
         /// <returns>
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Portability", "CA1903:UseOnlyApiFromTargetedFramework", MessageId = "System.Reflection.Emit.DynamicMethod.#.ctor(System.String,System.Type,System.Type[],System.Boolean)")]
         public static Func<Object, Object> GetValueFunc(this PropertyInfo pProperty)
         {
             try
@@ -68,9 +70,10 @@ namespace XPatchLib
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "fieldInfo")]
         public static Func<Object, Object> GetValueFunc(this FieldInfo fieldInfo)
         {
-#if HAVE_LINQ
+#if SYSTEM_LINQ_EXPRESSIONS  //.NET 3.5
             try
             {
                 //if (!fieldInfo.IsPublic) return null;
@@ -92,6 +95,7 @@ namespace XPatchLib
 #endif
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Portability", "CA1903:UseOnlyApiFromTargetedFramework", MessageId = "System.Reflection.Emit.DynamicMethod.#.ctor(System.String,System.Type,System.Type[])")]
         public static Action<object, object> SetValueFunc(this PropertyInfo pProperty)
         {
             try
@@ -125,9 +129,10 @@ namespace XPatchLib
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "fieldInfo")]
         public static Action<Object, Object> SetValueFunc(this FieldInfo fieldInfo)
         {
-#if HAVE_LINQ
+#if SYSTEM_LINQ_EXPRESSIONS  //.NET 3.5
             try
             {
                 if (!fieldInfo.IsPublic || fieldInfo.IsInitOnly) return null;
@@ -136,7 +141,7 @@ namespace XPatchLib
                 var castedInstance = Expression.ConvertChecked
                     (instance, fieldInfo.DeclaringType);
                 var argument = Expression.Parameter(typeof(Object), "a");
-#if NET40
+#if EXPRESSION_ASSIGN  //.NET 4.0
                 var setter = Expression.Assign(
                     Expression.Field(castedInstance, fieldInfo),
                     Expression.Convert(argument, fieldInfo.FieldType));
@@ -160,7 +165,7 @@ namespace XPatchLib
                 return null;
             }
 #else
-                return null;
+            return null;
 #endif
             }
     }

@@ -4,7 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-#if HAVE_LINQ
+#if SYSTEM_LINQ  //.NET 3.5
 using System.Linq;
 #endif
 
