@@ -1,15 +1,9 @@
 @echo off
 
 ::version Exp:40
-::version Exp:Debug
-::%3-RunCodeAnalysis Exp:false
-::%4-clp Exp:ErrorOnly;PerformanceSummary;Summary
 
-set "assemblyName=XPatchLib"
 set "versionName=Net%1"
 set "framwork=framework%1"
-set "config=%2"
-set "logFileName=%assemblyName%_%versionName%_%config%.log
 set "logFilePath=%~dp0BuildLogs\"
 set "srcPath=%~dp0..\src"
 set "t=Clean;Rebuild"
@@ -31,9 +25,12 @@ echo "not found vcvarshall.bat"
 
 :build
 (
-if not exist %logFilePath% md %logFilePath%
-
-msbuild "%srcPath%\%assemblyName%\%assemblyName%.%versionName%.csproj" /t:%t% /l:FileLogger,Microsoft.Build.Engine;logfile=%logFilePath%%logFileName%;Encoding=UTF-8 /p:Configuration=%config%;RunCodeAnalysis=%3;SolutionDir=%srcPath%\ /clp:%4
+FOR %%c in (
+	CHMBuilder,MarkdownBuilder,WebBuilder ) do (
+		if not exist %logFilePath% md %logFilePath%
+		
+		msbuild "%srcPath%\HelperBuilder\%%c\%%c.%versionName%.shfbproj" /t:%t% /l:FileLogger,Microsoft.Build.Engine;logfile=%logFilePath%%%c_%versionName%.log;Encoding=UTF-8 /p:Configuration=Release;SolutionDir=%srcPath%\ /clp:ErrorOnly;Summary;PerformanceSummary
+	)
 )
 
 IF %ERRORLEVEL% EQU 0 (echo ** Build completed.) ELSE (echo %ERRORLEVEL% PAUSE)
