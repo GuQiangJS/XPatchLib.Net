@@ -258,4 +258,3 @@ paket-files/
 /src/HelperBuilder/CHMBuilder/WorkingPath
 /src/HelperBuilder/MarkdownBuilder/WorkingPath
 /src/HelperBuilder/WebBuilder/WorkingPath
-/builder/build_Net40_Debug_And_Run_Unittest.bat

@@ -119,7 +119,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)..\Bin\$(Version)\$(TargetFileName)"
+    <PostBuildEvent>echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)..\Bin\$(Version)\$(ConfigurationName)\$(TargetFileName)"
 echo f | xcopy /D /F /Y "$(TargetPath)" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\$(Version)\$(TargetFileName)"
 echo f | xcopy /D /F /Y "$(TargetDir)$(TargetName).xml" "$(SolutionDir)..\XPatchLib.Output\$(ConfigurationName)\$(Version)\$(TargetName).xml"</PostBuildEvent>
   </PropertyGroup>
