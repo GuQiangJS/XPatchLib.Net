@@ -18,6 +18,10 @@
 
 * XPatchLib.Net40.sln  ->  .NET 4.0
 
+* 编译 HelperBuilder 相关帮助文档项目时需要使用 [Sandcastle Help File Builder](https://github.com/EWSoftware/SHFB/releases)。
+
+* 编译 HelperBuilder\CHMBuilder 项目时需要配合使用 [HTML Help Workshop](http://www.microsoft.com/en-us/download/details.aspx?id=21138)。
+
 ## **Example**
 
 让我们看一个如何使用XPatchLib在两个类型相同但内容不同的对象间，创建增量内容以及合并增量内容的例子。
