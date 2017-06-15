@@ -3,7 +3,7 @@
 
 using System;
 using System.Diagnostics;
-#if SYSTEM_LINQ_EXPRESSIONS  //.NET 3.5
+#if (NET_35_UP || NETSTANDARD)
 using System.Linq.Expressions;
 #else 
 using XPatchLib.NoLinq;
@@ -73,7 +73,7 @@ namespace XPatchLib
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "fieldInfo")]
         public static Func<Object, Object> GetValueFunc(this FieldInfo fieldInfo)
         {
-#if SYSTEM_LINQ_EXPRESSIONS  //.NET 3.5
+#if (NET_35_UP || NETSTANDARD)
             try
             {
                 //if (!fieldInfo.IsPublic) return null;
@@ -132,7 +132,7 @@ namespace XPatchLib
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "fieldInfo")]
         public static Action<Object, Object> SetValueFunc(this FieldInfo fieldInfo)
         {
-#if SYSTEM_LINQ_EXPRESSIONS  //.NET 3.5
+#if (NET_35_UP || NETSTANDARD)
             try
             {
                 if (!fieldInfo.IsPublic || fieldInfo.IsInitOnly) return null;
@@ -141,7 +141,7 @@ namespace XPatchLib
                 var castedInstance = Expression.ConvertChecked
                     (instance, fieldInfo.DeclaringType);
                 var argument = Expression.Parameter(typeof(Object), "a");
-#if EXPRESSION_ASSIGN  //.NET 4.0
+#if (NET_40_UP || NETSTANDARD)
                 var setter = Expression.Assign(
                     Expression.Field(castedInstance, fieldInfo),
                     Expression.Convert(argument, fieldInfo.FieldType));

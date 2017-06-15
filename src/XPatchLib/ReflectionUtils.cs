@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
-#if SYSTEM_LINQ  //.NET 3.5
+#if (NET_35_UP || NETSTANDARD)
 using System.Linq;
 #endif
 using System.Reflection;

@@ -23,7 +23,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\$(Version)\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET40;SYSTEM_LINQ_EXPRESSIONS;SYSTEM_LINQ;EXPRESSION_ASSIGN;STRING_ISNULLORWHITESPACE;GUID_PARSE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET;NET_40;NET_20_UP;NET_35_UP;NET_40_UP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\$(Version)\XPatchLib.xml</DocumentationFile>
@@ -32,7 +32,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\$(Version)\</OutputPath>
-    <DefineConstants>TRACE;NET40;SYSTEM_LINQ_EXPRESSIONS;SYSTEM_LINQ;EXPRESSION_ASSIGN;STRING_ISNULLORWHITESPACE;GUID_PARSE</DefineConstants>
+    <DefineConstants>TRACE;NET;NET_40;NET_20_UP;NET_35_UP;NET_40_UP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\$(Version)\XPatchLib.xml</DocumentationFile>

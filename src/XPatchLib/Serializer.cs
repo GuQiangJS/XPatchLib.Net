@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Xml;
-#if SYSTEM_LINQ  //.NET 3.5
+#if (NET_35_UP || NETSTANDARD)
 using System.Xml.Linq;
 #endif
 

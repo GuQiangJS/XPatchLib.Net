@@ -1,7 +1,7 @@
 ﻿// Copyright © 2013-2017 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
-#if !SYSTEM_LINQ_EXPRESSIONS
+#if !(NET_35_UP || NETSTANDARD)
 using System;
 using System.Collections;
 using System.Collections.Generic;

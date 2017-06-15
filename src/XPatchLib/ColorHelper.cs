@@ -139,7 +139,7 @@ namespace XPatchLib
         {
             pColor = Color.Black;
 
-#if STRING_ISNULLORWHITESPACE  //.NET 4.0
+#if (NET_40_UP || NETSTANDARD)
             if (string.IsNullOrWhiteSpace(pColorString))
                 return false;
 #else

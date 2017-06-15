@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-#if SYSTEM_LINQ  //.NET 3.5
+#if (NET_35_UP || NETSTANDARD)
 using System.Linq;
 #else
 using XPatchLib.NoLinq;
@@ -258,7 +258,7 @@ namespace XPatchLib
             return result;
         }
 
-        internal static Boolean Equals(object objA, object objB)
+        internal static Boolean ObjectEquals(object objA, object objB)
         {
             if (objA == null && objB == null)
                 return true;
@@ -278,7 +278,7 @@ namespace XPatchLib
 
         internal static Boolean NeedSerialize(object defaultValue, object objA, object objB, bool serializeDefaultValue)
         {
-            bool result = Equals(objA, objB);
+            bool result = ObjectEquals(objA, objB);
             if (result && IsDefaultValue(defaultValue, objA) && serializeDefaultValue)
                 return true;
             return !result;

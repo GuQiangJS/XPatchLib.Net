@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net40;net35;net20;netstandard1.0;netstandard1.4</TargetFrameworks>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFrameworks>
+    <TargetFramework Condition="'$(LibraryFrameworks)'==''">net20</TargetFramework>
+    <TargetFramework Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFramework>
+    <Description>Patch Serialization Library for the .Net Framework</Description>
+    <Company />
+    <Authors>Qiang Gu</Authors>
+    <Version>2.0.0.108</Version>
+    <PackageLicenseUrl>https://github.com/GuQiangJS/XPatchLib.Net/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/GuQiangJS/XPatchLib.Net</PackageProjectUrl>
+    <NeutralLanguage>zh-CN</NeutralLanguage>
+    <Copyright>Copyright © 2013-2017 - GuQiang</Copyright>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net20'">
+    <AssemblyTitle>XPatchLib 2.0</AssemblyTitle>
+    <DefineConstants>NET;NET_20;NET_20_UP</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
+    <AssemblyTitle>XPatchLib 3.5</AssemblyTitle>
+    <DefineConstants>NET;NET_35;NET_20_UP;NET_35_UP</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
+    <AssemblyTitle>XPatchLib 4.0</AssemblyTitle>
+    <DefineConstants>NET;NET_40;NET_20_UP;NET_35_UP;NET_40_UP</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.0'">
+    <AssemblyTitle>XPatchLib Standard 1.0</AssemblyTitle>
+    <DefineConstants>NETSTANDARD;NETSTANDARD_1_0;NETSTANDARD_1_0_UP</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
+    <AssemblyTitle>XPatchLib Standard 1.3</AssemblyTitle>
+    <DefineConstants>NETSTANDARD;NETSTANDARD_1_3;NETSTANDARD_1_0_UP;NETSTANDARD_1_3_UP</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.4'">
+    <AssemblyTitle>XPatchLib Standard 1.3</AssemblyTitle>
+    <DefineConstants>NETSTANDARD;NETSTANDARD_1_3;NETSTANDARD_1_0_UP;NETSTANDARD_1_3_UP;NETSTANDARD_1_4_UP</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.5'">
+    <AssemblyTitle>XPatchLib Standard 1.5</AssemblyTitle>
+    <DefineConstants>NETSTANDARD;NETSTANDARD_1_5;NETSTANDARD_1_0_UP;NETSTANDARD_1_3_UP;NETSTANDARD_1_4_UP;NETSTANDARD_1_5_UP</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <AssemblyTitle>XPatchLib Standard 2.0</AssemblyTitle>
+    <DefineConstants>NETSTANDARD;NETSTANDARD_2_0;NETSTANDARD_1_0_UP;NETSTANDARD_1_3_UP;NETSTANDARD_1_4_UP;NETSTANDARD_1_5_UP;NETSTANDARD_2_0_UP</DefineConstants>
+  </PropertyGroup>
+
+</Project>
