@@ -4,7 +4,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+#if (NET || NETSTANDARD_2_0_UP)
 using System.Drawing;
+#endif
 using System.Globalization;
 #if (NET_35_UP || NETSTANDARD)
 using System.Linq;
@@ -15,12 +17,12 @@ namespace XPatchLib
 {
     internal class ReflectionUtils
     {
-        #region Internal Methods
+#region Internal Methods
 
         internal static Object GetDefaultValue(Type pType)
         {
             Object result = null;
-            if (pType.IsValueType)
+            if (pType.IsValueType())
                 result = Activator.CreateInstance(pType);
             return result;
         }
@@ -35,7 +37,7 @@ namespace XPatchLib
         {
             Queue<MemberWrapper> r = new Queue<MemberWrapper>();
             foreach (MemberInfo memberInfo in pObjType.GetMembers(BindingFlags.Instance | BindingFlags.Public))
-                if (memberInfo.MemberType == MemberTypes.Property || memberInfo.MemberType == MemberTypes.Field)
+                if (memberInfo.MemberType() == MemberTypes.Property || memberInfo.MemberType() == MemberTypes.Field)
                 {
                     MemberWrapper wrapper = new MemberWrapper(memberInfo);
                     if (wrapper.GetIgnore(pIngoreAttributeType) == null && wrapper.HasPublicGetter &&
@@ -83,7 +85,7 @@ namespace XPatchLib
             Guard.ArgumentNotNull(pType, "pType");
 
             string result = pType.Name;
-            if (pType.IsGenericType)
+            if (pType.IsGenericType())
             {
                 int backqIndex = result.IndexOf('`');
                 if (backqIndex == 0)
@@ -94,8 +96,10 @@ namespace XPatchLib
 
                 result += ConstValue.UNDERLINE;
 
-                Array.ForEach(pType.GetGenericArguments(),
-                    genType => result += GetTypeFriendlyName(genType) + ConstValue.UNDERLINE);
+                foreach(Type t in pType.GetGenericArguments())
+                {
+                    result += GetTypeFriendlyName(t) + ConstValue.UNDERLINE;
+                }
 
                 if (result.EndsWith(ConstValue.UNDERLINE, StringComparison.OrdinalIgnoreCase))
                     result = result.Remove(result.Length - 1);
@@ -129,9 +133,13 @@ namespace XPatchLib
         internal static Boolean IsBasicType(Type pType)
         {
             bool result = false;
-            if (pType == typeof(string) || pType.IsPrimitive || pType.IsEnum || pType == typeof(DateTime) ||
+            if (pType == typeof(string) || pType.IsPrimitive() || pType.IsEnum() || pType == typeof(DateTime) ||
                 pType == typeof(decimal) ||
-                pType == typeof(Guid) || pType == typeof(Color))
+                pType == typeof(Guid)
+#if (NET || NETSTANDARD_2_0_UP)
+                || pType == typeof(Color)
+#endif
+                )
             {
                 result = true;
             }
@@ -149,11 +157,11 @@ namespace XPatchLib
         internal static bool IsICollection(Type type)
         {
             // a direct reference to the interface itself is also OK. 
-            if (type.IsInterface && type.GetGenericTypeDefinition() == typeof(ICollection<>))
+            if (type.IsInterface() && type.GetGenericTypeDefinition() == typeof(ICollection<>))
                 return true;
 
             foreach (Type interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType &&
+                if (interfaceType.IsGenericType() &&
                     interfaceType.GetGenericTypeDefinition() == typeof(ICollection<>))
                     return true;
 
@@ -172,7 +180,7 @@ namespace XPatchLib
             valueType = typeof(object);
 
             // a direct reference to the interface itself is also OK. 
-            if (type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+            if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
             {
                 Type[] genArgs = type.GetGenericArguments();
                 keyType = genArgs[0];
@@ -181,7 +189,7 @@ namespace XPatchLib
             }
 
             foreach (Type interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType &&
+                if (interfaceType.IsGenericType() &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
                 {
                     Type[] genArgs = interfaceType.GetGenericArguments();
@@ -209,11 +217,11 @@ namespace XPatchLib
         internal static bool IsIList(Type type)
         {
             // a direct reference to the interface itself is also OK. 
-            if (type.IsInterface && type.GetGenericTypeDefinition() == typeof(IList<>))
+            if (type.IsInterface() && type.GetGenericTypeDefinition() == typeof(IList<>))
                 return true;
 
             foreach (Type interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType &&
+                if (interfaceType.IsGenericType() &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IList<>))
                     return true;
 
@@ -232,7 +240,7 @@ namespace XPatchLib
             valueType = typeof(object);
 
             // a direct reference to the interface itself is also OK. 
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+            if (type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
             {
                 Type[] genArgs = type.GetGenericArguments();
                 keyType = genArgs[0];
@@ -260,7 +268,7 @@ namespace XPatchLib
         /// </returns>
         internal static bool IsNullable(Type pType)
         {
-            if (pType.IsGenericType && pType.GetGenericTypeDefinition() == typeof(Nullable<>))
+            if (pType.IsGenericType() && pType.GetGenericTypeDefinition() == typeof(Nullable<>))
                 return true;
             return false;
         }
@@ -316,14 +324,14 @@ namespace XPatchLib
 
             bool isNongenericEnumerable = false;
 
-            if (pType.IsInterface && pType.IsGenericType && pType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (pType.IsInterface() && pType.IsGenericType() && pType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
                 pSeqType = pType.GetGenericArguments()[0];
                 return true;
             }
 
             foreach (Type interfaceType in pType.GetInterfaces())
-                if (interfaceType.IsGenericType &&
+                if (interfaceType.IsGenericType() &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 {
                     Type[] genArgs = interfaceType.GetGenericArguments();
@@ -345,6 +353,6 @@ namespace XPatchLib
             return false;
         }
 
-        #endregion Internal Methods
+#endregion Internal Methods
     }
 }

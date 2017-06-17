@@ -161,7 +161,7 @@ namespace XPatchLib
         /// </returns>
         private string TransToString<T>(Object pObj)
         {
-            switch (System.Type.GetTypeCode(typeof(T)))
+            switch (typeof(T).GetTypeCode())
             {
                 case TypeCode.Boolean:
                     return XmlConvert.ToString((Boolean) pObj);

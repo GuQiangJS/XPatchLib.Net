@@ -61,12 +61,14 @@ namespace XPatchLib
                     if (member.IsBasicType)
                     {
                         //当前处理的属性的类型是 基础 类型时
-                        if (member.IsColor)
-                            Type.SetMemberValue(pOriObject, member.Name,
-                                ColorHelper.TransFromString(pReader.ReadString()));
-                        else if (member.IsEnum)
+                        if (member.IsEnum)
                             Type.SetMemberValue(pOriObject, member.Name,
                                 new EnumWrapper(memberType).TransFromString(pReader.ReadString()));
+#if (NET || NETSTANDARD_2_0_UP)
+                        else  if (member.IsColor)
+                            Type.SetMemberValue(pOriObject, member.Name,
+                                ColorHelper.TransFromString(pReader.ReadString()));
+#endif
                         else
                             Type.SetMemberValue(pOriObject, member.Name,
                                 CombineInstanceContainer.GetCombineInstance(TypeExtendContainer.GetTypeExtend(memberType, null, Type)).Combine(pReader,

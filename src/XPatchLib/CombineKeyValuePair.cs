@@ -64,8 +64,11 @@ namespace XPatchLib
             if (pOriObject == null)
             {
                 //当原始对象为null时，先创建一个实例。并且赋予pElement转换的Key值和Value值
-                pOriObject = Type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null,
-                    new[] {revKey != null ? revKey : oriKeyObj, revValue}, CultureInfo.InvariantCulture);
+                //pOriObject = Type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null,
+                //    new[] {revKey != null ? revKey : oriKeyObj, revValue}, CultureInfo.InvariantCulture);
+                pOriObject = this.Type.CreateInstance();
+                Type.SetMemberValue(pOriObject, ConstValue.KEY, revKey != null ? revKey : oriKeyObj);
+                Type.SetMemberValue(pOriObject, ConstValue.VALUE, revValue);
             }
             else
             {
@@ -77,14 +80,16 @@ namespace XPatchLib
                         "原始Key值:'{0}',更新后的Key值:'{1}'.",
                         oriKeyObj, revKey));
 
-                if (Attributes.Action == Action.SetNull)
-                    pOriObject = Type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null,
-                        new[] {revKey != null ? revKey : oriKeyObj, revValue}, CultureInfo.InvariantCulture);
+                if (Attributes.Action == Action.SetNull || Attributes.Action == Action.Edit)
+                {
+                    //pOriObject = Type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null,
+                    //    new[] {revKey != null ? revKey : oriKeyObj, revValue}, CultureInfo.InvariantCulture);
+                    pOriObject = this.Type.CreateInstance();
+                    Type.SetMemberValue(pOriObject, ConstValue.KEY, revKey != null ? revKey : oriKeyObj);
+                    Type.SetMemberValue(pOriObject, ConstValue.VALUE, revValue);
+                }
                 else if (Attributes.Action == Action.Remove)
                     pOriObject = null;
-                else if (Attributes.Action == Action.Edit)
-                    pOriObject = Type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null,
-                        new[] {revKey != null ? revKey : oriKeyObj, revValue}, CultureInfo.InvariantCulture);
                 else
                     throw new NotImplementedException();
             }

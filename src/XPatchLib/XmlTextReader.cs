@@ -83,7 +83,7 @@ namespace XPatchLib
         /// <para>Note: 文本节点可以是元素或属性文本节点。</para></returns>
         public string ReadString()
         {
-            return _reader.ReadString();
+            return _reader.ReadContentAsString();
         }
 
         /// <summary>

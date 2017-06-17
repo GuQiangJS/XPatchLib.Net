@@ -96,7 +96,7 @@ namespace XPatchLib
         /// <param name="pValue">Value值。</param>
         private void Update(string pOperatorName, Object pOriObject, Object pKey, Object pValue)
         {
-            Type.InvokeMember(pOperatorName, BindingFlags.InvokeMethod, null, pOriObject, new[] {pKey, pValue},
+            Type.InvokeMember(pOperatorName, BindingFlags.InvokeMethod, pOriObject, new[] {pKey, pValue},
                 CultureInfo.InvariantCulture);
         }
 
@@ -107,7 +107,7 @@ namespace XPatchLib
         /// <param name="pKey">Key值。</param>
         private void Remove(Object pOriObject, Object pKey)
         {
-            Type.InvokeMember(ConstValue.OPERATOR_REMOVE, BindingFlags.InvokeMethod, null, pOriObject, new[] {pKey},
+            Type.InvokeMember(ConstValue.OPERATOR_REMOVE, BindingFlags.InvokeMethod, pOriObject, new[] {pKey},
                 CultureInfo.InvariantCulture);
         }
 

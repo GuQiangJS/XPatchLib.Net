@@ -2,10 +2,14 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
+#if (NET || NETSTANDARD_2_0_UP)
 using System.Drawing;
+#endif
 using System.Globalization;
 using System.Reflection;
+#if (NET || NETSTANDARD_1_3_UP)
 using System.Xml.Serialization;
+#endif
 using XPatchLib.Properties;
 
 namespace XPatchLib
@@ -15,7 +19,7 @@ namespace XPatchLib
     /// </summary>
     internal class MemberWrapper
     {
-        #region Internal Constructors
+#region Internal Constructors
 
         /// <summary>
         ///     使用指定的 <see cref="System.Reflection.MemberInfo" /> 初始化
@@ -35,10 +39,10 @@ namespace XPatchLib
         {
             Guard.ArgumentNotNull(pMemberInfo, "pMemberInfo");
 
-            if (pMemberInfo.MemberType != MemberTypes.Property && pMemberInfo.MemberType != MemberTypes.Field)
+            if (pMemberInfo.MemberType() != MemberTypes.Property && pMemberInfo.MemberType() != MemberTypes.Field)
                 throw new ArgumentException(
                     string.Format(CultureInfo.InvariantCulture, Resources.Exp_String_MemberType, pMemberInfo,
-                        pMemberInfo.MemberType)
+                        pMemberInfo.MemberType())
                     , "pMemberInfo");
 
             MemberInfo = pMemberInfo;
@@ -49,7 +53,7 @@ namespace XPatchLib
             InitDefaultValue();
         }
 
-        #endregion Internal Constructors
+#endregion Internal Constructors
 
         /// <summary>
         ///     获取类型默认值。
@@ -74,6 +78,7 @@ namespace XPatchLib
         /// </remarks>
         internal Boolean IsBasicType { get; private set; }
 
+#if (NET || NETSTANDARD_2_0_UP)
         /// <summary>
         ///     获取是否为 Color 类型。
         /// </summary>
@@ -81,6 +86,7 @@ namespace XPatchLib
         {
             get { return Type == typeof(Color); }
         }
+#endif
 
         /// <summary>
         ///     获取是否为枚举类型。
@@ -151,17 +157,21 @@ namespace XPatchLib
         {
             if (pIngoreAttributeType == null)
                 return null;
+#if (NET || NETSTANDARD_2_0_UP)
+            return Attribute.GetCustomAttribute(MemberInfo, pIngoreAttributeType);
+#else
             return MemberInfo.GetCustomAttribute(pIngoreAttributeType);
+#endif
         }
 
-        #region Private Methods
+#region Private Methods
 
         /// <summary>
         ///     初始化当前成员属性的默认值。
         /// </summary>
         private void InitDefaultValue()
         {
-            if (Type.IsValueType)
+            if (Type.IsValueType())
                 DefaultValue = Activator.CreateInstance(Type);
             else
                 DefaultValue = null;
@@ -178,7 +188,7 @@ namespace XPatchLib
         /// </summary>
         private void InitType()
         {
-            IsProperty = MemberInfo.MemberType == MemberTypes.Property;
+            IsProperty = MemberInfo.MemberType() == MemberTypes.Property;
 
             HasPublicGetter = true;
             HasPublicSetter = true;
@@ -196,7 +206,7 @@ namespace XPatchLib
 
             IsIEnumerable = ReflectionUtils.IsIEnumerable(Type);
 
-            IsEnum = Type.IsEnum;
+            IsEnum = Type.IsEnum();
 
             //IsICollection = ReflectionUtils.IsICollection(Type);
 
@@ -205,6 +215,6 @@ namespace XPatchLib
             //IsIList = ReflectionUtils.IsIList(Type);
         }
 
-        #endregion Private Methods
+#endregion Private Methods
     }
 }

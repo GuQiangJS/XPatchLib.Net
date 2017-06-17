@@ -3,8 +3,12 @@
 
 using System;
 using System.Globalization;
+using XPatchLib.Properties;
+
+#if (NET || NETSTANDARD_2_0_UP)
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+#endif
 
 namespace XPatchLib
 {
@@ -18,10 +22,12 @@ namespace XPatchLib
     /// <example>
     ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="PrimaryKeyException" and @method="none"]/*' />
     /// </example>
+#if (NET || NETSTANDARD_2_0_UP)
     [Serializable]
+#endif
     public class PrimaryKeyException : Exception
     {
-        #region Public Constructors
+#region Public Constructors
 
         /// <summary>
         ///     使用指定的类型及指定的主键名称创建主键定义异常的实例。
@@ -70,6 +76,7 @@ namespace XPatchLib
         {
         }
 
+#if (NET || NETSTANDARD_2_0_UP)
         /// <summary>
         ///     用序列化数据初始化 <see cref="XPatchLib.PrimaryKeyException" /> 类的新实例。
         /// </summary>
@@ -83,10 +90,11 @@ namespace XPatchLib
             : base(info, context)
         {
         }
+#endif
 
-        #endregion Public Constructors
+#endregion Public Constructors
 
-        #region Public Properties
+#region Public Properties
 
         /// <summary>
         ///     获取描述当前异常的消息。
@@ -95,9 +103,7 @@ namespace XPatchLib
         {
             get
             {
-                CultureInfo culture = CultureInfo.CurrentCulture;
-                string message = ResourceHelper.GetResourceString("Exp_String_PrimaryKey", culture);
-                return string.Format(culture, message, ErrorType.FullName, PrimaryKeyName);
+                return string.Format(CultureInfo.CurrentCulture, Resources.Exp_String_PrimaryKey, ErrorType.FullName, PrimaryKeyName);
             }
         }
 
@@ -111,6 +117,7 @@ namespace XPatchLib
         /// </summary>
         public Type ErrorType { get; set; }
 
+#if (NET || NETSTANDARD_2_0_UP)
         /// <summary>
         ///     用关于异常的信息设置 <see cref="System.Runtime.Serialization.SerializationInfo" /> 。
         /// </summary>
@@ -126,7 +133,8 @@ namespace XPatchLib
             info.AddValue("PrimaryKeyName", PrimaryKeyName);
             info.AddValue("ErrorType", ErrorType);
         }
+#endif
 
-        #endregion Public Properties
+#endregion Public Properties
     }
 }

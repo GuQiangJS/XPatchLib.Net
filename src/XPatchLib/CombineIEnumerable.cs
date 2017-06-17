@@ -122,7 +122,7 @@ namespace XPatchLib
             else if (listType.GetMethod(ConstValue.OPERATOR_ADD) != null)
             {
                 //非数组类型时，在当前集合类型上调用Add方法
-                Type.InvokeMember(ConstValue.OPERATOR_ADD, BindingFlags.InvokeMethod, null, pOriObject, new[] {obj},
+                Type.InvokeMember(ConstValue.OPERATOR_ADD, BindingFlags.InvokeMethod, pOriObject, new[] {obj},
                     CultureInfo.InvariantCulture);
             }
             else
@@ -273,7 +273,7 @@ namespace XPatchLib
                 else if (listType.GetMethod(ConstValue.OPERATOR_REMOVE) != null)
                 {
                     //非数组类型时，在当前集合类型上调用Remove方法
-                    Type.InvokeMember(ConstValue.OPERATOR_REMOVE, BindingFlags.InvokeMethod, null, pOriObject,
+                    Type.InvokeMember(ConstValue.OPERATOR_REMOVE, BindingFlags.InvokeMethod, pOriObject,
                         new[] {pFoundItem}, CultureInfo.InvariantCulture);
                 }
                 else
@@ -289,6 +289,6 @@ namespace XPatchLib
             }
         }
 
-        #endregion Private Methods
+#endregion Private Methods
     }
 }

@@ -1,6 +1,7 @@
 ﻿// Copyright © 2013-2017 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
+#if (NET || NETSTANDARD_2_0_UP)
 using System;
 using System.Drawing;
 using System.Globalization;
@@ -13,7 +14,7 @@ namespace XPatchLib
     /// </summary>
     internal static class ColorHelper
     {
-        #region Internal Methods
+#region Internal Methods
 
         /// <summary>
         ///     将指定字符串转换为 <see cref="System.Drawing.Color" /> 的实例。
@@ -163,6 +164,7 @@ namespace XPatchLib
             return true;
         }
 
-        #endregion Internal Methods
+#endregion Internal Methods
     }
 }
+#endif

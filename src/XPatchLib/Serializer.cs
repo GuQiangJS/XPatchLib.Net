@@ -152,7 +152,7 @@ namespace XPatchLib
                         }
 #if DEBUG
                         stream.Position = 0;
-#if NET35
+#if (NET_35 || NETSTANDARD)
                         XElement ele = XElement.Load(new StreamReader(stream));
 #else
                         XmlDocument xDoc = new XmlDocument();

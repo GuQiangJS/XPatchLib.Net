@@ -2,6 +2,7 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Globalization;
 using System.Xml;
 
 namespace XPatchLib
@@ -9,7 +10,7 @@ namespace XPatchLib
     /// <summary>
     ///     指定如何处理字符串之间进行转换时的时间值和 <see cref="DateTime" />。
     /// </summary>
-    /// <seealso cref="System.Xml.XmlDateTimeSerializationMode" />
+    /// <seealso cref="XmlDateTimeSerializationMode" />
     public enum DateTimeSerializationMode
     {
         /// <summary>

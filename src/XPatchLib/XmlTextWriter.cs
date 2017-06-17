@@ -4,7 +4,9 @@
 using System;
 using System.Diagnostics;
 using System.Xml;
+#if (NET || NETSTANDARD_1_3_UP)
 using System.Xml.Serialization;
+#endif
 
 namespace XPatchLib
 {
@@ -31,7 +33,9 @@ namespace XPatchLib
         public XmlTextWriter(XmlWriter pWriter)
         {
             Guard.ArgumentNotNull(pWriter, "pWriter");
+#if (NET || NETSTANDARD_2_0_UP)
             IgnoreAttributeType = typeof(XmlIgnoreAttribute);
+#endif
             _writer = pWriter;
         }
 
@@ -204,7 +208,11 @@ namespace XPatchLib
         ///     用于控制如何 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 序列化对象。
         /// </remarks>
         /// <value>
+#if (NET || NETSTANDARD_2_0_UP)
         ///     <see cref="XmlIgnoreAttribute" />
+#else
+        ///     null.
+#endif
         /// </value>
         public Type IgnoreAttributeType { get; internal set; }
 

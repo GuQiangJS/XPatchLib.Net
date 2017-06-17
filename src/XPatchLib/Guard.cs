@@ -66,23 +66,6 @@ namespace XPatchLib
             if (pArgumentValue.Length == 0)
                 throw new ArgumentException("", pArgumentName);
         }
-
-        /// <summary>
-        ///     当参数 <paramref name="pFileFullName" /> 标识的文件不存在时。抛出 <see cref="FileNotFoundException" /> 异常。
-        /// </summary>
-        /// <param name="pFileFullName">待检测的文件完整路径。</param>
-        /// <exception cref="System.IO.FileNotFoundException"></exception>
-        /// <exception cref="ArgumentNullException">当参数 <paramref name="pFileFullName" /> is null 时。</exception>
-        /// <exception cref="ArgumentException">当参数 <paramref name="pFileFullName" /> 长度为 0 时。</exception>
-        /// <exception cref="FileNotFoundException">当参数 <paramref name="pFileFullName" /> 指定的文件不存在时。</exception>
-        public static void FileNotFound(string pFileFullName)
-        {
-            ArgumentNotNullOrEmpty(pFileFullName, "pFileFullName");
-            if (!File.Exists(pFileFullName))
-                throw new FileNotFoundException(
-                    string.Format(CultureInfo.InvariantCulture, Resources.Exp_String_FileNotExists, pFileFullName), pFileFullName);
-        }
-
-        #endregion Public Methods
+#endregion Public Methods
     }
 }

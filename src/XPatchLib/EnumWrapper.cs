@@ -41,7 +41,7 @@ namespace XPatchLib
         internal EnumWrapper(Type pType)
             : this()
         {
-            if (!pType.IsEnum)
+            if (!pType.IsEnum())
                 throw new ArgumentException(
                     string.Format(CultureInfo.InvariantCulture, Resources.Exp_String_IsNotEnum, pType.FullName), "pType");
 

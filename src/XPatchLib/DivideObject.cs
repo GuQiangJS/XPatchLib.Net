@@ -65,6 +65,7 @@ namespace XPatchLib
                         pRevMemberValue = new EnumWrapper(memberType).TransToString(pRevMemberValue);
                         memberType = typeof(string);
                     }
+#if (NET || NETSTANDARD_2_0_UP)
                     //如果是Color类型
                     if (member.IsColor)
                     {
@@ -72,7 +73,7 @@ namespace XPatchLib
                         pRevMemberValue = ColorHelper.TransToString(pRevMemberValue);
                         memberType = typeof(string);
                     }
-
+#endif
                     divide = new DivideBasic(Writer,
                         TypeExtendContainer.GetTypeExtend(memberType, Writer.IgnoreAttributeType, Type));
                 }

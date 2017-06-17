@@ -47,8 +47,8 @@ namespace XPatchLib
             FieldsToBeSerialized = ReflectionUtils.GetFieldsToBeSerialized(pType, pIgnoreAttributeType);
             DefaultValue = ReflectionUtils.GetDefaultValue(pType);
             IsArray = ReflectionUtils.IsArray(pType);
-            TypeCode = Type.GetTypeCode(pType);
-            IsGenericType = OriType.IsGenericType;
+            TypeCode = pType.GetTypeCode();
+            IsGenericType = OriType.IsGenericType();
             IsGuid = pType == typeof(Guid);
             TypeFriendlyName = ReflectionUtils.GetTypeFriendlyName(pType);
 
@@ -90,7 +90,7 @@ namespace XPatchLib
             if (!CheckPrimaryKeyAttribute(false, out errorPrimaryKeyName))
                 throw new PrimaryKeyException(pType, errorPrimaryKeyName);
 
-            CreateInstanceFuncs = ClrHelper.CreateInstanceFunc(pType);
+            CreateInstanceFuncs = ClrHelper.CreateInstanceFunc<Object>(pType);
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace XPatchLib
 
             if (IsBasicType)
             {
-                if (OriType.IsValueType)
+                if (OriType.IsValueType())
                     return CreateInstanceFuncs();
                 if (OriType == typeof(string))
                     return string.Empty;
@@ -208,6 +208,7 @@ namespace XPatchLib
                         return Array.CreateInstance(elementType, 0);
                     throw new NotImplementedException();
                 }
+#if (NET || NETSTANDARD_2_0_UP)
                 try
                 {
                     return OriType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0],
@@ -215,8 +216,11 @@ namespace XPatchLib
                 }
                 catch (MissingMethodException)
                 {
-                    return Activator.CreateInstance(OriType, true);
+                    return Activator.CreateInstance(OriType);
                 }
+#else
+                return Activator.CreateInstance(OriType);
+#endif
             }
             return null;
         }
@@ -284,10 +288,21 @@ namespace XPatchLib
             return !result;
         }
 
-        internal Object InvokeMember(string name, BindingFlags invokeAttr, Binder binder, object target, object[] args,
+        internal Object InvokeMember(string name, BindingFlags invokeAttr, object target, object[] args,
             CultureInfo culture)
         {
-            return OriType.InvokeMember(name, invokeAttr, binder, target, args, culture);
+#if (NET || NETSTANDARD_2_0_UP)
+            return OriType.InvokeMember(name, invokeAttr, null, target, args, culture);
+#else
+
+            MethodInfo methodInfo = OriType.GetMethod(name, invokeAttr);
+            if (methodInfo == null)
+            {
+                return null;
+            }
+            ClrHelper.MethodCall<object, object> call = OriType.CreateMethodCall<object>(methodInfo);
+            return call.Invoke(target, args);
+#endif
         }
 
         internal void SetMemberValue(Object pObject, String pMemberName, Object pValue)
@@ -371,13 +386,13 @@ namespace XPatchLib
         {
             if (pMember.IsProperty)
             {
-                Func<Object, Object> func = ((PropertyInfo) pMember.MemberInfo).GetValueFunc();
+                Func<Object, Object> func = ((PropertyInfo) pMember.MemberInfo).GetValueFunc<Object>();
                 if (func != null)
                     GetValueFuncs.Add(pMember.Name, func);
             }
             else
             {
-                Func<Object, Object> func = ((FieldInfo) pMember.MemberInfo).GetValueFunc();
+                Func<Object, Object> func = ((FieldInfo) pMember.MemberInfo).GetValueFunc<Object>();
                 if (func != null)
                     GetValueFuncs.Add(pMember.Name, func);
             }
@@ -387,13 +402,13 @@ namespace XPatchLib
         {
             if (pMember.IsProperty)
             {
-                Action<Object, Object> act = ((PropertyInfo) pMember.MemberInfo).SetValueFunc();
+                Action<Object, Object> act = ((PropertyInfo) pMember.MemberInfo).SetValueFunc<Object>();
                 if (act != null)
                     SetValueFuncs.Add(pMember.Name, act);
             }
             else
             {
-                Action<Object, Object> act = ((FieldInfo) pMember.MemberInfo).SetValueFunc();
+                Action<Object, Object> act = ((FieldInfo) pMember.MemberInfo).SetValueFunc<Object>();
                 if (act != null)
                     SetValueFuncs.Add(pMember.Name, act);
             }
