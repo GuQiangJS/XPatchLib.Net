@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Globalization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using XPatchLib.UnitTest.TestClass;
 
 namespace XPatchLib.UnitTest
 {
-    [TestClass]
+    [TestFixture]
     public class TestEnumWrapper
     {
         #region Public Methods
 
-        [TestMethod]
+        [Test]
         public void TestEnumWrapperConstruction()
         {
             try

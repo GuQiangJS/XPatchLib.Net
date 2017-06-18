@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using XPatchLib.UnitTest.TestClass;
 
 namespace XPatchLib.UnitTest.ForXml
 {
-    [TestClass]
+    [TestFixture]
     public class TestMulitPrimaryKeyClass
     {
         #region Public Methods
 
-        [TestMethod]
+        [Test]
         public void TestMulitPrimaryKeyClassListRemoveDivideAndCombine()
         {
             var oriList = new List<MulitPrimaryKeyClass>();

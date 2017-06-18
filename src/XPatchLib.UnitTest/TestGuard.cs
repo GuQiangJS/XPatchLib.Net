@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace XPatchLib.UnitTest
 {
-    [TestClass]
+    [TestFixture]
     public class TestGuard
     {
         #region Public Methods
 
-        [TestMethod]
+        [Test]
         public void TestArgumentNotNull()
         {
             try
@@ -27,7 +27,7 @@ namespace XPatchLib.UnitTest
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestArgumentNotNullOrEmptyForArray()
         {
             try
@@ -44,7 +44,7 @@ namespace XPatchLib.UnitTest
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestArgumentNotNullOrEmptyForString()
         {
             try
@@ -66,24 +66,6 @@ namespace XPatchLib.UnitTest
             catch (ArgumentException ex)
             {
                 Assert.AreEqual("TestArgumentName", ex.ParamName);
-            }
-            catch (Exception)
-            {
-                Assert.Fail("未能抛出 ArgumentNullException.");
-            }
-        }
-
-        [TestMethod]
-        public void TestFileNotFound()
-        {
-            var tempFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".txt");
-            try
-            {
-                Guard.FileNotFound(tempFile);
-            }
-            catch (FileNotFoundException ex)
-            {
-                Assert.AreEqual(string.Format(CultureInfo.InvariantCulture, "文件 {0} 不存在。", tempFile), ex.Message);
             }
             catch (Exception)
             {

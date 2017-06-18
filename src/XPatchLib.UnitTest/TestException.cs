@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using XPatchLib.UnitTest.TestClass;
 
 namespace XPatchLib.UnitTest
 {
-    [TestClass]
+    [TestFixture]
     public class TestException
     {
         #region Public Methods
 
-        [TestMethod]
+        [Test]
         public void TestAttributeMissException()
         {
             bool errorCatched = false;
@@ -38,7 +38,7 @@ namespace XPatchLib.UnitTest
 
         }
 
-        [TestMethod]
+        [Test]
         public void TestPrimaryKeyException()
         {
             Type type = typeof(ErrorPrimaryKeyDefineClass);

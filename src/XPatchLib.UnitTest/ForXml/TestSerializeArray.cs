@@ -9,16 +9,18 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+#if (NET_35_UP || NETSTANDARD)
 using System.Xml.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+using NUnit.Framework;
 using XPatchLib.UnitTest.TestClass;
 
 namespace XPatchLib.UnitTest.ForXml
 {
-    [TestClass]
+    [TestFixture]
     public class TestSerializeArray
     {
-        [TestInitialize]
+        [SetUp]
         public void TestInitialize()
         {
             TypeExtendContainer.ClearAll();
@@ -26,7 +28,7 @@ namespace XPatchLib.UnitTest.ForXml
 
         #region Public Methods
 
-        [TestMethod]
+        [Test]
         [Description("测试合并集合类型但是传入的类型不是集合类型时，是否抛出ArgumentOutOfRangeException错误")]
         public void TestCombineNonCollectionType()
         {
@@ -48,7 +50,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.Fail("未能抛出PrimaryKeyException异常");
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试合并类型没有定义主键的对象是否会抛出异常")]
         public void TestCombineNullPrimaryKeyDefingeClass()
         {
@@ -74,7 +76,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.Fail("未能抛出PrimaryKeyException异常");
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试合并类型没有定义主键的对象是否会抛出异常")]
         public void TestCombineNullPrimaryKeyDefingeClassWithXmlSerializer()
         {
@@ -112,7 +114,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.Fail("未能抛出PrimaryKeyException异常");
         }
 
-        [TestMethod]
+        [Test]
         public void TestCombineNullPrimaryKeyDefingeClassWithXmlSerializerRegisteredType()
         {
             var a = new List<AuthorClass>();
@@ -153,7 +155,7 @@ namespace XPatchLib.UnitTest.ForXml
             Assert.AreEqual(result, context);
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试合并一个只有空白的根节点的内容")]
         public void TestCombineSameBookClassCollection()
         {
@@ -179,7 +181,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestDivideAndSerializeBookClassCollection()
         {
             var b = new BookClassCollection();
@@ -249,7 +251,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestDivideAndSerializeEmptyBookClassCollection()
         {
             var b = new BookClassCollection();
@@ -301,7 +303,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试拆分两个相同内容的集合，应该产生空白内容")]
         public void TestDivideAndSerializeSameBookClassCollection()
         {
@@ -329,7 +331,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试拆分集合类型但是传入的类型不是集合类型时，是否抛出ArgumentOutOfRangeException错误")]
         public void TestDivideNonCollectionType()
         {
@@ -357,7 +359,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.Fail("未能抛出PrimaryKeyException异常");
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试拆分类型没有定义主键的对象是否会抛出异常")]
         public void TestDivideNullPrimaryKeyDefingeClass()
         {
@@ -384,7 +386,7 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.Fail("未能抛出PrimaryKeyException异常");
         }
 
-        [TestMethod]
+        [Test]
         public void TestSerializeBookClassCollection()
         {
             var b1 = new BookClassCollection();
@@ -413,9 +415,8 @@ namespace XPatchLib.UnitTest.ForXml
 
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection)), b1, b2));
                 }
-                stream.Position = 0;
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(result, changedEle.ToString());
+
+                AssertHelper.AreEqual(result, stream, string.Empty);
                 var com = new CombineIEnumerable(new TypeExtend(typeof(BookClassCollection), null));
                 stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
@@ -432,7 +433,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestSerializeBookClassCollectionSerializeDefaultValue()
         {
             var b1 = new BookClassCollection();
@@ -468,10 +469,8 @@ namespace XPatchLib.UnitTest.ForXml
 
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection)), b1, b2));
                 }
-                stream.Position = 0;
 
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(result, changedEle.ToString());
+                AssertHelper.AreEqual(result, stream, string.Empty);
 
                 var com = new CombineIEnumerable(new TypeExtend(typeof(BookClassCollection), null));
                 stream.Position = 0;
@@ -489,7 +488,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestSerializeSimpleArray()
         {
             string[] s1 = {"ABC", "DEF"};
@@ -508,10 +507,8 @@ namespace XPatchLib.UnitTest.ForXml
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, s2));
                 }
-                stream.Position = 0;
 
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(result, changedEle.ToString());
+                AssertHelper.AreEqual(result, stream, string.Empty);
 
                 var com = new CombineIEnumerable(new TypeExtend(typeof(string[]), null));
                 stream.Position = 0;
@@ -529,7 +526,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestSerializeSimpleArrayAdd()
         {
             string[] s1 = {"ABC", "DEF"};
@@ -547,10 +544,8 @@ namespace XPatchLib.UnitTest.ForXml
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), null, s1));
                 }
-                stream.Position = 0;
 
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(result, changedEle.ToString());
+                AssertHelper.AreEqual(result, stream, string.Empty);
 
                 var com = new CombineIEnumerable(new TypeExtend(typeof(string[]), null));
                 stream.Position = 0;
@@ -570,7 +565,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestSerializeSimpleArrayRemove()
         {
             string[] s1 = {"ABC", "DEF"};
@@ -587,12 +582,8 @@ namespace XPatchLib.UnitTest.ForXml
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, s2));
                 }
-                stream.Position = 0;
 
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(result, changedEle.ToString());
-
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, string.Empty);
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (ITextReader reader = new XmlTextReader(xmlReader))
@@ -608,7 +599,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestSerializeSimpleArraySetNull()
         {
             string[] s1 = {"ABC", "DEF"};
@@ -624,11 +615,7 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, null));
                 }
 
-                stream.Position = 0;
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(result, changedEle.ToString());
-
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, string.Empty);
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (ITextReader reader = new XmlTextReader(xmlReader))
@@ -644,7 +631,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestSerializeSimpleArraySetNullByChangedAction()
         {
             string[] s1 = {"ABC", "DEF"};
@@ -662,12 +649,8 @@ namespace XPatchLib.UnitTest.ForXml
                     var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, null));
                 }
-                stream.Position = 0;
 
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(result, changedEle.ToString());
-
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, string.Empty);
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (ITextReader reader = new XmlTextReader(xmlReader))

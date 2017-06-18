@@ -7,12 +7,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Xml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using XPatchLib.UnitTest.TestClass;
 
 namespace XPatchLib.UnitTest.ForXml
 {
-    [TestClass]
+    [TestFixture]
     public class TestXmlSerializer
     {
         public class Account
@@ -57,7 +57,7 @@ namespace XPatchLib.UnitTest.ForXml
 
         #region Public Methods
 
-        //[TestMethod]
+        //[Test]
         //[Description("测试Serializer中参数类型为Stream的Divide和Combine方法")]
         //public void TestXmlSerializerStreamDivideAndCombine()
         //{
@@ -78,7 +78,7 @@ namespace XPatchLib.UnitTest.ForXml
         //    }
         //}
 
-        [TestMethod]
+        [Test]
         [Description("测试Serializer中参数类型为 XmlTextReader 和 XmlTextWriter 的Divide和Combine方法。测试对象包含 XmlIgnoreAttribute")]
         public void TestXmlSerializerStreamDivideAndCombineForIgnoreAttribute()
         {
@@ -118,7 +118,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试Serializer中参数类型为 XmlTextReader 和 XmlTextWriter 的Divide和Combine方法")]
         public void TestXmlSerializerStreamDivideAndCombine()
         {
@@ -148,7 +148,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试序列化时指定的XmlTextWriter，更改了Encoding")]
         public void TestXmlSerializerStreamDivideAndCombineChangedEncoding()
         {
@@ -202,7 +202,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        //[TestMethod]
+        //[Test]
         //[Description("测试Serializer中参数类型为TextWriter的Divide方法和TextReader的Combine方法")]
         //public void TestXmlSerializerTextWriterDivideAndTextReaderCombine()
         //{
@@ -222,7 +222,7 @@ namespace XPatchLib.UnitTest.ForXml
         //    }
         //}
 
-        //[TestMethod]
+        //[Test]
         //[Description("测试Serializer中参数类型为XmlWriter的Divide方法和XmlReader的Combine方法")]
         //public void TestXmlSerializerXmlWriterDivideAndXmlReaderCombine()
         //{
@@ -251,7 +251,7 @@ namespace XPatchLib.UnitTest.ForXml
         //    }
         //}
 
-        [TestMethod]
+        [Test]
         public void SimpleTestXmlSerializer()
         {
             const string context = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -299,7 +299,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试使用同一Serializer实例，对没有标记PrimaryKey的对象集合，先做增量序列化，后做增量反序列化（反序列化时不覆盖原有对象实例）")]
         public void TestCallDivideAndCombineNotMergeDataWithoutPrimaryKeyAttribute() {
             List<AuthorClass> authors1 = new List<AuthorClass>();
@@ -335,7 +335,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("")]
         public void TestCallDivideAndCombineNotMergeDataWithDefaultValue() {
 

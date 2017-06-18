@@ -5,14 +5,80 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using NUnit.Framework;
+#if (NET_35_UP || NETSTANDARD)
 using System.Xml.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
 namespace XPatchLib.UnitTest.ForXml
 {
-    [TestClass]
-    public class TestDictionary
+    [TestFixture]
+    public class TestDictionary:TestBase
     {
+        [SetUp]
+        public void Init()
+        {
+            _oriDic = new Dictionary<string, string>(4);
+            _oriDic.Add("Akey", "Avalue");
+            _oriDic.Add("Bkey", "Bvalue");
+            _oriDic.Add("Ckey", "Cvalue");
+            _oriDic.Add("Dkey", "Dvalue");
+
+            _complex_Changed_Dic = new Dictionary<string, string>();
+            _complex_Changed_Dic.Add("Akey", "Avalue");
+            _complex_Changed_Dic.Add("Bkey", "newBkey");
+            _complex_Changed_Dic.Add("Dkey", null);
+            _complex_Changed_Dic.Add("Ekey", "EValue");
+
+            _edit_Dic = new Dictionary<string, string>(4);
+            _edit_Dic.Add("Akey", "newAvalue");
+            _edit_Dic.Add("Bkey", "newBvalue");
+            _edit_Dic.Add("Ckey", "newCvalue");
+            _edit_Dic.Add("Dkey", "newDvalue");
+
+            _create_Dic=new Dictionary<string, string>(4);
+            _create_Dic.Add("Akey", "Avalue");
+            _create_Dic.Add("Bkey", "Bvalue");
+            _create_Dic.Add("Ckey", "Cvalue");
+            _create_Dic.Add("Dkey", "Dvalue");
+
+            _remove_Dic=new Dictionary<string, string>(2);
+            _remove_Dic.Add("Akey", "Avalue");
+            _remove_Dic.Add("Bkey", "Bvalue");
+
+            _setNull_Dic = new Dictionary<string, string>(4);
+            _setNull_Dic.Add("Akey", null);
+            _setNull_Dic.Add("Bkey", null);
+            _setNull_Dic.Add("Ckey", null);
+            _setNull_Dic.Add("Dkey", null);
+
+            _Dic_Array = new Dictionary<string, string>[]
+                {_complex_Changed_Dic, _edit_Dic, _create_Dic, _remove_Dic, _setNull_Dic};
+            _Context_Array = new string[]
+            {
+                ComplexOperatorChangedContext, EditChangedContext, CreateChangedContext, RemoveChangedContext,
+                SetNullChangedContext
+            };
+        }
+        #region 字典对象定义
+        //原始字典对象
+        private Dictionary<string, string> _oriDic;
+        //包含各种变更的复杂变更后的字典对象
+        private Dictionary<string, string> _complex_Changed_Dic;
+        //变更后的字典对象
+        private Dictionary<string, string> _edit_Dic;
+        //从Null开始创建的字典对象
+        private Dictionary<string, string> _create_Dic;
+        //Remove子项后的字典对象
+        private Dictionary<string, string> _remove_Dic;
+        //将所有子项的Value值设置为Null以后的字典对象
+        private Dictionary<string, string> _setNull_Dic;
+        #endregion
+        private Dictionary<string,string>[] _Dic_Array;
+        private string[] _Context_Array;
+
+        #region 变更字符串定义
+
         private const string ComplexOperatorChangedContext = @"<Dictionary_String_String>
   <KeyValuePair_String_String Action=""Remove"">
     <Key>Ckey</Key>
@@ -91,983 +157,89 @@ namespace XPatchLib.UnitTest.ForXml
     <Key>Dkey</Key>
   </KeyValuePair_String_String>
 </Dictionary_String_String>";
+        #endregion
 
-        [TestMethod]
-        public void TestCombineString_StringDicComplexOperator_CombineCore()
+        #region 原始对象附加增量字符串以后的对象实例与预期对象实例间的对比
+        [Test]
+        [Description("检测CombineCore的Combine方法对字典类型对象的合并操作")]
+        public void TestCombineCore_Combine_Dictionary()
         {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", "Avalue");
-            dic2.Add("Bkey", "newBkey");
-            dic2.Add("Dkey", null);
-            dic2.Add("Ekey", "EValue");
-
-            var changedEle = XElement.Load(new StringReader(ComplexOperatorChangedContext));
-
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(ComplexOperatorChangedContext)))
+            for (int i = 0; i < _Context_Array.Length; i++)
             {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    var newDic =
-                        new CombineCore(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
-                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                            Dictionary<string, string>;
+                var newDic = DoCombineCore_Combie(_Context_Array[i], _oriDic);
+                //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆
+                AssertDictionary(_Dic_Array[i], newDic, i.ToString(), true, false);
+                Assert.AreEqual(_oriDic.GetHashCode(), newDic.GetHashCode());
+                Init();
+            }
+        }
+        [Test]
+        [Description("检测CombineIDictionary的Combine方法对字典类型对象的合并操作")]
+        public void TestCombineIDictionary_Combine_Dictionary()
+        {
+            for (int i = 0; i < _Context_Array.Length; i++)
+            {
+                var newDic = DoCombineIDictionary_Combie(_Context_Array[i], _oriDic);
+                //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆
+                AssertDictionary(_Dic_Array[i], newDic, i.ToString(), true, false);
+                Assert.AreEqual(_oriDic.GetHashCode(), newDic.GetHashCode());
+                Init();
+            }
+        }
+        [Test]
+        [Description("检测CombineIDictionary的Combine方法对字典类型对象的合并操作")]
+        public void TestSerializer_Combine_Dictionary()
+        {
+            for (int i = 0; i < _Context_Array.Length; i++)
+            {
+                //不做深克隆时
+                var newDic = DoSerializer_Combie(_Context_Array[i], _oriDic);
+                AssertDictionary(_Dic_Array[i], newDic, i.ToString(), true, false);
+                Assert.AreEqual(_oriDic.GetHashCode(), newDic.GetHashCode());
+                Init();
+                newDic = null;
+                //做深克隆时
+                newDic = DoSerializer_Combie(ComplexOperatorChangedContext, _oriDic, true);
+                AssertDictionary(_Dic_Array[i], newDic, i.ToString(), true, false);
+                Assert.AreNotEqual(_oriDic.GetHashCode(), newDic.GetHashCode());
+            }
+        }
+        #endregion
 
-                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                    Assert.IsNotNull(newDic);
-                    Assert.AreEqual(4, newDic.Count);
-                    Assert.AreEqual(dic2.Count, newDic.Count);
-                    foreach (var key in dic2.Keys)
-                    {
-                        Assert.AreEqual(dic1[key], newDic[key]);
-                        Assert.AreEqual(dic2[key], newDic[key]);
-                    }
+        #region 增量对象实例与原始对象实例间产生增量是否符合预期
 
-                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
-                    Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
-                }
+        [Test]
+        [Description("使用DivideCore中的Divide方法在原始字典对象与目标字典对象之间产生增量，并验证增量内容是否符合预期")]
+        public void TestDivideCore_Divide_Dictionary()
+        {
+            for (int i = 0; i < _Context_Array.Length; i++)
+            {
+                var context = DoDivideCore_Divide(_oriDic, _Dic_Array[i]);
+                Assert.AreEqual(_Context_Array[i], context);
             }
         }
 
-        [TestMethod]
-        public void TestCombineString_StringDicComplexOperator_CombineIDictionary()
+        [Test]
+        [Description("使用DivideCore中的Divide方法在原始字典对象与目标字典对象之间产生增量，并验证增量内容是否符合预期")]
+        public void TestDivideDictionary_Divide_Dictionary()
         {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", "Avalue");
-            dic2.Add("Bkey", "newBkey");
-            dic2.Add("Dkey", null);
-            dic2.Add("Ekey", "EValue");
-
-            var changedEle = XElement.Load(new StringReader(ComplexOperatorChangedContext));
-
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(ComplexOperatorChangedContext)))
+            for (int i = 0; i < _Context_Array.Length; i++)
             {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    var newDic =
-                        new CombineIDictionary(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
-                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                            Dictionary<string, string>;
-
-                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                    Assert.IsNotNull(newDic);
-                    Assert.AreEqual(4, newDic.Count);
-                    Assert.AreEqual(dic2.Count, newDic.Count);
-                    foreach (var key in dic2.Keys)
-                    {
-                        Assert.AreEqual(dic1[key], newDic[key]);
-                        Assert.AreEqual(dic2[key], newDic[key]);
-                    }
-
-                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
-                    Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
-                }
+                var context = DoDivideIDictionary_Divide(_oriDic, _Dic_Array[i]);
+                Assert.AreEqual(_Context_Array[i], context);
             }
         }
 
-        [TestMethod]
-        public void TestCombineString_StringDicComplexOperator_CombineXmlSerializer()
+        [Test]
+        [Description("使用Serializer中的Divide方法在原始字典对象与目标字典对象之间产生增量，并验证增量内容是否符合预期")]
+        public void TestSerializer_Divide_Dictionary()
         {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", "Avalue");
-            dic2.Add("Bkey", "newBkey");
-            dic2.Add("Dkey", null);
-            dic2.Add("Ekey", "EValue");
-
-            Dictionary<string, string> newDic = null;
-            using (XmlReader reader = XmlReader.Create(new StringReader(ComplexOperatorChangedContext)))
+            for (int i = 0; i < _Context_Array.Length; i++)
             {
-                using (var xmlTextReader = new XmlTextReader(reader))
-                {
-                    newDic = new Serializer(dic1.GetType()).Combine(xmlTextReader, dic1) as Dictionary<string, string>;
-                }
-            }
-            //newDic的长度应该为2，dic1的长度为4（因为dic1并未被改变）
-            Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-            Assert.IsNotNull(newDic);
-            Assert.AreEqual(4, dic1.Count);
-            Assert.AreEqual(4, newDic.Count);
-            foreach (var key in newDic.Keys)
-            {
-                if (!key.Equals("Akey") && key.Equals("Ckey"))
-                    Assert.AreNotEqual(dic1[key], newDic[key]);
-                Assert.AreEqual(dic2[key], newDic[key]);
-            }
-
-            //在使用Serializer入口做增量内容合并时，会首先对原始对象进行深克隆，保证不影响到原有对象
-            Assert.AreNotEqual(dic1.GetHashCode(), newDic.GetHashCode());
-            Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicComplexOperator_DivideXmlSerializer()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", "Avalue");
-            dic2.Add("Bkey", "newBkey");
-            dic2.Add("Dkey", null);
-            dic2.Add("Ekey", "EValue");
-
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    var serializer = new Serializer(dic1.GetType());
-                    serializer.Divide(writer, dic1, dic2);
-                    var context = UnitTest.TestHelper.StreamToString(stream);
-                    Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + ComplexOperatorChangedContext,
-                        context);
-                }
+                var context = DoSerializer_Divide(_oriDic, _Dic_Array[i]);
+                Assert.AreEqual(_Context_Array[i], context);
             }
         }
-
-        [TestMethod]
-        public void TestCombineString_StringDicCreate_CombineCore()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var changedEle = XElement.Load(new StringReader(CreateChangedContext));
-
-            Dictionary<string, string> oldDic = null;
-
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(CreateChangedContext)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    var newDic =
-                        new CombineCore(new TypeExtend(dic1.GetType(), null)).Combine(reader, oldDic,
-                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                            Dictionary<string, string>;
-
-                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                    Assert.IsNotNull(newDic);
-                    Assert.AreEqual(dic1.Count, newDic.Count);
-                    foreach (var key in dic1.Keys)
-                        Assert.AreEqual(dic1[key], newDic[key]);
-
-                    //原始值为Null时，内部重新创建对象实例，所以原始值依然为Null。
-                    Assert.IsNull(oldDic);
-                }
-            }
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicCreate_CombineIDictionary()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var changedEle = XElement.Load(new StringReader(CreateChangedContext));
-
-            Dictionary<string, string> oldDic = null;
-
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(CreateChangedContext)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    var newDic =
-                        new CombineIDictionary(new TypeExtend(dic1.GetType(), null)).Combine(reader, oldDic,
-                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                            Dictionary<string, string>;
-
-                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                    Assert.IsNotNull(newDic);
-                    Assert.AreEqual(dic1.Count, newDic.Count);
-                    foreach (var key in dic1.Keys)
-                        Assert.AreEqual(dic1[key], newDic[key]);
-
-                    //原始值为Null时，内部重新创建对象实例，所以原始值依然为Null。
-                    Assert.IsNull(oldDic);
-                }
-            }
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicCreate_CombineXmlSerializer()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            Dictionary<string, string> oldDic = null;
-            Dictionary<string, string> newDic = null;
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(CreateChangedContext)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    newDic = new Serializer(dic1.GetType()).Combine(reader, oldDic) as Dictionary<string, string>;
-                }
-            }
-            Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-            Assert.IsNotNull(newDic);
-            Assert.AreEqual(dic1.Count, newDic.Count);
-            foreach (var key in dic1.Keys)
-                Assert.AreEqual(dic1[key], newDic[key]);
-
-            //原始值为Null时，内部重新创建对象实例，所以原始值依然为Null。
-            Assert.IsNull(oldDic);
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicCreate_DivideXmlSerializer()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    var serializer = new Serializer(dic1.GetType());
-                    serializer.Divide(writer, null, dic1);
-                    var context = UnitTest.TestHelper.StreamToString(stream);
-                    Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + CreateChangedContext, context);
-                }
-            }
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicEdit_CombineCore()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", "newAvalue");
-            dic2.Add("Bkey", "newBvalue");
-            dic2.Add("Ckey", "newCvalue");
-            dic2.Add("Dkey", "newDvalue");
-
-            var changedEle = XElement.Load(new StringReader(EditChangedContext));
-
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(EditChangedContext)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    var newDic =
-                        new CombineCore(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
-                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                            Dictionary<string, string>;
-
-                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                    Assert.IsNotNull(newDic);
-                    Assert.AreEqual(4, newDic.Count);
-                    Assert.AreEqual(dic2.Count, newDic.Count);
-                    foreach (var key in dic2.Keys)
-                    {
-                        Assert.AreEqual(dic1[key], newDic[key]);
-                        Assert.AreEqual(dic2[key], newDic[key]);
-                    }
-
-                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
-                    Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
-                }
-            }
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicEdit_CombineIDictionary()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", "newAvalue");
-            dic2.Add("Bkey", "newBvalue");
-            dic2.Add("Ckey", "newCvalue");
-            dic2.Add("Dkey", "newDvalue");
-
-            var changedEle = XElement.Load(new StringReader(EditChangedContext));
-
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(EditChangedContext)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    var newDic =
-                        new CombineIDictionary(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
-                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                            Dictionary<string, string>;
-
-                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                    Assert.IsNotNull(newDic);
-                    Assert.AreEqual(4, newDic.Count);
-                    Assert.AreEqual(dic2.Count, newDic.Count);
-                    foreach (var key in dic2.Keys)
-                    {
-                        Assert.AreEqual(dic1[key], newDic[key]);
-                        Assert.AreEqual(dic2[key], newDic[key]);
-                    }
-
-                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
-                    Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
-                }
-            }
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicEdit_CombineXmlSerializer()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", "newAvalue");
-            dic2.Add("Bkey", "newBvalue");
-            dic2.Add("Ckey", "newCvalue");
-            dic2.Add("Dkey", "newDvalue");
-
-            Dictionary<string, string> newDic = null;
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(EditChangedContext)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    newDic = new Serializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
-                }
-            }
-            //newDic的长度应该为2，dic1的长度为4（因为dic1并未被改变）
-            Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-            Assert.IsNotNull(newDic);
-            Assert.AreEqual(4, dic1.Count);
-            Assert.AreEqual(4, newDic.Count);
-            foreach (var key in newDic.Keys)
-            {
-                Assert.AreNotEqual(dic1[key], newDic[key]);
-                Assert.AreEqual(dic2[key], newDic[key]);
-            }
-
-            //在使用Serializer入口做增量内容合并时，会首先对原始对象进行深克隆，保证不影响到原有对象
-            Assert.AreNotEqual(dic1.GetHashCode(), newDic.GetHashCode());
-            Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicEdit_DivideXmlSerializer()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", "newAvalue");
-            dic2.Add("Bkey", "newBvalue");
-            dic2.Add("Ckey", "newCvalue");
-            dic2.Add("Dkey", "newDvalue");
-
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    var serializer = new Serializer(dic1.GetType());
-                    serializer.Divide(writer, dic1, dic2);
-                    var context = UnitTest.TestHelper.StreamToString(stream);
-                    Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + EditChangedContext, context);
-                }
-            }
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicRemove_CombineCore()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var changedEle = XElement.Load(new StringReader(RemoveChangedContext));
-
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(RemoveChangedContext)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    var newDic =
-                        new CombineCore(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
-                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                            Dictionary<string, string>;
-
-                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                    Assert.IsNotNull(newDic);
-                    Assert.AreEqual(2, newDic.Count);
-                    Assert.AreEqual(dic1.Count, newDic.Count);
-                    foreach (var key in dic1.Keys)
-                        Assert.AreEqual(dic1[key], newDic[key]);
-
-                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
-                }
-            }
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicRemove_CombineIDictionary()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var changedEle = XElement.Load(new StringReader(RemoveChangedContext));
-
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(RemoveChangedContext)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    var newDic =
-                        new CombineIDictionary(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
-                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                            Dictionary<string, string>;
-
-                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                    Assert.IsNotNull(newDic);
-                    Assert.AreEqual(2, newDic.Count);
-                    Assert.AreEqual(dic1.Count, newDic.Count);
-                    foreach (var key in dic1.Keys)
-                        Assert.AreEqual(dic1[key], newDic[key]);
-
-                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
-                }
-            }
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicRemove_CombineXmlSerializer()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            Dictionary<string, string> newDic = null;
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(RemoveChangedContext)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    newDic = new Serializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
-                }
-            }
-            //newDic的长度应该为2，dic1的长度为4（因为dic1并未被改变）
-            Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-            Assert.IsNotNull(newDic);
-            Assert.AreEqual(4, dic1.Count);
-            Assert.AreEqual(2, newDic.Count);
-            foreach (var key in newDic.Keys)
-                Assert.AreEqual(dic1[key], newDic[key]);
-
-            //在使用Serializer入口做增量内容合并时，会首先对原始对象进行深克隆，保证不影响到原有对象
-            Assert.AreNotEqual(dic1.GetHashCode(), newDic.GetHashCode());
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicRemove_DivideXmlSerializer()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", "Avalue");
-            dic2.Add("Bkey", "Bvalue");
-
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    var serializer = new Serializer(dic1.GetType());
-                    serializer.Divide(writer, dic1, dic2);
-                    var context = UnitTest.TestHelper.StreamToString(stream);
-                    Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + RemoveChangedContext, context);
-                }
-            }
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicSetNull_CombineCore()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", null);
-            dic2.Add("Bkey", null);
-            dic2.Add("Ckey", null);
-            dic2.Add("Dkey", null);
-
-            var changedEle = XElement.Load(new StringReader(SetNullChangedContext));
-
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(SetNullChangedContext)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    var newDic =
-                        new CombineCore(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
-                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                            Dictionary<string, string>;
-
-                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                    Assert.IsNotNull(newDic);
-                    Assert.AreEqual(4, newDic.Count);
-                    Assert.AreEqual(dic2.Count, newDic.Count);
-                    foreach (var key in dic2.Keys)
-                    {
-                        Assert.AreEqual(dic1[key], newDic[key]);
-                        Assert.AreEqual(dic2[key], newDic[key]);
-                    }
-
-                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
-                    Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
-                }
-            }
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicSetNull_CombineIDictionary()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", null);
-            dic2.Add("Bkey", null);
-            dic2.Add("Ckey", null);
-            dic2.Add("Dkey", null);
-
-            var changedEle = XElement.Load(new StringReader(SetNullChangedContext));
-
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(SetNullChangedContext)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    var newDic =
-                        new CombineIDictionary(new TypeExtend(dic1.GetType(), null)).Combine(reader, dic1,
-                                ReflectionUtils.GetTypeFriendlyName(dic1.GetType())) as
-                            Dictionary<string, string>;
-
-                    Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-                    Assert.IsNotNull(newDic);
-                    Assert.AreEqual(4, newDic.Count);
-                    Assert.AreEqual(dic2.Count, newDic.Count);
-                    foreach (var key in dic2.Keys)
-                    {
-                        Assert.AreEqual(dic1[key], newDic[key]);
-                        Assert.AreEqual(dic2[key], newDic[key]);
-                    }
-
-                    //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆，保证不影响到原有对象
-                    Assert.AreEqual(dic1.GetHashCode(), newDic.GetHashCode());
-                    Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
-                }
-            }
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicSetNull_CombineXmlSerializer()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", null);
-            dic2.Add("Bkey", null);
-            dic2.Add("Ckey", null);
-            dic2.Add("Dkey", null);
-
-            Dictionary<string, string> newDic = null;
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(SetNullChangedContext)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    newDic = new Serializer(dic1.GetType()).Combine(reader, dic1) as Dictionary<string, string>;
-                }
-            }
-            //newDic的长度应该为2，dic1的长度为4（因为dic1并未被改变）
-            Assert.IsInstanceOfType(newDic, typeof(Dictionary<string, string>));
-            Assert.IsNotNull(newDic);
-            Assert.AreEqual(4, dic1.Count);
-            Assert.AreEqual(4, newDic.Count);
-            foreach (var key in newDic.Keys)
-            {
-                Assert.AreNotEqual(dic1[key], newDic[key]);
-                Assert.AreEqual(dic2[key], newDic[key]);
-            }
-
-            //在使用Serializer入口做增量内容合并时，会首先对原始对象进行深克隆，保证不影响到原有对象
-            Assert.AreNotEqual(dic1.GetHashCode(), newDic.GetHashCode());
-            Assert.AreNotEqual(dic2.GetHashCode(), newDic.GetHashCode());
-        }
-
-        [TestMethod]
-        public void TestCombineString_StringDicSetNull_DivideXmlSerializer()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", null);
-            dic2.Add("Bkey", null);
-            dic2.Add("Ckey", null);
-            dic2.Add("Dkey", null);
-
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    var serializer = new Serializer(dic1.GetType());
-                    serializer.Divide(writer, dic1, dic2);
-                    var context = UnitTest.TestHelper.StreamToString(stream);
-                    Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + SetNullChangedContext, context);
-                }
-            }
-        }
-
-        [TestMethod]
-        public void TestDivideString_StringDicComplexOperator_DivideCore()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", "Avalue");
-            dic2.Add("Bkey", "newBkey");
-            dic2.Add("Dkey", null);
-            dic2.Add("Ekey", "EValue");
-
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    Assert.IsTrue(
-                        new DivideCore(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide(
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
-                }
-                stream.Position = 0;
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(ComplexOperatorChangedContext, changedEle.ToString());
-            }
-        }
-
-        [TestMethod]
-        public void TestDivideString_StringDicComplexOperator_DivideIDictionary()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", "Avalue");
-            dic2.Add("Bkey", "newBkey");
-            dic2.Add("Dkey", null);
-            dic2.Add("Ekey", "EValue");
-
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    Assert.IsTrue(
-                        new DivideIDictionary(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide
-                        (
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
-                }
-                stream.Position = 0;
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(ComplexOperatorChangedContext, changedEle.ToString());
-            }
-        }
-
-        [TestMethod]
-        public void TestDivideString_StringDicCreate_DivideCore()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    Assert.IsTrue(
-                        new DivideCore(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide(
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), null, dic1));
-                }
-                stream.Position = 0;
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(CreateChangedContext, changedEle.ToString());
-            }
-        }
-
-        [TestMethod]
-        public void TestDivideString_StringDicCreate_DivideIDictionary()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    Assert.IsTrue(
-                        new DivideIDictionary(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide
-                        (
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), null, dic1));
-                }
-                stream.Position = 0;
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(CreateChangedContext, changedEle.ToString());
-            }
-        }
-
-        [TestMethod]
-        public void TestDivideString_StringDicEdit_DivideCore()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", "newAvalue");
-            dic2.Add("Bkey", "newBvalue");
-            dic2.Add("Ckey", "newCvalue");
-            dic2.Add("Dkey", "newDvalue");
-
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    Assert.IsTrue(
-                        new DivideCore(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide(
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
-                }
-                stream.Position = 0;
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(EditChangedContext, changedEle.ToString());
-            }
-        }
-
-        [TestMethod]
-        public void TestDivideString_StringDicEdit_DivideIDictionary()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", "newAvalue");
-            dic2.Add("Bkey", "newBvalue");
-            dic2.Add("Ckey", "newCvalue");
-            dic2.Add("Dkey", "newDvalue");
-
-
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    Assert.IsTrue(
-                        new DivideIDictionary(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide
-                        (
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
-                }
-                stream.Position = 0;
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(EditChangedContext, changedEle.ToString());
-            }
-        }
-
-        [TestMethod]
-        public void TestDivideString_StringDicRemove_DivideCore()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", "Avalue");
-            dic2.Add("Bkey", "Bvalue");
-
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    Assert.IsTrue(
-                        new DivideCore(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide(
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
-                }
-                stream.Position = 0;
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(RemoveChangedContext, changedEle.ToString());
-            }
-        }
-
-        [TestMethod]
-        public void TestDivideString_StringDicRemove_DivideIDictionary()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", "Avalue");
-            dic2.Add("Bkey", "Bvalue");
-
-
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    Assert.IsTrue(
-                        new DivideIDictionary(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide
-                        (
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
-                }
-                stream.Position = 0;
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(RemoveChangedContext, changedEle.ToString());
-            }
-        }
-
-        [TestMethod]
-        public void TestDivideString_StringDicSetNull_DivideCore()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", null);
-            dic2.Add("Bkey", null);
-            dic2.Add("Ckey", null);
-            dic2.Add("Dkey", null);
-
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    Assert.IsTrue(
-                        new DivideCore(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide(
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
-                }
-                stream.Position = 0;
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(SetNullChangedContext, changedEle.ToString());
-            }
-        }
-
-        [TestMethod]
-        public void TestDivideString_StringDicSetNull_DivideIDictionary()
-        {
-            var dic1 = new Dictionary<string, string>();
-            dic1.Add("Akey", "Avalue");
-            dic1.Add("Bkey", "Bvalue");
-            dic1.Add("Ckey", "Cvalue");
-            dic1.Add("Dkey", "Dvalue");
-
-            var dic2 = new Dictionary<string, string>();
-            dic2.Add("Akey", null);
-            dic2.Add("Bkey", null);
-            dic2.Add("Ckey", null);
-            dic2.Add("Dkey", null);
-
-
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    Assert.IsTrue(
-                        new DivideIDictionary(writer, new TypeExtend(dic1.GetType(), writer.IgnoreAttributeType)).Divide
-                        (
-                            ReflectionUtils.GetTypeFriendlyName(dic1.GetType()), dic1, dic2));
-                }
-                stream.Position = 0;
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(SetNullChangedContext, changedEle.ToString());
-            }
-        }
+        #endregion
     }
 }

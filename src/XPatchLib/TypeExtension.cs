@@ -281,7 +281,7 @@ namespace XPatchLib
         }
 
 
-        private static bool TestAccessibility(MemberInfo member, BindingFlags bindingFlags)
+        internal static bool TestAccessibility(MemberInfo member, BindingFlags bindingFlags)
         {
             if (member is FieldInfo)
             {

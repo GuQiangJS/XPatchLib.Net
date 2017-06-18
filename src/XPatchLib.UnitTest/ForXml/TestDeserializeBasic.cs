@@ -1,14 +1,14 @@
 ﻿using System.Xml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace XPatchLib.UnitTest.ForXml
 {
-    [TestClass]
+    [TestFixture]
     public class TestDeserializeBasic
     {
         #region Public Methods
 
-        [TestMethod]
+        [Test]
         public void BasicDeserializeCtorTest()
         {
             //var ser = new CombineBasic(new TypeExtend(typeof(string)));

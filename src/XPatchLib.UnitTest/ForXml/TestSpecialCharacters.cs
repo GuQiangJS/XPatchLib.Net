@@ -3,15 +3,15 @@
 
 using System.IO;
 using System.Xml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using XPatchLib.UnitTest.TestClass;
 
 namespace XPatchLib.UnitTest.ForXml
 {
-    [TestClass]
+    [TestFixture]
     public class TestSpecialCharacters
     {
-        [TestMethod]
+        [Test]
         public void TestDivideAndCombineSpecialCharacters()
         {
             AuthorClass authorClass1 = new AuthorClass();

@@ -5,15 +5,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+#if (NET_35_UP || NETSTANDARD)
 using System.Xml.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+using NUnit.Framework;
 
 namespace XPatchLib.UnitTest.ForXml
 {
-    [TestClass]
-    public class TestKeyValuePair
+    [TestFixture]
+    public class TestKeyValuePair:TestBase
     {
-        [TestMethod]
+        [Test]
         [ExpectedException(typeof(ArgumentException), "原始值的Key值与更新后的值的Key值不同时，抛出异常")]
         public void TestCombineSingleKeyValuePairByDifferentKey()
         {
@@ -35,7 +37,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestDivideAndCombineSingleKeyValuePairByNullOriObject()
         {
             var k2 = new KeyValuePair<string, string>("1", "2");
@@ -53,10 +55,8 @@ namespace XPatchLib.UnitTest.ForXml
                             ReflectionUtils.GetTypeFriendlyName(k2.GetType()), null, k2));
                 }
 
-                stream.Position = 0;
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(changedContext, changedEle.ToString());
-                stream.Position = 0;
+                AssertHelper.AreEqual(changedContext, stream, string.Empty);
+
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -70,7 +70,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestDivideAndCombineSingleKeyValuePairByNullRevObject()
         {
             var k1 = new KeyValuePair<string, string>("1", "1");
@@ -89,10 +89,9 @@ namespace XPatchLib.UnitTest.ForXml
                 var changedContext = @"<KeyValuePair_String_String Action=""Remove"">
   <Key>" + k1.Key + @"</Key>
 </KeyValuePair_String_String>";
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(changedContext, changedEle.ToString());
 
-                stream.Position = 0;
+                AssertHelper.AreEqual(changedContext, stream, string.Empty);
+
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -105,7 +104,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [ExpectedException(typeof(ArgumentException), "原始值的Key值与更新后的值的Key值不同时，抛出异常")]
         public void TestDivideAndCombineSingleKeyValuePairByOriValueIsNull()
         {
@@ -126,10 +125,9 @@ namespace XPatchLib.UnitTest.ForXml
   <Key>" + k2.Key + @"</Key>
   <Value>" + k2.Value + @"</Value>
 </KeyValuePair_String_String>";
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(changedContext, changedEle.ToString());
 
-                stream.Position = 0;
+                AssertHelper.AreEqual(changedContext, stream, string.Empty);
+
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -142,7 +140,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestDivideAndCombineSingleKeyValuePairBySameKey()
         {
             var k1 = new KeyValuePair<string, string>("1", "1");
@@ -162,9 +160,9 @@ namespace XPatchLib.UnitTest.ForXml
   <Key>" + k2.Key + @"</Key>
   <Value>" + k2.Value + @"</Value>
 </KeyValuePair_String_String>";
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(changedContext, changedEle.ToString());
-                stream.Position = 0;
+
+                AssertHelper.AreEqual(changedContext, stream, string.Empty);
+
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -177,7 +175,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestDivideAndCombineSingleKeyValuePairBySameKeyAndRevValueIsNull()
         {
             var k1 = new KeyValuePair<string, string>("1", "1");
@@ -196,9 +194,9 @@ namespace XPatchLib.UnitTest.ForXml
                 var changedContext = @"<KeyValuePair_String_String Action=""SetNull"">
   <Key>" + k2.Key + @"</Key>
 </KeyValuePair_String_String>";
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(changedContext, changedEle.ToString());
-                stream.Position = 0;
+
+                AssertHelper.AreEqual(changedContext, stream, string.Empty);
+
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -211,7 +209,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [ExpectedException(typeof(ArgumentException),
             "当原始值不为Null同时更新后的值不为Null时，原始值的Key值就应该与更新后的值的Key值相同，否则不是同一个KeyValuePair对象,此时会抛出异常")]
         public void TestDivideSingleKeyValuePairByDifferentKey()
@@ -232,9 +230,9 @@ namespace XPatchLib.UnitTest.ForXml
                 var changedContext = @"<KeyValuePair_String_String Action=""Remove"">
   <Key>" + k1.Key + @"</Key>
 </KeyValuePair_String_String>";
-                var changedEle = XElement.Load(new StreamReader(stream));
-                Assert.AreEqual(changedContext, changedEle.ToString());
-                stream.Position = 0;
+
+                AssertHelper.AreEqual(changedContext, stream, string.Empty);
+
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))

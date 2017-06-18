@@ -3,17 +3,17 @@
 
 using System.Collections.Generic;
 using System.Xml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using XPatchLib.UnitTest.PetShopModelTests.Models;
 
 namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
 {
-    [TestClass]
+    [TestFixture]
     public class ListModelTest
     {
         #region Public Methods
 
-        [TestMethod]
+        [Test]
         [Description("测试List类型的复杂类型对象增加的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoListAddDivideAndCombine()
         {
@@ -59,7 +59,7 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
                 "");
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试List类型的复杂类型对象插入的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoListInsertDivideAndCombine()
         {
@@ -106,7 +106,7 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
                 "");
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试List类型的复杂类型对象删除的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoListRemoveDivideAndCombine()
         {

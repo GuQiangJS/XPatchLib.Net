@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using XPatchLib.UnitTest.TestClass;
+using XPatchLib;
 
 namespace XPatchLib.UnitTest
 {
-    [TestClass]
+    [TestFixture]
     public class TestReflectionUtils
     {
         #region Public Methods
 
-        [TestMethod]
+        [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void GetNullTypeFriendlyNameTest()
         {
             Assert.AreEqual("String", ReflectionUtils.GetTypeFriendlyName(null));
         }
 
-        [TestMethod]
+        [Test]
         public void GetTypeFriendlyNameTest()
         {
             Assert.AreEqual("String", ReflectionUtils.GetTypeFriendlyName(typeof(string)));
@@ -36,14 +37,14 @@ namespace XPatchLib.UnitTest
             Assert.AreEqual("Nullable_DateTime", ReflectionUtils.GetTypeFriendlyName(typeof(DateTime?)));
         }
 
-        [TestMethod]
+        [Test]
         public void IsBasicTypeInCacheTest()
         {
             Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(string)));
             Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(string)));
         }
 
-        [TestMethod]
+        [Test]
         public void IsBasicTypeTest()
         {
             Assert.IsTrue(ReflectionUtils.IsBasicType(typeof(string)));
@@ -70,7 +71,7 @@ namespace XPatchLib.UnitTest
             Assert.IsFalse(ReflectionUtils.IsBasicType(typeof(List<BookClass>)));
         }
 
-        [TestMethod]
+        [Test]
         public void IsNullableTest()
         {
             Type valueType = null;

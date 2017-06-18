@@ -8,14 +8,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace XPatchLib.UnitTest.ForXml
 {
     /// <summary>
     ///     操作复杂类型
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class ExampleComplexClass
     {
         private const string ChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -28,7 +28,7 @@ namespace XPatchLib.UnitTest.ForXml
   </ShippingAddress>
 </OrderInfo>";
 
-        [TestMethod]
+        [Test]
         public void ExampleCombine()
         {
             var order1 = new OrderInfo
@@ -80,7 +80,7 @@ namespace XPatchLib.UnitTest.ForXml
             Assert.AreNotEqual(order3.GetHashCode(), order2.GetHashCode());
         }
 
-        [TestMethod]
+        [Test]
         public void ExampleDivide()
         {
             var order1 = new OrderInfo
@@ -134,7 +134,10 @@ namespace XPatchLib.UnitTest.ForXml
             }
 
             Assert.AreEqual(ChangedContext, context);
+
+#if (NET || NETSTANDARD_2_0_UP)
             Trace.WriteLine(context);
+#endif
         }
 
         public class AddressInfo
@@ -212,7 +215,7 @@ namespace XPatchLib.UnitTest.ForXml
     /// <summary>
     ///     操作复杂集合类型
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class ExampleComplexCollectionClass
     {
         private const string ChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -231,7 +234,7 @@ namespace XPatchLib.UnitTest.ForXml
   </Orders>
 </OrderList>";
 
-        [TestMethod]
+        [Test]
         public void ExampleCombine()
         {
             var list1 = new OrderList
@@ -307,7 +310,7 @@ namespace XPatchLib.UnitTest.ForXml
             Assert.AreNotEqual(list3.GetHashCode(), list1.GetHashCode());
         }
 
-        [TestMethod]
+        [Test]
         public void ExampleDivide()
         {
             var list1 = new OrderList
@@ -385,7 +388,10 @@ namespace XPatchLib.UnitTest.ForXml
             }
 
             Assert.AreEqual(ChangedContext, context);
+
+#if (NET || NETSTANDARD_2_0_UP)
             Trace.WriteLine(context);
+#endif
         }
 
         [PrimaryKey("OrderId")]
@@ -452,7 +458,7 @@ namespace XPatchLib.UnitTest.ForXml
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class ExampleDateTimeSerializationMode
     {
         private const string LocalChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -475,7 +481,7 @@ namespace XPatchLib.UnitTest.ForXml
   <CardExpiration>2017-05-01T20:00:00Z</CardExpiration>
 </CreditCard>";
 
-        [TestMethod]
+        [Test]
         public void ExampleCombine()
         {
             var card1 = new CreditCard
@@ -547,7 +553,7 @@ namespace XPatchLib.UnitTest.ForXml
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
         }
 
-        [TestMethod]
+        [Test]
         public void ExampleDivide()
         {
             var card1 = new CreditCard
@@ -573,7 +579,10 @@ namespace XPatchLib.UnitTest.ForXml
             }
 
             Assert.AreEqual(RoundtripKindChangedContext, context);
+
+#if (NET || NETSTANDARD_2_0_UP)
             Trace.WriteLine(context);
+#endif
 
             serializer = new Serializer(typeof(CreditCard));
 
@@ -593,7 +602,10 @@ namespace XPatchLib.UnitTest.ForXml
             }
 
             Assert.AreEqual(LocalChangedContext, context);
+
+#if (NET || NETSTANDARD_2_0_UP)
             Trace.WriteLine(context);
+#endif
 
             serializer = new Serializer(typeof(CreditCard));
 
@@ -613,7 +625,10 @@ namespace XPatchLib.UnitTest.ForXml
             }
 
             Assert.AreEqual(UnspecifiedChangedContext, context);
+
+#if (NET || NETSTANDARD_2_0_UP)
             Trace.WriteLine(context);
+#endif
 
             serializer = new Serializer(typeof(CreditCard));
 
@@ -633,7 +648,10 @@ namespace XPatchLib.UnitTest.ForXml
             }
 
             Assert.AreEqual(UtcChangedContext, context);
+
+#if (NET || NETSTANDARD_2_0_UP)
             Trace.WriteLine(context);
+#endif
         }
 
         public class CreditCard
@@ -653,7 +671,7 @@ namespace XPatchLib.UnitTest.ForXml
     /// <summary>
     ///     初级入门
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class ExampleSampleABC
     {
         private const string ChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -662,7 +680,7 @@ namespace XPatchLib.UnitTest.ForXml
   <CardNumber>9876543210</CardNumber>
 </CreditCard>";
 
-        [TestMethod]
+        [Test]
         public void ExampleCombine()
         {
             var card1 = new CreditCard
@@ -690,7 +708,7 @@ namespace XPatchLib.UnitTest.ForXml
             Assert.AreNotEqual(card3.GetHashCode(), card1.GetHashCode());
         }
 
-        [TestMethod]
+        [Test]
         public void ExampleDivide()
         {
             var card1 = new CreditCard
@@ -721,7 +739,10 @@ namespace XPatchLib.UnitTest.ForXml
             }
 
             Assert.AreEqual(ChangedContext, context);
+
+#if (NET || NETSTANDARD_2_0_UP)
             Trace.WriteLine(context);
+#endif
         }
 
         public class CreditCard
@@ -744,7 +765,7 @@ namespace XPatchLib.UnitTest.ForXml
     /// <summary>
     ///     操作简单类型
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class ExampleSampleClass
     {
         private const string ChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -756,7 +777,7 @@ namespace XPatchLib.UnitTest.ForXml
   <Name>Company B</Name>
 </Warehouse>";
 
-        [TestMethod]
+        [Test]
         public void ExampleCombine()
         {
             var w1 = new Warehouse
@@ -785,7 +806,7 @@ namespace XPatchLib.UnitTest.ForXml
             Assert.AreNotEqual(w3.GetHashCode(), w1.GetHashCode());
         }
 
-        [TestMethod]
+        [Test]
         public void ExampleDivide()
         {
             var w1 = new Warehouse
@@ -817,10 +838,13 @@ namespace XPatchLib.UnitTest.ForXml
             }
 
             Assert.AreEqual(ChangedContext, context);
+
+#if (NET || NETSTANDARD_2_0_UP)
             Trace.WriteLine(context);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void ExampleDivideSetNull()
         {
             var w1 = new Warehouse
@@ -858,7 +882,10 @@ namespace XPatchLib.UnitTest.ForXml
             }
 
             Assert.AreEqual(changedContext, context);
+
+#if (NET || NETSTANDARD_2_0_UP)
             Trace.WriteLine(context);
+#endif
         }
 
         public class Warehouse
@@ -890,7 +917,7 @@ namespace XPatchLib.UnitTest.ForXml
     /// <summary>
     ///     是否序列化默认值设置
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class ExampleSerializeDefaultValue
     {
         private const string NotSerializeDefaultValueChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -906,7 +933,7 @@ namespace XPatchLib.UnitTest.ForXml
   <CardNumber>0123456789</CardNumber>
 </CreditCard>";
 
-        [TestMethod]
+        [Test]
         public void ExampleCombine()
         {
             var card1 = new CreditCard
@@ -947,7 +974,7 @@ namespace XPatchLib.UnitTest.ForXml
             Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
         }
 
-        [TestMethod]
+        [Test]
         public void ExampleDivide()
         {
             var card1 = new CreditCard
@@ -975,7 +1002,10 @@ namespace XPatchLib.UnitTest.ForXml
             }
 
             Assert.AreEqual(NotSerializeDefaultValueChangedContext, context);
+
+#if (NET || NETSTANDARD_2_0_UP)
             Trace.WriteLine(context);
+#endif
 
             serializer = new Serializer(typeof(CreditCard));
 
@@ -995,7 +1025,10 @@ namespace XPatchLib.UnitTest.ForXml
             }
 
             Assert.AreEqual(SerializeDefaultValueChangedContext, context);
+
+#if (NET || NETSTANDARD_2_0_UP)
             Trace.WriteLine(context);
+#endif
         }
 
         public class CreditCard
@@ -1018,7 +1051,7 @@ namespace XPatchLib.UnitTest.ForXml
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class XPatchSerialzerExample
     {
         private const string Context = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -1028,7 +1061,7 @@ namespace XPatchLib.UnitTest.ForXml
   </MyObjectProperty>
 </MyClass>";
 
-        [TestMethod]
+        [Test]
         public void ExampleClassDef()
         {
             var serializer = new Serializer(typeof(MyClass));

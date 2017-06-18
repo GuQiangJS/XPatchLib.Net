@@ -6,14 +6,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace XPatchLib.UnitTest.ForXml
 {
-    [TestClass]
+    [TestFixture]
     public class TestMultilayerSet
     {
-        [TestMethod]
+        [Test]
         [Description("多层次的集合增加内容拆分及合并测试")]
         public void TestAppendDividendAndCombineMultilayerSet()
         {
@@ -42,7 +42,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("多层次的集合删除内容拆分及合并测试")]
         public void TestRemoveDividendAndCombineMultilayerSet()
         {

@@ -8,25 +8,31 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Xml;
+#if (NET_35_UP || NETSTANDARD)
 using System.Xml.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+using NUnit.Framework;
 using XPatchLib.UnitTest.TestClass;
 
 namespace XPatchLib.UnitTest.ForXml
 {
-    [TestClass]
+    [TestFixture]
     public class TestSerializeObject
     {
         #region Public Methods
 
-        [TestMethod]
+        [Test]
         public void CultureChangeTest()
         {
             CultureInfo curCulture = CultureInfo.CurrentCulture;
 
             Serializer serializer = null;
 
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("fr-FR");
+#if NET
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
+#else
+            CultureInfo.CurrentCulture = new CultureInfo("fr-FR");
+#endif
             serializer = new Serializer(typeof(CultureClass));
             string frResult = string.Empty;
             using (MemoryStream stream = new MemoryStream())
@@ -43,9 +49,15 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+#if (NET || NETSTANDARD_2_0_UP)
             Trace.WriteLine(frResult);
+#endif
 
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("fa-IR");
+#if NET
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("fa-IR");
+#else
+            CultureInfo.CurrentCulture = new CultureInfo("fa-IR");
+#endif
             string faResult = string.Empty;
             using (MemoryStream stream = new MemoryStream())
             {
@@ -61,9 +73,16 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
-            Trace.WriteLine(faResult);
 
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
+#if (NET || NETSTANDARD_2_0_UP)
+            Trace.WriteLine(faResult);
+#endif
+            
+#if NET
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
+#else
+            CultureInfo.CurrentCulture = new CultureInfo("de-DE");
+#endif
             string deResult = string.Empty;
             using (MemoryStream stream = new MemoryStream())
             {
@@ -79,9 +98,15 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+#if (NET || NETSTANDARD_2_0_UP)
             Trace.WriteLine(deResult);
+#endif
 
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+#if NET
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+#else
+            CultureInfo.CurrentCulture = new CultureInfo("en-US");
+#endif
             string usResult = string.Empty;
             using (MemoryStream stream = new MemoryStream())
             {
@@ -97,16 +122,22 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+#if (NET || NETSTANDARD_2_0_UP)
             Trace.WriteLine(usResult);
+#endif
 
+#if NET
             Thread.CurrentThread.CurrentCulture = curCulture;
+#else
+            CultureInfo.CurrentCulture = curCulture;
+#endif
 
             Assert.AreEqual(faResult, frResult, "Comparing FR and FA");
             Assert.AreEqual(deResult, faResult, "Comparing FA and DE");
             Assert.AreEqual(usResult, deResult, "Comparing DE and US");
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试多层级对象的增量和数据合并-增加元素")]
         public void SerializeMulitiLevelClass_AddItem()
         {
@@ -133,14 +164,7 @@ namespace XPatchLib.UnitTest.ForXml
                         new TypeExtend(typeof(MultilevelClass), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(typeof(MultilevelClass).Name, MultilevelClass.GetSampleInstance(), c));
                 }
-                stream.Position = 0;
-
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
-
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, string.Empty);
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -158,7 +182,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试多层级对象的增量和数据合并-编辑元素")]
         public void SerializeMulitiLevelClass_EditItem()
         {
@@ -184,14 +208,7 @@ namespace XPatchLib.UnitTest.ForXml
                         new TypeExtend(typeof(MultilevelClass), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(typeof(MultilevelClass).Name, MultilevelClass.GetSampleInstance(), c));
                 }
-                stream.Position = 0;
-
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
-
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, string.Empty);
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -209,7 +226,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试多层级对象的增量和数据合并-原始值为null")]
         public void SerializeMulitiLevelClass_OriValueIsNull()
         {
@@ -236,14 +253,7 @@ namespace XPatchLib.UnitTest.ForXml
                         new TypeExtend(typeof(MultilevelClass), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(typeof(MultilevelClass).Name, null, MultilevelClass.GetSampleInstance()));
                 }
-                stream.Position = 0;
-
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
-
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, string.Empty);
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -260,7 +270,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试多层级对象的增量和数据合并-删除元素")]
         public void SerializeMulitiLevelClass_RemoveItem()
         {
@@ -282,14 +292,7 @@ namespace XPatchLib.UnitTest.ForXml
                         new TypeExtend(typeof(MultilevelClass), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(typeof(MultilevelClass).Name, MultilevelClass.GetSampleInstance(), c));
                 }
-                stream.Position = 0;
-
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
-
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, string.Empty);
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -308,7 +311,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SerializeNullable_OriValueIsNotNull()
         {
             NullableClass b1 = NullableClass.GetSampleInstance();
@@ -326,15 +329,8 @@ namespace XPatchLib.UnitTest.ForXml
                         new TypeExtend(typeof(NullableClass), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(NullableClass)), b1, b2));
                 }
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, string.Empty);
                 CombineObject dser = new CombineObject(new TypeExtend(typeof(NullableClass), null));
-
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
-
-                stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -351,7 +347,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SerializeNullable_OriValueIsNull()
         {
             NullableClass b1 = NullableClass.GetSampleInstance();
@@ -369,15 +365,9 @@ namespace XPatchLib.UnitTest.ForXml
                     //原始对象（null）与更新对象产生增量内容
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(NullableClass)), null, b1));
                 }
-                stream.Position = 0;
                 CombineObject dser = new CombineObject(new TypeExtend(typeof(NullableClass), null));
 
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
-
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, string.Empty);
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -394,7 +384,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SerializeSimpleNestedType()
         {
             BookClass b1 = BookClass.GetSampleInstance();
@@ -418,12 +408,7 @@ namespace XPatchLib.UnitTest.ForXml
                         new TypeExtend(typeof(BookClass), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(BookClass)), null, b1));
                 }
-                stream.Position = 0;
-
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
+                AssertHelper.AreEqual(result, stream, string.Empty);
 
             }
 
@@ -453,17 +438,11 @@ namespace XPatchLib.UnitTest.ForXml
                         new TypeExtend(typeof(BookClass), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(BookClass)), b1, b2));
                 }
-                stream.Position = 0;
-
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
-
+                AssertHelper.AreEqual(result, stream, string.Empty);
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SerializeSimpleNestedType_DecimalProperty()
         {
             BookClassWithDecimalPrice b1 = BookClassWithDecimalPrice.GetSampleInstance();
@@ -490,14 +469,7 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(BookClassWithDecimalPrice)),
                         null, b1));
                 }
-                stream.Position = 0;
-
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
-
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, string.Empty);
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -518,7 +490,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试原始对象为null，直接序列化")]
         public void SerializeSimpleStruct_OriValueIsNull()
         {
@@ -540,14 +512,7 @@ namespace XPatchLib.UnitTest.ForXml
                     //原始对象（null）与更新对象产生增量内容
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(AuthorStruct)), null, b1));
                 }
-                stream.Position = 0;
-
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
-
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, string.Empty);
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -565,7 +530,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试原始对象不为null，产生增量结果")]
         public void SerializeSimpleType_OriValueIsNotNull()
         {
@@ -590,14 +555,7 @@ namespace XPatchLib.UnitTest.ForXml
                     //原始对象与更新对象产生增量内容
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(AuthorClass)), b1, b2));
                 }
-                stream.Position = 0;
-
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
-
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, string.Empty);
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -617,7 +575,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试原始对象为null，直接序列化")]
         public void SerializeSimpleType_OriValueIsNull()
         {
@@ -639,14 +597,7 @@ namespace XPatchLib.UnitTest.ForXml
                     //原始对象（null）与更新对象产生增量内容
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(AuthorClass)), null, b1));
                 }
-                stream.Position = 0;
-
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
-
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, string.Empty);
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -664,7 +615,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SerializeSimpleType_RevValueIsNull()
         {
             AuthorClass b1 = AuthorClass.GetSampleInstance();
@@ -682,14 +633,7 @@ namespace XPatchLib.UnitTest.ForXml
                     //原始对象与更新对象产生增量内容
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(AuthorClass)), b1, null));
                 }
-                stream.Position = 0;
-
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
-
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, string.Empty);
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -707,7 +651,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试合并类型定义了错误的主键的对象是否会抛出异常")]
         public void TestCombineErrorPrimaryKeyDefineClass()
         {
@@ -729,7 +673,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestDivideAndSerializeSimpleType()
         {
             Serializer serializer = new Serializer(typeof(AuthorClass));
@@ -747,7 +691,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试增量内容类型定义了错误的主键的对象是否会抛出异常")]
         public void TestDivideErrorPrimaryKeyDefineClass()
         {
@@ -776,7 +720,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ThreadingTest()
         {
             try
@@ -803,7 +747,9 @@ namespace XPatchLib.UnitTest.ForXml
                                     }
                                 }
                             }
-                            Trace.Write(changedContext);
+#if (NET || NETSTANDARD_2_0_UP)
+                            Trace.WriteLine(changedContext);
+#endif
                             Serializer deserializer = new Serializer(typeof(BookClass));
                             BookClass book = null;
                             using (
@@ -813,7 +759,7 @@ namespace XPatchLib.UnitTest.ForXml
                                 book = deserializer.Combine(reader, null) as BookClass;
                             }
                             Assert.IsNotNull(book);
-                            Assert.IsInstanceOfType(book, typeof(BookClass));
+                            Assert.IsInstanceOf<BookClass>(book);
                             Assert.AreEqual(BookClass.GetSampleInstance(), book);
                         }
                     );
@@ -827,6 +773,6 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        #endregion Public Methods
+#endregion Public Methods
     }
 }

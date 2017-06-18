@@ -1,15 +1,17 @@
-﻿using System.Diagnostics;
+﻿#if (NET || NETSTANDARD_2_0_UP)
+
+using System.Diagnostics;
 using System.Drawing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace XPatchLib.UnitTest
 {
-    [TestClass]
+    [TestFixture]
     public class TestColorHelper
     {
-        #region Public Methods
+#region Public Methods
 
-        [TestMethod]
+        [Test]
         public void ColorHelperTest()
         {
             Assert.AreEqual("Aqua", ColorHelper.TransToString(Color.Aqua));
@@ -41,6 +43,8 @@ namespace XPatchLib.UnitTest
             Assert.IsFalse(ColorHelper.TryTransFromString(null, out result));
         }
 
-        #endregion Public Methods
+#endregion Public Methods
     }
 }
+
+#endif

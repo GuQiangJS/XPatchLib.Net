@@ -1,12 +1,12 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace XPatchLib.UnitTest.ForXml
 {
-    [TestClass]
+    [TestFixture]
     public class TestKeyValuesObjectEqualityComparer
     {
-        [TestMethod]
+        [Test]
         public void TestKeyValuesObjectEqualityComparerEqualsAddForString()
         {
             string[] s1 = {"A", "B"};
@@ -15,7 +15,7 @@ namespace XPatchLib.UnitTest.ForXml
             TestKeyValuesObjectEqualityComparerEqualsAdd(s1, s2);
         }
 
-        [TestMethod]
+        [Test]
         public void TestKeyValuesObjectEqualityComparerEqualsForChar()
         {
             char[] s1 = {'A', 'B', 'C'};
@@ -24,7 +24,7 @@ namespace XPatchLib.UnitTest.ForXml
             TestKeyValuesObjectEqualityComparerEquals(s1, s2);
         }
 
-        [TestMethod]
+        [Test]
         public void TestKeyValuesObjectEqualityComparerEqualsForComplexClass()
         {
             ExampleComplexCollectionClass.OrderInfo[] s1 =
@@ -68,7 +68,7 @@ namespace XPatchLib.UnitTest.ForXml
             TestKeyValuesObjectEqualityComparerEquals(s1, s2);
         }
 
-        [TestMethod]
+        [Test]
         public void TestKeyValuesObjectEqualityComparerEqualsForFloat()
         {
             float[] s1 = {1.0f, 1.1f, 1.2f};
@@ -77,7 +77,7 @@ namespace XPatchLib.UnitTest.ForXml
             TestKeyValuesObjectEqualityComparerEquals(s1, s2);
         }
 
-        [TestMethod]
+        [Test]
         public void TestKeyValuesObjectEqualityComparerEqualsForInt()
         {
             int[] s1 = {1, 2, 3};

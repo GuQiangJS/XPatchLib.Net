@@ -2,17 +2,17 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System.Xml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using XPatchLib.UnitTest.PetShopModelTests.Models;
 
 namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
 {
-    [TestClass]
+    [TestFixture]
     public class ArrayModelTest
     {
         #region Public Methods
 
-        [TestMethod]
+        [Test]
         [Description("测试Collection类型的复杂类型对象增加的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoArrayAddDivideAndCombine()
         {
@@ -58,7 +58,7 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
             TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(OrderInfo[]), oriObjs, changedObjs, changedContext, "");
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试Collection类型的复杂类型对象插入的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoArrayInsertDivideAndCombine()
         {
@@ -104,7 +104,7 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
             TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(OrderInfo[]), oriObjs, changedObjs, changedContext, "");
         }
 
-        [TestMethod]
+        [Test]
         [Description("测试Collection类型的复杂类型对象删除的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoArrayRemoveDivideAndCombine()
         {

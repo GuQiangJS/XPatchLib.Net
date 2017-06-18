@@ -3,25 +3,29 @@
 
 using System;
 using System.Diagnostics;
+#if (NET || NETSTANDARD_2_0_UP)
 using System.Drawing;
+#endif
 using System.IO;
 using System.Text;
 using System.Xml;
+#if (NET_35_UP || NETSTANDARD)
 using System.Xml.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+using NUnit.Framework;
 using XPatchLib.UnitTest.TestClass;
 
 namespace XPatchLib.UnitTest.ForXml
 {
-    [TestClass]
+    [TestFixture]
     public class TestSerializeBasic
     {
         #region Public Methods
 
-        [TestMethod]
+        [Test]
         public void BasicSerializeCtorTest()
         {
-            var writer = new XmlTextWriter(new System.Xml.XmlTextWriter(new MemoryStream(), Encoding.UTF8));
+            var writer = new XmlTextWriter(XmlWriter.Create(new MemoryStream(), TestHelper.DocumentSetting));
             Assert.AreEqual(writer.Setting.Mode, DateTimeSerializationMode.RoundtripKind);
             Assert.AreEqual(writer.Setting.Mode.Convert(), XmlDateTimeSerializationMode.RoundtripKind);
 
@@ -31,7 +35,7 @@ namespace XPatchLib.UnitTest.ForXml
         }
 
 
-        [TestMethod]
+        [Test]
         public void BasicTypeSerializationTest()
         {
             var g1 = Guid.NewGuid();
@@ -178,11 +182,7 @@ namespace XPatchLib.UnitTest.ForXml
                     stream.Position = 0;
                     var der = new CombineBasic(new TypeExtend(types[i], null));
 
-                    var changedEle = XElement.Load(new StreamReader(stream));
-
-                    Debug.WriteLine(changedEle.ToString());
-                    Assert.AreEqual(serializedResults[i], changedEle.ToString(), "输出内容与预期不符");
-                    stream.Position = 0;
+                    AssertHelper.AreEqual(serializedResults[i], stream, "输出内容与预期不符");
                     using (XmlReader xmlReader = XmlReader.Create(stream))
                     {
                         using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -203,12 +203,7 @@ namespace XPatchLib.UnitTest.ForXml
                     stream.Position = 0;
                     var der = new CombineBasic(new TypeExtend(types[i], null));
 
-                    var changedEle = XElement.Load(new StreamReader(stream));
-
-                    Debug.WriteLine(changedEle.ToString());
-
-                    Assert.AreEqual(serializedSetNullResults[i], changedEle.ToString(), "输出内容与预期不符");
-                    stream.Position = 0;
+                    AssertHelper.AreEqual(serializedSetNullResults[i], stream, "输出内容与预期不符");
                     using (XmlReader xmlReader = XmlReader.Create(stream))
                     {
                         using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -229,12 +224,7 @@ namespace XPatchLib.UnitTest.ForXml
                     stream.Position = 0;
                     var der = new CombineBasic(new TypeExtend(types[i], null));
 
-                    var changedEle = XElement.Load(new StreamReader(stream));
-                    
-                    Debug.WriteLine(changedEle.ToString());
-
-
-                    Assert.AreEqual(serializedResults[i], changedEle.ToString(), "输出内容与预期不符");
+                    AssertHelper.AreEqual(serializedResults[i], stream, "输出内容与预期不符");
                     stream.Position = 0;
                     using (XmlReader xmlReader = XmlReader.Create(stream))
                     {
@@ -273,18 +263,15 @@ namespace XPatchLib.UnitTest.ForXml
                             stream.Position = 0;
                         var der = new CombineBasic(new TypeExtend(types[i], null));
 
-                        var changedEle = XElement.Load(new StreamReader(stream));
-
-                        Debug.WriteLine(changedEle.ToString());
-                        
-                        Assert.AreEqual(serializedDefaultValues[i], changedEle.ToString());
+                        AssertHelper.AreEqual(serializedDefaultValues[i], stream, "输出内容与预期不符");
 
                     }
                 }
             }
         }
 
-        [TestMethod]
+#if (NET || NETSTANDARD_2_0_UP)
+        [Test]
         public void SerializeColor_Argb()
         {
             var c1 = new ColorClass {Color = Color.FromArgb(255, 255, 255)};
@@ -299,15 +286,8 @@ namespace XPatchLib.UnitTest.ForXml
                     var ser = new DivideObject(writer, new TypeExtend(typeof(ColorClass), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)), null, c1));
                 }
-                stream.Position = 0;
 
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Debug.WriteLine(changedEle.ToString());
-
-                Assert.AreEqual(result, changedEle.ToString());
-
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, "输出内容与预期不符");
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -322,7 +302,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SerializeColor_KnownColor()
         {
             var result = @"<ColorClass>
@@ -338,14 +318,7 @@ namespace XPatchLib.UnitTest.ForXml
 
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)), null, c1));
                 }
-                stream.Position = 0;
-
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Debug.WriteLine(changedEle.ToString());
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
+                AssertHelper.AreEqual(result, stream, "输出内容与预期不符");
 
                 var c2 = ColorClass.GetSampleInstance();
                 c2.Color = Color.AntiqueWhite;
@@ -364,8 +337,9 @@ namespace XPatchLib.UnitTest.ForXml
                 }
             }
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void SerializeEnum()
         {
             var result = @"<EnumClass>
@@ -381,13 +355,7 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(EnumClass)), null,
                         EnumClass.GetSampleInstance()));
                 }
-
-                stream.Position = 0;
-
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
+                AssertHelper.AreEqual(result, stream, "输出内容与预期不符");
             }
 
             var c1 = EnumClass.GetSampleInstance();
@@ -406,14 +374,7 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(EnumClass)),
                         EnumClass.GetSampleInstance(), c1));
                 }
-
-                stream.Position = 0;
-
-                var changedEle = XElement.Load(new StreamReader(stream));
-
-                Assert.AreEqual(result, changedEle.ToString());
-                Debug.WriteLine(changedEle.ToString());
-                stream.Position = 0;
+                AssertHelper.AreEqual(result, stream, "输出内容与预期不符");
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -429,17 +390,13 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        [TestMethod]
+#if (NET || NETSTANDARD_2_0_UP)
+        [Test]
         public void SerializeErrorColor()
         {
             var result = @"<ColorClass>
   <Color>#xxxxxx</Color>
 </ColorClass>";
-            XElement xele;
-            using (var reader = new StringReader(result))
-            {
-                xele = XElement.Load(reader);
-            }
 
             var dser = new CombineObject(new TypeExtend(typeof(ColorClass), null));
             try
@@ -461,7 +418,8 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.Fail("未能抛出FormatException异常。");
             }
         }
+#endif
 
-        #endregion Public Methods
+#endregion Public Methods
     }
 }

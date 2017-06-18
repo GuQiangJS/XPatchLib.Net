@@ -7,16 +7,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace XPatchLib.UnitTest.ForXml
 {
-    [TestClass]
+    [TestFixture]
     public class TestHashTable
     {
         #region Public Methods
 
-        [TestMethod]
+#if (NET || NETSTANDARD_2_0_UP)
+        [Test]
         public void TestHashTableDivideWithoutPrimaryKeyAttribute()
         {
             var table = new Hashtable();
@@ -44,7 +45,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
             catch (AttributeMissException ex)
             {
-                Assert.AreEqual(ex.AttributeName, typeof(PrimaryKeyAttribute).Name, true);
+                StringAssert.AreEqualIgnoringCase(ex.AttributeName, typeof(PrimaryKeyAttribute).Name);
                 //Hashtable类型作为一种集合类型，在处理子元素时应该对子元素的类型标记 PrimaryKeyAttribute 。
                 //但是由于Key值类型为Object，所以永远找不到PrimaryKeyAttribute
             }
@@ -53,8 +54,9 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.Fail("未能引发 AttributeMissException 异常。");
             }
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void TestQueueDivide()
         {
             var table = new Queue<string>();
@@ -80,12 +82,17 @@ namespace XPatchLib.UnitTest.ForXml
                         }
                     }
                 }
+#if (NET || NETSTANDARD_2_0_UP)
                 Trace.WriteLine(context);
+#endif
             }
             catch (AttributeMissException ex)
             {
+
+#if (NET || NETSTANDARD_2_0_UP)
                 Trace.WriteLine(ex.Message);
-                Assert.AreEqual(ex.AttributeName, typeof(PrimaryKeyAttribute).Name, true);
+#endif
+                StringAssert.AreEqualIgnoringCase(ex.AttributeName, typeof(PrimaryKeyAttribute).Name);
                 //Hashtable类型座位一种集合类型，在处理子元素时应该对子元素的类型标记 PrimaryKeyAttribute 。
             }
             catch (Exception)
@@ -94,6 +101,6 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        #endregion Public Methods
+#endregion Public Methods
     }
 }

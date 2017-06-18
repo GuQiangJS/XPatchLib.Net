@@ -1,15 +1,15 @@
 ﻿using System.Xml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using XPatchLib.UnitTest.PetShopModelTests.Models;
 
 namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
 {
-    [TestClass]
+    [TestFixture]
     public class SingleModelTest
     {
         #region Public Methods
 
-        [TestMethod]
+        [Test]
         [Description("测试两个同一类型的复杂对象间改变值的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoDivideAndCombine()
         {

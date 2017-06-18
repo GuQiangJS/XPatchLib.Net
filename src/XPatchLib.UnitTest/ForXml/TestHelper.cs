@@ -6,8 +6,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Xml;
+#if (NET_35_UP || NETSTANDARD)
 using System.Xml.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+using NUnit.Framework;
 
 namespace XPatchLib.UnitTest.ForXml
 {
@@ -47,11 +49,6 @@ namespace XPatchLib.UnitTest.ForXml
         internal static ITextWriter CreateWriter(Stream output, XmlWriterSettings settings)
         {
             return new XmlTextWriter(XmlWriter.Create(output, settings));
-
-
-            System.Xml.XmlTextWriter writer = new System.Xml.XmlTextWriter(output, settings.Encoding);
-            writer.Formatting = System.Xml.Formatting.Indented;
-            return new XmlTextWriter(writer);
         }
 
         #region Internal Methods
@@ -75,9 +72,7 @@ namespace XPatchLib.UnitTest.ForXml
                         new DivideCore(writer, new TypeExtend(pType, writer.IgnoreAttributeType)).Divide(
                             ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj));
                 }
-                stream.Position = 0;
-                var changedEle = XElement.Load(new StreamReader(stream));
-                stream.Position = 0;
+
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -86,9 +81,7 @@ namespace XPatchLib.UnitTest.ForXml
                         var combinedObj = new CombineCore(new TypeExtend(pType, null)).Combine(reader, pOriObj,
                             ReflectionUtils.GetTypeFriendlyName(pType));
 
-                        Trace.Write(pChangedContext);
-
-                        Assert.AreEqual(pChangedContext, changedEle.ToString(), pAssert);
+                        AssertHelper.AreEqual(pChangedContext, stream, pAssert);
 
                         UnitTest.TestHelper.PrivateAssertObject(pChangedObj, combinedObj, pAssert);
                     }
@@ -115,9 +108,6 @@ namespace XPatchLib.UnitTest.ForXml
                         new DivideCore(writer, new TypeExtend(pType, writer.IgnoreAttributeType)).Divide(
                             ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj));
                 }
-                stream.Position = 0;
-                var changedEle = XElement.Load(new StreamReader(stream));
-                stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -126,9 +116,11 @@ namespace XPatchLib.UnitTest.ForXml
                         var combinedObj = new CombineCore(new TypeExtend(pType, null)).Combine(reader, pOriObj,
                             ReflectionUtils.GetTypeFriendlyName(pType));
 
-                        Trace.Write(pChangedContext);
+#if (NET || NETSTANDARD_2_0_UP)
+                        Trace.WriteLine(pChangedContext);
+#endif
 
-                        Assert.AreEqual(pChangedContext, changedEle.ToString(), pAssert);
+                        AssertHelper.AreEqual(pChangedContext, stream, pAssert);
 
                         UnitTest.TestHelper.PrivateAssertIEnumerable<T>(pChangedObj, combinedObj, pType, pAssert);
                     }
