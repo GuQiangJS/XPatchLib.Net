@@ -122,7 +122,7 @@ using (var fs = new FileStream(filename, FileMode.Open))
 
 ## **文档**
 
-[在线帮助](https://guqiangjs.github.io/XPatchLib.Net)
+[在线帮助](https://guqiangjs.github.io/XPatchLib.Net.Doc/)
 
 ## 后续计划
 
