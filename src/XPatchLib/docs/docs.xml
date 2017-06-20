@@ -2,7 +2,16 @@
 
 <Comments>
   <paras>
-    <para name="IsBasicType">
+    <para name="IsBasicType" hasColor="false">
+      <para>
+        基础类型包含 <see cref="string" />、<see cref="DateTime" />、<see cref="decimal" />、<see cref="Guid" />、
+        <see cref="Enum" />，或者<see cref="System.Reflection.TypeInfo.IsPrimitive" /> == <b>true</b> 的类型。
+      </para>
+      <para>
+        当类型为<see cref="Nullable{T}" />时，对 <b>T</b> 进行判断。
+      </para>
+    </para>
+    <para name="IsBasicType" hasColor="true">
       <para>
         基础类型包含 <see cref="string" />、<see cref="DateTime" />、<see cref="decimal" />、<see cref="Guid" />、
         <see cref="System.Drawing.Color" />、<see cref="Enum" />，或者<see cref="Type.IsPrimitive" /> == <b>true</b> 的类型。
@@ -56,16 +65,16 @@
       <para>
         当集合元素类型没有定义主键时，在序列化/反序列化 集合对象时会抛出 AttributeMissException 异常。
       </para>
-      <code language="c#" source="..\..\XPatchLib.Example\CSharp\Examples\AttributeMissException.cs" />
+      <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\AttributeMissException.cs" />
     </example>
     <example class="PrimaryKeyException" method="none">
       <para>
         当类型定义主键特性时，被标记的主键类型只能是基础类型，否则会抛出异常。
       </para>
-      <code language="c#" source="..\..\XPatchLib.Example\CSharp\Examples\PrimaryKeyException.cs" />
+      <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\PrimaryKeyException.cs" />
     </example>
     <example class="Serializer" method="none">
-      <code language="c#" source="..\..\XPatchLib.Example\CSharp\Examples\ComplexObjCombineAndDivide.cs" />
+      <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\ComplexObjCombineAndDivide.cs" />
       <para>
         序列化增量内容的 输出如下所示：
       </para>
@@ -128,8 +137,8 @@ Total:  146.41
       <para>
         下面的示例使用 <see cref="XmlTextReader" /> 对象反序列化增量内容，并附加至原始对象。
       </para>
-      <code language="c#" source="..\..\XPatchLib.Example\CSharp\Examples\Combine.cs" />
-      <code language="xml" title="patch.xml" source="..\..\XPatchLib.Example\xmls\CombineExamplePatch.xml" />
+      <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\Combine.cs" />
+      <code language="xml" title="patch.xml" source="..\..\..\XPatchLib.Net.Example\xmls\CombineExamplePatch.xml" />
       <para>
         输出内容如下：
       </para>
@@ -156,7 +165,7 @@ Small Widget
       <para>
         下面的示例使用 <see cref="XmlTextWriter" /> 序列化指定的 原始对象 与 更新对象 间的增量内容。
       </para>
-      <code language="c#" source="..\..\XPatchLib.Example\CSharp\Examples\Divide.cs" />
+      <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\Divide.cs" />
       <para>
         输出内容如下：
       </para>
@@ -175,7 +184,7 @@ Small Widget
       <para>
         下面的示例使用 RegisterTypes 方法向 <see cref="Serializer" /> 注册待处理的类型的主键信息 。
       </para>
-      <code language="c#" source="..\..\XPatchLib.Example\CSharp\Examples\RegisterTypes.cs" />
+      <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\RegisterTypes.cs" />
       <para>
         输出内容如下：
       </para>

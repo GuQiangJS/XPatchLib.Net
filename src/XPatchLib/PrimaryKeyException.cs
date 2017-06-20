@@ -12,16 +12,29 @@ using System.Security.Permissions;
 
 namespace XPatchLib
 {
+#if (NET || NETSTANDARD_2_0_UP)
     /// <summary>
     ///     主键定义异常。
     /// </summary>
     /// <remarks>
     ///     主键的数据类型只能够设置为基础类型。
-    ///     <include file='docs/docs.xml' path='Comments/paras/para[@name="IsBasicType"]/*' />
+    ///     <include file='docs/docs.xml' path='Comments/paras/para[@name="IsBasicType" and @hasColor="true"]/*' />
     /// </remarks>
     /// <example>
     ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="PrimaryKeyException" and @method="none"]/*' />
     /// </example>
+#else
+    /// <summary>
+    ///     主键定义异常。
+    /// </summary>
+    /// <remarks>
+    ///     主键的数据类型只能够设置为基础类型。
+    ///     <include file='docs/docs.xml' path='Comments/paras/para[@name="IsBasicType" and @hasColor="false"]/*' />
+    /// </remarks>
+    /// <example>
+    ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="PrimaryKeyException" and @method="none"]/*' />
+    /// </example>
+#endif
 #if (NET || NETSTANDARD_2_0_UP)
     [Serializable]
 #endif

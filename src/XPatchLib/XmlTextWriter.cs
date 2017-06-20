@@ -201,6 +201,7 @@ namespace XPatchLib
             }
         }
 
+#if (NET || NETSTANDARD_2_0_UP)
         /// <summary>
         ///     获取或设置指示 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 进行序列化的公共字段或公共读/写属性值。
         /// </summary>
@@ -208,12 +209,19 @@ namespace XPatchLib
         ///     用于控制如何 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 序列化对象。
         /// </remarks>
         /// <value>
-#if (NET || NETSTANDARD_2_0_UP)
-        ///     <see cref="XmlIgnoreAttribute" />
-#else
-        ///     null.
-#endif
+        /// <see cref="XmlIgnoreAttribute" />
         /// </value>
+#else
+        /// <summary>
+        ///     获取或设置指示 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 进行序列化的公共字段或公共读/写属性值。
+        /// </summary>
+        /// <remarks>
+        ///     用于控制如何 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 序列化对象。
+        /// </remarks>
+        /// <value>
+        ///     null.
+        /// </value>
+#endif
         public Type IgnoreAttributeType { get; set; }
 
         /// <summary>

@@ -127,8 +127,9 @@ namespace XPatchLib
         }
 
         /// <summary>
-        ///     将元素或文本节点的内容当做 <paramref name="T"/>读取。
+        ///     将元素或文本节点的内容当做 <typeparamref name="T"/> 读取。
         /// </summary>
+        /// <typeparam name="T">读取节点内容的类型。</typeparam>
         /// <returns>该元素或文本节点的内容。如果读取器定位在元素或文本节点以外的位置，或者当前上下文中没有其他文本内容可返回，则这可以是空字符串。 
         /// <para>Note: 文本节点可以是元素或属性文本节点。</para></returns>
         public T Read<T>()

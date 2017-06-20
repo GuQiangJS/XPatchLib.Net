@@ -11,6 +11,7 @@ namespace XPatchLib
     /// </summary>
     internal class ConstValue
     {
+#if (NET || NETSTANDARD_2_0_UP)
         /// <summary>
         ///     <see cref="System.Drawing.Color" />类型的格式化字符串。
         /// </summary>
@@ -26,6 +27,7 @@ namespace XPatchLib
         {
             get { return "#"; }
         }
+#endif
 
         /// <summary>
         ///     生成或读取XML时，<see cref="KeyValuePair{TKey,TValue}" />类型的Key值的字符串。
