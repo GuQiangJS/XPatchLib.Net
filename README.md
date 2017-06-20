@@ -1,26 +1,36 @@
 # XPatchLib - .Net 增量内容 序列化/反序列化 工具
 
-#### Patch Serialization Library for the .Net Framework
+#### Patch Serialization Library for the .Net
 
-本项目旨在基于 .Net Framework 创建一套 将指定的两个同一类型的对象实例间增量的内容序列化为指定格式文档，也可以将包含增量内容的文档反序列化并附加至原始的对象实例上 的工具。 
+本项目旨在基于 .Net 创建一套 将指定的两个同一类型的对象实例间增量的内容序列化为指定格式文档，也可以将包含增量内容的文档反序列化并附加至原始的对象实例上 的工具。 
 
-## **支持版本**
+## 使用
 
-.NET 2.0 SP1, .NET 3.5, .NET 4
+使用 `XPatchLib`最简单的方法是通过 XPatchLib NuGet 软件包。 只需将 [NuGet](https://www.nuget.org/packages/XPatchLib/) 包添加到您的VS项目中即可。
+
+## 支持版本
+
+运行时库被构建为便携式类库，支持：
+
+* .NET Framework 2.0 SP1 及以上版本
+
+* .NET Standard 1.3 及以上版本
+
+可以在 Visual Studio 2008 及后续版本中使用 `XPatchLib`。
 
 ## 编译
 
-使用 Visual Studio 2015 及以上版本打开 src 目录下不同的解决方案。
+使用 Visual Studio 2017 及以上版本打开 `src/XPatchLib.sln` 。
 
-* XPatchLib.Net20.sln  ->  .NET 2.0 SP1
+因为项目文件使用了 Visual Studio 2017 中提供的新的 `csproj` 格式，所以 *开发者* 只能使用 Visual Studio 2017 及以上版本。
 
-* XPatchLib.Net35.sln  ->  .NET 3.5
+也可以在安装了 [Visual Studio 2017 生成工具](https://www.visualstudio.com/zh-hans/downloads/) 的前提下，执行 `builder/MasterBuild.bat` 进行编译。
 
-* XPatchLib.Net40.sln  ->  .NET 4.0
+## 测试
 
-* 编译 HelperBuilder 相关帮助文档项目时需要使用 [Sandcastle Help File Builder](https://github.com/EWSoftware/SHFB/releases)。
+单元测试使用 [NUnit3](https://github.com/nunit/nunit)。可以通过安装 [NUnit Console](https://github.com/nunit/nunit-console) 后，执行 `builder/unittest.bat` ，自动执行 .Net20,.Net35,.Net40 等多个版本的单元测试。也可以使用 Visual Studio 2017 的 `测试资源管理器`执行。
 
-* 编译 HelperBuilder\CHMBuilder 项目时需要配合使用 [HTML Help Workshop](http://www.microsoft.com/en-us/download/details.aspx?id=21138)。
+单元测试项目引用了 [Microsoft.NET.Test.Sdk](https://github.com/microsoft/vstest/),[NUnit](http://nunit.org/),[NUnit3TestAdapter](https://github.com/nunit/docs/wiki/Visual-Studio-Test-Adapter) 。
 
 ## **Example**
 
@@ -110,12 +120,12 @@ using (var fs = new FileStream(filename, FileMode.Open))
 经过以上代码，可以使新增的 card3 实例的 CardExpiration 属性的值由card1实例中的 "05/12" 变更为增量内容中记录的 "05/17"，CardNumber的值也由card1实例中的"0123456789"变更为了增量内容中记录的"9876543210"。如果使用值比较的方式比较 card3 和 card2 两个实例，会发现这两个实例完全相同。
 
 
-
-## **下载**
-[从Nuget下载最新版本](https://www.nuget.org/packages/XPatchLib/)
-
-
-
 ## **文档**
 
 [在线帮助](https://guqiangjs.github.io/XPatchLib.Net)
+
+## 后续计划
+
+* 支持除 `XML` 外的其他格式输出。
+
+* 支持更多的 .NET 平台 [目标框架](https://docs.microsoft.com/zh-cn/dotnet/standard/frameworks)

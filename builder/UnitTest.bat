@@ -12,7 +12,7 @@ SET SRC=%~dp0..\src\XPatchLib.UnitTest\bin\Debug
 
 
 FOR %%b in (
-       NET20,NET35,NET40,NETCOREAPP1.0
+       NET20,NET35,NET40
     ) do (
 	call %NUNITCONSOLE_EXE% "%SRC%\%%b\xpatchlib.unittest.dll" /result:"%SRC%\TEST_RESULT_%%b.XML"
 )
