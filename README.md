@@ -6,7 +6,7 @@
 
 ## 使用
 
-使用 `XPatchLib`最简单的方法是通过 XPatchLib NuGet 软件包。 只需将 [NuGet](https://www.nuget.org/packages/XPatchLib/) 包添加到您的VS项目中即可。
+使用 `XPatchLib` 最简单的方法是通过 XPatchLib NuGet 软件包。 只需将 [NuGet](https://www.nuget.org/packages/XPatchLib/) 包添加到您的VS项目中即可。
 
 ## 支持版本
 
@@ -22,7 +22,7 @@
 
 使用 Visual Studio 2017 及以上版本打开 `src/XPatchLib.sln` 。
 
-因为项目文件使用了 Visual Studio 2017 中提供的新的 `csproj` 格式，所以 *开发者* 只能使用 Visual Studio 2017 及以上版本。
+因为项目文件使用了 Visual Studio 2017 中提供的新的 `csproj` 格式，所以 *开发者* 只能使用 Visual Studio 2017 及以上版本，*使用者* 可以在 Visual Studio 2008 及后续版本中使用 `XPatchLib`。
 
 也可以在安装了 [Visual Studio 2017 生成工具](https://www.visualstudio.com/zh-hans/downloads/) 的前提下，执行 `builder/MasterBuild.bat` 进行编译。
 
@@ -30,7 +30,7 @@
 
 单元测试使用 [NUnit3](https://github.com/nunit/nunit)。可以通过安装 [NUnit Console](https://github.com/nunit/nunit-console) 后，执行 `builder/unittest.bat` ，自动执行 .Net20,.Net35,.Net40 等多个版本的单元测试。也可以使用 Visual Studio 2017 的 `测试资源管理器`执行。
 
-单元测试项目引用了 [Microsoft.NET.Test.Sdk](https://github.com/microsoft/vstest/),[NUnit](http://nunit.org/),[NUnit3TestAdapter](https://github.com/nunit/docs/wiki/Visual-Studio-Test-Adapter) 。
+单元测试项目引用了 [Microsoft.NET.Test.Sdk](https://github.com/microsoft/vstest/) , [NUnit](http://nunit.org/) , [NUnit3TestAdapter](https://github.com/nunit/docs/wiki/Visual-Studio-Test-Adapter) 。
 
 ## **Example**
 
@@ -128,4 +128,4 @@ using (var fs = new FileStream(filename, FileMode.Open))
 
 * 支持除 `XML` 外的其他格式输出。
 
-* 支持更多的 .NET 平台 [目标框架](https://docs.microsoft.com/zh-cn/dotnet/standard/frameworks)
+* 支持更多的 .NET [目标框架](https://docs.microsoft.com/zh-cn/dotnet/standard/frameworks)。
