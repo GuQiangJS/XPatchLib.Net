@@ -52,6 +52,8 @@ namespace XPatchLib.UnitTest.ForXml
             _setNull_Dic.Add("Ckey", null);
             _setNull_Dic.Add("Dkey", null);
 
+            _Ori_Dic_Array = new Dictionary<string, string>[]
+                {_oriDic, _oriDic, null, _oriDic, _oriDic};
             _Dic_Array = new Dictionary<string, string>[]
                 {_complex_Changed_Dic, _edit_Dic, _create_Dic, _remove_Dic, _setNull_Dic};
             _Context_Array = new string[]
@@ -75,6 +77,7 @@ namespace XPatchLib.UnitTest.ForXml
         private Dictionary<string, string> _setNull_Dic;
         #endregion
         private Dictionary<string,string>[] _Dic_Array;
+        private Dictionary<string, string>[] _Ori_Dic_Array;
         private string[] _Context_Array;
 
         #region 变更字符串定义
@@ -166,10 +169,13 @@ namespace XPatchLib.UnitTest.ForXml
         {
             for (int i = 0; i < _Context_Array.Length; i++)
             {
-                var newDic = DoCombineCore_Combie(_Context_Array[i], _oriDic);
+                var newDic = DoCombineCore_Combie(_Context_Array[i], _Ori_Dic_Array[i]);
                 //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆
                 AssertDictionary(_Dic_Array[i], newDic, i.ToString(), true, false);
-                Assert.AreEqual(_oriDic.GetHashCode(), newDic.GetHashCode());
+                if(_Ori_Dic_Array[i]==null)
+                    //当原始对象为Null时，会重新创建实例，所以HashCode值肯定不同
+                    continue;
+                Assert.AreEqual(_Ori_Dic_Array[i].GetHashCode(), newDic.GetHashCode());
                 Init();
             }
         }
@@ -179,10 +185,13 @@ namespace XPatchLib.UnitTest.ForXml
         {
             for (int i = 0; i < _Context_Array.Length; i++)
             {
-                var newDic = DoCombineIDictionary_Combie(_Context_Array[i], _oriDic);
+                var newDic = DoCombineIDictionary_Combie(_Context_Array[i], _Ori_Dic_Array[i]);
                 //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆
                 AssertDictionary(_Dic_Array[i], newDic, i.ToString(), true, false);
-                Assert.AreEqual(_oriDic.GetHashCode(), newDic.GetHashCode());
+                if (_Ori_Dic_Array[i] == null)
+                    //当原始对象为Null时，会重新创建实例，所以HashCode值肯定不同
+                    continue;
+                Assert.AreEqual(_Ori_Dic_Array[i].GetHashCode(), newDic.GetHashCode());
                 Init();
             }
         }
@@ -193,15 +202,23 @@ namespace XPatchLib.UnitTest.ForXml
             for (int i = 0; i < _Context_Array.Length; i++)
             {
                 //不做深克隆时
-                var newDic = DoSerializer_Combie(_Context_Array[i], _oriDic);
+                var newDic = DoSerializer_Combie(_Context_Array[i], _Ori_Dic_Array[i]);
                 AssertDictionary(_Dic_Array[i], newDic, i.ToString(), true, false);
-                Assert.AreEqual(_oriDic.GetHashCode(), newDic.GetHashCode());
+                if (_Ori_Dic_Array[i] == null)
+                    //当原始对象为Null时，会重新创建实例，所以HashCode值肯定不同
+                    continue;
+                Assert.AreEqual(_Ori_Dic_Array[i].GetHashCode(), newDic.GetHashCode());
                 Init();
                 newDic = null;
                 //做深克隆时
-                newDic = DoSerializer_Combie(ComplexOperatorChangedContext, _oriDic, true);
+                newDic = DoSerializer_Combie(_Context_Array[i], _Ori_Dic_Array[i], true);
                 AssertDictionary(_Dic_Array[i], newDic, i.ToString(), true, false);
-                Assert.AreNotEqual(_oriDic.GetHashCode(), newDic.GetHashCode());
+                if (_Ori_Dic_Array[i] == null)
+                    //当原始对象为Null时，会重新创建实例，所以HashCode值肯定不同
+                    continue;
+                //做深克隆后新对象的 hashCode 值与原始对象不同
+                Assert.AreNotEqual(_Ori_Dic_Array[i].GetHashCode(), newDic.GetHashCode());
+                Init();
             }
         }
         #endregion
@@ -214,7 +231,7 @@ namespace XPatchLib.UnitTest.ForXml
         {
             for (int i = 0; i < _Context_Array.Length; i++)
             {
-                var context = DoDivideCore_Divide(_oriDic, _Dic_Array[i]);
+                var context = DoDivideCore_Divide(_Ori_Dic_Array[i], _Dic_Array[i]);
                 Assert.AreEqual(_Context_Array[i], context);
             }
         }
@@ -225,7 +242,7 @@ namespace XPatchLib.UnitTest.ForXml
         {
             for (int i = 0; i < _Context_Array.Length; i++)
             {
-                var context = DoDivideIDictionary_Divide(_oriDic, _Dic_Array[i]);
+                var context = DoDivideIDictionary_Divide(_Ori_Dic_Array[i], _Dic_Array[i]);
                 Assert.AreEqual(_Context_Array[i], context);
             }
         }
@@ -236,8 +253,8 @@ namespace XPatchLib.UnitTest.ForXml
         {
             for (int i = 0; i < _Context_Array.Length; i++)
             {
-                var context = DoSerializer_Divide(_oriDic, _Dic_Array[i]);
-                Assert.AreEqual(_Context_Array[i], context);
+                var context = DoSerializer_Divide(_Ori_Dic_Array[i], _Dic_Array[i]);
+                Assert.AreEqual(TestHelper.XmlHeaderContext + System.Environment.NewLine + _Context_Array[i], context);
             }
         }
         #endregion

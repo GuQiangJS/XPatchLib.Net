@@ -47,8 +47,8 @@ namespace XPatchLib.UnitTest
                 using (var reader = new XmlTextReader(xmlReader))
                 {
                     return
-                        new CombineCore(new TypeExtend(expected.GetType(), null)).Combine(reader, expected,
-                            ReflectionUtils.GetTypeFriendlyName(expected.GetType())) as T;
+                        new CombineCore(new TypeExtend(typeof(T), null)).Combine(reader, expected,
+                            ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
                 }
             }
         }
@@ -63,6 +63,7 @@ namespace XPatchLib.UnitTest
                     var serializer = new DivideCore(writer, typeExtend);
                     bool succeeded = serializer.Divide(typeExtend.TypeFriendlyName, ori, rev);
                     Assert.IsTrue(succeeded);
+                    writer.Flush();
                     return UnitTest.TestHelper.StreamToString(stream);
                 }
             }
@@ -74,10 +75,11 @@ namespace XPatchLib.UnitTest
             {
                 using (var writer = ForXml.TestHelper.CreateWriter(stream, ForXml.TestHelper.FlagmentSetting))
                 {
-                    TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(typeof(T), null, null);
+                    TypeExtend typeExtend = new TypeExtend(typeof(T), writer.IgnoreAttributeType);
                     var serializer = new DivideIDictionary(writer, typeExtend);
-                    bool succeeded = serializer.Divide(typeExtend.TypeFriendlyName, ori, rev);
+                    bool succeeded = serializer.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(T)), ori, rev);
                     Assert.IsTrue(succeeded);
+                    writer.Flush();
                     return UnitTest.TestHelper.StreamToString(stream);
                 }
             }
@@ -89,7 +91,7 @@ namespace XPatchLib.UnitTest
             {
                 using (var xmlTextReader = new XmlTextReader(reader))
                 {
-                    return new Serializer(expected.GetType()).Combine(xmlTextReader, expected, deepClone) as T;
+                    return new Serializer(typeof(T)).Combine(xmlTextReader, expected, !deepClone) as T;
                 }
             }
         }
@@ -101,8 +103,8 @@ namespace XPatchLib.UnitTest
                 using (var reader = new XmlTextReader(xmlReader))
                 {
                     return
-                        new CombineIDictionary(new TypeExtend(expected.GetType(), null)).Combine(reader, expected,
-                            ReflectionUtils.GetTypeFriendlyName(expected.GetType())) as T;
+                        new CombineIDictionary(new TypeExtend(typeof(T), null)).Combine(reader, expected,
+                            ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
                 }
             }
         }
@@ -113,7 +115,7 @@ namespace XPatchLib.UnitTest
             {
                 using (var writer = ForXml.TestHelper.CreateWriter(stream, ForXml.TestHelper.DocumentSetting))
                 {
-                    var serializer = new Serializer(ori.GetType());
+                    var serializer = new Serializer(typeof(T));
                     serializer.Divide(writer, ori, rev);
                     return UnitTest.TestHelper.StreamToString(stream);
                 }

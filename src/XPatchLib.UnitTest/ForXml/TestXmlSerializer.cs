@@ -286,7 +286,7 @@ namespace XPatchLib.UnitTest.ForXml
                 {
                     ConformanceLevel = ConformanceLevel.Document,
                     Indent = true,
-                    Encoding = Encoding.UTF8,
+                    Encoding = new UTF8Encoding(false),
                     OmitXmlDeclaration = false
                 };
                 using (var writer = TestHelper.CreateWriter(stream,settings))

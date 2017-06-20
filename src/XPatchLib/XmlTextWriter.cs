@@ -202,7 +202,7 @@ namespace XPatchLib
         }
 
         /// <summary>
-        ///     获取指示 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 进行序列化的公共字段或公共读/写属性值。
+        ///     获取或设置指示 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 进行序列化的公共字段或公共读/写属性值。
         /// </summary>
         /// <remarks>
         ///     用于控制如何 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 序列化对象。
@@ -214,7 +214,7 @@ namespace XPatchLib
         ///     null.
 #endif
         /// </value>
-        public Type IgnoreAttributeType { get; internal set; }
+        public Type IgnoreAttributeType { get; set; }
 
         /// <summary>
         ///     执行与释放或重置非托管资源相关的应用程序定义的任务。

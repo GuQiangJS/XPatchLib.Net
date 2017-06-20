@@ -29,7 +29,11 @@ namespace XPatchLib
             ParentType = pParentType;
 
             OriType = pType;
-            CustomAttributes = pType.GetCustomAttributes();
+#if (NET_20_UP || NETSTANDARD_2_0_UP)
+            CustomAttributes = Attribute.GetCustomAttributes(pType);
+#else
+            CustomAttributes = pType.GetTypeInfo().GetCustomAttributes().ToArray();
+#endif
             PrimaryKeyAttr = GetCustomAttribute<PrimaryKeyAttribute>();
 
             if (PrimaryKeyAttr == null) {
@@ -187,7 +191,7 @@ namespace XPatchLib
             return result;
         }
 
-        internal Object CreateInstance()
+        internal Object CreateInstance(params object[] args)
         {
             if (CreateInstanceFuncs != null)
                 return CreateInstanceFuncs();
@@ -209,17 +213,18 @@ namespace XPatchLib
                     throw new NotImplementedException();
                 }
 #if (NET || NETSTANDARD_2_0_UP)
+                BindingFlags flags = BindingFlags.NonPublic | BindingFlags.CreateInstance | BindingFlags.Instance;
                 try
                 {
-                    return OriType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0],
-                        CultureInfo.InvariantCulture);
+                    return OriType.InvokeMember(string.Empty, flags, null,
+                        null, args, CultureInfo.InvariantCulture);
                 }
                 catch (MissingMethodException)
                 {
-                    return Activator.CreateInstance(OriType);
+                    return Activator.CreateInstance(OriType, args);
                 }
 #else
-                return Activator.CreateInstance(OriType);
+                return Activator.CreateInstance(OriType,args);
 #endif
             }
             return null;
@@ -228,6 +233,8 @@ namespace XPatchLib
         internal T GetCustomAttribute<T>() where T : Attribute
         {
             T result = default(T);
+            if (CustomAttributes == null)
+                return result;
             foreach (Attribute attr in CustomAttributes)
                 if (attr is T)
                 {

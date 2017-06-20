@@ -69,7 +69,11 @@ namespace XPatchLib
 
                 if (pReader.Name == GenericArgumentType.TypeFriendlyName && pReader.NodeType == NodeType.Element)
                     CombineCore(pReader, ref pOriObject, kvs, GenericArgumentType.TypeFriendlyName);
-                pReader.Read();
+
+                if (pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) &&
+                    pReader.NodeType == NodeType.EndElement)
+                    break;
+                pReader.MoveToNextElement(GenericArgumentType.TypeFriendlyName, pName);
             }
             return pOriObject;
         }
@@ -156,6 +160,7 @@ namespace XPatchLib
 
                 case Action.Remove:
                     CombineRemovedItem(pReader, attrs, ref pOriObject, pOriEnumerable);
+                    pReader.MoveToCurrentElementEnd(pName);
                     break;
             }
         }

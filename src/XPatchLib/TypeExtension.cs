@@ -143,15 +143,6 @@ namespace XPatchLib
 #endif
         }
 
-        internal static Attribute[] GetCustomAttributes(this Type pType)
-        {
-#if (NET_20_UP || NETSTANDARD_2_0_UP)
-            return pType.GetCustomAttributes();
-#else
-            return pType.GetTypeInfo().GetCustomAttributes().ToArray();
-#endif
-        }
-
         internal static bool IsPrimitive(this Type type)
         {
 #if (NET || NETSTANDARD_2_0_UP)

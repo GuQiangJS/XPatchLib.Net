@@ -12,13 +12,13 @@ namespace XPatchLib
     public interface ITextWriter : IDisposable
     {
         /// <summary>
-        ///     获取指示 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 进行序列化的公共字段或公共读/写属性值。
+        ///     获取或设置指示 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 进行序列化的公共字段或公共读/写属性值。
         /// </summary>
         /// <remarks>
         ///     用于控制如何 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 序列化对象。
         /// </remarks>
         /// <seealso cref="XmlTextWriter.IgnoreAttributeType"/>
-        Type IgnoreAttributeType { get; }
+        Type IgnoreAttributeType { get; set; }
 
         /// <summary>
         ///     获取或设置写入器设置。

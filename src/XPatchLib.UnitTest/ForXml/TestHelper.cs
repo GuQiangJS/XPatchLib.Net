@@ -24,6 +24,7 @@ namespace XPatchLib.UnitTest.ForXml
                 var settings = new XmlWriterSettings();
                 settings.Indent = true;
                 settings.OmitXmlDeclaration = false;
+                settings.Encoding = new UTF8Encoding(false);
                 return settings;
             }
         }
@@ -72,7 +73,7 @@ namespace XPatchLib.UnitTest.ForXml
                         new DivideCore(writer, new TypeExtend(pType, writer.IgnoreAttributeType)).Divide(
                             ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj));
                 }
-
+                stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))
@@ -108,6 +109,7 @@ namespace XPatchLib.UnitTest.ForXml
                         new DivideCore(writer, new TypeExtend(pType, writer.IgnoreAttributeType)).Divide(
                             ReflectionUtils.GetTypeFriendlyName(pType), pOriObj, pChangedObj));
                 }
+                stream.Position = 0;
                 using (XmlReader xmlReader = XmlReader.Create(stream))
                 {
                     using (XmlTextReader reader = new XmlTextReader(xmlReader))

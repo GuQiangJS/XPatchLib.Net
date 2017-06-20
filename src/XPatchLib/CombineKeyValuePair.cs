@@ -57,6 +57,9 @@ namespace XPatchLib
                     revKey = CombineInstanceContainer.GetCombineInstance(keyType).Combine(pReader, null, pReader.Name);
                 if (pReader.Name.Equals(ConstValue.VALUE) && pReader.NodeType == NodeType.Element)
                     revValue = CombineInstanceContainer.GetCombineInstance(valueType).Combine(pReader, null, pReader.Name);
+                if (pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) &&
+                    pReader.NodeType == NodeType.EndElement)
+                    break;
                 pReader.Read();
             }
 
@@ -66,9 +69,9 @@ namespace XPatchLib
                 //当原始对象为null时，先创建一个实例。并且赋予pElement转换的Key值和Value值
                 //pOriObject = Type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null,
                 //    new[] {revKey != null ? revKey : oriKeyObj, revValue}, CultureInfo.InvariantCulture);
-                pOriObject = this.Type.CreateInstance();
-                Type.SetMemberValue(pOriObject, ConstValue.KEY, revKey != null ? revKey : oriKeyObj);
-                Type.SetMemberValue(pOriObject, ConstValue.VALUE, revValue);
+                pOriObject = this.Type.CreateInstance(revKey != null ? revKey : oriKeyObj, revValue);
+                //Type.SetMemberValue(pOriObject, ConstValue.KEY, revKey != null ? revKey : oriKeyObj);
+                //Type.SetMemberValue(pOriObject, ConstValue.VALUE, revValue);
             }
             else
             {
@@ -84,9 +87,9 @@ namespace XPatchLib
                 {
                     //pOriObject = Type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null,
                     //    new[] {revKey != null ? revKey : oriKeyObj, revValue}, CultureInfo.InvariantCulture);
-                    pOriObject = this.Type.CreateInstance();
-                    Type.SetMemberValue(pOriObject, ConstValue.KEY, revKey != null ? revKey : oriKeyObj);
-                    Type.SetMemberValue(pOriObject, ConstValue.VALUE, revValue);
+                    pOriObject = this.Type.CreateInstance(new[] { revKey != null ? revKey : oriKeyObj, revValue });
+                    //Type.SetMemberValue(pOriObject, ConstValue.KEY, revKey != null ? revKey : oriKeyObj);
+                    //Type.SetMemberValue(pOriObject, ConstValue.VALUE, revValue);
                 }
                 else if (Attributes.Action == Action.Remove)
                     pOriObject = null;

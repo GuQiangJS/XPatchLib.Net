@@ -104,6 +104,9 @@ namespace XPatchLib
                         if (!(created && TypeExtendContainer.GetTypeExtend(memberType, null, Type).CreateInstance().Equals(memberObj)))
                             Type.SetMemberValue(pOriObject, member.Name, memberObj);
                     }
+                    if (string.Equals(pReader.Name, member.Name))
+                        pReader.Read();
+                    continue;
                 }
 
                 //如果不是当前正在读取的节点的结束标记，就一直往下读

@@ -734,14 +734,14 @@ namespace XPatchLib.UnitTest.ForXml
                             using (MemoryStream stream = new MemoryStream())
                             {
                                 var settings = new XmlWriterSettings();
-                                settings.Encoding = Encoding.UTF8;
+                                settings.Encoding = new UTF8Encoding(false);
                                 settings.OmitXmlDeclaration = false;
                                 using (var writer = TestHelper.CreateWriter(stream, settings))
                                 {
                                     serializer.Divide(writer, null, BookClass.GetSampleInstance());
 
                                     stream.Position = 0;
-                                    using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                                    using (StreamReader stremReader = new StreamReader(stream, new UTF8Encoding(false)))
                                     {
                                         changedContext = stremReader.ReadToEnd();
                                     }

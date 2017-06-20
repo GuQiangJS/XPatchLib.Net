@@ -139,7 +139,7 @@ namespace XPatchLib
                     {
                         stream = new MemoryStream();
                         var settings = new XmlWriterSettings();
-                        settings.Encoding = Encoding.UTF8;
+                        settings.Encoding = new UTF8Encoding(false);
                         settings.OmitXmlDeclaration = false;
                         using (var xmlWriter = XmlWriter.Create(stream, settings))
                         {
@@ -154,9 +154,11 @@ namespace XPatchLib
                         stream.Position = 0;
 #if (NET_35 || NETSTANDARD)
                         XElement ele = XElement.Load(new StreamReader(stream));
+                        System.Diagnostics.Debug.WriteLine(ele.ToString());
 #else
                         XmlDocument xDoc = new XmlDocument();
                         xDoc.Load(stream);
+                        System.Diagnostics.Debug.WriteLine(xDoc.InnerXml);
                         xDoc = null;
 #endif
 #endif
