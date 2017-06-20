@@ -8,7 +8,7 @@
     <TargetFramework Condition="'$(LibraryFrameworks)'==''">net40</TargetFramework>
     <TargetFramework>netstandard1.3</TargetFramework>
     -->
-    <Description>Patch Serialization Library for the .Net Framework</Description>
+    <Description>Patch Serialization Library for the .Net</Description>
     <Company />
     <Authors>Qiang Gu</Authors>
     <Version>3.0.0.1</Version>
@@ -16,6 +16,10 @@
     <PackageProjectUrl>https://github.com/GuQiangJS/XPatchLib.Net</PackageProjectUrl>
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <Copyright>Copyright © 2013-2017 - GuQiang</Copyright>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <PackageTags>Serialization Patch XmlSerialization</PackageTags>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\XPatchLib.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net20'">
     <AssemblyTitle>XPatchLib 2.0</AssemblyTitle>
