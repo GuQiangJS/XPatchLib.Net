@@ -124,9 +124,13 @@ using (var fs = new FileStream(filename, FileMode.Open))
 
 [在线帮助](https://guqiangjs.github.io/XPatchLib.Net.Doc/)
 
+## 相关链接
+
+* [XPatchLib.Net.Localization](https://github.com/GuQiangJS/XPatchLib.Net.Localization)
+
 ## 后续计划
 
-* 部分对象类型尚未支持。例如：`DateTimeOffset` ， `BigInteger`
+* 部分对象类型尚未支持。例如：`DateTimeOffset` ， `BigInteger` 等。
 
 * 支持除 `XML` 外的其他格式输出。
 
