@@ -14,11 +14,13 @@ SET BuildConfig=%1
 SET SRC=%~dp0..\src
 SET RunCodeAnalysis=%2
 SET ConsoleLoggerParameters=%3
-SET LogFilePath=%~dp0BuildLogs
+SET LogFilePath="%~dp0BuildLogs"
 
 IF '%BuildConfig%'=='' SET BuildConfig=Release
 IF '%RunCodeAnalysis%'=='' SET RunCodeAnalysis=false
 IF '%ConsoleLoggerParameters%'=='' SET ConsoleLoggerParameters=ErrorOnly;Summary
+
+IF NOT EXIST "%LogFilePath%" MD %LogFilePath%
 
 SET LogFile=%LogFilePath%\XPatchLib_%BuildConfig%.log
 
