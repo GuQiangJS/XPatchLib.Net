@@ -411,7 +411,7 @@ namespace XPatchLib.UnitTest.ForXml
             }
             catch (FormatException ex)
             {
-                Assert.AreEqual(string.Format("{0} 不能被转换成 Color 对象。", "#xxxxxx"), ex.Message);
+                Assert.AreEqual(string.Format("' {0} ' 不能被转换成 System.Drawing.Color 对象。", "#xxxxxx"), ex.Message);
             }
             catch (Exception)
             {

@@ -20,7 +20,7 @@ namespace XPatchLib.UnitTest
             catch (ArgumentException ex)
             {
                 Assert.AreEqual(
-                    string.Format(CultureInfo.InvariantCulture, "类型 {0} 不是枚举类型。\r\n参数名: pType",
+                    string.Format(CultureInfo.InvariantCulture, "类型 ' {0} ' 不是枚举类型。\r\n参数名: pType",
                         typeof(AuthorClass).FullName), ex.Message);
                 Assert.AreEqual("pType", ex.ParamName);
             }
