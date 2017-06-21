@@ -10,7 +10,6 @@ using System.Reflection;
 #if (NET || NETSTANDARD_1_3_UP)
 using System.Xml.Serialization;
 #endif
-using XPatchLib.Properties;
 
 namespace XPatchLib
 {
@@ -41,7 +40,7 @@ namespace XPatchLib
 
             if (pMemberInfo.MemberType() != MemberTypes.Property && pMemberInfo.MemberType() != MemberTypes.Field)
                 throw new ArgumentException(
-                    string.Format(CultureInfo.InvariantCulture, Resources.Exp_String_MemberType, pMemberInfo,
+                    string.Format(CultureInfo.InvariantCulture, ResourceHelper.GetResourceString(LocalizationRes.Exp_String_MemberType), pMemberInfo,
                         pMemberInfo.MemberType())
                     , "pMemberInfo");
 

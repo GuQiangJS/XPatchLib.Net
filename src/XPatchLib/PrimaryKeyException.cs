@@ -3,8 +3,6 @@
 
 using System;
 using System.Globalization;
-using XPatchLib.Properties;
-
 #if (NET || NETSTANDARD_2_0_UP)
 using System.Runtime.Serialization;
 using System.Security.Permissions;
@@ -116,7 +114,7 @@ namespace XPatchLib
         {
             get
             {
-                return string.Format(CultureInfo.CurrentCulture, Resources.Exp_String_PrimaryKey, ErrorType.FullName, PrimaryKeyName);
+                return string.Format(CultureInfo.CurrentCulture, ResourceHelper.GetResourceString(LocalizationRes.Exp_String_PrimaryKey), ErrorType.FullName, PrimaryKeyName);
             }
         }
 

@@ -5,7 +5,6 @@
 using System;
 using System.Drawing;
 using System.Globalization;
-using XPatchLib.Properties;
 
 namespace XPatchLib
 {
@@ -32,7 +31,7 @@ namespace XPatchLib
         {
             Color result;
             if (!TryTransFromString(pColorString, out result))
-                throw new FormatException(string.Format(CultureInfo.InvariantCulture, Resources.Exp_String_IsNotColor,
+                throw new FormatException(string.Format(CultureInfo.InvariantCulture, ResourceHelper.GetResourceString(LocalizationRes.Exp_String_IsNotColor),
                     pColorString));
             return result;
         }

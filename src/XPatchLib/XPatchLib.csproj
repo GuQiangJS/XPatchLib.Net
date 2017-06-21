@@ -11,7 +11,7 @@
     <Description>Patch Serialization Library for the .Net</Description>
     <Company />
     <Authors>Qiang Gu</Authors>
-    <Version>3.0.0.1</Version>
+    <Version>3.0.0.10</Version>
     <PackageLicenseUrl>https://github.com/GuQiangJS/XPatchLib.Net/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/GuQiangJS/XPatchLib.Net</PackageProjectUrl>
     <NeutralLanguage>zh-CN</NeutralLanguage>
@@ -65,5 +65,4 @@
     <AssemblyTitle>XPatchLib Standard 2.0</AssemblyTitle>
     <DefineConstants>NETSTANDARD;NETSTANDARD_2_0;NETSTANDARD_1_0_UP;NETSTANDARD_1_1_UP;NETSTANDARD_1_2_UP;NETSTANDARD_1_3_UP;NETSTANDARD_1_4_UP;NETSTANDARD_1_5_UP;NETSTANDARD_1_6_UP;NETSTANDARD_2_0_UP</DefineConstants>
   </PropertyGroup>
-
 </Project>

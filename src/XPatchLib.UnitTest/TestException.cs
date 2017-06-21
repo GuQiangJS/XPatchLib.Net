@@ -25,7 +25,7 @@ namespace XPatchLib.UnitTest
             {
                 Assert.AreEqual(ex.ErrorType, author.GetType());
                 Assert.AreEqual(ex.AttributeName, attrName);
-                string msg = string.Format(CultureInfo.CurrentCulture, Properties.Resources.Exp_String_AttributeMiss, author.GetType(),
+                string msg = string.Format(CultureInfo.CurrentCulture, ResourceHelper.GetResourceString(LocalizationRes.Exp_String_AttributeMiss), author.GetType(),
                     attrName);
                 Assert.AreEqual(ex.Message, msg);
                 errorCatched = true;
@@ -61,7 +61,7 @@ namespace XPatchLib.UnitTest
             {
                 Assert.AreEqual(ex.ErrorType, type);
                 Assert.AreEqual(ex.PrimaryKeyName, "Author");
-                string msg = string.Format(CultureInfo.CurrentCulture, Properties.Resources.Exp_String_PrimaryKey,
+                string msg = string.Format(CultureInfo.CurrentCulture, ResourceHelper.GetResourceString(LocalizationRes.Exp_String_PrimaryKey),
                     type.FullName,
                     "Author");
                 Assert.AreEqual(ex.Message, msg);
