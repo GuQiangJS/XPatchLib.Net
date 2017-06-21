@@ -74,6 +74,33 @@
       <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\PrimaryKeyException.cs" />
     </example>
     <example class="Serializer" method="none">
+      <para>简单对象增量序列化/反序列化示例</para>
+      <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\SimpleExample.cs" />
+      <para>
+        序列化增量内容如下所示：
+      </para>
+      <code language="xml" title="context">
+        <![CDATA[
+<Book>
+  <Author>
+    <FirstName>丹</FirstName>
+    <LastName>布朗</LastName>
+  </Author>
+  <Name>达芬奇密码</Name>
+</Book>
+]]>
+      </code>
+      <para>
+        输出内容如下：
+      </para>
+      <code language="none">
+        <![CDATA[
+ISBN:0-385-50420-9
+Name:达芬奇密码
+Author:丹 布朗
+]]>
+      </code>
+      <para>较复杂的对象增量序列化示例</para>
       <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\ComplexObjCombineAndDivide.cs" />
       <para>
         序列化增量内容的 输出如下所示：
