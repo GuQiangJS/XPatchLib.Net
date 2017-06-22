@@ -14,25 +14,6 @@ namespace XPatchLib
 {
     internal static class TypeExtension
     {
-        public static TypeCode GetTypeCode(this Type t)
-        {
-#if (NETSTANDARD_1_0 || NETSTANDARD_1_1 || NETSTANDARD_1_2 || NETSTANDARD_1_3 || NETSTANDARD_1_4)
-            TypeCode typeCode;
-            if (TypeCodeMap.TryGetValue(t, out typeCode))
-            {
-                return typeCode;
-            }
-
-            if (t.IsEnum())
-            {
-                return TypeCode.Int32;
-            }
-
-            return TypeCode.Object;
-#else
-            return Type.GetTypeCode(t);
-#endif
-        }
 
 #if (NETSTANDARD_1_0 || NETSTANDARD_1_1 || NETSTANDARD_1_2 || NETSTANDARD_1_3 || NETSTANDARD_1_4)
         public static MethodInfo GetGetMethod(this PropertyInfo propertyInfo)
@@ -65,27 +46,6 @@ namespace XPatchLib
 
             return null;
         }
-
-        private static readonly Dictionary<Type, TypeCode> TypeCodeMap =
-            new Dictionary<Type, TypeCode>
-            {
-                { typeof(char), TypeCode.Char },
-                { typeof(bool), TypeCode.Boolean },
-                { typeof(sbyte), TypeCode.SByte },
-                { typeof(short), TypeCode.Int16 },
-                { typeof(ushort), TypeCode.UInt16 },
-                { typeof(int), TypeCode.Int32 },
-                { typeof(byte), TypeCode.Byte },
-                { typeof(uint), TypeCode.UInt32 },
-                { typeof(long), TypeCode.Int64 },
-                { typeof(ulong), TypeCode.UInt64 },
-                { typeof(float), TypeCode.Single },
-                { typeof(double), TypeCode.Double },
-                { typeof(DateTime), TypeCode.DateTime },
-                { typeof(decimal), TypeCode.Decimal },
-                { typeof(string), TypeCode.String },
-            };
-
 #endif
 
         internal static bool IsPublic(this PropertyInfo property)

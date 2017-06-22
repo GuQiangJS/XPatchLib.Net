@@ -17,7 +17,7 @@ namespace XPatchLib
 {
     internal class ReflectionUtils
     {
-#region Internal Methods
+        #region Internal Methods
 
         internal static Object GetDefaultValue(Type pType)
         {

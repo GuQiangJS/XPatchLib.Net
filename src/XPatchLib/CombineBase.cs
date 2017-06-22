@@ -97,7 +97,7 @@ namespace XPatchLib
         {
             MemberWrapper member = FindMember(pKeyName);
             if (member != null)
-                return CombineBasic.CombineAction(member.Type.GetTypeCode(), member.Type == typeof(Guid),
+                return CombineBasic.CombineAction(ConvertHelper.GetTypeCode(member.Type), member.Type == typeof(Guid),
                     pReader.Setting.Mode, pKeyValue);
             return pKeyValue;
         }

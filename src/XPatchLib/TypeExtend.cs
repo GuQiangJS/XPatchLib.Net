@@ -51,7 +51,7 @@ namespace XPatchLib
             FieldsToBeSerialized = ReflectionUtils.GetFieldsToBeSerialized(pType, pIgnoreAttributeType);
             DefaultValue = ReflectionUtils.GetDefaultValue(pType);
             IsArray = ReflectionUtils.IsArray(pType);
-            TypeCode = pType.GetTypeCode();
+            TypeCode = ConvertHelper.GetTypeCode(pType);
             IsGenericType = OriType.IsGenericType();
             IsGuid = pType == typeof(Guid);
             TypeFriendlyName = ReflectionUtils.GetTypeFriendlyName(pType);
