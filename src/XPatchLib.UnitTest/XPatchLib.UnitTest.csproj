@@ -8,6 +8,7 @@
     <!-- Workaround for https://github.com/nunit/nunit3-vs-adapter/issues/296 -->
     <DebugType Condition="'$(TargetFramework)' != '' AND '$(TargetFramework)' != 'netcoreapp1.1'">Full</DebugType>
     <ProjectGuid>1deb0516-d274-4afa-9278-3810a500c99f</ProjectGuid>
+    <NoWarn>1701;1702;1705;0659</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
