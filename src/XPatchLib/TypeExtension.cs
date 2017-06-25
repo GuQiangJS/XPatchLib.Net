@@ -144,7 +144,7 @@ namespace XPatchLib
             }
             else
             {
-                throw new NotImplementedException();
+                return MemberTypes.All;
             }
 #endif
         }
@@ -248,6 +248,43 @@ namespace XPatchLib
             }
 
             throw new Exception("Unexpected member type.");
+        }
+
+        private static bool TestAccessibility(FieldInfo member, BindingFlags bindingFlags)
+        {
+            bool visibility = (member.IsPublic && bindingFlags.HasFlag(BindingFlags.Public)) ||
+                              (!member.IsPublic && bindingFlags.HasFlag(BindingFlags.NonPublic));
+
+            bool instance = (member.IsStatic && bindingFlags.HasFlag(BindingFlags.Static)) ||
+                            (!member.IsStatic && bindingFlags.HasFlag(BindingFlags.Instance));
+
+            return visibility && instance;
+        }
+
+        private static bool TestAccessibility(PropertyInfo member, BindingFlags bindingFlags)
+        {
+            if (member.GetMethod != null && TestAccessibility(member.GetMethod, bindingFlags))
+            {
+                return true;
+            }
+
+            if (member.SetMethod != null && TestAccessibility(member.SetMethod, bindingFlags))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool TestAccessibility(MethodBase member, BindingFlags bindingFlags)
+        {
+            bool visibility = (member.IsPublic && bindingFlags.HasFlag(BindingFlags.Public)) ||
+                              (!member.IsPublic && bindingFlags.HasFlag(BindingFlags.NonPublic));
+
+            bool instance = (member.IsStatic && bindingFlags.HasFlag(BindingFlags.Static)) ||
+                            (!member.IsStatic && bindingFlags.HasFlag(BindingFlags.Instance));
+
+            return visibility && instance;
         }
 
         internal static MethodInfo GetMethod(this Type type, string name)
