@@ -8,7 +8,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+#if NUNIT
 using NUnit.Framework;
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest.ForXml
 {
@@ -27,6 +33,77 @@ namespace XPatchLib.UnitTest.ForXml
     <City>Shanghai</City>
   </ShippingAddress>
 </OrderInfo>";
+
+        public class AddressInfo
+        {
+            public string Address { get; set; }
+
+            public string City { get; set; }
+
+            public string Country { get; set; }
+
+            public string Name { get; set; }
+
+            public string Phone { get; set; }
+
+            public string Zip { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                var addr = obj as AddressInfo;
+                if (addr == null)
+                    return false;
+                return string.Equals(Country, addr.Country)
+                       && string.Equals(Name, addr.Name)
+                       && string.Equals(Phone, addr.Phone)
+                       && string.Equals(Zip, addr.Zip)
+                       && string.Equals(City, addr.City)
+                       && string.Equals(Address, addr.Address);
+            }
+
+            public override int GetHashCode()
+            {
+                var result = 0;
+                if (Country != null)
+                    result ^= Country.GetHashCode();
+                if (Name != null)
+                    result ^= Name.GetHashCode();
+                if (Phone != null)
+                    result ^= Phone.GetHashCode();
+                if (Zip != null)
+                    result ^= Zip.GetHashCode();
+                if (City != null)
+                    result ^= City.GetHashCode();
+                if (Address != null)
+                    result ^= Address.GetHashCode();
+                return result;
+            }
+        }
+
+        public class OrderInfo
+        {
+            public DateTime Date { get; set; }
+
+            public int OrderId { get; set; }
+
+            public decimal OrderTotal { get; set; }
+
+            public AddressInfo ShippingAddress { get; set; }
+
+            public string UserId { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                var order = obj as OrderInfo;
+                if (order == null)
+                    return false;
+                return Equals(OrderId, order.OrderId)
+                       && decimal.Equals(OrderTotal, order.OrderTotal)
+                       && Equals(ShippingAddress, order.ShippingAddress)
+                       && string.Equals(UserId, order.UserId)
+                       && DateTime.Equals(Date, order.Date);
+            }
+        }
 
         [Test]
         public void ExampleCombine()
@@ -139,77 +216,6 @@ namespace XPatchLib.UnitTest.ForXml
             Trace.WriteLine(context);
 #endif
         }
-
-        public class AddressInfo
-        {
-            public string Address { get; set; }
-
-            public string City { get; set; }
-
-            public string Country { get; set; }
-
-            public string Name { get; set; }
-
-            public string Phone { get; set; }
-
-            public string Zip { get; set; }
-
-            public override bool Equals(object obj)
-            {
-                var addr = obj as AddressInfo;
-                if (addr == null)
-                    return false;
-                return string.Equals(Country, addr.Country)
-                       && string.Equals(Name, addr.Name)
-                       && string.Equals(Phone, addr.Phone)
-                       && string.Equals(Zip, addr.Zip)
-                       && string.Equals(City, addr.City)
-                       && string.Equals(Address, addr.Address);
-            }
-
-            public override int GetHashCode()
-            {
-                var result = 0;
-                if (Country != null)
-                    result ^= Country.GetHashCode();
-                if (Name != null)
-                    result ^= Name.GetHashCode();
-                if (Phone != null)
-                    result ^= Phone.GetHashCode();
-                if (Zip != null)
-                    result ^= Zip.GetHashCode();
-                if (City != null)
-                    result ^= City.GetHashCode();
-                if (Address != null)
-                    result ^= Address.GetHashCode();
-                return result;
-            }
-        }
-
-        public class OrderInfo
-        {
-            public DateTime Date { get; set; }
-
-            public int OrderId { get; set; }
-
-            public decimal OrderTotal { get; set; }
-
-            public AddressInfo ShippingAddress { get; set; }
-
-            public string UserId { get; set; }
-
-            public override bool Equals(object obj)
-            {
-                var order = obj as OrderInfo;
-                if (order == null)
-                    return false;
-                return Equals(OrderId, order.OrderId)
-                       && decimal.Equals(OrderTotal, order.OrderTotal)
-                       && Equals(ShippingAddress, order.ShippingAddress)
-                       && string.Equals(UserId, order.UserId)
-                       && DateTime.Equals(Date, order.Date);
-            }
-        }
     }
 
     /// <summary>
@@ -233,6 +239,69 @@ namespace XPatchLib.UnitTest.ForXml
     </OrderInfo>
   </Orders>
 </OrderList>";
+
+        [PrimaryKey("OrderId")]
+        public class OrderInfo
+        {
+            public DateTime Date { get; set; }
+
+            public int OrderId { get; set; }
+
+            public decimal OrderTotal { get; set; }
+
+            public ExampleComplexClass.AddressInfo ShippingAddress { get; set; }
+
+            public string UserId { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                var order = obj as OrderInfo;
+                if (order == null)
+                    return false;
+                return Equals(OrderId, order.OrderId)
+                       && decimal.Equals(OrderTotal, order.OrderTotal)
+                       && Equals(ShippingAddress, order.ShippingAddress)
+                       && string.Equals(UserId, order.UserId)
+                       && DateTime.Equals(Date, order.Date);
+            }
+
+            public override int GetHashCode()
+            {
+                var result = 0;
+                result ^= OrderId.GetHashCode();
+                result ^= OrderTotal.GetHashCode();
+                if (ShippingAddress != null)
+                    result ^= ShippingAddress.GetHashCode();
+                if (UserId != null)
+                    result ^= UserId.GetHashCode();
+                if (Date != null)
+                    result ^= Date.GetHashCode();
+                return result;
+            }
+        }
+
+        public class OrderList
+        {
+            public List<OrderInfo> Orders { get; set; }
+
+            public string UserId { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                var list = obj as OrderList;
+                if (list == null)
+                    return false;
+                Debug.Assert(Orders != null, "Orders != null");
+                return string.Equals(UserId, list.UserId)
+                       && (
+                           Orders == null && list.Orders == null
+                           ||
+                           Orders.Count.Equals(list.Orders.Count)
+                           && Orders.Except(list.Orders).Count() == 0
+                           && list.Orders.Except(Orders).Count() == 0
+                       );
+            }
+        }
 
         [Test]
         public void ExampleCombine()
@@ -393,69 +462,6 @@ namespace XPatchLib.UnitTest.ForXml
             Trace.WriteLine(context);
 #endif
         }
-
-        [PrimaryKey("OrderId")]
-        public class OrderInfo
-        {
-            public DateTime Date { get; set; }
-
-            public int OrderId { get; set; }
-
-            public decimal OrderTotal { get; set; }
-
-            public ExampleComplexClass.AddressInfo ShippingAddress { get; set; }
-
-            public string UserId { get; set; }
-
-            public override bool Equals(object obj)
-            {
-                var order = obj as OrderInfo;
-                if (order == null)
-                    return false;
-                return Equals(OrderId, order.OrderId)
-                       && decimal.Equals(OrderTotal, order.OrderTotal)
-                       && Equals(ShippingAddress, order.ShippingAddress)
-                       && string.Equals(UserId, order.UserId)
-                       && DateTime.Equals(Date, order.Date);
-            }
-
-            public override int GetHashCode()
-            {
-                var result = 0;
-                result ^= OrderId.GetHashCode();
-                result ^= OrderTotal.GetHashCode();
-                if (ShippingAddress != null)
-                    result ^= ShippingAddress.GetHashCode();
-                if (UserId != null)
-                    result ^= UserId.GetHashCode();
-                if (Date != null)
-                    result ^= Date.GetHashCode();
-                return result;
-            }
-        }
-
-        public class OrderList
-        {
-            public List<OrderInfo> Orders { get; set; }
-
-            public string UserId { get; set; }
-
-            public override bool Equals(object obj)
-            {
-                var list = obj as OrderList;
-                if (list == null)
-                    return false;
-                Debug.Assert(Orders != null, "Orders != null");
-                return string.Equals(UserId, list.UserId)
-                       && (
-                           Orders == null && list.Orders == null
-                           ||
-                           Orders.Count.Equals(list.Orders.Count)
-                           && Orders.Except(list.Orders).Count() == 0
-                           && list.Orders.Except(Orders).Count() == 0
-                       );
-            }
-        }
     }
 
     [TestFixture]
@@ -480,6 +486,19 @@ namespace XPatchLib.UnitTest.ForXml
 <CreditCard>
   <CardExpiration>2017-05-01T20:00:00Z</CardExpiration>
 </CreditCard>";
+
+        public class CreditCard
+        {
+            public DateTime CardExpiration { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                var card = obj as CreditCard;
+                if (card == null)
+                    return false;
+                return Equals(CardExpiration, card.CardExpiration);
+            }
+        }
 
         [Test]
         public void ExampleCombine()
@@ -653,19 +672,6 @@ namespace XPatchLib.UnitTest.ForXml
             Trace.WriteLine(context);
 #endif
         }
-
-        public class CreditCard
-        {
-            public DateTime CardExpiration { get; set; }
-
-            public override bool Equals(object obj)
-            {
-                var card = obj as CreditCard;
-                if (card == null)
-                    return false;
-                return Equals(CardExpiration, card.CardExpiration);
-            }
-        }
     }
 
     /// <summary>
@@ -679,6 +685,22 @@ namespace XPatchLib.UnitTest.ForXml
   <CardExpiration>05/17</CardExpiration>
   <CardNumber>9876543210</CardNumber>
 </CreditCard>";
+
+        public class CreditCard
+        {
+            public string CardExpiration { get; set; }
+
+            public string CardNumber { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                var card = obj as CreditCard;
+                if (card == null)
+                    return false;
+                return string.Equals(CardNumber, card.CardNumber)
+                       && string.Equals(CardExpiration, card.CardExpiration);
+            }
+        }
 
         [Test]
         public void ExampleCombine()
@@ -744,22 +766,6 @@ namespace XPatchLib.UnitTest.ForXml
             Trace.WriteLine(context);
 #endif
         }
-
-        public class CreditCard
-        {
-            public string CardExpiration { get; set; }
-
-            public string CardNumber { get; set; }
-
-            public override bool Equals(object obj)
-            {
-                var card = obj as CreditCard;
-                if (card == null)
-                    return false;
-                return string.Equals(CardNumber, card.CardNumber)
-                       && string.Equals(CardExpiration, card.CardExpiration);
-            }
-        }
     }
 
     /// <summary>
@@ -776,6 +782,31 @@ namespace XPatchLib.UnitTest.ForXml
   </Items>
   <Name>Company B</Name>
 </Warehouse>";
+
+        public class Warehouse
+        {
+            public string Address { get; set; }
+
+            public string[] Items { get; set; }
+
+            public string Name { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                var w = obj as Warehouse;
+                if (w == null)
+                    return false;
+                return string.Equals(Name, w.Name)
+                       && string.Equals(Address, w.Address)
+                       && (
+                           Items == null && w.Items == null
+                           ||
+                           Items.Length.Equals(w.Items.Length)
+                           && Items.Except(w.Items).Count() == 0
+                           && w.Items.Except(Items).Count() == 0
+                       );
+            }
+        }
 
         [Test]
         public void ExampleCombine()
@@ -887,31 +918,6 @@ namespace XPatchLib.UnitTest.ForXml
             Trace.WriteLine(context);
 #endif
         }
-
-        public class Warehouse
-        {
-            public string Address { get; set; }
-
-            public string[] Items { get; set; }
-
-            public string Name { get; set; }
-
-            public override bool Equals(object obj)
-            {
-                var w = obj as Warehouse;
-                if (w == null)
-                    return false;
-                return string.Equals(Name, w.Name)
-                       && string.Equals(Address, w.Address)
-                       && (
-                           Items == null && w.Items == null
-                           ||
-                           Items.Length.Equals(w.Items.Length)
-                           && Items.Except(w.Items).Count() == 0
-                           && w.Items.Except(Items).Count() == 0
-                       );
-            }
-        }
     }
 
     /// <summary>
@@ -932,6 +938,25 @@ namespace XPatchLib.UnitTest.ForXml
   <CardExpiration>05/17</CardExpiration>
   <CardNumber>0123456789</CardNumber>
 </CreditCard>";
+
+        public class CreditCard
+        {
+            public int CardCode { get; set; }
+
+            public string CardExpiration { get; set; }
+
+            public string CardNumber { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                var card = obj as CreditCard;
+                if (card == null)
+                    return false;
+                return string.Equals(CardNumber, card.CardNumber)
+                       && string.Equals(CardExpiration, card.CardExpiration)
+                       && Equals(CardCode, card.CardCode);
+            }
+        }
 
         [Test]
         public void ExampleCombine()
@@ -1030,25 +1055,6 @@ namespace XPatchLib.UnitTest.ForXml
             Trace.WriteLine(context);
 #endif
         }
-
-        public class CreditCard
-        {
-            public int CardCode { get; set; }
-
-            public string CardExpiration { get; set; }
-
-            public string CardNumber { get; set; }
-
-            public override bool Equals(object obj)
-            {
-                var card = obj as CreditCard;
-                if (card == null)
-                    return false;
-                return string.Equals(CardNumber, card.CardNumber)
-                       && string.Equals(CardExpiration, card.CardExpiration)
-                       && Equals(CardCode, card.CardCode);
-            }
-        }
     }
 
     [TestFixture]
@@ -1060,6 +1066,21 @@ namespace XPatchLib.UnitTest.ForXml
     <ObjectName>My String</ObjectName>
   </MyObjectProperty>
 </MyClass>";
+
+        public class MyClass
+        {
+            public MyObject MyObjectProperty;
+
+            public MyClass()
+            {
+                MyObjectProperty = new MyObject();
+            }
+        }
+
+        public class MyObject
+        {
+            public string ObjectName;
+        }
 
         [Test]
         public void ExampleClassDef()
@@ -1083,21 +1104,6 @@ namespace XPatchLib.UnitTest.ForXml
             }
 
             Assert.AreEqual(Context, changedContext);
-        }
-
-        public class MyClass
-        {
-            public MyObject MyObjectProperty;
-
-            public MyClass()
-            {
-                MyObjectProperty = new MyObject();
-            }
-        }
-
-        public class MyObject
-        {
-            public string ObjectName;
         }
     }
 }

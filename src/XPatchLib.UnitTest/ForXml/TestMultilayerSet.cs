@@ -6,71 +6,20 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
+#if NUNIT
 using NUnit.Framework;
+
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
     public class TestMultilayerSet
     {
-        [Test]
-        [Description("多层次的集合增加内容拆分及合并测试")]
-        public void TestAppendDividendAndCombineMultilayerSet()
-        {
-            var r1 = CreateRoot(10, 3);
-            var r2 = CreateRoot(10, 4);
-
-            var serializer = new Serializer(typeof(Root));
-
-            string context;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, r1, r2);
-                    context = UnitTest.TestHelper.StreamToString(stream);
-                    Debug.WriteLine(context);
-                }
-            }
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    var r3 = serializer.Combine(reader, r1) as Root;
-                    Assert.AreEqual(r2, r3);
-                }
-            }
-        }
-
-        [Test]
-        [Description("多层次的集合删除内容拆分及合并测试")]
-        public void TestRemoveDividendAndCombineMultilayerSet()
-        {
-            var r1 = CreateRoot(10, 4);
-            var r2 = CreateRoot(10, 3);
-
-            var serializer = new Serializer(typeof(Root));
-
-            string context;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, r1, r2);
-                    context = UnitTest.TestHelper.StreamToString(stream);
-                    Debug.WriteLine(context);
-                }
-            }
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    var r3 = serializer.Combine(reader, r1) as Root;
-                    Assert.AreEqual(r2, r3);
-                }
-            }
-        }
-
         private Root CreateRoot(int pFirstNum, int pSecondNum)
         {
             var result = new Root();
@@ -139,6 +88,64 @@ namespace XPatchLib.UnitTest.ForXml
 
         public class SecondChild : KeyValueClass
         {
+        }
+
+        [Test]
+        [Description("多层次的集合增加内容拆分及合并测试")]
+        public void TestAppendDividendAndCombineMultilayerSet()
+        {
+            var r1 = CreateRoot(10, 3);
+            var r2 = CreateRoot(10, 4);
+
+            var serializer = new Serializer(typeof(Root));
+
+            string context;
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
+                {
+                    serializer.Divide(writer, r1, r2);
+                    context = UnitTest.TestHelper.StreamToString(stream);
+                    Debug.WriteLine(context);
+                }
+            }
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
+            {
+                using (var reader = new XmlTextReader(xmlReader))
+                {
+                    var r3 = serializer.Combine(reader, r1) as Root;
+                    Assert.AreEqual(r2, r3);
+                }
+            }
+        }
+
+        [Test]
+        [Description("多层次的集合删除内容拆分及合并测试")]
+        public void TestRemoveDividendAndCombineMultilayerSet()
+        {
+            var r1 = CreateRoot(10, 4);
+            var r2 = CreateRoot(10, 3);
+
+            var serializer = new Serializer(typeof(Root));
+
+            string context;
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
+                {
+                    serializer.Divide(writer, r1, r2);
+                    context = UnitTest.TestHelper.StreamToString(stream);
+                    Debug.WriteLine(context);
+                }
+            }
+            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
+            {
+                using (var reader = new XmlTextReader(xmlReader))
+                {
+                    var r3 = serializer.Combine(reader, r1) as Root;
+                    Assert.AreEqual(r2, r3);
+                }
+            }
         }
     }
 }

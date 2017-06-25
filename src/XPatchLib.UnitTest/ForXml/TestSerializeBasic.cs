@@ -3,25 +3,28 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Xml;
+using XPatchLib.UnitTest.TestClass;
 #if (NET || NETSTANDARD_2_0_UP)
 using System.Drawing;
 #endif
-using System.IO;
-using System.Text;
-using System.Xml;
 #if (NET_35_UP || NETSTANDARD)
 using System.Xml.Linq;
 #endif
+#if NUNIT
 using NUnit.Framework;
-using XPatchLib.UnitTest.TestClass;
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
     public class TestSerializeBasic
     {
-        #region Public Methods
-
         [Test]
         public void BasicSerializeCtorTest()
         {
@@ -46,126 +49,62 @@ namespace XPatchLib.UnitTest.ForXml
 
             var oriObjs = new object[]
             {
-                false
-                , int.MinValue
-                , double.MinValue
-                , s1
-                , long.MinValue
-                , short.MinValue
-                , sbyte.MinValue
-                , byte.MinValue
-                , ushort.MinValue
-                , uint.MinValue
-                , ulong.MinValue
-                , float.MinValue
-                , decimal.MinValue
-                , DateTime.MinValue
-                , g1
-                , 'a'
+                false, int.MinValue, double.MinValue, s1, long.MinValue, short.MinValue, sbyte.MinValue, byte.MinValue,
+                ushort.MinValue, uint.MinValue, ulong.MinValue, float.MinValue, decimal.MinValue, DateTime.MinValue, g1,
+                'a'
             };
 
             var revObjs = new object[]
             {
-                true
-                , int.MaxValue
-                , double.MaxValue
-                , s2
-                , long.MaxValue
-                , short.MaxValue
-                , sbyte.MaxValue
-                , byte.MaxValue
-                , ushort.MaxValue
-                , uint.MaxValue
-                , ulong.MaxValue
-                , float.MaxValue
-                , decimal.MaxValue
-                , DateTime.MaxValue
-                , g2
-                , 'b'
+                true, int.MaxValue, double.MaxValue, s2, long.MaxValue, short.MaxValue, sbyte.MaxValue, byte.MaxValue,
+                ushort.MaxValue, uint.MaxValue, ulong.MaxValue, float.MaxValue, decimal.MaxValue, DateTime.MaxValue, g2,
+                'b'
             };
 
             var types = new[]
             {
-                typeof(bool)
-                , typeof(int)
-                , typeof(double)
-                , typeof(string)
-                , typeof(long)
-                , typeof(short)
-                , typeof(sbyte)
-                , typeof(byte)
-                , typeof(ushort)
-                , typeof(uint)
-                , typeof(ulong)
-                , typeof(float)
-                , typeof(decimal)
-                , typeof(DateTime)
-                , typeof(Guid)
-                , typeof(char)
+                typeof(bool), typeof(int), typeof(double), typeof(string), typeof(long), typeof(short), typeof(sbyte),
+                typeof(byte), typeof(ushort), typeof(uint), typeof(ulong), typeof(float), typeof(decimal),
+                typeof(DateTime), typeof(Guid), typeof(char)
             };
 
             var serializedResults = new[]
             {
-                "<Boolean>" + XmlConvert.ToString(true) + "</Boolean>"
-                , "<Int32>" + int.MaxValue + "</Int32>"
-                , "<Double>" + XmlConvert.ToString(double.MaxValue) + "</Double>"
-                , "<String>" + s2 + "</String>"
-                , "<Int64>" + long.MaxValue + "</Int64>"
-                , "<Int16>" + short.MaxValue + "</Int16>"
-                , "<SByte>" + sbyte.MaxValue + "</SByte>"
-                , "<Byte>" + byte.MaxValue + "</Byte>"
-                , "<UInt16>" + ushort.MaxValue + "</UInt16>"
-                , "<UInt32>" + uint.MaxValue + "</UInt32>"
-                , "<UInt64>" + ulong.MaxValue + "</UInt64>"
-                , "<Single>" + XmlConvert.ToString(float.MaxValue) + "</Single>"
-                , "<Decimal>" + XmlConvert.ToString(decimal.MaxValue) + "</Decimal>"
-                ,
+                "<Boolean>" + XmlConvert.ToString(true) + "</Boolean>", "<Int32>" + int.MaxValue + "</Int32>",
+                "<Double>" + XmlConvert.ToString(double.MaxValue) + "</Double>", "<String>" + s2 + "</String>",
+                "<Int64>" + long.MaxValue + "</Int64>", "<Int16>" + short.MaxValue + "</Int16>",
+                "<SByte>" + sbyte.MaxValue + "</SByte>", "<Byte>" + byte.MaxValue + "</Byte>",
+                "<UInt16>" + ushort.MaxValue + "</UInt16>", "<UInt32>" + uint.MaxValue + "</UInt32>",
+                "<UInt64>" + ulong.MaxValue + "</UInt64>",
+                "<Single>" + XmlConvert.ToString(float.MaxValue) + "</Single>",
+                "<Decimal>" + XmlConvert.ToString(decimal.MaxValue) + "</Decimal>",
                 "<DateTime>" + XmlConvert.ToString(DateTime.MaxValue, XmlDateTimeSerializationMode.RoundtripKind) +
-                "</DateTime>"
-                , "<Guid>" + XmlConvert.ToString(g2) + "</Guid>"
-                , "<Char>" + XmlConvert.ToString((ushort) 'b') + "</Char>"
+                "</DateTime>",
+                "<Guid>" + XmlConvert.ToString(g2) + "</Guid>", "<Char>" + XmlConvert.ToString((ushort) 'b') + "</Char>"
             };
             var serializedSetNullResults = new[]
             {
-                @"<Boolean Action=""SetNull"" />"
-                , @"<Int32 Action=""SetNull"" />"
-                , @"<Double Action=""SetNull"" />"
-                , @"<String Action=""SetNull"" />"
-                , @"<Int64 Action=""SetNull"" />"
-                , @"<Int16 Action=""SetNull"" />"
-                , @"<SByte Action=""SetNull"" />"
-                , @"<Byte Action=""SetNull"" />"
-                , @"<UInt16 Action=""SetNull"" />"
-                , @"<UInt32 Action=""SetNull"" />"
-                , @"<UInt64 Action=""SetNull"" />"
-                , @"<Single Action=""SetNull"" />"
-                , @"<Decimal Action=""SetNull"" />"
-                , @"<DateTime Action=""SetNull"" />"
-                , @"<Guid Action=""SetNull"" />"
-                , @"<Char Action=""SetNull"" />"
+                @"<Boolean Action=""SetNull"" />", @"<Int32 Action=""SetNull"" />", @"<Double Action=""SetNull"" />",
+                @"<String Action=""SetNull"" />", @"<Int64 Action=""SetNull"" />", @"<Int16 Action=""SetNull"" />",
+                @"<SByte Action=""SetNull"" />", @"<Byte Action=""SetNull"" />", @"<UInt16 Action=""SetNull"" />",
+                @"<UInt32 Action=""SetNull"" />", @"<UInt64 Action=""SetNull"" />", @"<Single Action=""SetNull"" />",
+                @"<Decimal Action=""SetNull"" />", @"<DateTime Action=""SetNull"" />", @"<Guid Action=""SetNull"" />",
+                @"<Char Action=""SetNull"" />"
             };
             //值类型默认值
             //https://msdn.microsoft.com/zh-cn/library/83fhsxwc.aspx
             var serializedDefaultValues = new[]
             {
-                "<Boolean>" + XmlConvert.ToString(false) + "</Boolean>"
-                , "<Int32>" + 0 + "</Int32>"
-                , "<Double>" + XmlConvert.ToString(0D) + "</Double>"
-                , @"<String Action=""SetNull"" />"
-                , "<Int64>" + 0 + "</Int64>"
-                , "<Int16>" + 0 + "</Int16>"
-                , "<SByte>" + 0 + "</SByte>"
-                , "<Byte>" + 0 + "</Byte>"
-                , "<UInt16>" + 0 + "</UInt16>"
-                , "<UInt32>" + 0 + "</UInt32>"
-                , "<UInt64>" + 0 + "</UInt64>"
-                , "<Single>" + XmlConvert.ToString(0F) + "</Single>"
-                , "<Decimal>" + XmlConvert.ToString(0M) + "</Decimal>"
-                ,
+                "<Boolean>" + XmlConvert.ToString(false) + "</Boolean>", "<Int32>" + 0 + "</Int32>",
+                "<Double>" + XmlConvert.ToString(0D) + "</Double>", @"<String Action=""SetNull"" />",
+                "<Int64>" + 0 + "</Int64>", "<Int16>" + 0 + "</Int16>", "<SByte>" + 0 + "</SByte>",
+                "<Byte>" + 0 + "</Byte>", "<UInt16>" + 0 + "</UInt16>", "<UInt32>" + 0 + "</UInt32>",
+                "<UInt64>" + 0 + "</UInt64>", "<Single>" + XmlConvert.ToString(0F) + "</Single>",
+                "<Decimal>" + XmlConvert.ToString(0M) + "</Decimal>",
                 "<DateTime>" + XmlConvert.ToString(new DateTime(), XmlDateTimeSerializationMode.RoundtripKind) +
-                "</DateTime>"
-                , "<Guid>" + XmlConvert.ToString(Guid.Empty) + "</Guid>"
-                , "<Char>" + XmlConvert.ToString((ushort) '\0') + "</Char>"
+                "</DateTime>",
+                "<Guid>" + XmlConvert.ToString(Guid.Empty) + "</Guid>",
+                "<Char>" + XmlConvert.ToString((ushort) '\0') + "</Char>"
             };
 
             for (var i = 0; i < types.Length; i++)
@@ -257,87 +196,17 @@ namespace XPatchLib.UnitTest.ForXml
                         var ser = new DivideBasic(writer, new TypeExtend(types[i], writer.IgnoreAttributeType));
                         //原始值为null，如果更新值为默认值时，如果设置为序列化默认值，则做序列化
 
-                            Assert.IsTrue(ser.Divide(types[i].Name, null, ReflectionUtils.GetDefaultValue(types[i])));
-                            //writer.WriteEndObject();
-                            writer.Flush();
-                            stream.Position = 0;
+                        Assert.IsTrue(ser.Divide(types[i].Name, null, ReflectionUtils.GetDefaultValue(types[i])));
+                        //writer.WriteEndObject();
+                        writer.Flush();
+                        stream.Position = 0;
                         var der = new CombineBasic(new TypeExtend(types[i], null));
 
                         AssertHelper.AreEqual(serializedDefaultValues[i], stream, "输出内容与预期不符");
-
                     }
                 }
             }
         }
-
-#if (NET || NETSTANDARD_2_0_UP)
-        [Test]
-        public void SerializeColor_Argb()
-        {
-            var c1 = new ColorClass {Color = Color.FromArgb(255, 255, 255)};
-            var result = string.Format(@"<ColorClass>
-  <Color>#{0:X}</Color>
-</ColorClass>", c1.Color.ToArgb());
-            var dser = new CombineObject(new TypeExtend(typeof(ColorClass), null));
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    var ser = new DivideObject(writer, new TypeExtend(typeof(ColorClass), writer.IgnoreAttributeType));
-                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)), null, c1));
-                }
-
-                AssertHelper.AreEqual(result, stream, "输出内容与预期不符");
-                using (XmlReader xmlReader = XmlReader.Create(stream))
-                {
-                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
-                    {
-                        var c2 =
-                            dser.Combine(reader, ColorClass.GetSampleInstance(),
-                                ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass))) as ColorClass;
-                        Debug.Assert(c2 != null, "c2 != null");
-                        Assert.AreEqual(c1.Color, c2.Color);
-                    }
-                }
-            }
-        }
-
-        [Test]
-        public void SerializeColor_KnownColor()
-        {
-            var result = @"<ColorClass>
-  <Color>AliceBlue</Color>
-</ColorClass>";
-            using (var stream = new MemoryStream())
-            {
-                var c1 = ColorClass.GetSampleInstance();
-                var dser = new CombineObject(new TypeExtend(typeof(ColorClass), null));
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    var ser = new DivideObject(writer, new TypeExtend(typeof(ColorClass), writer.IgnoreAttributeType));
-
-                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)), null, c1));
-                }
-                AssertHelper.AreEqual(result, stream, "输出内容与预期不符");
-
-                var c2 = ColorClass.GetSampleInstance();
-                c2.Color = Color.AntiqueWhite;
-                Assert.AreEqual(Color.AntiqueWhite, c2.Color);
-
-                stream.Position = 0;
-                using (XmlReader xmlReader = XmlReader.Create(stream))
-                {
-                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
-                    {
-                        //合并数据时会默认更新传入的原始对象
-                        dser.Combine(reader, c2, ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)));
-
-                        Assert.AreEqual(ColorClass.GetSampleInstance().Color, c2.Color);
-                    }
-                }
-            }
-        }
-#endif
 
         [Test]
         public void SerializeEnum()
@@ -420,6 +289,73 @@ namespace XPatchLib.UnitTest.ForXml
         }
 #endif
 
-#endregion Public Methods
+#if (NET || NETSTANDARD_2_0_UP)
+        [Test]
+        public void SerializeColor_Argb()
+        {
+            var c1 = new ColorClass {Color = Color.FromArgb(255, 255, 255)};
+            var result = string.Format(@"<ColorClass>
+  <Color>#{0:X}</Color>
+</ColorClass>", c1.Color.ToArgb());
+            var dser = new CombineObject(new TypeExtend(typeof(ColorClass), null));
+            using (var stream = new MemoryStream())
+            {
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
+                {
+                    var ser = new DivideObject(writer, new TypeExtend(typeof(ColorClass), writer.IgnoreAttributeType));
+                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)), null, c1));
+                }
+
+                AssertHelper.AreEqual(result, stream, "输出内容与预期不符");
+                using (XmlReader xmlReader = XmlReader.Create(stream))
+                {
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var c2 =
+                            dser.Combine(reader, ColorClass.GetSampleInstance(),
+                                ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass))) as ColorClass;
+                        Debug.Assert(c2 != null, "c2 != null");
+                        Assert.AreEqual(c1.Color, c2.Color);
+                    }
+                }
+            }
+        }
+
+        [Test]
+        public void SerializeColor_KnownColor()
+        {
+            var result = @"<ColorClass>
+  <Color>AliceBlue</Color>
+</ColorClass>";
+            using (var stream = new MemoryStream())
+            {
+                var c1 = ColorClass.GetSampleInstance();
+                var dser = new CombineObject(new TypeExtend(typeof(ColorClass), null));
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
+                {
+                    var ser = new DivideObject(writer, new TypeExtend(typeof(ColorClass), writer.IgnoreAttributeType));
+
+                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)), null, c1));
+                }
+                AssertHelper.AreEqual(result, stream, "输出内容与预期不符");
+
+                var c2 = ColorClass.GetSampleInstance();
+                c2.Color = Color.AntiqueWhite;
+                Assert.AreEqual(Color.AntiqueWhite, c2.Color);
+
+                stream.Position = 0;
+                using (XmlReader xmlReader = XmlReader.Create(stream))
+                {
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        //合并数据时会默认更新传入的原始对象
+                        dser.Combine(reader, c2, ReflectionUtils.GetTypeFriendlyName(typeof(ColorClass)));
+
+                        Assert.AreEqual(ColorClass.GetSampleInstance().Color, c2.Color);
+                    }
+                }
+            }
+        }
+#endif
     }
 }

@@ -7,15 +7,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+#if NUNIT
 using NUnit.Framework;
+
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
     public class TestHashTable
     {
-        #region Public Methods
-
 #if (NET || NETSTANDARD_2_0_UP)
         [Test]
         public void TestHashTableDivideWithoutPrimaryKeyAttribute()
@@ -88,11 +93,10 @@ namespace XPatchLib.UnitTest.ForXml
             }
             catch (AttributeMissException ex)
             {
-
 #if (NET || NETSTANDARD_2_0_UP)
                 Trace.WriteLine(ex.Message);
 #endif
-                StringAssert.AreEqualIgnoringCase(ex.AttributeName, typeof(PrimaryKeyAttribute).Name);
+                Assert.AreEqual(ex.AttributeName, typeof(PrimaryKeyAttribute).Name);
                 //Hashtable类型座位一种集合类型，在处理子元素时应该对子元素的类型标记 PrimaryKeyAttribute 。
             }
             catch (Exception)
@@ -100,7 +104,5 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.Fail("未能引发 AttributeMissException 异常。");
             }
         }
-
-#endregion Public Methods
     }
 }

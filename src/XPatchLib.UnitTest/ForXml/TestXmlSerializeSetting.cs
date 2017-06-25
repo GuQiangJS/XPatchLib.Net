@@ -5,8 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NUnit.Compatibility;
+using  XPatchLib;
+#if NUNIT
 using NUnit.Framework;
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest.ForXml
 {
@@ -36,9 +42,9 @@ namespace XPatchLib.UnitTest.ForXml
                                XPatchLib.BindingFlags.SetProperty);
 #else
             PropertyInfo[] propertyInfos = setting.GetType()
-                .GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.GetProperty |
-                               System.Reflection.BindingFlags.Public |
-                               System.Reflection.BindingFlags.SetProperty);
+                .GetProperties(BindingFlags.Instance | BindingFlags.GetProperty |
+                               BindingFlags.Public |
+                               BindingFlags.SetProperty);
 #endif
 
             List<string> changedProNames = new List<string>();

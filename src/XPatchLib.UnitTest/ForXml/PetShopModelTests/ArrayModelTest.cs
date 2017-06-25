@@ -2,16 +2,20 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System.Xml;
-using NUnit.Framework;
 using XPatchLib.UnitTest.PetShopModelTests.Models;
+#if NUNIT
+using NUnit.Framework;
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
 {
     [TestFixture]
     public class ArrayModelTest
     {
-        #region Public Methods
-
         [Test]
         [Description("测试Collection类型的复杂类型对象增加的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoArrayAddDivideAndCombine()
@@ -55,7 +59,8 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
   </OrderInfo>
 </" + ReflectionUtils.GetTypeFriendlyName(typeof(OrderInfo[])) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(OrderInfo[]), oriObjs, changedObjs, changedContext, "");
+            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(OrderInfo[]), oriObjs, changedObjs, changedContext,
+                "");
         }
 
         [Test]
@@ -101,7 +106,8 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
   </OrderInfo>
 </" + ReflectionUtils.GetTypeFriendlyName(typeof(OrderInfo[])) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(OrderInfo[]), oriObjs, changedObjs, changedContext, "");
+            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(OrderInfo[]), oriObjs, changedObjs, changedContext,
+                "");
         }
 
         [Test]
@@ -126,9 +132,8 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
   <OrderInfo Action=""Remove"" OrderId=""5"" />
 </" + ReflectionUtils.GetTypeFriendlyName(typeof(OrderInfo[])) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(OrderInfo[]), oriObjs, changedObjs, changedContext, "");
+            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(OrderInfo[]), oriObjs, changedObjs, changedContext,
+                "");
         }
-
-        #endregion Public Methods
     }
 }

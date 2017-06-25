@@ -1,22 +1,29 @@
-﻿using System;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using NUnit.Framework;
 using XPatchLib.UnitTest.TestClass;
-using XPatchLib;
+#if NUNIT
+using NUnit.Framework;
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest
 {
     [TestFixture]
     public class TestReflectionUtils
     {
-        #region Public Methods
-
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void GetNullTypeFriendlyNameTest()
         {
-            Assert.AreEqual("String", ReflectionUtils.GetTypeFriendlyName(null));
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                ReflectionUtils.GetTypeFriendlyName(null);
+            });
         }
 
         [Test]
@@ -85,7 +92,5 @@ namespace XPatchLib.UnitTest
             Assert.IsNotNull(valueType);
             Assert.AreEqual(typeof(DateTime), valueType);
         }
-
-        #endregion Public Methods
     }
 }

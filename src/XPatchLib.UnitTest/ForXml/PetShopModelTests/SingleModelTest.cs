@@ -1,14 +1,22 @@
-﻿using System.Xml;
-using NUnit.Framework;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System.Xml;
 using XPatchLib.UnitTest.PetShopModelTests.Models;
+#if NUNIT
+using NUnit.Framework;
+
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
 {
     [TestFixture]
     public class SingleModelTest
     {
-        #region Public Methods
-
         [Test]
         [Description("测试两个同一类型的复杂对象间改变值的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoDivideAndCombine()
@@ -54,7 +62,8 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
   <Date>" + XmlConvert.ToString(changedObj.Date, XmlDateTimeSerializationMode.Local) + @"</Date>
 </OrderInfo>";
 
-            TestHelper.PrivateAssert(typeof(OrderInfo), oriObj, changedObj, changedContext, "更新OrderInfo中的Date信息(Local)",
+            TestHelper.PrivateAssert(typeof(OrderInfo), oriObj, changedObj, changedContext,
+                "更新OrderInfo中的Date信息(Local)",
                 DateTimeSerializationMode.Local);
 
             oriObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
@@ -155,7 +164,5 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
 
             TestHelper.PrivateAssert(typeof(OrderInfo), oriObj, changedObj, changedContext, "删除非首个LineItemInfo");
         }
-
-        #endregion Public Methods
     }
 }

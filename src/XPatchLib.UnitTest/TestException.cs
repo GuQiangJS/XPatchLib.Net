@@ -1,16 +1,23 @@
-﻿using System;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Globalization;
 using System.IO;
-using NUnit.Framework;
 using XPatchLib.UnitTest.TestClass;
+#if NUNIT
+using NUnit.Framework;
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest
 {
     [TestFixture]
     public class TestException
     {
-        #region Public Methods
-
         [Test]
         public void TestAttributeMissException()
         {
@@ -25,7 +32,8 @@ namespace XPatchLib.UnitTest
             {
                 Assert.AreEqual(ex.ErrorType, author.GetType());
                 Assert.AreEqual(ex.AttributeName, attrName);
-                string msg = string.Format(CultureInfo.CurrentCulture, ResourceHelper.GetResourceString(LocalizationRes.Exp_String_AttributeMiss), author.GetType(),
+                string msg = string.Format(CultureInfo.CurrentCulture,
+                    ResourceHelper.GetResourceString(LocalizationRes.Exp_String_AttributeMiss), author.GetType(),
                     attrName);
                 Assert.AreEqual(ex.Message, msg);
                 errorCatched = true;
@@ -35,7 +43,6 @@ namespace XPatchLib.UnitTest
                 Assert.Fail();
             }
             Assert.IsTrue(errorCatched);
-
         }
 
         [Test]
@@ -61,7 +68,8 @@ namespace XPatchLib.UnitTest
             {
                 Assert.AreEqual(ex.ErrorType, type);
                 Assert.AreEqual(ex.PrimaryKeyName, "Author");
-                string msg = string.Format(CultureInfo.CurrentCulture, ResourceHelper.GetResourceString(LocalizationRes.Exp_String_PrimaryKey),
+                string msg = string.Format(CultureInfo.CurrentCulture,
+                    ResourceHelper.GetResourceString(LocalizationRes.Exp_String_PrimaryKey),
                     type.FullName,
                     "Author");
                 Assert.AreEqual(ex.Message, msg);
@@ -73,7 +81,5 @@ namespace XPatchLib.UnitTest
             }
             Assert.IsTrue(errorCatched);
         }
-
-        #endregion Public Methods
     }
 }

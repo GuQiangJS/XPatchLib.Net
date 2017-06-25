@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // 有关程序集的常规信息通过以下特性集 控制。更改这些特性值可修改 与程序集关联的信息。 

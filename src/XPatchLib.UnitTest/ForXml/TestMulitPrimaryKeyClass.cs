@@ -1,14 +1,21 @@
-﻿using System.Collections.Generic;
-using NUnit.Framework;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System.Collections.Generic;
 using XPatchLib.UnitTest.TestClass;
+#if NUNIT
+using NUnit.Framework;
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
     public class TestMulitPrimaryKeyClass
     {
-        #region Public Methods
-
         [Test]
         public void TestMulitPrimaryKeyClassListRemoveDivideAndCombine()
         {
@@ -31,7 +38,5 @@ namespace XPatchLib.UnitTest.ForXml
             TestHelper.PrivateAssertIEnumerable<MulitPrimaryKeyClass>(typeof(List<MulitPrimaryKeyClass>), oriList,
                 revList, changedContext, "");
         }
-
-        #endregion Public Methods
     }
 }

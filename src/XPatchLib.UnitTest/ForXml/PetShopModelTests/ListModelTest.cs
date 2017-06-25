@@ -3,16 +3,20 @@
 
 using System.Collections.Generic;
 using System.Xml;
-using NUnit.Framework;
 using XPatchLib.UnitTest.PetShopModelTests.Models;
+#if NUNIT
+using NUnit.Framework;
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
 {
     [TestFixture]
     public class ListModelTest
     {
-        #region Public Methods
-
         [Test]
         [Description("测试List类型的复杂类型对象增加的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
         public void TestOrderInfoListAddDivideAndCombine()
@@ -55,7 +59,8 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
   </OrderInfo>
 </" + ReflectionUtils.GetTypeFriendlyName(typeof(List<OrderInfo>)) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(List<OrderInfo>), oriObjs, changedObjs, changedContext,
+            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(List<OrderInfo>), oriObjs, changedObjs,
+                changedContext,
                 "");
         }
 
@@ -102,7 +107,8 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
   </OrderInfo>
 </" + ReflectionUtils.GetTypeFriendlyName(typeof(List<OrderInfo>)) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(List<OrderInfo>), oriObjs, changedObjs, changedContext,
+            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(List<OrderInfo>), oriObjs, changedObjs,
+                changedContext,
                 "");
         }
 
@@ -128,10 +134,9 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
   <OrderInfo Action=""Remove"" OrderId=""5"" />
 </" + ReflectionUtils.GetTypeFriendlyName(typeof(List<OrderInfo>)) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(List<OrderInfo>), oriObjs, changedObjs, changedContext,
+            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(List<OrderInfo>), oriObjs, changedObjs,
+                changedContext,
                 "");
         }
-
-        #endregion Public Methods
     }
 }

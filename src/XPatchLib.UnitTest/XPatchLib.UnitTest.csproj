@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 
-    <TargetFrameworks Condition="'$(TestFrameworks)'==''">net40;net35;net20;netcoreapp1.1</TargetFrameworks>
+    <TargetFrameworks Condition="'$(TestFrameworks)'==''">NET40;NET35;NET20;NETCOREAPP1.1</TargetFrameworks>
     <!--<TargetFrameworks Condition="'$(TestFrameworks)'!=''">$(TestFrameworks)</TargetFrameworks>
     <TargetFramework>netstandard1.3</TargetFramework>-->
     <!-- Workaround for https://github.com/nunit/nunit3-vs-adapter/issues/296 -->
@@ -14,6 +14,8 @@
   <ItemGroup>
     <ProjectReference Include="..\XPatchLib\XPatchLib.csproj" />
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'!='netcoreapp1.1'">
     <PackageReference Include="NUnit" Version="3.7.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.8.0-alpha1" />
   </ItemGroup>
@@ -25,20 +27,20 @@
   </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net20'">
     <AssemblyTitle>XPatchLib UnitTest .NET 2.0</AssemblyTitle>
-    <DefineConstants>NET;NET_20;NET_20_UP</DefineConstants>
+    <DefineConstants>NET;NUNIT;NET_20;NET_20_UP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
     <AssemblyTitle>XPatchLib UnitTest .NET 3.5</AssemblyTitle>
-    <DefineConstants>NET;NET_35;NET_20_UP;NET_35_UP</DefineConstants>
+    <DefineConstants>NET;NUNIT;NET_35;NET_20_UP;NET_35_UP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
     <AssemblyTitle>XPatchLib UnitTest .NET 4.0</AssemblyTitle>
-    <DefineConstants>NET;NET_40;NET_20_UP;NET_35_UP;NET_40_UP</DefineConstants>
+    <DefineConstants>NET;NUNIT;NET_40;NET_20_UP;NET_35_UP;NET_40_UP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1'">
     <AssemblyTitle>XPatchLib UnitTest .NET Standard 1.3</AssemblyTitle>
     <ReferringTargetFrameworkForProjectReferences>.NETStandard,Version=v1.3</ReferringTargetFrameworkForProjectReferences>
-    <DefineConstants>NETSTANDARD;NETSTANDARD_1_3;NETSTANDARD_1_0_UP;NETSTANDARD_1_1_UP;NETSTANDARD_1_2_UP;NETSTANDARD_1_3_UP</DefineConstants>
+    <DefineConstants>NETSTANDARD;XUNIT;NETSTANDARD_1_3;NETSTANDARD_1_0_UP;NETSTANDARD_1_1_UP;NETSTANDARD_1_2_UP;NETSTANDARD_1_3_UP</DefineConstants>
   </PropertyGroup>
 
 </Project>

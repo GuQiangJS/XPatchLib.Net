@@ -1,15 +1,22 @@
-﻿using System;
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Globalization;
-using NUnit.Framework;
 using XPatchLib.UnitTest.TestClass;
+#if NUNIT
+using NUnit.Framework;
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest
 {
     [TestFixture]
     public class TestEnumWrapper
     {
-        #region Public Methods
-
         [Test]
         public void TestEnumWrapperConstruction()
         {
@@ -29,7 +36,5 @@ namespace XPatchLib.UnitTest
                 Assert.Fail("未能抛出 ArgumentException 异常。");
             }
         }
-
-        #endregion Public Methods
     }
 }

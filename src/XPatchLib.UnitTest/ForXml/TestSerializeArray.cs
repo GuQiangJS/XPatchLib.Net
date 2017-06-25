@@ -1,32 +1,42 @@
 ﻿// Copyright © 2013-2017 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Xml;
 #if (NET_35_UP || NETSTANDARD)
 using System.Xml.Linq;
 #endif
-using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Xml;
 using XPatchLib.UnitTest.TestClass;
+#if NUNIT
+using NUnit.Framework;
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
     public class TestSerializeArray
     {
+#if XUNIT
+        public TestSerializeArray()
+        {
+            TestInitialize();
+        }
+#endif
+#if NUNIT
         [SetUp]
+#endif
         public void TestInitialize()
         {
             TypeExtendContainer.ClearAll();
         }
-
-        #region Public Methods
 
         [Test]
         [Description("测试合并集合类型但是传入的类型不是集合类型时，是否抛出ArgumentOutOfRangeException错误")]
@@ -504,7 +514,8 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
-                    var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
+                    var ser = new DivideIEnumerable(writer,
+                        new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, s2));
                 }
 
@@ -541,7 +552,8 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
-                    var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
+                    var ser = new DivideIEnumerable(writer,
+                        new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), null, s1));
                 }
 
@@ -554,7 +566,7 @@ namespace XPatchLib.UnitTest.ForXml
                     using (ITextReader reader = new XmlTextReader(xmlReader))
                     {
                         var s2 =
-                            com.Combine(reader, new string[] {}, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as
+                            com.Combine(reader, new string[] { }, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as
                                 string[];
                         Assert.AreEqual(2, s2.Length);
 
@@ -579,7 +591,8 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
-                    var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
+                    var ser = new DivideIEnumerable(writer,
+                        new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, s2));
                 }
 
@@ -611,7 +624,8 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
-                    var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
+                    var ser = new DivideIEnumerable(writer,
+                        new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, null));
                 }
 
@@ -646,7 +660,8 @@ namespace XPatchLib.UnitTest.ForXml
                 using (ITextWriter writer = TestHelper.CreateWriter(stream))
                 {
                     writer.Setting.ActionName = newActionName;
-                    var ser = new DivideIEnumerable(writer, new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
+                    var ser = new DivideIEnumerable(writer,
+                        new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, null));
                 }
 
@@ -666,7 +681,5 @@ namespace XPatchLib.UnitTest.ForXml
                 }
             }
         }
-
-        #endregion Public Methods
     }
 }

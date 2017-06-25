@@ -1,15 +1,22 @@
 ﻿// Copyright © 2013-2017 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
+#if (NET_35_UP || NETSTANDARD)
+using System.Xml.Linq;
+#endif
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Xml;
-#if (NET_35_UP || NETSTANDARD)
-using System.Xml.Linq;
-#endif
+#if NUNIT
 using NUnit.Framework;
+
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest.ForXml
 {
@@ -130,6 +137,6 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-#endregion Internal Methods
+        #endregion Internal Methods
     }
 }

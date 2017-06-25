@@ -1,6 +1,9 @@
 ﻿// Copyright © 2013-2017 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
+#if (NET_35_UP || NETSTANDARD)
+using System.Xml.Linq;
+#endif
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -8,19 +11,20 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Xml;
-#if (NET_35_UP || NETSTANDARD)
-using System.Xml.Linq;
-#endif
-using NUnit.Framework;
 using XPatchLib.UnitTest.TestClass;
+#if NUNIT
+using NUnit.Framework;
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
     public class TestSerializeObject
     {
-        #region Public Methods
-
         [Test]
         public void CultureChangeTest()
         {
@@ -77,7 +81,7 @@ namespace XPatchLib.UnitTest.ForXml
 #if (NET || NETSTANDARD_2_0_UP)
             Trace.WriteLine(faResult);
 #endif
-            
+
 #if NET
             Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
 #else
@@ -409,7 +413,6 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(BookClass)), null, b1));
                 }
                 AssertHelper.AreEqual(result, stream, string.Empty);
-
             }
 
             BookClass b2 = BookClass.GetSampleInstance();
@@ -772,7 +775,5 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.Fail("Exception fired in threading method");
             }
         }
-
-#endregion Public Methods
     }
 }

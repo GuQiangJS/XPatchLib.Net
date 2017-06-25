@@ -3,9 +3,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Xml;
+#if NUNIT
 using NUnit.Framework;
+
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 #if (NET_35_UP || NETSTANDARD)
 using System.Xml.Linq;
 #endif
@@ -13,9 +18,18 @@ using System.Xml.Linq;
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
-    public class TestDictionary:TestBase
+    public class TestDictionary : TestBase
     {
+#if XUNIT
+        public TestDictionary()
+        {
+            Init();
+        }
+#endif
+
+#if NUNIT
         [SetUp]
+#endif
         public void Init()
         {
             _oriDic = new Dictionary<string, string>(4);
@@ -36,13 +50,13 @@ namespace XPatchLib.UnitTest.ForXml
             _edit_Dic.Add("Ckey", "newCvalue");
             _edit_Dic.Add("Dkey", "newDvalue");
 
-            _create_Dic=new Dictionary<string, string>(4);
+            _create_Dic = new Dictionary<string, string>(4);
             _create_Dic.Add("Akey", "Avalue");
             _create_Dic.Add("Bkey", "Bvalue");
             _create_Dic.Add("Ckey", "Cvalue");
             _create_Dic.Add("Dkey", "Dvalue");
 
-            _remove_Dic=new Dictionary<string, string>(2);
+            _remove_Dic = new Dictionary<string, string>(2);
             _remove_Dic.Add("Akey", "Avalue");
             _remove_Dic.Add("Bkey", "Bvalue");
 
@@ -52,35 +66,38 @@ namespace XPatchLib.UnitTest.ForXml
             _setNull_Dic.Add("Ckey", null);
             _setNull_Dic.Add("Dkey", null);
 
-            _Ori_Dic_Array = new Dictionary<string, string>[]
+            _Ori_Dic_Array = new[]
                 {_oriDic, _oriDic, null, _oriDic, _oriDic};
-            _Dic_Array = new Dictionary<string, string>[]
+            _Dic_Array = new[]
                 {_complex_Changed_Dic, _edit_Dic, _create_Dic, _remove_Dic, _setNull_Dic};
-            _Context_Array = new string[]
+            _Context_Array = new[]
             {
                 ComplexOperatorChangedContext, EditChangedContext, CreateChangedContext, RemoveChangedContext,
                 SetNullChangedContext
             };
         }
-        #region 字典对象定义
+
         //原始字典对象
         private Dictionary<string, string> _oriDic;
+
         //包含各种变更的复杂变更后的字典对象
         private Dictionary<string, string> _complex_Changed_Dic;
+
         //变更后的字典对象
         private Dictionary<string, string> _edit_Dic;
+
         //从Null开始创建的字典对象
         private Dictionary<string, string> _create_Dic;
+
         //Remove子项后的字典对象
         private Dictionary<string, string> _remove_Dic;
+
         //将所有子项的Value值设置为Null以后的字典对象
         private Dictionary<string, string> _setNull_Dic;
-        #endregion
-        private Dictionary<string,string>[] _Dic_Array;
+
+        private Dictionary<string, string>[] _Dic_Array;
         private Dictionary<string, string>[] _Ori_Dic_Array;
         private string[] _Context_Array;
-
-        #region 变更字符串定义
 
         private const string ComplexOperatorChangedContext = @"<Dictionary_String_String>
   <KeyValuePair_String_String Action=""Remove"">
@@ -160,9 +177,7 @@ namespace XPatchLib.UnitTest.ForXml
     <Key>Dkey</Key>
   </KeyValuePair_String_String>
 </Dictionary_String_String>";
-        #endregion
 
-        #region 原始对象附加增量字符串以后的对象实例与预期对象实例间的对比
         [Test]
         [Description("检测CombineCore的Combine方法对字典类型对象的合并操作")]
         public void TestCombineCore_Combine_Dictionary()
@@ -172,13 +187,14 @@ namespace XPatchLib.UnitTest.ForXml
                 var newDic = DoCombineCore_Combie(_Context_Array[i], _Ori_Dic_Array[i]);
                 //在使用非Serializer入口做增量内容合并时，不会对原始对象进行深克隆
                 AssertDictionary(_Dic_Array[i], newDic, i.ToString(), true, false);
-                if(_Ori_Dic_Array[i]==null)
+                if (_Ori_Dic_Array[i] == null)
                     //当原始对象为Null时，会重新创建实例，所以HashCode值肯定不同
                     continue;
                 Assert.AreEqual(_Ori_Dic_Array[i].GetHashCode(), newDic.GetHashCode());
                 Init();
             }
         }
+
         [Test]
         [Description("检测CombineIDictionary的Combine方法对字典类型对象的合并操作")]
         public void TestCombineIDictionary_Combine_Dictionary()
@@ -195,6 +211,29 @@ namespace XPatchLib.UnitTest.ForXml
                 Init();
             }
         }
+
+        [Test]
+        [Description("使用DivideCore中的Divide方法在原始字典对象与目标字典对象之间产生增量，并验证增量内容是否符合预期")]
+        public void TestDivideCore_Divide_Dictionary()
+        {
+            for (int i = 0; i < _Context_Array.Length; i++)
+            {
+                var context = DoDivideCore_Divide(_Ori_Dic_Array[i], _Dic_Array[i]);
+                Assert.AreEqual(_Context_Array[i], context);
+            }
+        }
+
+        [Test]
+        [Description("使用DivideCore中的Divide方法在原始字典对象与目标字典对象之间产生增量，并验证增量内容是否符合预期")]
+        public void TestDivideDictionary_Divide_Dictionary()
+        {
+            for (int i = 0; i < _Context_Array.Length; i++)
+            {
+                var context = DoDivideIDictionary_Divide(_Ori_Dic_Array[i], _Dic_Array[i]);
+                Assert.AreEqual(_Context_Array[i], context);
+            }
+        }
+
         [Test]
         [Description("检测CombineIDictionary的Combine方法对字典类型对象的合并操作")]
         public void TestSerializer_Combine_Dictionary()
@@ -221,31 +260,6 @@ namespace XPatchLib.UnitTest.ForXml
                 Init();
             }
         }
-        #endregion
-
-        #region 增量对象实例与原始对象实例间产生增量是否符合预期
-
-        [Test]
-        [Description("使用DivideCore中的Divide方法在原始字典对象与目标字典对象之间产生增量，并验证增量内容是否符合预期")]
-        public void TestDivideCore_Divide_Dictionary()
-        {
-            for (int i = 0; i < _Context_Array.Length; i++)
-            {
-                var context = DoDivideCore_Divide(_Ori_Dic_Array[i], _Dic_Array[i]);
-                Assert.AreEqual(_Context_Array[i], context);
-            }
-        }
-
-        [Test]
-        [Description("使用DivideCore中的Divide方法在原始字典对象与目标字典对象之间产生增量，并验证增量内容是否符合预期")]
-        public void TestDivideDictionary_Divide_Dictionary()
-        {
-            for (int i = 0; i < _Context_Array.Length; i++)
-            {
-                var context = DoDivideIDictionary_Divide(_Ori_Dic_Array[i], _Dic_Array[i]);
-                Assert.AreEqual(_Context_Array[i], context);
-            }
-        }
 
         [Test]
         [Description("使用Serializer中的Divide方法在原始字典对象与目标字典对象之间产生增量，并验证增量内容是否符合预期")]
@@ -254,9 +268,8 @@ namespace XPatchLib.UnitTest.ForXml
             for (int i = 0; i < _Context_Array.Length; i++)
             {
                 var context = DoSerializer_Divide(_Ori_Dic_Array[i], _Dic_Array[i]);
-                Assert.AreEqual(TestHelper.XmlHeaderContext + System.Environment.NewLine + _Context_Array[i], context);
+                Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + _Context_Array[i], context);
             }
         }
-        #endregion
     }
 }

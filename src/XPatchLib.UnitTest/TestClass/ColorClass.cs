@@ -1,4 +1,7 @@
-﻿#if (NET || NETSTANDARD_2_0_UP)
+﻿// Copyright © 2013-2017 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+#if (NET || NETSTANDARD_2_0_UP)
 
 using System.Drawing;
 
@@ -6,13 +9,13 @@ namespace XPatchLib.UnitTest.TestClass
 {
     internal class ColorClass
     {
-#region Public Properties
+        #region Public Properties
 
         public Color Color { get; set; }
 
-#endregion Public Properties
+        #endregion Public Properties
 
-#region Public Methods
+        #region Public Methods
 
         public static ColorClass GetSampleInstance()
         {
@@ -22,7 +25,7 @@ namespace XPatchLib.UnitTest.TestClass
             };
         }
 
-#endregion Public Methods
+        #endregion Public Methods
     }
 }
 #endif

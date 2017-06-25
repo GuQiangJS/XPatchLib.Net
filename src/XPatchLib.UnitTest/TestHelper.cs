@@ -1,22 +1,28 @@
 ﻿// Copyright © 2013-2017 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Xml;
 #if (NET_35_UP || NETSTANDARD)
 using System.Xml.Linq;
 #endif
+using System;
+using System.Collections;
+using System.IO;
+using System.Text;
+using System.Xml;
+#if NUNIT
 using NUnit.Framework;
+
+#elif XUNIT
+using Xunit;
+using Test = Xunit.FactAttribute;
+using Assert = XPatchLib.UnitTest.XUnitAssert;
+#endif
 
 namespace XPatchLib.UnitTest
 {
     internal static class TestHelper
     {
-        internal static byte[] ReadToEnd(this System.IO.Stream stream)
+        internal static byte[] ReadToEnd(this Stream stream)
         {
             long originalPosition = 0;
 
@@ -44,7 +50,7 @@ namespace XPatchLib.UnitTest
                         {
                             byte[] temp = new byte[readBuffer.Length * 2];
                             Buffer.BlockCopy(readBuffer, 0, temp, 0, readBuffer.Length);
-                            Buffer.SetByte(temp, totalBytesRead, (byte)nextByte);
+                            Buffer.SetByte(temp, totalBytesRead, (byte) nextByte);
                             readBuffer = temp;
                             totalBytesRead++;
                         }
@@ -62,9 +68,7 @@ namespace XPatchLib.UnitTest
             finally
             {
                 if (stream.CanSeek)
-                {
                     stream.Position = originalPosition;
-                }
             }
         }
 
@@ -77,12 +81,12 @@ namespace XPatchLib.UnitTest
             //int numBytesToRead = (int)stream.Length;
             //stream.Read(bytes, 0, numBytesToRead);
             //stream.Position = 0;
-            Encoding encoding= new UTF8Encoding(false);
+            Encoding encoding = new UTF8Encoding(false);
             return encoding.GetString(bytes);
         }
 
         /// <summary>
-        /// 读取文本，构建XElement或XmlDocument对象，调试时方便查看内容
+        ///     读取文本，构建XElement或XmlDocument对象，调试时方便查看内容
         /// </summary>
         /// <param name="text"></param>
         internal static void DebugTest(string text)
@@ -99,7 +103,7 @@ namespace XPatchLib.UnitTest
         }
 
         /// <summary>
-        /// 读取Stream，构建XElement或XmlDocument对象，调试时方便查看内容
+        ///     读取Stream，构建XElement或XmlDocument对象，调试时方便查看内容
         /// </summary>
         /// <param name="stream"></param>
         internal static void DebugTest(Stream stream)
@@ -160,15 +164,13 @@ namespace XPatchLib.UnitTest
 
     internal static class AssertHelper
     {
-        internal static void AreEqual(string context, Stream value,string message)
+        internal static void AreEqual(string context, Stream value, string message)
         {
             value.Position = 0;
-            UnitTest.TestHelper.DebugTest(value);
+            TestHelper.DebugTest(value);
             value.Position = 0;
-            NUnit.Framework.Assert.AreEqual(context, UnitTest.TestHelper.StreamToString(value), message);
+            Assert.AreEqual(context, TestHelper.StreamToString(value), message);
             value.Position = 0;
         }
-
-
     }
 }

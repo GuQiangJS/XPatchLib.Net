@@ -16,7 +16,7 @@ namespace XPatchLib.UnitTest.TestClass
 
         public override bool Equals(object obj)
         {
-            XmlIgnoreClass c=obj as XmlIgnoreClass;
+            XmlIgnoreClass c = obj as XmlIgnoreClass;
             if (c == null) return false;
             return string.Equals(A, c.A) && string.Equals(B, c.B);
         }
