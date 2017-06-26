@@ -193,7 +193,7 @@ namespace XPatchLib
 
         internal Object CreateInstance(params object[] args)
         {
-            if (CreateInstanceFuncs != null)
+            if (CreateInstanceFuncs != null && (args == null || args.Length <= 0))
                 return CreateInstanceFuncs();
 
             if (IsBasicType)

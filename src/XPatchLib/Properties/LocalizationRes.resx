@@ -132,6 +132,9 @@
   <data name="Exp_String_KeyValueChanged" xml:space="preserve">
     <value>键/值对类型对象，Key值被变更。原始Key值： '{0}' ,更新后的Key值： '{1}' 。</value>
   </data>
+  <data name="Exp_String_KeyValue_KeyIsNull" xml:space="preserve">
+    <value>键/值对类型对象异常，原始值与更新后的Key值均为Null。</value>
+  </data>
   <data name="Exp_String_MemberType" xml:space="preserve">
     <value>{0}.MemberType 既不是 MemberTypes.Property 也不是 MemberTypes.Field。而是 '{1}' 。</value>
   </data>

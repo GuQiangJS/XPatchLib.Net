@@ -154,7 +154,9 @@ namespace XPatchLib.UnitTest.ForXml
                         }
                     }
                 }
-            }, "");
+            }, string.Format(CultureInfo.InvariantCulture,
+                ResourceHelper.GetResourceString(LocalizationRes.Exp_String_KeyValueChanged),
+                null, "1"));
         }
 
         [Test]
@@ -264,7 +266,9 @@ namespace XPatchLib.UnitTest.ForXml
                         }
                     }
                 }
-            },"");
+            }, string.Format(CultureInfo.InvariantCulture,
+                ResourceHelper.GetResourceString(LocalizationRes.Exp_String_KeyValueChanged),
+                "1", null));
         }
     }
 }

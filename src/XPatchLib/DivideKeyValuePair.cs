@@ -77,7 +77,8 @@ namespace XPatchLib
             }
 
             if (pOriObject != null && pRevObject != null && revKeyObj != oriKeyObj)
-                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "原始Key值:'{0}',更新后的Key值:'{1}'.",
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture,
+                    ResourceHelper.GetResourceString(LocalizationRes.Exp_String_KeyValueChanged),
                     oriKeyObj, revKeyObj));
 
             /*
@@ -86,7 +87,7 @@ namespace XPatchLib
              * 但是不可以两者同时为Null，那样字典中无法赋值，也不能进行增量内容附加
              */
             if (oriKeyObj == null && revKeyObj == null)
-                throw new ArgumentException("原始值与更新后的Key值均为Null.");
+                throw new ArgumentException(ResourceHelper.GetResourceString(LocalizationRes.Exp_String_KeyValue_KeyIsNull));
 
             if (Equals(oriKeyObj, revKeyObj) && Equals(oriValueObj, revValueObj))
                 return false;
