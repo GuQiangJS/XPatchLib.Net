@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Xml;
 using XPatchLib.UnitTest.TestClass;
@@ -277,10 +278,14 @@ namespace XPatchLib.UnitTest.ForXml
                         dser.Combine(reader, ColorClass.GetSampleInstance(), "ColorClass");
                     }
                 }
+                Assert.Fail("未能抛出FormatException异常。");
             }
             catch (FormatException ex)
             {
-                Assert.AreEqual(string.Format("' {0} ' 不能被转换成 System.Drawing.Color 对象。", "#xxxxxx"), ex.Message);
+                Assert.AreEqual(
+                    string.Format(CultureInfo.InvariantCulture,
+                        ResourceHelper.GetResourceString(LocalizationRes.Exp_String_IsNotColor), "#xxxxxx"),
+                    ex.Message);
             }
             catch (Exception)
             {

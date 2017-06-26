@@ -32,7 +32,7 @@ namespace XPatchLib.UnitTest
                 {
                     ArgumentException e1 =
                         new ArgumentException(
-                            string.Format(CultureInfo.InvariantCulture, "类型 ' {0} ' 不是枚举类型。",
+                            string.Format(CultureInfo.InvariantCulture, ResourceHelper.GetResourceString(LocalizationRes.Exp_String_IsNotEnum),
                                 typeof(AuthorClass).FullName), "pType");
                     Assert.AreEqual(e.Message, e1.Message);
                     Assert.AreEqual("pType", e.ParamName);
