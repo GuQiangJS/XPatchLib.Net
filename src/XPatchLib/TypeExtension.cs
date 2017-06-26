@@ -247,7 +247,8 @@ namespace XPatchLib
                 return TestAccessibility((PropertyInfo)member, bindingFlags);
             }
 
-            throw new Exception("Unexpected member type.");
+            //除了以上三种类型外还包含Type，不过这里用不着处理Type，所以直接返回false。
+            return false;
         }
 
         private static bool TestAccessibility(FieldInfo member, BindingFlags bindingFlags)
