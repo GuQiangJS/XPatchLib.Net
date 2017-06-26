@@ -34,5 +34,10 @@ namespace XPatchLib
         {
             get { return "Exp_String_PrimaryKey"; }
         }
+
+        internal static string Exp_String_KeyValueChanged
+        {
+            get { return "Exp_String_KeyValueChanged"; }
+        }
     }
 }

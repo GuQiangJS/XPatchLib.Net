@@ -80,7 +80,7 @@ namespace XPatchLib
 
                 if (!oriKeyObj.Equals(revKey))
                     throw new ArgumentException(string.Format(CultureInfo.InvariantCulture,
-                        "原始Key值:'{0}',更新后的Key值:'{1}'.",
+                        ResourceHelper.GetResourceString(LocalizationRes.Exp_String_KeyValueChanged),
                         oriKeyObj, revKey));
 
                 if (Attributes.Action == Action.SetNull || Attributes.Action == Action.Edit)

@@ -6,6 +6,7 @@ using System.Xml.Linq;
 #endif
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Xml;
 #if NUNIT
@@ -23,6 +24,7 @@ namespace XPatchLib.UnitTest.ForXml
     public class TestKeyValuePair : TestBase
     {
         [Test]
+        [Description("原始值的Key值与更新后的值的Key值不同时，抛出异常")]
         public void TestCombineSingleKeyValuePairByDifferentKey()
         {
             Assert.Throws<ArgumentException>(() => { 
@@ -42,7 +44,9 @@ namespace XPatchLib.UnitTest.ForXml
                     Assert.AreEqual(k2, combineObj);
                 }
             }
-            }, "原始值的Key值与更新后的值的Key值不同时，抛出异常");
+            }, string.Format(CultureInfo.InvariantCulture,
+                ResourceHelper.GetResourceString(LocalizationRes.Exp_String_KeyValueChanged),
+                "1", null));
         }
 
         [Test]
@@ -113,6 +117,7 @@ namespace XPatchLib.UnitTest.ForXml
         }
 
         [Test]
+        [Description("原始值的Key值与更新后的值的Key值不同时，抛出异常")]
         public void TestDivideAndCombineSingleKeyValuePairByOriValueIsNull()
         {
             Assert.Throws<ArgumentException>(() =>
@@ -149,7 +154,7 @@ namespace XPatchLib.UnitTest.ForXml
                         }
                     }
                 }
-            }, "原始值的Key值与更新后的值的Key值不同时，抛出异常");
+            }, "");
         }
 
         [Test]
@@ -223,6 +228,7 @@ namespace XPatchLib.UnitTest.ForXml
         
 
         [Test]
+        [Description("当原始值不为Null同时更新后的值不为Null时，原始值的Key值就应该与更新后的值的Key值相同，否则不是同一个KeyValuePair对象,此时会抛出异常")]
         public void TestDivideSingleKeyValuePairByDifferentKey()
         {
             Assert.Throws<ArgumentException>(() =>
@@ -258,7 +264,7 @@ namespace XPatchLib.UnitTest.ForXml
                         }
                     }
                 }
-            }, "当原始值不为Null同时更新后的值不为Null时，原始值的Key值就应该与更新后的值的Key值相同，否则不是同一个KeyValuePair对象,此时会抛出异常");
+            },"");
         }
     }
 }
