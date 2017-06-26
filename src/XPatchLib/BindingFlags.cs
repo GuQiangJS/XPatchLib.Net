@@ -2,7 +2,7 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 
-#if (NETSTANDARD_1_0 || NETSTANDARD_1_1 || NETSTANDARD_1_2 || NETSTANDARD_1_3 || NETSTANDARD_1_4)
+#if (NETSTANDARD_1_0 || NETSTANDARD_1_1 || NETSTANDARD_1_3)
 
 using System;
 using System.Collections.Generic;

@@ -48,7 +48,6 @@ namespace XPatchLib
             IsICollection = ReflectionUtils.IsICollection(pType);
 
             IsIEnumerable = ReflectionUtils.IsIEnumerable(pType);
-            FieldsToBeSerialized = ReflectionUtils.GetFieldsToBeSerialized(pType, pIgnoreAttributeType);
             DefaultValue = ReflectionUtils.GetDefaultValue(pType);
             IsArray = ReflectionUtils.IsArray(pType);
             TypeCode = ConvertHelper.GetTypeCode(pType);
@@ -56,10 +55,15 @@ namespace XPatchLib
             IsGuid = pType == typeof(Guid);
             TypeFriendlyName = ReflectionUtils.GetTypeFriendlyName(pType);
 
-            foreach (MemberWrapper member in FieldsToBeSerialized)
+            FieldsToBeSerialized = new MemberWrapper[] { };
+            if (!(IsIEnumerable || IsIDictionary || IsICollection || IsBasicType || IsArray ))
             {
-                AddGetValueFunc(member);
-                AddSetValueFunc(member);
+                FieldsToBeSerialized = ReflectionUtils.GetFieldsToBeSerialized(pType, pIgnoreAttributeType);
+                foreach (MemberWrapper member in FieldsToBeSerialized)
+                {
+                    AddGetValueFunc(member);
+                    AddSetValueFunc(member);
+                }
             }
 
             if (IsIDictionary)
@@ -212,8 +216,8 @@ namespace XPatchLib
                         return Array.CreateInstance(elementType, 0);
                     throw new NotImplementedException();
                 }
-#if (NET || NETSTANDARD_2_0_UP)
                 BindingFlags flags = BindingFlags.NonPublic | BindingFlags.CreateInstance | BindingFlags.Instance;
+#if (NET || NETSTANDARD_2_0_UP)
                 try
                 {
                     return OriType.InvokeMember(string.Empty, flags, null,
@@ -224,7 +228,16 @@ namespace XPatchLib
                     return Activator.CreateInstance(OriType, args);
                 }
 #else
-                return Activator.CreateInstance(OriType,args);
+                ConstructorInfo constructorInfo = OriType.GetConstructor(new List<Type>());
+                if (constructorInfo != null)
+                {
+                    ClrHelper.MethodCall<object, object> call = OriType.CreateMethodCall<object>(constructorInfo);
+                    return call.Invoke(null, args);
+                }
+                else
+                {
+                    return Activator.CreateInstance(OriType, args);
+                }
 #endif
             }
             return null;

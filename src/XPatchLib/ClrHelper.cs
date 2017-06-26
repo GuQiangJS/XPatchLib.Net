@@ -291,10 +291,12 @@ namespace XPatchLib
         {
             Guard.ArgumentNotNull(method, nameof(method));
 
-            ParameterExpression targetParameterExpression = Expression.Parameter(pType, "target");
+            Type type = typeof(object);
+
+            ParameterExpression targetParameterExpression = Expression.Parameter(type, "target");
             ParameterExpression argsParameterExpression = Expression.Parameter(typeof(object[]), "args");
 
-            Expression callExpression = BuildMethodCall(method, pType, targetParameterExpression, argsParameterExpression);
+            Expression callExpression = BuildMethodCall(method, type, targetParameterExpression, argsParameterExpression);
 
             LambdaExpression lambdaExpression = Expression.Lambda(typeof(MethodCall<T, object>), callExpression, targetParameterExpression, argsParameterExpression);
 

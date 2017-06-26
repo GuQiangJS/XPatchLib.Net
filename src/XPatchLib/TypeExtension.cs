@@ -15,7 +15,7 @@ namespace XPatchLib
     internal static class TypeExtension
     {
 
-#if (NETSTANDARD_1_0 || NETSTANDARD_1_1 || NETSTANDARD_1_2 || NETSTANDARD_1_3 || NETSTANDARD_1_4)
+#if (NETSTANDARD_1_0 || NETSTANDARD_1_1 || NETSTANDARD_1_3)
         public static MethodInfo GetGetMethod(this PropertyInfo propertyInfo)
         {
             return propertyInfo.GetGetMethod(false);
@@ -151,7 +151,7 @@ namespace XPatchLib
 
 #if !(NET || NETSTANDARD_2_0_UP)
 
-        private static BindingFlags DefaultFlags = BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance;
+        private static BindingFlags DefaultFlags = BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic;
 
         internal static MethodInfo GetMethod(this Type type, IList<Type> parameterTypes)
         {
@@ -295,7 +295,17 @@ namespace XPatchLib
 
         internal static MethodInfo GetMethod(this Type type, string name, BindingFlags bindingFlags)
         {
-            return type.GetTypeInfo().GetDeclaredMethod(name);
+            MethodInfo result = null;
+            TypeInfo typeInfo = type.GetTypeInfo();
+            while (result == null && typeInfo != null)
+            {
+                result = typeInfo.GetDeclaredMethod(name);
+                if (result == null && typeInfo.BaseType!=null)
+                {
+                    typeInfo = typeInfo.BaseType.GetTypeInfo();
+                }
+            }
+            return result;
         }
 
         internal static IEnumerable<ConstructorInfo> GetConstructors(this Type type)

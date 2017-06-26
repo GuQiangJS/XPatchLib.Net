@@ -33,7 +33,7 @@ namespace XPatchLib
         public XmlTextWriter(XmlWriter pWriter)
         {
             Guard.ArgumentNotNull(pWriter, "pWriter");
-#if (NET || NETSTANDARD_2_0_UP)
+#if (NET || NETSTANDARD_1_3_UP)
             IgnoreAttributeType = typeof(XmlIgnoreAttribute);
 #endif
             _writer = pWriter;
