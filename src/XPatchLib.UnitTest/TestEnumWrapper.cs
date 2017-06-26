@@ -23,17 +23,24 @@ namespace XPatchLib.UnitTest
             try
             {
                 new EnumWrapper(typeof(AuthorClass));
-            }
-            catch (ArgumentException ex)
-            {
-                Assert.AreEqual(
-                    string.Format(CultureInfo.InvariantCulture, "类型 ' {0} ' 不是枚举类型。\r\n参数名: pType",
-                        typeof(AuthorClass).FullName), ex.Message);
-                Assert.AreEqual("pType", ex.ParamName);
-            }
-            catch (Exception)
-            {
                 Assert.Fail("未能抛出 ArgumentException 异常。");
+            }
+            catch (Exception ex)
+            {
+                ArgumentException e=ex as ArgumentException;
+                if (e != null)
+                {
+                    ArgumentException e1 =
+                        new ArgumentException(
+                            string.Format(CultureInfo.InvariantCulture, "类型 ' {0} ' 不是枚举类型。",
+                                typeof(AuthorClass).FullName), "pType");
+                    Assert.AreEqual(e.Message, e1.Message);
+                    Assert.AreEqual("pType", e.ParamName);
+                }
+                else
+                {
+                    Assert.Fail("未能抛出 ArgumentException 异常。");
+                }
             }
         }
     }
