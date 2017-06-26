@@ -24,10 +24,10 @@ namespace XPatchLib
         public static Func<T> CreateInstanceFunc<T>(Type pType)
         {
             Guard.ArgumentNotNull(pType, "type");
-#if NET
             ConstructorInfo emptyConstructor = pType.GetConstructor(Type.EmptyTypes);
             if (emptyConstructor == null)
                 return null;
+#if NET
             var dynamicMethod = new DynamicMethod("CreateInstance", pType, Type.EmptyTypes, true);
             ILGenerator ilGenerator = dynamicMethod.GetILGenerator();
             ilGenerator.Emit(OpCodes.Nop);
@@ -45,7 +45,7 @@ namespace XPatchLib
             {
                 Type resultType = typeof(T);
 
-                Expression expression = Expression.New(pType);
+                Expression expression = Expression.New(emptyConstructor);
 
                 expression = EnsureCastExpression(expression, resultType);
 
