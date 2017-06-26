@@ -13,7 +13,7 @@
     <Authors>Qiang Gu</Authors>
     <FileVersion>3.0.0.17</FileVersion>
     <VersionPrefix>3.0.0.17</VersionPrefix>
-    <VersionSuffix>alpha1</VersionSuffix>
+    <VersionSuffix>alpha</VersionSuffix>
     <PackageLicenseUrl>https://github.com/GuQiangJS/XPatchLib.Net/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/GuQiangJS/XPatchLib.Net</PackageProjectUrl>
     <NeutralLanguage>zh-Hans</NeutralLanguage>
