@@ -71,6 +71,9 @@ namespace XPatchLib
 
                 case TypeCode.String:
                     return DivideAction<String>(pName, pOriObject, pRevObject, pAttach);
+
+                case TypeCode.TimeSpan:
+                    return DivideAction<TimeSpan>(pName, pOriObject, pRevObject, pAttach);
             }
             if (Type.IsGuid)
                 return DivideAction<Guid>(pName, pOriObject, pRevObject, pAttach);
@@ -207,6 +210,9 @@ namespace XPatchLib
 
                 case TypeCode.Char:
                     return XmlConvert.ToString((ushort) (char) pObj);
+
+                case TypeCode.TimeSpan:
+                    return XmlConvert.ToString((TimeSpan)pObj);
             }
 
             if (typeof(T) == typeof(Guid))

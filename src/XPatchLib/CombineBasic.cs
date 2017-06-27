@@ -70,6 +70,9 @@ namespace XPatchLib
 
                 case TypeCode.String:
                     return CombineString(pValue);
+
+                case TypeCode.TimeSpan:
+                    return CombineTimeSpan(pValue);
             }
             if (pIsGuid)
                 return CombineGuid(pValue);
@@ -201,6 +204,11 @@ namespace XPatchLib
         {
             return ushort.Parse(pValue, NumberFormatInfo.InvariantInfo);
             //return XmlConvert.ToUInt16(pValue);
+        }
+
+        private static object CombineTimeSpan(string pValue)
+        {
+            return XmlConvert.ToTimeSpan(pValue);
         }
 
         #endregion Private Methods

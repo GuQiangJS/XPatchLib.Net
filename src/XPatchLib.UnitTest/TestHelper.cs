@@ -116,6 +116,7 @@ namespace XPatchLib.UnitTest
             var changedEle = xDoc.OuterXml;
             xDoc = null;
 #endif
+            System.Diagnostics.Debug.WriteLine(changedEle.ToString());
             changedEle = null;
             stream.Position = 0;
         }

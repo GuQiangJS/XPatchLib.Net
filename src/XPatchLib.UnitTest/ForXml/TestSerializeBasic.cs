@@ -52,21 +52,21 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 false, int.MinValue, double.MinValue, s1, long.MinValue, short.MinValue, sbyte.MinValue, byte.MinValue,
                 ushort.MinValue, uint.MinValue, ulong.MinValue, float.MinValue, decimal.MinValue, DateTime.MinValue, g1,
-                'a'
+                'a',TimeSpan.MinValue
             };
 
             var revObjs = new object[]
             {
                 true, int.MaxValue, double.MaxValue, s2, long.MaxValue, short.MaxValue, sbyte.MaxValue, byte.MaxValue,
                 ushort.MaxValue, uint.MaxValue, ulong.MaxValue, float.MaxValue, decimal.MaxValue, DateTime.MaxValue, g2,
-                'b'
+                'b',TimeSpan.MaxValue
             };
 
             var types = new[]
             {
                 typeof(bool), typeof(int), typeof(double), typeof(string), typeof(long), typeof(short), typeof(sbyte),
                 typeof(byte), typeof(ushort), typeof(uint), typeof(ulong), typeof(float), typeof(decimal),
-                typeof(DateTime), typeof(Guid), typeof(char)
+                typeof(DateTime), typeof(Guid), typeof(char), typeof(TimeSpan)
             };
 
             var serializedResults = new[]
@@ -81,7 +81,9 @@ namespace XPatchLib.UnitTest.ForXml
                 "<Decimal>" + XmlConvert.ToString(decimal.MaxValue) + "</Decimal>",
                 "<DateTime>" + XmlConvert.ToString(DateTime.MaxValue, XmlDateTimeSerializationMode.RoundtripKind) +
                 "</DateTime>",
-                "<Guid>" + XmlConvert.ToString(g2) + "</Guid>", "<Char>" + XmlConvert.ToString((ushort) 'b') + "</Char>"
+                "<Guid>" + XmlConvert.ToString(g2) + "</Guid>",
+                "<Char>" + XmlConvert.ToString((ushort) 'b') + "</Char>",
+                "<TimeSpan>" + XmlConvert.ToString(TimeSpan.MaxValue) + "</TimeSpan>"
             };
             var serializedSetNullResults = new[]
             {
@@ -90,7 +92,7 @@ namespace XPatchLib.UnitTest.ForXml
                 @"<SByte Action=""SetNull"" />", @"<Byte Action=""SetNull"" />", @"<UInt16 Action=""SetNull"" />",
                 @"<UInt32 Action=""SetNull"" />", @"<UInt64 Action=""SetNull"" />", @"<Single Action=""SetNull"" />",
                 @"<Decimal Action=""SetNull"" />", @"<DateTime Action=""SetNull"" />", @"<Guid Action=""SetNull"" />",
-                @"<Char Action=""SetNull"" />"
+                @"<Char Action=""SetNull"" />", @"<TimeSpan Action=""SetNull"" />"
             };
             //值类型默认值
             //https://msdn.microsoft.com/zh-cn/library/83fhsxwc.aspx
@@ -105,7 +107,8 @@ namespace XPatchLib.UnitTest.ForXml
                 "<DateTime>" + XmlConvert.ToString(new DateTime(), XmlDateTimeSerializationMode.RoundtripKind) +
                 "</DateTime>",
                 "<Guid>" + XmlConvert.ToString(Guid.Empty) + "</Guid>",
-                "<Char>" + XmlConvert.ToString((ushort) '\0') + "</Char>"
+                "<Char>" + XmlConvert.ToString((ushort) '\0') + "</Char>",
+                "<TimeSpan>" + XmlConvert.ToString(TimeSpan.Zero) + "</TimeSpan>",
             };
 
             for (var i = 0; i < types.Length; i++)
