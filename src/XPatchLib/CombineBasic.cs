@@ -81,6 +81,9 @@ namespace XPatchLib
                 case TypeCode.BigInteger:
                     return CombineBigInteger(pValue);
 #endif
+
+                case TypeCode.Uri:
+                    return CombineUri(pValue);
             }
             if (pIsGuid)
                 return CombineGuid(pValue);
@@ -230,6 +233,11 @@ namespace XPatchLib
             return System.Numerics.BigInteger.Parse(pValue, CultureInfo.InvariantCulture);
         }
 #endif
+
+        private static object CombineUri(string pValue)
+        {
+            return new Uri(pValue);
+        }
 
 #endregion Private Methods
     }

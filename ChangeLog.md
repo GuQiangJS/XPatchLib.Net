@@ -1,3 +1,7 @@
+#### 3.0.0.21
+
+* 新增 - 新增对 [Uri](https://msdn.microsoft.com/zh-cn/library/system.uri(v=vs.110).aspx) 类型的支持。
+
 #### 3.0.0.20
 
 * 新增 - 新增对 [BigInteger](https://msdn.microsoft.com/zh-cn/library/system.numerics.biginteger(v=vs.110).aspx) 类型的支持。

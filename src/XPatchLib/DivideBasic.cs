@@ -83,6 +83,9 @@ namespace XPatchLib
                 case TypeCode.BigInteger:
                     return DivideAction<System.Numerics.BigInteger>(pName, pOriObject, pRevObject, pAttach);
 #endif
+
+                case TypeCode.Uri:
+                    return DivideAction<Uri>(pName, pOriObject, pRevObject, pAttach);
             }
             if (Type.IsGuid)
                 return DivideAction<Guid>(pName, pOriObject, pRevObject, pAttach);
@@ -230,6 +233,8 @@ namespace XPatchLib
                 case TypeCode.BigInteger:
                     return ((System.Numerics.BigInteger)pObj).ToString(CultureInfo.InvariantCulture);
 #endif
+                case TypeCode.Uri:
+                    return ((Uri) pObj).ToString();
             }
 
             if (typeof(T) == typeof(Guid))

@@ -48,6 +48,9 @@ namespace XPatchLib.UnitTest.ForXml
             var s1 = Guid.NewGuid().ToString();
             var s2 = Guid.NewGuid().ToString();
 
+            var uri1 = new Uri("http://www.visualstudio.com");
+            var uri2 = new Uri("http://www.msdn.com");
+
             var oriObjs = new object[]
             {
                 false, int.MinValue, double.MinValue, s1, long.MinValue, short.MinValue, sbyte.MinValue, byte.MinValue,
@@ -56,6 +59,7 @@ namespace XPatchLib.UnitTest.ForXml
 #if NET_40_UP || NETSTANDARD_1_1_UP
                 ,System.Numerics.BigInteger.Zero
 #endif
+                ,uri1
             };
 
             var revObjs = new object[]
@@ -66,6 +70,7 @@ namespace XPatchLib.UnitTest.ForXml
 #if NET_40_UP || NETSTANDARD_1_1_UP
                 ,System.Numerics.BigInteger.MinusOne
 #endif
+                ,uri2
             };
 
             var types = new[]
@@ -76,6 +81,7 @@ namespace XPatchLib.UnitTest.ForXml
 #if NET_40_UP || NETSTANDARD_1_1_UP
                 ,typeof(System.Numerics.BigInteger)
 #endif
+                ,typeof(Uri)
             };
 
             var serializedResults = new[]
@@ -97,6 +103,7 @@ namespace XPatchLib.UnitTest.ForXml
 #if NET_40_UP || NETSTANDARD_1_1_UP
                 ,"<BigInteger>" + System.Numerics.BigInteger.MinusOne.ToString(CultureInfo.InvariantCulture) + "</BigInteger>"
 #endif
+                ,"<Uri>" + uri2.ToString() + "</Uri>"
             };
             var serializedSetNullResults = new[]
             {
@@ -109,6 +116,7 @@ namespace XPatchLib.UnitTest.ForXml
 #if NET_40_UP || NETSTANDARD_1_1_UP
                 ,@"<BigInteger Action=""SetNull"" />"
 #endif
+                ,@"<Uri Action=""SetNull"" />"
             };
             //值类型默认值
             //https://msdn.microsoft.com/zh-cn/library/83fhsxwc.aspx
@@ -129,6 +137,7 @@ namespace XPatchLib.UnitTest.ForXml
 #if NET_40_UP || NETSTANDARD_1_1_UP
                 ,"<BigInteger>" + System.Numerics.BigInteger.Zero.ToString(CultureInfo.InvariantCulture) + "</BigInteger>"
 #endif
+                ,null
             };
 
             for (var i = 0; i < types.Length; i++)
@@ -220,13 +229,17 @@ namespace XPatchLib.UnitTest.ForXml
                         var ser = new DivideBasic(writer, new TypeExtend(types[i], writer.IgnoreAttributeType));
                         //原始值为null，如果更新值为默认值时，如果设置为序列化默认值，则做序列化
 
-                        Assert.IsTrue(ser.Divide(types[i].Name, null, ReflectionUtils.GetDefaultValue(types[i])));
-                        //writer.WriteEndObject();
-                        writer.Flush();
-                        stream.Position = 0;
-                        var der = new CombineBasic(new TypeExtend(types[i], null));
+                        if (!string.IsNullOrEmpty(serializedDefaultValues[i]))
+                        {
+                            //只有当默认值不为null时，才做以下判断
+                            Assert.IsTrue(ser.Divide(types[i].Name, null, ReflectionUtils.GetDefaultValue(types[i])));
+                            //writer.WriteEndObject();
+                            writer.Flush();
+                            stream.Position = 0;
+                            var der = new CombineBasic(new TypeExtend(types[i], null));
 
-                        AssertHelper.AreEqual(serializedDefaultValues[i], stream, "输出内容与预期不符");
+                            AssertHelper.AreEqual(serializedDefaultValues[i], stream, "输出内容与预期不符");
+                        }
                     }
                 }
             }
