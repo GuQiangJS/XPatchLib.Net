@@ -352,6 +352,42 @@ namespace XPatchLib.UnitTest.ForXml
         }
 
         [Test]
+        public void SerializeNullable_RevValueIsNotNull()
+        {
+            NullableClass b1 = NullableClass.GetSampleInstance();
+
+            NullableClass b2 = NullableClass.GetSampleInstance();
+            b2.PurchaseYear = 2003;
+            string result = @"<NullableClass>
+  <PurchaseYear Action=""SetNull"" />
+</NullableClass>";
+            using (MemoryStream stream = new MemoryStream())
+            {
+                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
+                {
+                    DivideObject ser = new DivideObject(writer,
+                        new TypeExtend(typeof(NullableClass), writer.IgnoreAttributeType));
+                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(NullableClass)), b2, b1));
+                }
+                AssertHelper.AreEqual(result, stream, string.Empty);
+                CombineObject dser = new CombineObject(new TypeExtend(typeof(NullableClass), null));
+                using (XmlReader xmlReader = XmlReader.Create(stream))
+                {
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        NullableClass b3 =
+                            dser.Combine(reader, b1, ReflectionUtils.GetTypeFriendlyName(typeof(NullableClass))) as
+                                NullableClass;
+                        Debug.Assert(b3 != null, "b3 != null");
+                        Assert.AreEqual(b1.Title, b3.Title);
+                        Assert.AreEqual(b1.PublishYear, b3.PublishYear);
+                        Assert.AreEqual(b1.PurchaseYear, b3.PurchaseYear);
+                    }
+                }
+            }
+        }
+
+        [Test]
         public void SerializeNullable_OriValueIsNull()
         {
             NullableClass b1 = NullableClass.GetSampleInstance();
