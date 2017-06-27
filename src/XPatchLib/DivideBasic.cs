@@ -2,6 +2,7 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Globalization;
 using System.Xml;
 
 namespace XPatchLib
@@ -77,6 +78,11 @@ namespace XPatchLib
 
                 case TypeCode.DateTimeOffset:
                     return DivideAction<DateTimeOffset>(pName, pOriObject, pRevObject, pAttach);
+
+#if NET_40_UP || NETSTANDARD_1_1_UP
+                case TypeCode.BigInteger:
+                    return DivideAction<System.Numerics.BigInteger>(pName, pOriObject, pRevObject, pAttach);
+#endif
             }
             if (Type.IsGuid)
                 return DivideAction<Guid>(pName, pOriObject, pRevObject, pAttach);
@@ -219,6 +225,11 @@ namespace XPatchLib
 
                 case TypeCode.DateTimeOffset:
                     return XmlConvert.ToString((DateTimeOffset) pObj);
+
+#if NET_40_UP || NETSTANDARD_1_1_UP
+                case TypeCode.BigInteger:
+                    return ((System.Numerics.BigInteger)pObj).ToString(CultureInfo.InvariantCulture);
+#endif
             }
 
             if (typeof(T) == typeof(Guid))

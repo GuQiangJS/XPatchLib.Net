@@ -76,6 +76,11 @@ namespace XPatchLib
 
                 case TypeCode.DateTimeOffset:
                     return CombineDateTimeOffset(pValue);
+
+#if NET_40_UP || NETSTANDARD_1_1_UP
+                case TypeCode.BigInteger:
+                    return CombineBigInteger(pValue);
+#endif
             }
             if (pIsGuid)
                 return CombineGuid(pValue);
@@ -94,7 +99,7 @@ namespace XPatchLib
             return CombineAction(Type.TypeCode, Type.IsGuid, pReader.Setting.Mode, pReader.ReadString());
         }
 
-        #region Internal Constructors
+#region Internal Constructors
 
         /// <summary>
         ///     使用指定的类型初始化 <see cref="XPatchLib.CombineBasic" /> 类的新实例。
@@ -107,9 +112,9 @@ namespace XPatchLib
         {
         }
 
-        #endregion Internal Constructors
+#endregion Internal Constructors
 
-        #region Private Methods
+#region Private Methods
 
         private static object CombineBoolean(string pValue)
         {
@@ -219,6 +224,13 @@ namespace XPatchLib
             return XmlConvert.ToDateTimeOffset(pValue);
         }
 
-        #endregion Private Methods
+#if NET_40_UP || NETSTANDARD_1_1_UP
+        private static object CombineBigInteger(string pValue)
+        {
+            return System.Numerics.BigInteger.Parse(pValue, CultureInfo.InvariantCulture);
+        }
+#endif
+
+#endregion Private Methods
     }
 }

@@ -53,6 +53,9 @@ namespace XPatchLib.UnitTest.ForXml
                 false, int.MinValue, double.MinValue, s1, long.MinValue, short.MinValue, sbyte.MinValue, byte.MinValue,
                 ushort.MinValue, uint.MinValue, ulong.MinValue, float.MinValue, decimal.MinValue, DateTime.MinValue, g1,
                 'a', TimeSpan.MinValue, DateTimeOffset.MinValue
+#if NET_40_UP || NETSTANDARD_1_1_UP
+                ,System.Numerics.BigInteger.Zero
+#endif
             };
 
             var revObjs = new object[]
@@ -60,6 +63,9 @@ namespace XPatchLib.UnitTest.ForXml
                 true, int.MaxValue, double.MaxValue, s2, long.MaxValue, short.MaxValue, sbyte.MaxValue, byte.MaxValue,
                 ushort.MaxValue, uint.MaxValue, ulong.MaxValue, float.MaxValue, decimal.MaxValue, DateTime.MaxValue, g2,
                 'b',TimeSpan.MaxValue, DateTimeOffset.MaxValue
+#if NET_40_UP || NETSTANDARD_1_1_UP
+                ,System.Numerics.BigInteger.MinusOne
+#endif
             };
 
             var types = new[]
@@ -67,6 +73,9 @@ namespace XPatchLib.UnitTest.ForXml
                 typeof(bool), typeof(int), typeof(double), typeof(string), typeof(long), typeof(short), typeof(sbyte),
                 typeof(byte), typeof(ushort), typeof(uint), typeof(ulong), typeof(float), typeof(decimal),
                 typeof(DateTime), typeof(Guid), typeof(char), typeof(TimeSpan), typeof(DateTimeOffset)
+#if NET_40_UP || NETSTANDARD_1_1_UP
+                ,typeof(System.Numerics.BigInteger)
+#endif
             };
 
             var serializedResults = new[]
@@ -85,6 +94,9 @@ namespace XPatchLib.UnitTest.ForXml
                 "<Char>" + XmlConvert.ToString((ushort) 'b') + "</Char>",
                 "<TimeSpan>" + XmlConvert.ToString(TimeSpan.MaxValue) + "</TimeSpan>",
                 "<DateTimeOffset>" + XmlConvert.ToString(DateTimeOffset.MaxValue) + "</DateTimeOffset>"
+#if NET_40_UP || NETSTANDARD_1_1_UP
+                ,"<BigInteger>" + System.Numerics.BigInteger.MinusOne.ToString(CultureInfo.InvariantCulture) + "</BigInteger>"
+#endif
             };
             var serializedSetNullResults = new[]
             {
@@ -94,6 +106,9 @@ namespace XPatchLib.UnitTest.ForXml
                 @"<UInt32 Action=""SetNull"" />", @"<UInt64 Action=""SetNull"" />", @"<Single Action=""SetNull"" />",
                 @"<Decimal Action=""SetNull"" />", @"<DateTime Action=""SetNull"" />", @"<Guid Action=""SetNull"" />",
                 @"<Char Action=""SetNull"" />", @"<TimeSpan Action=""SetNull"" />", @"<DateTimeOffset Action=""SetNull"" />"
+#if NET_40_UP || NETSTANDARD_1_1_UP
+                ,@"<BigInteger Action=""SetNull"" />"
+#endif
             };
             //值类型默认值
             //https://msdn.microsoft.com/zh-cn/library/83fhsxwc.aspx
@@ -110,7 +125,10 @@ namespace XPatchLib.UnitTest.ForXml
                 "<Guid>" + XmlConvert.ToString(Guid.Empty) + "</Guid>",
                 "<Char>" + XmlConvert.ToString((ushort) '\0') + "</Char>",
                 "<TimeSpan>" + XmlConvert.ToString(TimeSpan.Zero) + "</TimeSpan>",
-                "<DateTimeOffset>" + XmlConvert.ToString((DateTimeOffset)ReflectionUtils.GetDefaultValue(typeof(DateTimeOffset))) + "</DateTimeOffset>",
+                "<DateTimeOffset>" + XmlConvert.ToString((DateTimeOffset)ReflectionUtils.GetDefaultValue(typeof(DateTimeOffset))) + "</DateTimeOffset>"
+#if NET_40_UP || NETSTANDARD_1_1_UP
+                ,"<BigInteger>" + System.Numerics.BigInteger.Zero.ToString(CultureInfo.InvariantCulture) + "</BigInteger>"
+#endif
             };
 
             for (var i = 0; i < types.Length; i++)
