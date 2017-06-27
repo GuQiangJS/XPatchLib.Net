@@ -130,7 +130,7 @@ using (var fs = new FileStream(filename, FileMode.Open))
 
 ## 后续计划
 
-* 部分对象类型尚未支持。例如：`DateTimeOffset` ， `BigInteger` 等。
+* 部分对象类型尚未支持。例如：`DateTimeOffset` ， `BigInteger` 等。(已支持)
 
 * 支持除 `XML` 外的其他格式输出。
 

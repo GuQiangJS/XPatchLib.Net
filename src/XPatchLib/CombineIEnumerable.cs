@@ -224,7 +224,7 @@ namespace XPatchLib
                 //当当前集合是数组类型时
                 if (GenericArgumentType.IsBasicType)
                 {
-                    var value = pReader.ReadString();
+                    var value = new KeyValuesObject(pReader.Read(GenericArgumentType.OriType));
                     //当时基础类型时，按照基础类型获取所有的方式查找索引。
 
                     o = pOriEnumerable.FirstOrDefault(x => x.Equals(value));
@@ -267,7 +267,7 @@ namespace XPatchLib
                     var newList = Array.CreateInstance(GenericArgumentType.OriType, oldList.Length - 1);
                     //遍历原始集合中的所有元素
                     for (int i = 0, j = 0; i < oldList.Length; i++)
-                        if (oldList.GetValue(i) != pFoundItem)
+                        if (!TypeExtend.ObjectEquals(oldList.GetValue(i), pFoundItem))
                         {
                             newList.SetValue(oldList.GetValue(i), j);
                             j++;

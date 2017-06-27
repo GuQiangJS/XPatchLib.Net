@@ -499,6 +499,49 @@ namespace XPatchLib.UnitTest.ForXml
         }
 
         [Test]
+        public void TestByteArray()
+        {
+            Byte[] bytes1 = {1, 2, 3, 4, 5};
+            Byte[] bytes2 = {1, 3, 5, 7, 9};
+
+            Type t = typeof(Byte[]);
+
+            const string result =
+                @"<Array1OfByte>
+  <Byte Action=""Remove"">2</Byte>
+  <Byte Action=""Remove"">4</Byte>
+  <Byte Action=""Add"">7</Byte>
+  <Byte Action=""Add"">9</Byte>
+</Array1OfByte>";
+
+            using (var stream = new MemoryStream())
+            {
+                using (ITextWriter writer = TestHelper.CreateWriter(stream))
+                {
+                    var ser = new DivideIEnumerable(writer,
+                        new TypeExtend(t, writer.IgnoreAttributeType));
+                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(t), bytes1, bytes2));
+                }
+
+                AssertHelper.AreEqual(result, stream, string.Empty);
+
+                var com = new CombineIEnumerable(new TypeExtend(t, null));
+                stream.Position = 0;
+                using (XmlReader xmlReader = XmlReader.Create(stream))
+                {
+                    using (ITextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        var bytes3 = com.Combine(reader, bytes1, ReflectionUtils.GetTypeFriendlyName(t)) as Byte[];
+                        Assert.AreEqual(bytes2.Length, bytes3.Length);
+
+                        Assert.IsTrue(bytes3.Contains(bytes2[3]));
+                        Assert.IsTrue(bytes3.Contains(bytes2[4]));
+                    }
+                }
+            }
+        }
+
+        [Test]
         public void TestSerializeSimpleArray()
         {
             string[] s1 = {"ABC", "DEF"};
