@@ -73,6 +73,9 @@ namespace XPatchLib
 
                 case TypeCode.TimeSpan:
                     return CombineTimeSpan(pValue);
+
+                case TypeCode.DateTimeOffset:
+                    return CombineDateTimeOffset(pValue);
             }
             if (pIsGuid)
                 return CombineGuid(pValue);
@@ -209,6 +212,11 @@ namespace XPatchLib
         private static object CombineTimeSpan(string pValue)
         {
             return XmlConvert.ToTimeSpan(pValue);
+        }
+
+        private static object CombineDateTimeOffset(string pValue)
+        {
+            return XmlConvert.ToDateTimeOffset(pValue);
         }
 
         #endregion Private Methods

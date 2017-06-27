@@ -74,6 +74,9 @@ namespace XPatchLib
 
                 case TypeCode.TimeSpan:
                     return DivideAction<TimeSpan>(pName, pOriObject, pRevObject, pAttach);
+
+                case TypeCode.DateTimeOffset:
+                    return DivideAction<DateTimeOffset>(pName, pOriObject, pRevObject, pAttach);
             }
             if (Type.IsGuid)
                 return DivideAction<Guid>(pName, pOriObject, pRevObject, pAttach);
@@ -213,6 +216,9 @@ namespace XPatchLib
 
                 case TypeCode.TimeSpan:
                     return XmlConvert.ToString((TimeSpan)pObj);
+
+                case TypeCode.DateTimeOffset:
+                    return XmlConvert.ToString((DateTimeOffset) pObj);
             }
 
             if (typeof(T) == typeof(Guid))
