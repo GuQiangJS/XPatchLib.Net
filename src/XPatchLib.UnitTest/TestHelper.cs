@@ -110,13 +110,14 @@ namespace XPatchLib.UnitTest
         {
 #if (NET_35 || NETSTANDARD)
             var changedEle = XElement.Load(new StreamReader(stream));
+            System.Diagnostics.Debug.WriteLine(changedEle.Value);
 #else
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(new StreamReader(stream));
             var changedEle = xDoc.OuterXml;
             xDoc = null;
-#endif
             System.Diagnostics.Debug.WriteLine(changedEle.ToString());
+#endif
             changedEle = null;
             stream.Position = 0;
         }

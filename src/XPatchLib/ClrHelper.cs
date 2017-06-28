@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 #if (NET_35_UP || NETSTANDARD)
 using System.Linq.Expressions;
 #else 
@@ -121,17 +122,12 @@ namespace XPatchLib
                 if (getMethod == null || !getMethod.IsPublic)
                     return null;
 #if NET
-                DynamicMethod dynamicGetMethod = new DynamicMethod("GetValue", typeof(object), GetValueParameterTypes,
-                    true);
-                ILGenerator ilGenerator = dynamicGetMethod.GetILGenerator();
-                ilGenerator.Emit(OpCodes.Ldarg_0);
-                Debug.Assert(pProperty.DeclaringType != null, "pProperty.DeclaringType != null");
-                ilGenerator.Emit(OpCodes.Castclass, pProperty.DeclaringType);
-                ilGenerator.Emit(OpCodes.Callvirt, getMethod);
-                if (pProperty.PropertyType.IsValueType())
-                    ilGenerator.Emit(OpCodes.Box, pProperty.PropertyType);
-                ilGenerator.Emit(OpCodes.Ret);
-                return (Func<T, Object>) dynamicGetMethod.CreateDelegate(typeof(Func<T, Object>));
+                DynamicMethod dynamicMethod = CreateDynamicMethod("Get" + pProperty.Name, typeof(object), new[] { typeof(T) }, pProperty.DeclaringType);
+                ILGenerator generator = dynamicMethod.GetILGenerator();
+
+                GenerateCreateGetPropertyIL(pProperty, generator);
+
+                return (Func<T, object>)dynamicMethod.CreateDelegate(typeof(Func<T, object>));
 #elif NETSTANDARD
                 Type instanceType = typeof(T);
                 Type resultType = typeof(object);
@@ -178,7 +174,26 @@ namespace XPatchLib
 
             return dynamicMethod;
         }
-        
+
+        internal static void GenerateCreateGetPropertyIL(PropertyInfo propertyInfo, ILGenerator generator)
+        {
+            MethodInfo getMethod = propertyInfo.GetGetMethod(true);
+            if (getMethod == null)
+            {
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture,
+                    "Property '{0}' does not have a getter.", propertyInfo.Name));
+            }
+
+            if (!getMethod.IsStatic)
+            {
+                generator.PushInstance(propertyInfo.DeclaringType);
+            }
+
+            generator.CallMethod(getMethod);
+            generator.BoxIfNeeded(propertyInfo.PropertyType);
+            generator.Return();
+        }
+
         internal static void GenerateCreateSetPropertyIL(PropertyInfo propertyInfo, ILGenerator generator)
         {
             MethodInfo setMethod = propertyInfo.GetSetMethod(true);

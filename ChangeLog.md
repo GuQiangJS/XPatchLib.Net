@@ -1,3 +1,10 @@
+#### 3.0.0.23
+
+* 修正 - 修正Struct类型（`[Size](https://msdn.microsoft.com/zh-cn/library/system.drawing.size(v=vs.110).aspx)`
+,`[Point](https://msdn.microsoft.com/zh-cn/library/system.drawing.point(v=vs.110).aspx)`,
+`[Rectangle](https://msdn.microsoft.com/zh-cn/library/system.drawing.rectangle(v=vs.110).aspx)`等）
+对象做增量序列化时会报 [System.Security.VerificationException](https://msdn.microsoft.com/zh-cn/library/system.security.verificationexception(v=vs.110).aspx) 异常。
+
 #### 3.0.0.22
 
 * 修正 - 修正值类型对象数组做增量反序列化时的错误。

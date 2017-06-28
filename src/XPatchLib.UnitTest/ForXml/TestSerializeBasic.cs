@@ -332,6 +332,92 @@ namespace XPatchLib.UnitTest.ForXml
 
 #if (NET || NETSTANDARD_2_0_UP)
         [Test]
+        public void SerializeStruct()
+        {
+            Type[] typies = new Type[] { typeof(Size), typeof(SizeF), typeof(Point), typeof(PointF), typeof(Rectangle), typeof(RectangleF) };
+
+            object[] values = new object[] { new Size(1, 2), new SizeF(1.1f, 2.2f), new Point(3, 4), new PointF(3.3f, 4.4f), new Rectangle(1, 2, 3, 4), new RectangleF(1.1f, 2.2f, 3.3f, 4.4f), };
+
+            string[] results = new string[]
+            {
+                string.Format(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<Size>
+  <Height>{0}</Height>
+  <Width>{1}</Width>
+</Size>", ((Size)values[0]).Height,((Size)values[0]).Width),
+                string.Format(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<SizeF>
+  <Height>{0}</Height>
+  <Width>{1}</Width>
+</SizeF>", ((SizeF)values[1]).Height,((SizeF)values[1]).Width),
+                string.Format(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<Point>
+  <X>{0}</X>
+  <Y>{1}</Y>
+</Point>", ((Point)values[2]).X,((Point)values[2]).Y),
+                string.Format(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<PointF>
+  <X>{0}</X>
+  <Y>{1}</Y>
+</PointF>", ((PointF)values[3]).X,((PointF)values[3]).Y),
+                string.Format(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<Rectangle>
+  <Height>{0}</Height>
+  <Location>
+    <X>{2}</X>
+    <Y>{3}</Y>
+  </Location>
+  <Size>
+    <Height>{0}</Height>
+    <Width>{1}</Width>
+  </Size>
+  <Width>{1}</Width>
+  <X>{2}</X>
+  <Y>{3}</Y>
+</Rectangle>", ((Rectangle)values[4]).Height,((Rectangle)values[4]).Width,((Rectangle)values[4]).X,((Rectangle)values[4]).Y,((Rectangle)values[4]).Location,((Rectangle)values[4]).Size),
+                string.Format(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<RectangleF>
+  <Height>{0}</Height>
+  <Location>
+    <X>{2}</X>
+    <Y>{3}</Y>
+  </Location>
+  <Size>
+    <Height>{0}</Height>
+    <Width>{1}</Width>
+  </Size>
+  <Width>{1}</Width>
+  <X>{2}</X>
+  <Y>{3}</Y>
+</RectangleF>", ((RectangleF)values[5]).Height,((RectangleF)values[5]).Width,((RectangleF)values[5]).X,((RectangleF)values[5]).Y,((RectangleF)values[5]).Location,((RectangleF)values[5]).Size)
+            };
+
+            for (int i = 0; i < typies.Length; i++)
+            {
+                Serializer serializer = new Serializer(typies[i]);
+                using (var stream = new MemoryStream())
+                {
+                    using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
+                    {
+                        serializer.Divide(writer, null, values[i]);
+                    }
+
+                    AssertHelper.AreEqual(results[i], stream, "输出内容与预期不符");
+                    using (XmlReader xmlReader = XmlReader.Create(stream))
+                    {
+                        using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                        {
+                            var c2 =
+                                serializer.Combine(reader, null);
+                            Debug.Assert(c2 != null, "c2 != null");
+                            Assert.AreEqual(values[i], c2);
+                        }
+                    }
+                }
+            }
+        }
+
+        [Test]
         public void SerializeColor_Argb()
         {
             var c1 = new ColorClass {Color = Color.FromArgb(255, 255, 255)};
