@@ -1,3 +1,7 @@
+#### 3.0.0.24
+
+* 修正 - 修正合并增量时，如果增量只有一个单独的根节点，会无法合并增量。
+
 #### 3.0.0.23
 
 * 修正 - 修正Struct类型（`Size`,`Point`,`Rectangle`等）对象做增量序列化时会报 [System.Security.VerificationException](https://msdn.microsoft.com/zh-cn/library/system.security.verificationexception(v=vs.110).aspx) 异常。

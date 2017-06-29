@@ -24,7 +24,7 @@ using Assert = XPatchLib.UnitTest.XUnitAssert;
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
-    public class TestSerializeBasic
+    public class TestSerializeBasic:TestBase
     {
         [Test]
         public void BasicSerializeCtorTest()
@@ -328,15 +328,28 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.Fail("未能抛出FormatException异常。");
             }
         }
-#endif
 
-#if (NET || NETSTANDARD_2_0_UP)
+
         [Test]
         public void SerializeStruct()
         {
-            Type[] typies = new Type[] { typeof(Size), typeof(SizeF), typeof(Point), typeof(PointF), typeof(Rectangle), typeof(RectangleF) };
+            Type[] typies = new Type[]
+            {
+                typeof(Size), typeof(SizeF), typeof(Point), typeof(PointF), typeof(Rectangle), typeof(RectangleF)
+#if NET_35_UP
+                , typeof(System.Windows.Vector), typeof(System.Windows.Thickness)
+#endif
+            };
 
-            object[] values = new object[] { new Size(1, 2), new SizeF(1.1f, 2.2f), new Point(3, 4), new PointF(3.3f, 4.4f), new Rectangle(1, 2, 3, 4), new RectangleF(1.1f, 2.2f, 3.3f, 4.4f), };
+            object[] values = new object[]
+            {
+                new Size(1, 2), new SizeF(1.1f, 2.2f), new Point(3, 4), new PointF(3.3f, 4.4f),
+                new Rectangle(1, 2, 3, 4), new RectangleF(1.1f, 2.2f, 3.3f, 4.4f)
+#if NET_35_UP
+                , new System.Windows.Vector(2.345d, 3.456d),
+                new System.Windows.Thickness(1.234d, 2.345d, 3.456d, 4.567d)
+#endif
+            };
 
             string[] results = new string[]
             {
@@ -374,7 +387,7 @@ namespace XPatchLib.UnitTest.ForXml
   <Width>{1}</Width>
   <X>{2}</X>
   <Y>{3}</Y>
-</Rectangle>", ((Rectangle)values[4]).Height,((Rectangle)values[4]).Width,((Rectangle)values[4]).X,((Rectangle)values[4]).Y,((Rectangle)values[4]).Location,((Rectangle)values[4]).Size),
+</Rectangle>", ((Rectangle)values[4]).Height,((Rectangle)values[4]).Width,((Rectangle)values[4]).X,((Rectangle)values[4]).Y),
                 string.Format(@"<?xml version=""1.0"" encoding=""utf-8""?>
 <RectangleF>
   <Height>{0}</Height>
@@ -389,31 +402,26 @@ namespace XPatchLib.UnitTest.ForXml
   <Width>{1}</Width>
   <X>{2}</X>
   <Y>{3}</Y>
-</RectangleF>", ((RectangleF)values[5]).Height,((RectangleF)values[5]).Width,((RectangleF)values[5]).X,((RectangleF)values[5]).Y,((RectangleF)values[5]).Location,((RectangleF)values[5]).Size)
+</RectangleF>", ((RectangleF)values[5]).Height,((RectangleF)values[5]).Width,((RectangleF)values[5]).X,((RectangleF)values[5]).Y)
+#if NET_35_UP
+                ,string.Format(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<Vector>
+  <X>{0}</X>
+  <Y>{1}</Y>
+</Vector>", ((System.Windows.Vector)values[6]).X, ((System.Windows.Vector)values[6]).Y)
+                ,string.Format(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<Thickness>
+  <Bottom>{0}</Bottom>
+  <Left>{1}</Left>
+  <Right>{2}</Right>
+  <Top>{3}</Top>
+</Thickness>", ((System.Windows.Thickness)values[7]).Bottom, ((System.Windows.Thickness)values[7]).Left, ((System.Windows.Thickness)values[7]).Right, ((System.Windows.Thickness)values[7]).Top)
+#endif
             };
 
             for (int i = 0; i < typies.Length; i++)
             {
-                Serializer serializer = new Serializer(typies[i]);
-                using (var stream = new MemoryStream())
-                {
-                    using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                    {
-                        serializer.Divide(writer, null, values[i]);
-                    }
-
-                    AssertHelper.AreEqual(results[i], stream, "输出内容与预期不符");
-                    using (XmlReader xmlReader = XmlReader.Create(stream))
-                    {
-                        using (XmlTextReader reader = new XmlTextReader(xmlReader))
-                        {
-                            var c2 =
-                                serializer.Combine(reader, null);
-                            Debug.Assert(c2 != null, "c2 != null");
-                            Assert.AreEqual(values[i], c2);
-                        }
-                    }
-                }
+                DoAssert(typies[i], results[i], null, values[i], true);
             }
         }
 
@@ -483,6 +491,7 @@ namespace XPatchLib.UnitTest.ForXml
                 }
             }
         }
+
 #endif
     }
 }

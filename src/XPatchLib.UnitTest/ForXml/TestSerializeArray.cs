@@ -22,7 +22,7 @@ using Assert = XPatchLib.UnitTest.XUnitAssert;
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
-    public class TestSerializeArray
+    public class TestSerializeArray:TestBase
     {
 #if XUNIT
         public TestSerializeArray()
@@ -42,55 +42,49 @@ namespace XPatchLib.UnitTest.ForXml
         [Description("测试合并集合类型但是传入的类型不是集合类型时，是否抛出ArgumentOutOfRangeException错误")]
         public void TestCombineNonCollectionType()
         {
-            var exceptionCatched = false;
             try
             {
                 new CombineIEnumerable(new TypeExtend(typeof(AuthorClass), null));
+                Assert.Fail("未能抛出ArgumentOutOfRangeException异常");
             }
             catch (ArgumentOutOfRangeException ex)
             {
                 Assert.AreEqual(ex.ParamName, typeof(AuthorClass).FullName);
-                exceptionCatched = true;
             }
             catch (Exception)
             {
                 Assert.Fail("未能抛出ArgumentOutOfRangeException异常");
             }
-            if (!exceptionCatched)
-                Assert.Fail("未能抛出PrimaryKeyException异常");
         }
 
         [Test]
         [Description("测试合并类型没有定义主键的对象是否会抛出异常")]
         public void TestCombineNullPrimaryKeyDefingeClass()
         {
-            var exceptionCatched = false;
             try
             {
                 new CombineIEnumerable(new TypeExtend(typeof(List<AuthorClass>), null));
+                Assert.Fail("未能抛出AttributeMissException异常");
             }
             catch (AttributeMissException ex)
             {
-                Assert.AreEqual("PrimaryKeyAttribute", ex.AttributeName);
+                Assert.AreEqual(typeof(PrimaryKeyAttribute).Name, ex.AttributeName);
                 Assert.AreEqual(typeof(AuthorClass), ex.ErrorType);
                 Assert.AreEqual(
                     string.Format(CultureInfo.InvariantCulture, ResourceHelper.GetResourceString(LocalizationRes.Exp_String_AttributeMiss), ex.ErrorType.FullName,
                         ex.AttributeName), ex.Message);
-                exceptionCatched = true;
             }
             catch (Exception)
             {
                 Assert.Fail("未能抛出PrimaryKeyException异常");
             }
-            if (!exceptionCatched)
-                Assert.Fail("未能抛出PrimaryKeyException异常");
+                
         }
 
         [Test]
         [Description("测试合并类型没有定义主键的对象是否会抛出异常")]
         public void TestCombineNullPrimaryKeyDefingeClassWithXmlSerializer()
         {
-            var exceptionCatched = false;
             try
             {
                 var a = new List<AuthorClass>();
@@ -98,30 +92,21 @@ namespace XPatchLib.UnitTest.ForXml
                 a.Add(new AuthorClass {Name = "Author B"});
                 a.Add(new AuthorClass {Name = "Author C"});
 
-                var serializer = new Serializer(typeof(List<AuthorClass>));
-                using (var stream = new MemoryStream())
-                {
-                    using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                    {
-                        serializer.Divide(writer, null, a);
-                    }
-                }
+                DoAssert(typeof(List<AuthorClass>), String.Empty, null, a, true);
+                Assert.Fail("未能抛出AttributeMissException异常");
             }
             catch (AttributeMissException ex)
             {
-                Assert.AreEqual("PrimaryKeyAttribute", ex.AttributeName);
+                Assert.AreEqual(typeof(PrimaryKeyAttribute).Name, ex.AttributeName);
                 Assert.AreEqual(typeof(AuthorClass), ex.ErrorType);
                 Assert.AreEqual(
                     string.Format(CultureInfo.InvariantCulture, ResourceHelper.GetResourceString(LocalizationRes.Exp_String_AttributeMiss), ex.ErrorType.FullName,
                         ex.AttributeName), ex.Message);
-                exceptionCatched = true;
             }
             catch (Exception)
             {
                 Assert.Fail("未能抛出PrimaryKeyException异常");
             }
-            if (!exceptionCatched)
-                Assert.Fail("未能抛出PrimaryKeyException异常");
         }
 
         [Test]
@@ -196,8 +181,6 @@ namespace XPatchLib.UnitTest.ForXml
         {
             var b = new BookClassCollection();
 
-            var serializer = new Serializer(typeof(BookClassCollection));
-
             const string result = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <BookClassCollection>
   <BookClass Action=""Add"">
@@ -219,46 +202,9 @@ namespace XPatchLib.UnitTest.ForXml
             b.Add(new BookClass {Name = "C"});
             b.Add(new BookClass {Name = "D"});
 
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, null, b);
-                    var context = UnitTest.TestHelper.StreamToString(stream);
-                    Assert.AreEqual(result, context);
-                }
-            }
-
-
-            using (XmlReader reader = XmlReader.Create(new StringReader(result)))
-            {
-                using (XmlTextReader xmlReader = new XmlTextReader(reader))
-                {
-                    var b1 = serializer.Combine(xmlReader, null) as BookClassCollection;
-                    Assert.IsNotNull(b1);
-                    Assert.AreEqual(b, b1);
-                }
-            }
-
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, new BookClassCollection(), b);
-                    var context = UnitTest.TestHelper.StreamToString(stream);
-                    Assert.AreEqual(result, context);
-                }
-            }
-
-            using (XmlReader reader = XmlReader.Create(new StringReader(result)))
-            {
-                using (XmlTextReader xmlReader = new XmlTextReader(reader))
-                {
-                    var b1 = serializer.Combine(xmlReader, new BookClassCollection()) as BookClassCollection;
-                    Assert.IsNotNull(b1);
-                    Assert.AreEqual(b, b1);
-                }
-            }
+            DoAssert(typeof(BookClassCollection), result, null, b, true);
+            DoAssert(typeof(BookClassCollection), result, new BookClassCollection(), b, true);
+            DoAssert(typeof(BookClassCollection), result, new BookClassCollection(), b, false);
         }
 
         [Test]
@@ -266,51 +212,13 @@ namespace XPatchLib.UnitTest.ForXml
         {
             var b = new BookClassCollection();
 
-            var serializer = new Serializer(typeof(BookClassCollection));
-
             const string result = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <BookClassCollection />";
 
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, null, b);
-                    var context = UnitTest.TestHelper.StreamToString(stream);
-                    Assert.AreEqual(result, context);
-                }
-            }
-
-            using (XmlReader reader = XmlReader.Create(new StringReader(result)))
-            {
-                using (XmlTextReader xmlReader = new XmlTextReader(reader))
-                {
-                    var b1 = serializer.Combine(xmlReader, null) as BookClassCollection;
-                    Assert.IsNotNull(b1);
-                    Assert.AreEqual(b, b1);
-                }
-            }
-
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    //b是空白集合，与空白集合产生增量内容，为空白内容。
-                    serializer.Divide(writer, new BookClassCollection(), b);
-                    var context = UnitTest.TestHelper.StreamToString(stream);
-                    Assert.AreEqual(TestHelper.XmlHeaderContext, context);
-                }
-            }
-
-            using (XmlReader reader = XmlReader.Create(new StringReader(result)))
-            {
-                using (XmlTextReader xmlReader = new XmlTextReader(reader))
-                {
-                    var b1 = serializer.Combine(xmlReader, new BookClassCollection()) as BookClassCollection;
-                    Assert.IsNotNull(b1);
-                    Assert.AreEqual(b, b1);
-                }
-            }
+            DoAssert(typeof(BookClassCollection), result, null, b, true);
+            //与空白集合产生增量内容，为空白内容。
+            DoAssert(typeof(BookClassCollection), TestHelper.XmlHeaderContext, new BookClassCollection(), b, true);
+            DoAssert(typeof(BookClassCollection), TestHelper.XmlHeaderContext, new BookClassCollection(), b, false);
         }
 
         [Test]
@@ -323,29 +231,20 @@ namespace XPatchLib.UnitTest.ForXml
             b.Add(new BookClass {Name = "C"});
             b.Add(new BookClass {Name = "D"});
 
-            var serializer = new Serializer(typeof(BookClassCollection));
+            var c = new BookClassCollection();
+            c.Add(new BookClass { Name = "A" });
+            c.Add(new BookClass { Name = "B" });
+            c.Add(new BookClass { Name = "C" });
+            c.Add(new BookClass { Name = "D" });
 
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    var c = new BookClassCollection();
-                    c.Add(new BookClass {Name = "A"});
-                    c.Add(new BookClass {Name = "B"});
-                    c.Add(new BookClass {Name = "C"});
-                    c.Add(new BookClass {Name = "D"});
-                    serializer.Divide(writer, c, b);
-                    var context = UnitTest.TestHelper.StreamToString(stream);
-                    Assert.AreEqual(TestHelper.XmlHeaderContext, context);
-                }
-            }
+            DoAssert(typeof(BookClassCollection), TestHelper.XmlHeaderContext, c, b, true);
+            DoAssert(typeof(BookClassCollection), TestHelper.XmlHeaderContext, c, b, false);
         }
 
         [Test]
         [Description("测试拆分集合类型但是传入的类型不是集合类型时，是否抛出ArgumentOutOfRangeException错误")]
         public void TestDivideNonCollectionType()
         {
-            var exceptionCatched = false;
             try
             {
                 using (var stream = new MemoryStream())
@@ -355,29 +254,26 @@ namespace XPatchLib.UnitTest.ForXml
                         new DivideIEnumerable(writer, new TypeExtend(typeof(AuthorClass), writer.IgnoreAttributeType));
                     }
                 }
+                Assert.Fail("未能抛出ArgumentOutOfRangeException异常");
             }
             catch (ArgumentOutOfRangeException ex)
             {
                 Assert.AreEqual(ex.ParamName, typeof(AuthorClass).FullName);
-                exceptionCatched = true;
             }
             catch (Exception)
             {
                 Assert.Fail("未能抛出ArgumentOutOfRangeException异常");
             }
-            if (!exceptionCatched)
-                Assert.Fail("未能抛出PrimaryKeyException异常");
         }
 
         [Test]
         [Description("测试拆分类型没有定义主键的对象是否会抛出异常")]
         public void TestDivideNullPrimaryKeyDefingeClass()
         {
-            var exceptionCatched = false;
             try
             {
-                new Serializer(typeof(List<AuthorClass>)).Divide(
-                    new XmlTextWriter(XmlWriter.Create(new MemoryStream())), null, new List<AuthorClass>());
+                DoAssert(typeof(List<AuthorClass>), string.Empty, null, new List<AuthorClass>(), true);
+                Assert.Fail("未能抛出AttributeMissException异常");
             }
             catch (AttributeMissException ex)
             {
@@ -386,27 +282,18 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.AreEqual(
                     string.Format(CultureInfo.InvariantCulture, ResourceHelper.GetResourceString(LocalizationRes.Exp_String_AttributeMiss), ex.ErrorType.FullName,
                         ex.AttributeName), ex.Message);
-                exceptionCatched = true;
             }
             catch (Exception)
             {
-                Assert.Fail("未能抛出PrimaryKeyException异常");
+                Assert.Fail("未能抛出AttributeMissException异常");
             }
-            if (!exceptionCatched)
-                Assert.Fail("未能抛出PrimaryKeyException异常");
         }
 
         [Test]
         public void TestSerializeBookClassCollection()
         {
-            var b1 = new BookClassCollection();
-            var b2 = new BookClassCollection();
-
-            b1.Add(new BookClass {Name = "A"});
-            b1.Add(new BookClass {Name = "B"});
-
-            b2.Add(new BookClass {Name = "B"});
-            b2.Add(new BookClass {Name = "C"});
+            var b1 = new BookClassCollection() {new BookClass {Name = "A"}, new BookClass {Name = "B"}};
+            var b2 = new BookClassCollection() {new BookClass {Name = "B"}, new BookClass {Name = "C"}};
 
             const string result =
                 @"<BookClassCollection>
@@ -441,19 +328,24 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+            
+            b1 = new BookClassCollection() { new BookClass { Name = "A" }, new BookClass { Name = "B" } };
+            b2 = new BookClassCollection() { new BookClass { Name = "B" }, new BookClass { Name = "C" } };
+
+            DoAssert(typeof(BookClassCollection),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), b1,
+                b2, true);
+            DoAssert(typeof(BookClassCollection),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), b1,
+                b2, false);
+
         }
 
         [Test]
         public void TestSerializeBookClassCollectionSerializeDefaultValue()
         {
-            var b1 = new BookClassCollection();
-            var b2 = new BookClassCollection();
-
-            b1.Add(new BookClass {Name = "A"});
-            b1.Add(new BookClass {Name = "B"});
-
-            b2.Add(new BookClass {Name = "B"});
-            b2.Add(new BookClass {Name = "C"});
+            var b1 = new BookClassCollection() { new BookClass { Name = "A" }, new BookClass { Name = "B" } };
+            var b2 = new BookClassCollection() { new BookClass { Name = "B" }, new BookClass { Name = "C" } };
 
             const string result =
                 @"<BookClassCollection>
@@ -496,6 +388,16 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+
+            b1 = new BookClassCollection() { new BookClass { Name = "A" }, new BookClass { Name = "B" } };
+            b2 = new BookClassCollection() { new BookClass { Name = "B" }, new BookClass { Name = "C" } };
+
+            DoAssert(typeof(BookClassCollection),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), b1,
+                b2, true, new XmlSerializeSetting() {SerializeDefalutValue = true});
+            DoAssert(typeof(BookClassCollection),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), b1,
+                b2, false, new XmlSerializeSetting() { SerializeDefalutValue = true });
         }
 
         [Test]
@@ -539,6 +441,16 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+
+            bytes1 = new Byte[] { 1, 2, 3, 4, 5 };
+            bytes2 = new Byte[] { 1, 3, 5, 7, 9 };
+
+            DoAssert(typeof(Byte[]),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), bytes1,
+                bytes2, true);
+            DoAssert(typeof(Byte[]),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), bytes1,
+                bytes2, false);
         }
 
         [Test]
@@ -578,6 +490,16 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+
+            s1 = new string[] {"ABC", "DEF"};
+            s2 = new string[] {"DEF", "HGI"};
+
+            DoAssert(typeof(string[]),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
+                s2, true);
+            DoAssert(typeof(string[]),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
+                s2, false);
         }
 
         [Test]
@@ -618,6 +540,15 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+
+            s1 = new string[] { "ABC", "DEF" };
+
+            DoAssert(typeof(string[]),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), null,
+                s1, true);
+            DoAssert(typeof(string[]),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), null,
+                s1, false);
         }
 
         [Test]
@@ -653,6 +584,16 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+
+            s1 = new string[] { "ABC", "DEF" };
+            s2 = new string[] { "DEF" };
+
+            DoAssert(typeof(string[]),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
+                s2, true);
+            DoAssert(typeof(string[]),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
+                s2, false);
         }
 
         [Test]
@@ -686,6 +627,15 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+
+            s1 = new string[] { "ABC", "DEF" };
+
+            DoAssert(typeof(string[]),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
+                null, true);
+            DoAssert(typeof(string[]),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
+                null, false);
         }
 
         [Test]
@@ -723,6 +673,15 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+
+            s1 = new string[] { "ABC", "DEF" };
+
+            DoAssert(typeof(string[]),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
+                null, true,new XmlSerializeSetting(){ActionName = newActionName });
+            DoAssert(typeof(string[]),
+                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
+                null, false, new XmlSerializeSetting() { ActionName = newActionName });
         }
     }
 }

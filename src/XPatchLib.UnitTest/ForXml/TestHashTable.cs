@@ -19,7 +19,7 @@ using Assert = XPatchLib.UnitTest.XUnitAssert;
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
-    public class TestHashTable
+    public class TestHashTable:TestBase
     {
 #if (NET || NETSTANDARD_2_0_UP)
         [Test]
@@ -35,24 +35,17 @@ namespace XPatchLib.UnitTest.ForXml
             var context = string.Empty;
             try
             {
-                using (var stream = new MemoryStream())
-                {
-                    using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                    {
-                        serializer.Divide(writer, null, table);
-                        stream.Position = 0;
-                        using (var stremReader = new StreamReader(stream, Encoding.UTF8))
-                        {
-                            context = stremReader.ReadToEnd();
-                        }
-                    }
-                }
+                DoAssert(typeof(Hashtable), context, null, table, true);
+                Assert.Fail("未能引发 AttributeMissException 异常。");
             }
             catch (AttributeMissException ex)
             {
-                StringAssert.AreEqualIgnoringCase(ex.AttributeName, typeof(PrimaryKeyAttribute).Name);
+                StringAssert.AreEqualIgnoringCase(typeof(PrimaryKeyAttribute).Name, ex.AttributeName);
                 //Hashtable类型作为一种集合类型，在处理子元素时应该对子元素的类型标记 PrimaryKeyAttribute 。
                 //但是由于Key值类型为Object，所以永远找不到PrimaryKeyAttribute
+                StringAssert.AreEqualIgnoringCase(
+                    string.Format(ResourceHelper.GetResourceString(LocalizationRes.Exp_String_AttributeMiss),
+                        typeof(object), typeof(PrimaryKeyAttribute).Name), ex.Message);
             }
             catch (Exception)
             {
@@ -60,49 +53,5 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 #endif
-
-        [Test]
-        public void TestQueueDivide()
-        {
-            var table = new Queue<string>();
-            table.Enqueue("aaa");
-            table.Enqueue("bbb");
-            table.Enqueue("ccc");
-            table.Enqueue("ddd");
-
-            var serializer = new Serializer(typeof(Queue<string>));
-
-            var context = string.Empty;
-            try
-            {
-                using (var stream = new MemoryStream())
-                {
-                    using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                    {
-                        serializer.Divide(writer, null, table);
-                        stream.Position = 0;
-                        using (var stremReader = new StreamReader(stream, Encoding.UTF8))
-                        {
-                            context = stremReader.ReadToEnd();
-                        }
-                    }
-                }
-#if (NET || NETSTANDARD_2_0_UP)
-                Trace.WriteLine(context);
-#endif
-            }
-            catch (AttributeMissException ex)
-            {
-#if (NET || NETSTANDARD_2_0_UP)
-                Trace.WriteLine(ex.Message);
-#endif
-                Assert.AreEqual(ex.AttributeName, typeof(PrimaryKeyAttribute).Name);
-                //Hashtable类型座位一种集合类型，在处理子元素时应该对子元素的类型标记 PrimaryKeyAttribute 。
-            }
-            catch (Exception)
-            {
-                Assert.Fail("未能引发 AttributeMissException 异常。");
-            }
-        }
     }
 }

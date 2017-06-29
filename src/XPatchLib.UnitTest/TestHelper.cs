@@ -84,42 +84,34 @@ namespace XPatchLib.UnitTest
             Encoding encoding = new UTF8Encoding(false);
             return encoding.GetString(bytes);
         }
-
-        /// <summary>
-        ///     读取文本，构建XElement或XmlDocument对象，调试时方便查看内容
-        /// </summary>
-        /// <param name="text"></param>
-        internal static void DebugTest(string text)
-        {
-#if (NET_35 || NETSTANDARD)
-            var changedEle = XElement.Load(new StringReader(text));
-#else
-            XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(new StringReader(text));
-            var changedEle = xDoc.OuterXml;
-            xDoc = null;
-#endif
-            changedEle = null;
-        }
-
         /// <summary>
         ///     读取Stream，构建XElement或XmlDocument对象，调试时方便查看内容
         /// </summary>
         /// <param name="stream"></param>
         internal static void DebugTest(Stream stream)
         {
+            try
+            {
+
 #if (NET_35 || NETSTANDARD)
             var changedEle = XElement.Load(new StreamReader(stream));
             System.Diagnostics.Debug.WriteLine(changedEle.Value);
 #else
-            XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(new StreamReader(stream));
-            var changedEle = xDoc.OuterXml;
-            xDoc = null;
-            System.Diagnostics.Debug.WriteLine(changedEle.ToString());
+                XmlDocument xDoc = new XmlDocument();
+                xDoc.Load(new StreamReader(stream));
+                var changedEle = xDoc.OuterXml;
+                xDoc = null;
+                System.Diagnostics.Debug.WriteLine(changedEle.ToString());
 #endif
-            changedEle = null;
-            stream.Position = 0;
+                changedEle = null;
+                stream.Position = 0;
+            }
+            catch (Exception)
+            {
+                stream.Position = 0;
+                System.Diagnostics.Debug.WriteLine(StreamToString(stream));
+                stream.Position = 0;
+            }
         }
 
         internal static Stream StringToStream(string str)

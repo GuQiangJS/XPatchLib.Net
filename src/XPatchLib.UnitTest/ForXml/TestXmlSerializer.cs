@@ -19,7 +19,7 @@ using Assert = XPatchLib.UnitTest.XUnitAssert;
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
-    public class TestXmlSerializer
+    public class TestXmlSerializer:TestBase
     {
         public class Account
         {
@@ -53,55 +53,6 @@ namespace XPatchLib.UnitTest.ForXml
             }
         }
 
-        //[Test]
-        //[Description("测试Serializer中参数类型为TextWriter的Divide方法和TextReader的Combine方法")]
-        //public void TestXmlSerializerTextWriterDivideAndTextReaderCombine()
-        //{
-        //    Serializer serializer = new Serializer(typeof(BookClass));
-        //    var sb = new StringBuilder();
-        //    using (var swr = new StringWriter(sb))
-        //    {
-        //        serializer.Divide(swr, OriObject, RevObject);
-        //        sb.Replace("utf-16", "utf-8");
-        //        Assert.AreEqual(ChangedContext, sb.ToString());
-        //    }
-        //    serializer = new Serializer(typeof(BookClass));
-        //    using (var reader = new StringReader(ChangedContext))
-        //    {
-        //        var changedObj = serializer.Combine(reader, OriObject) as BookClass;
-        //        Assert.AreEqual(RevObject, changedObj);
-        //    }
-        //}
-
-        //[Test]
-        //[Description("测试Serializer中参数类型为XmlWriter的Divide方法和XmlReader的Combine方法")]
-        //public void TestXmlSerializerXmlWriterDivideAndXmlReaderCombine()
-        //{
-        //    Serializer serializer = new Serializer(typeof(BookClass));
-        //    using (var stream = new MemoryStream())
-        //    {
-        //        var setting = new XmlWriterSettings();
-        //        setting.Encoding = new UTF8Encoding(false);
-        //        setting.Indent = true;
-        //        using (var xwr = XmlWriter.Create(stream, setting))
-        //        {
-        //            serializer.Divide(xwr, OriObject, RevObject);
-        //            Assert.AreEqual(ChangedContext, Encoding.UTF8.GetString(stream.ToArray()));
-        //        }
-        //    }
-        //    serializer = new Serializer(typeof(BookClass));
-        //    using (var stream = new MemoryStream())
-        //    {
-        //        serializer.Divide(stream, OriObject, RevObject);
-        //        stream.Position = 0;
-        //        using (var reader = XmlReader.Create(stream))
-        //        {
-        //            var changedObjByReader = serializer.Combine(reader, OriObject) as BookClass;
-        //            Assert.AreEqual(RevObject, changedObjByReader);
-        //        }
-        //    }
-        //}
-
         [Test]
         public void SimpleTestXmlSerializer()
         {
@@ -129,25 +80,10 @@ namespace XPatchLib.UnitTest.ForXml
                     "Admin"
                 }
             };
+            
+            DoAssert(typeof(Account), context, account1, account2, true);
+            DoAssert(typeof(Account), context, account1, account2, false);
 
-            var serializer = new Serializer(typeof(Account));
-            using (var stream = new MemoryStream())
-            {
-                var settings = new XmlWriterSettings
-                {
-                    ConformanceLevel = ConformanceLevel.Document,
-                    Indent = true,
-                    Encoding = new UTF8Encoding(false),
-                    OmitXmlDeclaration = false
-                };
-                using (var writer = TestHelper.CreateWriter(stream, settings))
-                {
-                    serializer.Divide(writer, account1, account2);
-                    var result = UnitTest.TestHelper.StreamToString(stream);
-                    Debug.WriteLine(context);
-                    Assert.AreEqual(context, result);
-                }
-            }
         }
 
         [Test]
@@ -296,27 +232,6 @@ namespace XPatchLib.UnitTest.ForXml
                 }
             }
         }
-
-        //[Test]
-        //[Description("测试Serializer中参数类型为Stream的Divide和Combine方法")]
-        //public void TestXmlSerializerStreamDivideAndCombine()
-        //{
-        //    Serializer serializer = new Serializer(typeof(BookClass));
-        //    using (var stream = new MemoryStream())
-        //    {
-        //        serializer.Divide(stream, OriObject, RevObject);
-        //        var context = UnitTest.TestHelper.StreamToString(stream);
-        //        Assert.AreEqual(ChangedContext, context);
-        //    }
-        //    serializer = new Serializer(typeof(BookClass));
-        //    using (var stream = new MemoryStream())
-        //    {
-        //        serializer.Divide(stream, OriObject, RevObject);
-        //        stream.Position = 0;
-        //        var changedObj = serializer.Combine(stream, OriObject) as BookClass;
-        //        Assert.AreEqual(RevObject, changedObj);
-        //    }
-        //}
 
         [Test]
         [Description("测试Serializer中参数类型为 XmlTextReader 和 XmlTextWriter 的Divide和Combine方法。测试对象包含 XmlIgnoreAttribute")]

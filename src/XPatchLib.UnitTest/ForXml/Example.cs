@@ -22,7 +22,7 @@ namespace XPatchLib.UnitTest.ForXml
     ///     操作复杂类型
     /// </summary>
     [TestFixture]
-    public class ExampleComplexClass
+    public class ExampleComplexClass:TestBase
     {
         private const string ChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <OrderInfo>
@@ -106,7 +106,7 @@ namespace XPatchLib.UnitTest.ForXml
         }
 
         [Test]
-        public void ExampleCombine()
+        public void ExampleSerializeComplex()
         {
             var order1 = new OrderInfo
             {
@@ -142,79 +142,9 @@ namespace XPatchLib.UnitTest.ForXml
                 Date = new DateTime(2010, 4, 30)
             };
 
-            OrderInfo order3;
-            var serializer = new Serializer(typeof(OrderInfo));
-            using (XmlReader reader = XmlReader.Create(new StringReader(ChangedContext)))
-            {
-                using (XmlTextReader xmlReader = new XmlTextReader(reader))
-                {
-                    order3 = serializer.Combine(xmlReader, order1) as OrderInfo;
-                }
-            }
+            DoAssert(ChangedContext, order1, order2, true);
 
-            Assert.AreEqual(order3, order2);
-            Debug.Assert(order3 != null, "order3 != null");
-            Assert.AreNotEqual(order3.GetHashCode(), order2.GetHashCode());
-        }
-
-        [Test]
-        public void ExampleDivide()
-        {
-            var order1 = new OrderInfo
-            {
-                OrderId = 1,
-                OrderTotal = 200.45m,
-                ShippingAddress = new AddressInfo
-                {
-                    Country = "China",
-                    Name = "Customer",
-                    Phone = "138-1234-5678",
-                    Zip = "100000",
-                    City = "Beijing",
-                    Address = ""
-                },
-                UserId = "1234",
-                Date = new DateTime(2008, 8, 8)
-            };
-
-            var order2 = new OrderInfo
-            {
-                OrderId = 2,
-                OrderTotal = 180.50m,
-                ShippingAddress = new AddressInfo
-                {
-                    Country = "China",
-                    Name = "Customer",
-                    Phone = "138-1234-5678",
-                    Zip = "100000",
-                    City = "Shanghai",
-                    Address = ""
-                },
-                UserId = "1234",
-                Date = new DateTime(2010, 4, 30)
-            };
-
-            var serializer = new Serializer(typeof(OrderInfo));
-
-            string context;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, order1, order2);
-                    stream.Position = 0;
-                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        context = stremReader.ReadToEnd();
-                    }
-                }
-            }
-
-            Assert.AreEqual(ChangedContext, context);
-
-#if (NET || NETSTANDARD_2_0_UP)
-            Trace.WriteLine(context);
-#endif
+            DoAssert(ChangedContext, order1, order2, false);
         }
     }
 
@@ -222,7 +152,7 @@ namespace XPatchLib.UnitTest.ForXml
     ///     操作复杂集合类型
     /// </summary>
     [TestFixture]
-    public class ExampleComplexCollectionClass
+    public class ExampleComplexCollectionClass:TestBase
     {
         private const string ChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <OrderList>
@@ -304,7 +234,7 @@ namespace XPatchLib.UnitTest.ForXml
         }
 
         [Test]
-        public void ExampleCombine()
+        public void ExampleSerializeComplexCollection()
         {
             var list1 = new OrderList
             {
@@ -364,108 +294,13 @@ namespace XPatchLib.UnitTest.ForXml
                 }
             };
 
-            OrderList list3;
-            var serializer = new Serializer(typeof(OrderList));
-            using (XmlReader reader = XmlReader.Create(new StringReader(ChangedContext)))
-            {
-                using (XmlTextReader xmlReader = new XmlTextReader(reader))
-                {
-                    list3 = serializer.Combine(xmlReader, list1) as OrderList;
-                }
-            }
-
-            Assert.AreEqual(list3, list2);
-            Debug.Assert(list3 != null, "list3 != null");
-            Assert.AreNotEqual(list3.GetHashCode(), list1.GetHashCode());
-        }
-
-        [Test]
-        public void ExampleDivide()
-        {
-            var list1 = new OrderList
-            {
-                UserId = "1234",
-                Orders = new List<OrderInfo>
-                {
-                    new OrderInfo
-                    {
-                        OrderId = 1,
-                        OrderTotal = 200.45m,
-                        UserId = "1234",
-                        Date = new DateTime(2008, 8, 8)
-                    },
-                    new OrderInfo
-                    {
-                        OrderId = 2,
-                        OrderTotal = 450.23m,
-                        UserId = "1234",
-                        Date = new DateTime(2008, 8, 8)
-                    },
-                    new OrderInfo
-                    {
-                        OrderId = 3,
-                        OrderTotal = 185.60m,
-                        UserId = "1234",
-                        Date = new DateTime(2008, 8, 8)
-                    }
-                }
-            };
-
-            var list2 = new OrderList
-            {
-                UserId = "1234",
-                Orders = new List<OrderInfo>
-                {
-                    new OrderInfo
-                    {
-                        OrderId = 1,
-                        OrderTotal = 200.45m,
-                        UserId = "1234",
-                        Date = new DateTime(2008, 8, 8)
-                    },
-                    new OrderInfo
-                    {
-                        OrderId = 2,
-                        OrderTotal = 230.89m,
-                        UserId = "1234",
-                        Date = new DateTime(2008, 8, 8)
-                    },
-                    new OrderInfo
-                    {
-                        OrderId = 4,
-                        OrderTotal = 67.30m,
-                        UserId = "1234",
-                        Date = new DateTime(2008, 8, 8)
-                    }
-                }
-            };
-
-            var serializer = new Serializer(typeof(OrderList));
-
-            string context;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, list1, list2);
-                    stream.Position = 0;
-                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        context = stremReader.ReadToEnd();
-                    }
-                }
-            }
-
-            Assert.AreEqual(ChangedContext, context);
-
-#if (NET || NETSTANDARD_2_0_UP)
-            Trace.WriteLine(context);
-#endif
+            DoAssert(ChangedContext, list1, list2, true);
+            DoAssert(ChangedContext, list1, list2, false);
         }
     }
 
     [TestFixture]
-    public class ExampleDateTimeSerializationMode
+    public class ExampleDateTimeSerializationMode:TestBase
     {
         private const string LocalChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <CreditCard>
@@ -501,176 +336,25 @@ namespace XPatchLib.UnitTest.ForXml
         }
 
         [Test]
-        public void ExampleCombine()
+        public void SerializeDateTimeSerializationMode()
         {
+
+
             var card1 = new CreditCard
             {
                 CardExpiration = new DateTime(2017, 05, 01, 20, 0, 0)
             };
 
-            var serializer = new Serializer(typeof(CreditCard));
+            DoAssert(typeof(CreditCard), RoundtripKindChangedContext, null, card1, true);
 
-            CreditCard card2;
-            using (XmlReader reader = XmlReader.Create(new StringReader(RoundtripKindChangedContext)))
-            {
-                using (XmlTextReader xmlReader = new XmlTextReader(reader))
-                {
-                    card2 = serializer.Combine(xmlReader, null) as CreditCard;
-                }
-            }
+            DoAssert(typeof(CreditCard), LocalChangedContext, null, card1, true,
+                new XmlSerializeSetting() {Mode = DateTimeSerializationMode.Local});
 
-            Assert.AreEqual(card2, card1);
-            Debug.Assert(card2 != null, "card2 != null");
-            Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
+            DoAssert(typeof(CreditCard), UnspecifiedChangedContext, null, card1, true,
+                new XmlSerializeSetting() { Mode = DateTimeSerializationMode.Unspecified });
 
-            serializer = new Serializer(typeof(CreditCard));
-
-            card2 = null;
-            using (XmlReader reader = XmlReader.Create(new StringReader(LocalChangedContext)))
-            {
-                using (XmlTextReader xmlReader = new XmlTextReader(reader))
-                {
-                    xmlReader.Setting.Mode = DateTimeSerializationMode.Local;
-                    card2 = serializer.Combine(xmlReader, null) as CreditCard;
-                }
-            }
-
-            Assert.AreEqual(card2, card1);
-            Debug.Assert(card2 != null, "card2 != null");
-            Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
-
-            serializer = new Serializer(typeof(CreditCard));
-
-            card2 = null;
-            using (XmlReader reader = XmlReader.Create(new StringReader(UnspecifiedChangedContext)))
-            {
-                using (XmlTextReader xmlReader = new XmlTextReader(reader))
-                {
-                    xmlReader.Setting.Mode = DateTimeSerializationMode.Unspecified;
-                    card2 = serializer.Combine(xmlReader, null) as CreditCard;
-                }
-            }
-
-            Assert.AreEqual(card2, card1);
-            Debug.Assert(card2 != null, "card2 != null");
-            Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
-
-            serializer = new Serializer(typeof(CreditCard));
-
-            card2 = null;
-            using (XmlReader reader = XmlReader.Create(new StringReader(UtcChangedContext)))
-            {
-                using (XmlTextReader xmlReader = new XmlTextReader(reader))
-                {
-                    xmlReader.Setting.Mode = DateTimeSerializationMode.Utc;
-                    card2 = serializer.Combine(xmlReader, null) as CreditCard;
-                }
-            }
-
-            Assert.AreEqual(card2, card1);
-            Debug.Assert(card2 != null, "card2 != null");
-            Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
-        }
-
-        [Test]
-        public void ExampleDivide()
-        {
-            var card1 = new CreditCard
-            {
-                CardExpiration = new DateTime(2017, 05, 01, 20, 0, 0)
-            };
-
-            var serializer = new Serializer(typeof(CreditCard));
-
-            string context;
-            context = String.Empty;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, null, card1);
-                    stream.Position = 0;
-                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        context = stremReader.ReadToEnd();
-                    }
-                }
-            }
-
-            Assert.AreEqual(RoundtripKindChangedContext, context);
-
-#if (NET || NETSTANDARD_2_0_UP)
-            Trace.WriteLine(context);
-#endif
-
-            serializer = new Serializer(typeof(CreditCard));
-
-            context = String.Empty;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    writer.Setting.Mode = DateTimeSerializationMode.Local;
-                    serializer.Divide(writer, null, card1);
-                    stream.Position = 0;
-                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        context = stremReader.ReadToEnd();
-                    }
-                }
-            }
-
-            Assert.AreEqual(LocalChangedContext, context);
-
-#if (NET || NETSTANDARD_2_0_UP)
-            Trace.WriteLine(context);
-#endif
-
-            serializer = new Serializer(typeof(CreditCard));
-
-            context = String.Empty;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    writer.Setting.Mode = DateTimeSerializationMode.Unspecified;
-                    serializer.Divide(writer, null, card1);
-                    stream.Position = 0;
-                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        context = stremReader.ReadToEnd();
-                    }
-                }
-            }
-
-            Assert.AreEqual(UnspecifiedChangedContext, context);
-
-#if (NET || NETSTANDARD_2_0_UP)
-            Trace.WriteLine(context);
-#endif
-
-            serializer = new Serializer(typeof(CreditCard));
-
-            context = String.Empty;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    writer.Setting.Mode = DateTimeSerializationMode.Utc;
-                    serializer.Divide(writer, null, card1);
-                    stream.Position = 0;
-                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        context = stremReader.ReadToEnd();
-                    }
-                }
-            }
-
-            Assert.AreEqual(UtcChangedContext, context);
-
-#if (NET || NETSTANDARD_2_0_UP)
-            Trace.WriteLine(context);
-#endif
+            DoAssert(typeof(CreditCard), UtcChangedContext, null, card1, true,
+                new XmlSerializeSetting() { Mode = DateTimeSerializationMode.Utc });
         }
     }
 
@@ -678,7 +362,7 @@ namespace XPatchLib.UnitTest.ForXml
     ///     初级入门
     /// </summary>
     [TestFixture]
-    public class ExampleSampleABC
+    public class ExampleSampleABC:TestBase
     {
         private const string ChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <CreditCard>
@@ -703,7 +387,7 @@ namespace XPatchLib.UnitTest.ForXml
         }
 
         [Test]
-        public void ExampleCombine()
+        public void ExampleSample()
         {
             var card1 = new CreditCard
             {
@@ -715,56 +399,8 @@ namespace XPatchLib.UnitTest.ForXml
                 CardExpiration = "05/17",
                 CardNumber = "9876543210"
             };
-
-            CreditCard card3 = null;
-            var serializer = new Serializer(typeof(CreditCard));
-            using (XmlReader reader = XmlReader.Create(new StringReader(ChangedContext)))
-            {
-                using (XmlTextReader xmlReader = new XmlTextReader(reader))
-                {
-                    card3 = serializer.Combine(xmlReader, card1) as CreditCard;
-                }
-            }
-
-            Assert.AreEqual(card3, card2);
-            Assert.AreNotEqual(card3.GetHashCode(), card1.GetHashCode());
-        }
-
-        [Test]
-        public void ExampleDivide()
-        {
-            var card1 = new CreditCard
-            {
-                CardExpiration = "05/12",
-                CardNumber = "0123456789"
-            };
-            var card2 = new CreditCard
-            {
-                CardExpiration = "05/17",
-                CardNumber = "9876543210"
-            };
-
-            var serializer = new Serializer(typeof(CreditCard));
-
-            var context = String.Empty;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, card1, card2);
-                    stream.Position = 0;
-                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        context = stremReader.ReadToEnd();
-                    }
-                }
-            }
-
-            Assert.AreEqual(ChangedContext, context);
-
-#if (NET || NETSTANDARD_2_0_UP)
-            Trace.WriteLine(context);
-#endif
+            DoAssert(ChangedContext, card1, card2, true);
+            DoAssert(ChangedContext, card1, card2, false);
         }
     }
 
@@ -772,7 +408,7 @@ namespace XPatchLib.UnitTest.ForXml
     ///     操作简单类型
     /// </summary>
     [TestFixture]
-    public class ExampleSampleClass
+    public class ExampleSampleClass:TestBase
     {
         private const string ChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <Warehouse>
@@ -809,7 +445,7 @@ namespace XPatchLib.UnitTest.ForXml
         }
 
         [Test]
-        public void ExampleCombine()
+        public void ExampleSample()
         {
             var w1 = new Warehouse
             {
@@ -823,60 +459,12 @@ namespace XPatchLib.UnitTest.ForXml
                 Items = new[] {"ItemA", "ItemC", "ItemD"}
             };
 
-            Warehouse w3;
-            var serializer = new Serializer(typeof(Warehouse));
-            using (XmlReader reader = XmlReader.Create(new StringReader(ChangedContext)))
-            {
-                using (XmlTextReader xmlReader = new XmlTextReader(reader))
-                {
-                    w3 = serializer.Combine(xmlReader, w1) as Warehouse;
-                }
-            }
-
-            Assert.AreEqual(w3, w2);
-            Assert.AreNotEqual(w3.GetHashCode(), w1.GetHashCode());
+            DoAssert(ChangedContext, w1, w2, true);
+            DoAssert(ChangedContext, w1, w2, false);
         }
 
         [Test]
-        public void ExampleDivide()
-        {
-            var w1 = new Warehouse
-            {
-                Name = "Company A",
-                Items = new[] {"ItemA", "ItemB", "ItemC"}
-            };
-
-            var w2 = new Warehouse
-            {
-                Name = "Company B",
-                Items = new[] {"ItemA", "ItemC", "ItemD"}
-            };
-
-            var serializer = new Serializer(typeof(Warehouse));
-
-            var context = String.Empty;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, w1, w2);
-                    stream.Position = 0;
-                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        context = stremReader.ReadToEnd();
-                    }
-                }
-            }
-
-            Assert.AreEqual(ChangedContext, context);
-
-#if (NET || NETSTANDARD_2_0_UP)
-            Trace.WriteLine(context);
-#endif
-        }
-
-        [Test]
-        public void ExampleDivideSetNull()
+        public void ExampleSampleSetNull()
         {
             var w1 = new Warehouse
             {
@@ -889,34 +477,15 @@ namespace XPatchLib.UnitTest.ForXml
                 Name = "Company B",
                 Items = null
             };
-
-            var serializer = new Serializer(typeof(Warehouse));
-
+            
             var changedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <Warehouse>
   <Items Action=""SetNull"" />
   <Name>Company B</Name>
 </Warehouse>";
 
-            var context = String.Empty;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, w1, w2);
-                    stream.Position = 0;
-                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        context = stremReader.ReadToEnd();
-                    }
-                }
-            }
-
-            Assert.AreEqual(changedContext, context);
-
-#if (NET || NETSTANDARD_2_0_UP)
-            Trace.WriteLine(context);
-#endif
+            DoAssert(changedContext, w1, w2, true);
+            DoAssert(changedContext, w1, w2, false);
         }
     }
 
@@ -924,7 +493,7 @@ namespace XPatchLib.UnitTest.ForXml
     ///     是否序列化默认值设置
     /// </summary>
     [TestFixture]
-    public class ExampleSerializeDefaultValue
+    public class ExampleSerializeDefaultValue:TestBase
     {
         private const string NotSerializeDefaultValueChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <CreditCard>
@@ -959,7 +528,7 @@ namespace XPatchLib.UnitTest.ForXml
         }
 
         [Test]
-        public void ExampleCombine()
+        public void SerializeDefaultValue()
         {
             var card1 = new CreditCard
             {
@@ -968,92 +537,11 @@ namespace XPatchLib.UnitTest.ForXml
                 CardCode = 0
             };
 
-            var serializer = new Serializer(typeof(CreditCard));
 
-            CreditCard card2 = null;
-            using (XmlReader reader = XmlReader.Create(new StringReader(NotSerializeDefaultValueChangedContext)))
-            {
-                using (XmlTextReader xmlReader = new XmlTextReader(reader))
-                {
-                    card2 = serializer.Combine(xmlReader, null) as CreditCard;
-                }
-            }
-
-            Assert.AreEqual(card2, card1);
-            Debug.Assert(card2 != null, "card2 != null");
-            Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
-
-            serializer = new Serializer(typeof(CreditCard));
-
-            card2 = null;
-            using (XmlReader reader = XmlReader.Create(new StringReader(NotSerializeDefaultValueChangedContext)))
-            {
-                using (XmlTextReader xmlReader = new XmlTextReader(reader))
-                {
-                    card2 = serializer.Combine(xmlReader, null) as CreditCard;
-                }
-            }
-
-            Assert.AreEqual(card2, card1);
-            Debug.Assert(card2 != null, "card2 != null");
-            Assert.AreNotEqual(card2.GetHashCode(), card1.GetHashCode());
-        }
-
-        [Test]
-        public void ExampleDivide()
-        {
-            var card1 = new CreditCard
-            {
-                CardNumber = "0123456789",
-                CardExpiration = "05/17",
-                CardCode = 0
-            };
-
-            var serializer = new Serializer(typeof(CreditCard));
-
-            string context;
-            context = "";
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, null, card1);
-                    stream.Position = 0;
-                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        context = stremReader.ReadToEnd();
-                    }
-                }
-            }
-
-            Assert.AreEqual(NotSerializeDefaultValueChangedContext, context);
-
-#if (NET || NETSTANDARD_2_0_UP)
-            Trace.WriteLine(context);
-#endif
-
-            serializer = new Serializer(typeof(CreditCard));
-
-            context = String.Empty;
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    writer.Setting.SerializeDefalutValue = true;
-                    serializer.Divide(writer, null, card1);
-                    stream.Position = 0;
-                    using (var stremReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        context = stremReader.ReadToEnd();
-                    }
-                }
-            }
-
-            Assert.AreEqual(SerializeDefaultValueChangedContext, context);
-
-#if (NET || NETSTANDARD_2_0_UP)
-            Trace.WriteLine(context);
-#endif
+            DoAssert(typeof(CreditCard), NotSerializeDefaultValueChangedContext, null, card1, true);
+            XmlSerializeSetting setting=new XmlSerializeSetting();
+            setting.SerializeDefalutValue = true;
+            DoAssert(typeof(CreditCard), SerializeDefaultValueChangedContext, null, card1, true, setting);
         }
     }
 

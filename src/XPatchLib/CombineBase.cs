@@ -29,7 +29,13 @@ namespace XPatchLib
             Guard.ArgumentNotNullOrEmpty(pName, "pName");
 
             if (pReader.ReadState == ReadState.Initial)
-                pReader.Read();
+            {
+                //首次读取XML时，读取的内容可能是XML头信息，而不是需要的根节点，所以用while循环，直到读到第一个Element
+                while (pReader.NodeType != NodeType.Element)
+                {
+                    pReader.Read();
+                }
+            }
 
             InitAttributes(pReader, pName);
 

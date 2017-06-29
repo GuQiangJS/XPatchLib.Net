@@ -1,6 +1,7 @@
 ﻿// Copyright © 2013-2017 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
@@ -123,6 +124,113 @@ namespace XPatchLib.UnitTest
                     return TestHelper.StreamToString(stream);
                 }
             }
+        }
+
+        /// <summary>
+        /// 通过 <see cref="Serializer"/> ，首先在 <paramref name="pOriValue"/> 和 <paramref name="pRevValue"/>间产生增量，比较增量与 <paramref name="context"/> 是否一致，再使用增量产生新的对象实例，并比较新的对象实例与 <paramref name="pOriValue"/> 是否值相等。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="context">待比较的增量字符串。</param>
+        /// <param name="pOriValue">原始对象实例。</param>
+        /// <param name="pRevValue">更新后的对象实例。</param>
+        /// <param name="createNew">是否在合并增量时创建新实例。</param>
+        /// <remarks>不指定对象类型，使用泛型 <typeparamref name="T"/> 对应的类型。</remarks>
+        protected T DoAssert<T>(string context, T pOriValue, T pRevValue, bool createNew)
+        {
+            return DoAssert(typeof(T), context, pOriValue, pRevValue, createNew);
+        }
+
+        /// <summary>
+        /// 通过 <see cref="Serializer"/> ，首先在 <paramref name="pOriValue"/> 和 <paramref name="pRevValue"/>间产生增量，比较增量与 <paramref name="context"/> 是否一致，再使用增量产生新的对象实例，并比较新的对象实例与 <paramref name="pOriValue"/> 是否值相等。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="pType">对象类型。</param>
+        /// <param name="context">待比较的增量字符串。</param>
+        /// <param name="pOriValue">原始对象实例。</param>
+        /// <param name="pRevValue">更新后的对象实例。</param>
+        /// <param name="createNew">是否在合并增量时创建新实例。</param>
+        protected T DoAssert<T>(Type pType, string context, T pOriValue,T pRevValue,bool createNew)
+        {
+            return DoAssert(pType, context, pOriValue, pRevValue, createNew, null);
+        }
+
+        /// <summary>
+        /// 通过 <see cref="Serializer"/> ，首先在 <paramref name="pOriValue"/> 和 <paramref name="pRevValue"/>间产生增量，比较增量与 <paramref name="context"/> 是否一致，再使用增量产生新的对象实例，并比较新的对象实例与 <paramref name="pOriValue"/> 是否值相等。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="pType">对象类型。</param>
+        /// <param name="context">待比较的增量字符串。如果传入 <see cref="string.Empty"/> 表示不比较产生的差量内容。</param>
+        /// <param name="pOriValue">原始对象实例。</param>
+        /// <param name="pRevValue">更新后的对象实例。</param>
+        /// <param name="createNew">是否在合并增量时创建新实例。</param>
+        /// <param name="setting">序列化设定，可以为 <b>null</b></param>
+        protected T DoAssert<T>(Type pType, string context, T pOriValue, T pRevValue, bool createNew,
+            ISerializeSetting setting)
+        {
+            T result = default(T);
+            Serializer serializer = new Serializer(pType);
+            using (var stream = new MemoryStream())
+            {
+                using (ITextWriter writer =
+                    XPatchLib.UnitTest.ForXml.TestHelper.CreateWriter(stream,
+                        XPatchLib.UnitTest.ForXml.TestHelper.DocumentSetting))
+                {
+                    if (setting != null)
+                        writer.Setting = setting;
+                    serializer.Divide(writer, pOriValue, pRevValue);
+                }
+                stream.Position = 0;
+                if(!string.IsNullOrEmpty(context))
+                    AssertHelper.AreEqual(context, stream, "输出内容与预期不符");
+                if (string.Equals(ForXml.TestHelper.XmlHeaderContext, TestHelper.StreamToString(stream)))
+                    return default(T);
+                stream.Position = 0;
+                using (XmlReader xmlReader = XmlReader.Create(stream))
+                {
+                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                    {
+                        if (setting != null)
+                            reader.Setting = setting;
+                        result = (T) serializer.Combine(reader, pOriValue, !createNew);
+                        if (createNew)
+                        {
+                            Assert.AreNotEqual(result, pOriValue);
+                            if(pOriValue!=null && pRevValue!=null)
+                                Assert.AreNotEqual(result.GetHashCode(), pOriValue.GetHashCode());
+                        }
+                        else
+                        {
+                            if (!IsValueType(pType))
+                            {
+                                Assert.AreEqual(result, pOriValue);
+                                if (pOriValue != null && pRevValue != null)
+                                    Assert.AreEqual(result.GetHashCode(), pOriValue.GetHashCode());
+                            }
+                        }
+                        Assert.AreEqual(pRevValue, result);
+                        if (!IsValueType(pType) && pRevValue != null)
+                            Assert.AreNotEqual(result.GetHashCode(), pRevValue.GetHashCode());
+                    }
+                }
+            }
+            return result;
+        }
+
+        private bool IsValueType(Type type)
+        {
+            if (ReflectionUtils.IsArray(type))
+            {
+                Type t;
+                if (ReflectionUtils.TryGetArrayElementType(type, out t))
+                    return t.IsValueType() || (t == typeof(string));
+            }
+            if (ReflectionUtils.IsIEnumerable(type))
+            {
+                Type t;
+                if (ReflectionUtils.TryGetIEnumerableGenericArgument(type, out t))
+                    return t.IsValueType() || (t == typeof(string));
+            }
+            return type.IsValueType() || (type == typeof(string));
         }
     }
 }

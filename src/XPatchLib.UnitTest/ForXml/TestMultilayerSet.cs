@@ -18,7 +18,7 @@ using Assert = XPatchLib.UnitTest.XUnitAssert;
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
-    public class TestMultilayerSet
+    public class TestMultilayerSet:TestBase
     {
         private Root CreateRoot(int pFirstNum, int pSecondNum)
         {
@@ -97,26 +97,8 @@ namespace XPatchLib.UnitTest.ForXml
             var r1 = CreateRoot(10, 3);
             var r2 = CreateRoot(10, 4);
 
-            var serializer = new Serializer(typeof(Root));
-
-            string context;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, r1, r2);
-                    context = UnitTest.TestHelper.StreamToString(stream);
-                    Debug.WriteLine(context);
-                }
-            }
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    var r3 = serializer.Combine(reader, r1) as Root;
-                    Assert.AreEqual(r2, r3);
-                }
-            }
+            DoAssert(typeof(Root), string.Empty, r1, r2, true);
+            DoAssert(typeof(Root), string.Empty, r1, r2, false);
         }
 
         [Test]
@@ -126,26 +108,8 @@ namespace XPatchLib.UnitTest.ForXml
             var r1 = CreateRoot(10, 4);
             var r2 = CreateRoot(10, 3);
 
-            var serializer = new Serializer(typeof(Root));
-
-            string context;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, r1, r2);
-                    context = UnitTest.TestHelper.StreamToString(stream);
-                    Debug.WriteLine(context);
-                }
-            }
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
-            {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    var r3 = serializer.Combine(reader, r1) as Root;
-                    Assert.AreEqual(r2, r3);
-                }
-            }
+            DoAssert(typeof(Root), string.Empty, r1, r2, true);
+            DoAssert(typeof(Root), string.Empty, r1, r2, false);
         }
     }
 }

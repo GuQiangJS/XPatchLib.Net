@@ -216,10 +216,10 @@ namespace XPatchLib
                         return Array.CreateInstance(elementType, 0);
                     throw new NotImplementedException();
                 }
-                BindingFlags flags = BindingFlags.NonPublic | BindingFlags.CreateInstance | BindingFlags.Instance;
 #if (NET || NETSTANDARD_2_0_UP)
                 try
                 {
+                    BindingFlags flags = BindingFlags.NonPublic | BindingFlags.CreateInstance | BindingFlags.Instance;
                     return OriType.InvokeMember(string.Empty, flags, null,
                         null, args, CultureInfo.InvariantCulture);
                 }
