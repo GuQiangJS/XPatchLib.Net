@@ -15,7 +15,7 @@ using Assert = XPatchLib.UnitTest.XUnitAssert;
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
-    public class TestSpecialCharacters
+    public class TestSpecialCharacters:TestBase
     {
         [Test]
         public void TestDivideAndCombineSpecialCharacters()
@@ -28,26 +28,9 @@ namespace XPatchLib.UnitTest.ForXml
   <Comments>&amp;'""</Comments>
   <Name>&lt;&gt;</Name>
 </AuthorClass>";
-            Serializer Serializer = new Serializer(typeof(AuthorClass));
-            using (MemoryStream stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    Serializer.Divide(writer, null, authorClass1);
 
-                    stream.Position = 0;
-                    using (XmlTextReader xmlReader = new XmlTextReader(XmlReader.Create(stream)))
-                    {
-                        AuthorClass authorClass2 = Serializer.Combine(xmlReader, null, true) as AuthorClass;
-                        Assert.AreEqual(authorClass1, authorClass2);
-                    }
-
-                    stream.Position = 0;
-                    string s = UnitTest.TestHelper.StreamToString(stream);
-
-                    Assert.AreEqual(context, s);
-                }
-            }
+            DoAssert(typeof(AuthorClass), context, null, authorClass1, true);
+            DoAssert(typeof(AuthorClass), context, null, authorClass1, false);
         }
     }
 }

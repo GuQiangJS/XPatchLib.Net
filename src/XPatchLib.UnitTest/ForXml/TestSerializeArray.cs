@@ -130,24 +130,12 @@ namespace XPatchLib.UnitTest.ForXml
   </AuthorClass>
 </List_AuthorClass>";
 
-            var serializer = new Serializer(typeof(List<AuthorClass>));
-
             var types = new Dictionary<Type, string[]>();
             types.Add(typeof(AuthorClass), new[] {"Name"});
 
-            var context = string.Empty;
-
-            serializer.RegisterTypes(types);
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, null, a);
-                    context = UnitTest.TestHelper.StreamToString(stream);
-                }
-            }
-
-            Assert.AreEqual(result, context);
+            DoAssert(typeof(List<AuthorClass>), result, null, a, true, null, types);
+            DoAssert(typeof(List<AuthorClass>), result, null, a, false, null, types);
+            
         }
 
         [Test]

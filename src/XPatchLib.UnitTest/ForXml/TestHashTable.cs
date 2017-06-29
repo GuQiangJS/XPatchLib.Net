@@ -30,8 +30,6 @@ namespace XPatchLib.UnitTest.ForXml
             table.Add("aaa", "ccc");
             table.Add(123, "ddd");
 
-            var serializer = new Serializer(typeof(Hashtable));
-
             var context = string.Empty;
             try
             {

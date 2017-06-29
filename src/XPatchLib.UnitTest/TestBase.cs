@@ -167,8 +167,28 @@ namespace XPatchLib.UnitTest
         protected T DoAssert<T>(Type pType, string context, T pOriValue, T pRevValue, bool createNew,
             ISerializeSetting setting)
         {
+            return DoAssert(pType, context, pOriValue, pRevValue, createNew, setting, null);
+        }
+
+
+        /// <summary>
+        /// 通过 <see cref="Serializer"/> ，首先在 <paramref name="pOriValue"/> 和 <paramref name="pRevValue"/>间产生增量，比较增量与 <paramref name="context"/> 是否一致，再使用增量产生新的对象实例，并比较新的对象实例与 <paramref name="pOriValue"/> 是否值相等。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="pType">对象类型。</param>
+        /// <param name="context">待比较的增量字符串。如果传入 <see cref="string.Empty"/> 表示不比较产生的差量内容。</param>
+        /// <param name="pOriValue">原始对象实例。</param>
+        /// <param name="pRevValue">更新后的对象实例。</param>
+        /// <param name="createNew">是否在合并增量时创建新实例。</param>
+        /// <param name="setting">序列化设定，可以为 <b>null</b></param>
+        /// <param name="setting">待注册的类型与主键的键值对字典，可以为 <b>null</b></param>
+        protected T DoAssert<T>(Type pType, string context, T pOriValue, T pRevValue, bool createNew,
+            ISerializeSetting setting, IDictionary<Type, string[]> pTypes)
+        {
             T result = default(T);
             Serializer serializer = new Serializer(pType);
+            if(pTypes!=null && pTypes.Count>0)
+                serializer.RegisterTypes(pTypes);
             using (var stream = new MemoryStream())
             {
                 using (ITextWriter writer =
@@ -180,7 +200,7 @@ namespace XPatchLib.UnitTest
                     serializer.Divide(writer, pOriValue, pRevValue);
                 }
                 stream.Position = 0;
-                if(!string.IsNullOrEmpty(context))
+                if (!string.IsNullOrEmpty(context))
                     AssertHelper.AreEqual(context, stream, "输出内容与预期不符");
                 if (string.Equals(ForXml.TestHelper.XmlHeaderContext, TestHelper.StreamToString(stream)))
                     return default(T);
@@ -191,18 +211,20 @@ namespace XPatchLib.UnitTest
                     {
                         if (setting != null)
                             reader.Setting = setting;
-                        result = (T) serializer.Combine(reader, pOriValue, !createNew);
+                        result = (T)serializer.Combine(reader, pOriValue, !createNew);
                         if (createNew)
                         {
                             Assert.AreNotEqual(result, pOriValue);
-                            if(pOriValue!=null && pRevValue!=null)
+                            if (pOriValue != null && pRevValue != null)
                                 Assert.AreNotEqual(result.GetHashCode(), pOriValue.GetHashCode());
                         }
                         else
                         {
                             if (!IsValueType(pType))
                             {
-                                Assert.AreEqual(result, pOriValue);
+                                if (pOriValue != null)
+                                    //如果pOriValue为null，那么会始终创建一个新的实例，所以肯定不相同
+                                    Assert.AreEqual(result, pOriValue);
                                 if (pOriValue != null && pRevValue != null)
                                     Assert.AreEqual(result.GetHashCode(), pOriValue.GetHashCode());
                             }

@@ -23,10 +23,34 @@ namespace XPatchLib.UnitTest.ForXml
     {
         public class Account
         {
+            public Account()
+            {
+                Roles = new List<string>();
+            }
+
             public string Email { get; set; }
             public bool Active { get; set; }
             public DateTime CreatedDate { get; set; }
             public IList<string> Roles { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                Account account=obj as Account;
+                if (account == null) return false;
+                bool result= string.Equals(Email, account.Email)
+                       && bool.Equals(Active, account.Active)
+                       && DateTime.Equals(CreatedDate, account.CreatedDate)
+                       && int.Equals(Roles.Count, account.Roles.Count);
+                if (result)
+                {
+                    for (int i = 0; i < Roles.Count; i++)
+                    {
+                        if (!string.Equals(Roles[i], account.Roles[i]))
+                            return false;
+                    }
+                }
+                return result;
+            }
         }
 
         private const string ChangedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -93,25 +117,9 @@ namespace XPatchLib.UnitTest.ForXml
             AuthorClass emptyAuthor = new AuthorClass();
             AuthorClass author = AuthorClass.GetSampleInstance();
 
-            Serializer serializer = new Serializer(typeof(AuthorClass));
+            DoAssert(typeof(AuthorClass), string.Empty, emptyAuthor, author, true);
 
-            string divideString = string.Empty;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, emptyAuthor, author);
-                    //divideString = UnitTest.TestHelper.StreamToString(stream);
-                    stream.Position = 0;
-
-                    using (var reader = new XmlTextReader(XmlReader.Create(stream)))
-                    {
-                        var changedObj = serializer.Combine(reader, new AuthorClass()) as AuthorClass;
-                        Assert.IsNotNull(changedObj);
-                        Assert.AreEqual(author, changedObj);
-                    }
-                }
-            }
+            DoAssert(typeof(AuthorClass), string.Empty, emptyAuthor, author, false);
         }
 
         [Test]
@@ -123,60 +131,24 @@ namespace XPatchLib.UnitTest.ForXml
             authors1.Add(new AuthorClass {Name = "A2"});
             authors1.Add(new AuthorClass {Name = "A3"});
 
-            Serializer serializer = new Serializer(typeof(List<AuthorClass>));
-
             IDictionary<Type, string[]> keys = new Dictionary<Type, string[]>();
-            keys.Add(typeof(AuthorClass), new[] {"Name"});
-            serializer.RegisterTypes(keys);
+            keys.Add(typeof(AuthorClass), new[] { "Name" });
 
-            string divideString = string.Empty;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, new List<AuthorClass>(), authors1);
-                    //divideString = UnitTest.TestHelper.StreamToString(stream);
-                    stream.Position = 0;
-
-                    using (var reader = new XmlTextReader(XmlReader.Create(stream)))
-                    {
-                        var changedObj = serializer.Combine(reader, new List<AuthorClass>()) as List<AuthorClass>;
-                        Assert.IsNotNull(changedObj);
-                        Assert.AreEqual(authors1.Count, changedObj.Count);
-                        for (int i = 0; i < authors1.Count; i++) Assert.AreEqual(authors1[0], changedObj[0]);
-                    }
-                }
-            }
+            DoAssert(typeof(List<AuthorClass>), string.Empty, new List<AuthorClass>(), authors1, true, null, keys);
+            
+            DoAssert(typeof(List<AuthorClass>), string.Empty, new List<AuthorClass>(), authors1, false, null, keys);
+            
         }
 
         [Test]
         [Description("测试Serializer中参数类型为 XmlTextReader 和 XmlTextWriter 的Divide和Combine方法")]
         public void TestXmlSerializerStreamDivideAndCombine()
         {
-            var serializer = new Serializer(typeof(BookClass));
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, OriObject, RevObject);
-                    var context = UnitTest.TestHelper.StreamToString(stream);
-                    Assert.AreEqual(ChangedContext, context);
-                }
-            }
-            serializer = new Serializer(typeof(BookClass));
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, OriObject, RevObject);
-                    stream.Position = 0;
-                    using (var reader = new XmlTextReader(XmlReader.Create(stream)))
-                    {
-                        var changedObj = serializer.Combine(reader, OriObject) as BookClass;
-                        Assert.AreEqual(RevObject, changedObj);
-                    }
-                }
-            }
+            DoAssert(typeof(BookClass), ChangedContext, OriObject, RevObject, true);
+
+
+            DoAssert(typeof(BookClass), ChangedContext, OriObject, RevObject, false);
+            
         }
 
         [Test]
@@ -249,26 +221,18 @@ namespace XPatchLib.UnitTest.ForXml
 
             using (var stream = new MemoryStream())
             {
+                var serializer = new Serializer(typeof(XmlIgnoreClass));
                 using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                 {
-                    var serializer = new Serializer(typeof(XmlIgnoreClass));
                     serializer.Divide(writer, c1, c2);
                     var context = UnitTest.TestHelper.StreamToString(stream);
                     Assert.AreEqual(changedContext, context);
                 }
-            }
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
+                stream.Position = 0;
+                using (var reader = new XmlTextReader(XmlReader.Create(stream)))
                 {
-                    var serializer = new Serializer(typeof(XmlIgnoreClass));
-                    serializer.Divide(writer, c1, c2);
-                    stream.Position = 0;
-                    using (var reader = new XmlTextReader(XmlReader.Create(stream)))
-                    {
-                        var changedObj = serializer.Combine(reader, c1) as XmlIgnoreClass;
-                        Assert.AreEqual(c3, changedObj);
-                    }
+                    var changedObj = serializer.Combine(reader, c1) as XmlIgnoreClass;
+                    Assert.AreEqual(c3, changedObj);
                 }
             }
         }

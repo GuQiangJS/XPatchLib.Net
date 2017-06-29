@@ -311,16 +311,20 @@ namespace XPatchLib
         internal Object InvokeMember(string name, BindingFlags invokeAttr, object target, object[] args,
             CultureInfo culture)
         {
-#if (NET || NETSTANDARD_2_0_UP)
-            return OriType.InvokeMember(name, invokeAttr, null, target, args, culture);
-#else
-
             MethodInfo methodInfo = OriType.GetMethod(name, invokeAttr);
+            Type t = OriType;
             if (methodInfo == null)
             {
-                return null;
+                //当前OriType可能是接口类型（如IList<T>，调用 Add 方法时，无法在当前类型上找到方法，所以还可以根据实例的类型来找方法）
+                t = target.GetType();
+                methodInfo = t.GetMethod(name);
+                if (methodInfo == null)
+                    return null;
             }
-            ClrHelper.MethodCall<object, object> call = OriType.CreateMethodCall<object>(methodInfo);
+#if (NET || NETSTANDARD_2_0_UP)
+            return t.InvokeMember(name, invokeAttr, null, target, args, culture);
+#else
+            ClrHelper.MethodCall<object, object> call = t.CreateMethodCall<object>(methodInfo);
             return call.Invoke(target, args);
 #endif
         }

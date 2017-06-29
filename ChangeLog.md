@@ -1,3 +1,11 @@
+#### 3.0.0.25
+
+* 修正 - 修正获取多语言时使用的是 [CurrentUICulture](https://msdn.microsoft.com/zh-cn/library/system.globalization.cultureinfo.currentuiculture(v=vs.110).aspx)。
+
+* 修正 - 修正当集合类型可能是接口类型（如IList<T>），调用指定方法时，如果无法在当前类型上找到方法，所以还可以根据实例的类型来查找指定方法。
+
+* 修正 - 修正在指定类型上查找指定方法时，如果遇到当前类型的基础类型为空的情况下会死循环的问题。(.NET Standard 2.0 以下版本)
+
 #### 3.0.0.24
 
 * 修正 - 修正合并增量时，如果增量只有一个单独的根节点，会无法合并增量。

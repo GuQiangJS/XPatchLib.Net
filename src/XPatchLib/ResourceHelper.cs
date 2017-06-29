@@ -29,12 +29,12 @@ namespace XPatchLib
         internal static string GetResourceString(string key, params object[] values)
         {
             string resourceString = GetResourceString(key);
-            return string.Format(CultureInfo.CurrentCulture, resourceString, values);
+            return string.Format(CultureInfo.CurrentUICulture, resourceString, values);
         }
 
         internal static string GetResourceString(string key)
         {
-            return GetResourceString(key, CultureInfo.CurrentCulture);
+            return GetResourceString(key, CultureInfo.CurrentUICulture);
         }
 
         internal static string GetResourceString(string key, CultureInfo culture)

@@ -5,6 +5,7 @@
 using System.Xml.Linq;
 #endif
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -23,122 +24,50 @@ using Assert = XPatchLib.UnitTest.XUnitAssert;
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
-    public class TestSerializeObject
+    public class TestSerializeObject:TestBase
     {
         [Test]
         public void CultureChangeTest()
         {
-            CultureInfo curCulture = CultureInfo.CurrentCulture;
-
-            Serializer serializer = null;
-
-#if NET
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
-#else
-            CultureInfo.CurrentCulture = new CultureInfo("fr-FR");
-#endif
-            serializer = new Serializer(typeof(CultureClass));
-            string frResult = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
+            CultureInfo[] cultureInfos = new CultureInfo[]
             {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    writer.Setting.Mode = DateTimeSerializationMode.Unspecified;
-                    serializer.Divide(writer, null, CultureClass.GetSampleInstance());
+                new CultureInfo("fr-FR"), new CultureInfo("fa-IR"), new CultureInfo("de-DE"), new CultureInfo("en-US")
+            };
+            string[] results = new string[cultureInfos.Length];
 
-                    stream.Position = 0;
-                    using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+
+            for (int i = 0; i < cultureInfos.Length; i++)
+            {
+#if NET
+                Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture = cultureInfos[i];
+#else
+                CultureInfo.CurrentUICulture = CultureInfo.CurrentCulture = cultureInfos[i];
+#endif
+
+                Serializer serializer = new Serializer(typeof(CultureClass));
+                string result = string.Empty;
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
                     {
-                        frResult = stremReader.ReadToEnd();
+                        writer.Setting.Mode = DateTimeSerializationMode.Unspecified;
+                        serializer.Divide(writer, null, CultureClass.GetSampleInstance());
+
+                        stream.Position = 0;
+                        using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
+                        {
+                            results[i] = stremReader.ReadToEnd();
+                        }
                     }
                 }
-            }
 #if (NET || NETSTANDARD_2_0_UP)
-            Trace.WriteLine(frResult);
+                Trace.WriteLine(result);
 #endif
-
-#if NET
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("fa-IR");
-#else
-            CultureInfo.CurrentCulture = new CultureInfo("fa-IR");
-#endif
-            string faResult = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    writer.Setting.Mode = DateTimeSerializationMode.Unspecified;
-                    serializer.Divide(writer, null, CultureClass.GetSampleInstance());
-
-                    stream.Position = 0;
-                    using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        faResult = stremReader.ReadToEnd();
-                    }
-                }
             }
 
-#if (NET || NETSTANDARD_2_0_UP)
-            Trace.WriteLine(faResult);
-#endif
-
-#if NET
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
-#else
-            CultureInfo.CurrentCulture = new CultureInfo("de-DE");
-#endif
-            string deResult = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    writer.Setting.Mode = DateTimeSerializationMode.Unspecified;
-                    serializer.Divide(writer, null, CultureClass.GetSampleInstance());
-
-                    stream.Position = 0;
-                    using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        deResult = stremReader.ReadToEnd();
-                    }
-                }
-            }
-#if (NET || NETSTANDARD_2_0_UP)
-            Trace.WriteLine(deResult);
-#endif
-
-#if NET
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-#else
-            CultureInfo.CurrentCulture = new CultureInfo("en-US");
-#endif
-            string usResult = string.Empty;
-            using (MemoryStream stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    writer.Setting.Mode = DateTimeSerializationMode.Unspecified;
-                    serializer.Divide(writer, null, CultureClass.GetSampleInstance());
-
-                    stream.Position = 0;
-                    using (StreamReader stremReader = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        usResult = stremReader.ReadToEnd();
-                    }
-                }
-            }
-#if (NET || NETSTANDARD_2_0_UP)
-            Trace.WriteLine(usResult);
-#endif
-
-#if NET
-            Thread.CurrentThread.CurrentCulture = curCulture;
-#else
-            CultureInfo.CurrentCulture = curCulture;
-#endif
-
-            Assert.AreEqual(faResult, frResult, "Comparing FR and FA");
-            Assert.AreEqual(deResult, faResult, "Comparing FA and DE");
-            Assert.AreEqual(usResult, deResult, "Comparing DE and US");
+            Assert.AreEqual(results[0], results[1], "Comparing FR and FA");
+            Assert.AreEqual(results[1], results[2], "Comparing FA and DE");
+            Assert.AreEqual(results[2], results[3], "Comparing DE and US");
         }
 
         [Test]
@@ -159,7 +88,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             MultilevelClass c = MultilevelClass.GetSampleInstance();
             c.Items.Add(new FirstLevelClass {ID = "3", Second = new SecondLevelClass {SecondID = "3-1"}});
-
+            
             using (MemoryStream stream = new MemoryStream())
             {
                 using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.FlagmentSetting))
@@ -184,6 +113,10 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+
+            result = string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result);
+            DoAssert(typeof(MultilevelClass), result, MultilevelClass.GetSampleInstance(), c, true);
+            DoAssert(typeof(MultilevelClass), result, MultilevelClass.GetSampleInstance(), c, false);
         }
 
         [Test]
@@ -228,6 +161,10 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+
+            result = string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result);
+            DoAssert(typeof(MultilevelClass), result, MultilevelClass.GetSampleInstance(), c, true);
+            DoAssert(typeof(MultilevelClass), result, MultilevelClass.GetSampleInstance(), c, false);
         }
 
         [Test]
@@ -272,6 +209,10 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+
+            result = string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result);
+            DoAssert(typeof(MultilevelClass), result, null,MultilevelClass.GetSampleInstance(), true);
+            DoAssert(typeof(MultilevelClass), result, null,MultilevelClass.GetSampleInstance(), false);
         }
 
         [Test]
@@ -313,6 +254,10 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+
+            result = string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result);
+            DoAssert(typeof(MultilevelClass), result, MultilevelClass.GetSampleInstance(), c, true);
+            DoAssert(typeof(MultilevelClass), result, MultilevelClass.GetSampleInstance(), c, false);
         }
 
         [Test]
@@ -717,19 +662,11 @@ namespace XPatchLib.UnitTest.ForXml
         [Test]
         public void TestDivideAndSerializeSimpleType()
         {
-            Serializer serializer = new Serializer(typeof(AuthorClass));
             AuthorClass b1 = AuthorClass.GetSampleInstance();
             AuthorClass b2 = AuthorClass.GetSampleInstance();
 
-            using (MemoryStream stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, b1, b2);
-                    string context = UnitTest.TestHelper.StreamToString(stream);
-                    Assert.AreEqual(TestHelper.XmlHeaderContext, context);
-                }
-            }
+            DoAssert(typeof(AuthorClass), TestHelper.XmlHeaderContext, b1, b2, true);
+            DoAssert(typeof(AuthorClass), TestHelper.XmlHeaderContext, b1, b2, false);
         }
 
         [Test]
@@ -771,38 +708,7 @@ namespace XPatchLib.UnitTest.ForXml
                 {
                     var th = new Thread(() =>
                         {
-                            Serializer serializer = new Serializer(typeof(BookClass));
-                            string changedContext = string.Empty;
-                            using (MemoryStream stream = new MemoryStream())
-                            {
-                                var settings = new XmlWriterSettings();
-                                settings.Encoding = new UTF8Encoding(false);
-                                settings.OmitXmlDeclaration = false;
-                                using (var writer = TestHelper.CreateWriter(stream, settings))
-                                {
-                                    serializer.Divide(writer, null, BookClass.GetSampleInstance());
-
-                                    stream.Position = 0;
-                                    using (StreamReader stremReader = new StreamReader(stream, new UTF8Encoding(false)))
-                                    {
-                                        changedContext = stremReader.ReadToEnd();
-                                    }
-                                }
-                            }
-#if (NET || NETSTANDARD_2_0_UP)
-                            Trace.WriteLine(changedContext);
-#endif
-                            Serializer deserializer = new Serializer(typeof(BookClass));
-                            BookClass book = null;
-                            using (
-                                XmlTextReader reader =
-                                    new XmlTextReader(XmlReader.Create(new StringReader(changedContext))))
-                            {
-                                book = deserializer.Combine(reader, null) as BookClass;
-                            }
-                            Assert.IsNotNull(book);
-                            Assert.IsInstanceOf<BookClass>(book);
-                            Assert.AreEqual(BookClass.GetSampleInstance(), book);
+                            DoAssert(typeof(BookClass), string.Empty, null, BookClass.GetSampleInstance(), true);
                         }
                     );
 

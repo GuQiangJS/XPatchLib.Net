@@ -300,9 +300,17 @@ namespace XPatchLib
             while (result == null && typeInfo != null)
             {
                 result = typeInfo.GetDeclaredMethod(name);
-                if (result == null && typeInfo.BaseType!=null)
+                if (result == null)
                 {
-                    typeInfo = typeInfo.BaseType.GetTypeInfo();
+                    if (typeInfo.BaseType != null)
+                    {
+                        typeInfo = typeInfo.BaseType.GetTypeInfo();
+                    }
+                    else
+                    {
+                        //如果typeInfo.BaseType是null的情况下，会永远在循环中
+                        break;
+                    }
                 }
             }
             return result;
