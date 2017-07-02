@@ -18,6 +18,15 @@ namespace XPatchLib.UnitTest
 {
     public abstract class TestBase
     {
+        public static string ResolvePath(string path)
+        {
+#if !NETSTANDARD
+            return Path.Combine(TestContext.CurrentContext.TestDirectory, path);
+#else
+            return path;
+#endif
+        }
+
         /// <summary>
         ///     比较字典类型对象是否相同。
         /// </summary>
