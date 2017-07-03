@@ -11,6 +11,8 @@ namespace XPatchLib.TestConsole
 {
     class Program
     {
+        private static int TIMES = 100;
+
         static void Main(string[] args)
         {
 #if !DOTTRACE
@@ -26,7 +28,10 @@ namespace XPatchLib.TestConsole
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
 #else
-            new SerializeBenchmarks().SerializeLargeXmlFile_XPatchLib();
+            for (int i = 0; i < TIMES; i++)
+            {
+                new SerializeBenchmarks().SerializeLargeXmlFile_XPatchLib();
+            }
 #endif
         }
     }

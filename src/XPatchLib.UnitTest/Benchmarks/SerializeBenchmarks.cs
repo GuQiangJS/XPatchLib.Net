@@ -31,13 +31,12 @@ namespace XPatchLib.UnitTest.Benchmarks
 
         static SerializeBenchmarks()
         {
-            Serializer serializer = new Serializer(typeof(IList<RootObject>));
-            using (FileStream stream = File.OpenRead(ResolvePath("large_xpatchlib.xml")))
+            Serializer serializer = new Serializer(typeof(List<RootObject>));
+            using (FileStream stream = File.Open(ResolvePath("large_xpatchlib.xml"),FileMode.Open,FileAccess.Read))
             {
-                using (ITextReader reader =
-                    ForXml.TestHelper.CreateReader(stream))
+                using (ITextReader reader = ForXml.TestHelper.CreateReader(stream))
                 {
-                    serializer.Combine(reader, null);
+                    LargeCollection = serializer.Combine(reader, null, true) as IList<RootObject>;
                 }
             }
         }

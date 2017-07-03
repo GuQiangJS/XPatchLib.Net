@@ -100,7 +100,8 @@ namespace XPatchLib.UnitTest
 
         protected T DoSerializer_Combie<T>(string context, T expected, bool deepClone = false) where T : class
         {
-            using (XmlReader reader = XmlReader.Create(new StringReader(context)))
+            XmlReaderSettings settings = new XmlReaderSettings() {ConformanceLevel = ConformanceLevel.Fragment};
+            using (XmlReader reader = XmlReader.Create(new StringReader(context), settings))
             {
                 using (var xmlTextReader = new XmlTextReader(reader))
                 {

@@ -230,6 +230,18 @@ namespace XPatchLib.UnitTest.ForXml
         }
 
         [Test]
+        public void TestSerializeInterfaceArray()
+        {
+            var b = new List<BookClass>();
+            b.Add(new BookClass { Name = "A" });
+            b.Add(new BookClass { Name = "B" });
+            b.Add(new BookClass { Name = "C" });
+            b.Add(new BookClass { Name = "D" });
+
+            DoAssert(typeof(IList<BookClass>), string.Empty, null, b, true);
+        }
+
+        [Test]
         [Description("测试拆分集合类型但是传入的类型不是集合类型时，是否抛出ArgumentOutOfRangeException错误")]
         public void TestDivideNonCollectionType()
         {

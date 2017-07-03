@@ -61,10 +61,7 @@ namespace XPatchLib.UnitTest.ForXml
 
         internal static ITextReader CreateReader(Stream stream)
         {
-            using (XmlReader xmlReader = XmlReader.Create(stream))
-            {
-                return new XmlTextReader(xmlReader);
-            }
+            return new XmlTextReader(XmlReader.Create(stream));
         }
 
         #region Internal Methods

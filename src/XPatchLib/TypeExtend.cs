@@ -50,6 +50,9 @@ namespace XPatchLib
             IsIEnumerable = ReflectionUtils.IsIEnumerable(pType);
             DefaultValue = ReflectionUtils.GetDefaultValue(pType);
             IsArray = ReflectionUtils.IsArray(pType);
+            IsArrayItem = ParentType != null &&
+                          (ParentType.IsArray || ParentType.IsICollection ||
+                           ParentType.IsIEnumerable);
             TypeCode = ConvertHelper.GetTypeCode(pType);
             IsGenericType = OriType.IsGenericType();
             IsGuid = pType == typeof(Guid);
@@ -120,6 +123,8 @@ namespace XPatchLib
         ///     获取该类型下可以被序列化的字段。
         /// </summary>
         internal MemberWrapper[] FieldsToBeSerialized { get; private set; }
+
+        internal Boolean IsArrayItem { get; private set; }
 
         internal Boolean IsArray { get; private set; }
 

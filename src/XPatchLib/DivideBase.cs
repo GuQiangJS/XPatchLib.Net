@@ -66,16 +66,28 @@ namespace XPatchLib
             }
         }
 
-        protected virtual void WriteEnd() {
-            if (Type != null && Type.ParentType != null &&
-                (Type.ParentType.IsArray || Type.ParentType.IsICollection || Type.ParentType.IsIEnumerable))
-                Writer.WriteEndArrayItem();
-            else if(Type!=null && Type.IsBasicType)
-                Writer.WriteEndProperty();
-            else if (Type!=null && (Type.IsArray || Type.IsICollection || Type.IsIEnumerable))
-                Writer.WriteEndArray();
-            else
-                Writer.WriteEndObject();
+        protected virtual void WriteEnd()
+        {
+            if (Type != null)
+            {
+                if (Type.IsArrayItem)
+                {
+                    Writer.WriteEndArrayItem();
+                    return;
+                }
+                if (Type.IsBasicType)
+                {
+                    Writer.WriteEndProperty();
+                    return;
+                }
+                if (Type.IsArray || Type.IsICollection || Type.IsIEnumerable)
+                {
+                    Writer.WriteEndArray();
+                    Writer.WriteEndProperty();
+                    return;
+                }
+            }
+            Writer.WriteEndObject();
         }
 
         /// <summary>
@@ -96,20 +108,18 @@ namespace XPatchLib
         {
             if (pType != null)
             {
-                if (pType.ParentType != null &&
-                    (pType.ParentType.IsArray || pType.ParentType.IsICollection ||
-                     pType.ParentType.IsIEnumerable))
+                if (pType.IsArrayItem)
                 {
                     Writer.WriteStartArrayItem(pName);
                     return;
                 }
                 //string类型也是IsIEnumerable，所以要写在前面
-                else if (pType.IsBasicType)
+                if (pType.IsBasicType)
                 {
                     Writer.WriteStartProperty(pName);
                     return;
                 }
-                else if (pType.IsArray || pType.IsICollection || pType.IsIEnumerable)
+                if (pType.IsArray || pType.IsICollection || pType.IsIEnumerable)
                 {
                     Writer.WriteStartArray(pName);
                     return;
