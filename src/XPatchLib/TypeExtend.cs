@@ -221,19 +221,28 @@ namespace XPatchLib
                         return Array.CreateInstance(elementType, 0);
                     throw new NotImplementedException();
                 }
-#if (NET || NETSTANDARD_2_0_UP)
-                try
+                ConstructorInfo constructorInfo = null;
+                Type[] ts = (args != null) ? new Type[args.Length] : new Type[0];
+                if (args != null && args.Length > 0)
                 {
-                    BindingFlags flags = BindingFlags.NonPublic | BindingFlags.CreateInstance | BindingFlags.Instance;
-                    return OriType.InvokeMember(string.Empty, flags, null,
-                        null, args, CultureInfo.InvariantCulture);
+                    for (int i = 0; i < args.Length; i++)
+                    {
+                        ts[i] = args[i] != null ? args[i].GetType() : typeof(object);
+                    }
                 }
-                catch (MissingMethodException)
+                BindingFlags flags = BindingFlags.NonPublic | BindingFlags.CreateInstance |
+                                     BindingFlags.Instance | BindingFlags.Public;
+                constructorInfo = OriType.GetConstructor(flags, null, ts, null);
+#if (NET || NETSTANDARD_2_0_UP)
+                if (constructorInfo != null)
+                {
+                    return constructorInfo.Invoke(args);
+                }
+                else
                 {
                     return Activator.CreateInstance(OriType, args);
                 }
 #else
-                ConstructorInfo constructorInfo = OriType.GetConstructor(new List<Type>());
                 if (constructorInfo != null)
                 {
                     ClrHelper.MethodCall<object, object> call = OriType.CreateMethodCall<object>(constructorInfo);

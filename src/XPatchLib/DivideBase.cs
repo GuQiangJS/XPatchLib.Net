@@ -83,7 +83,6 @@ namespace XPatchLib
                 if (Type.IsArray || Type.IsICollection || Type.IsIEnumerable)
                 {
                     Writer.WriteEndArray();
-                    Writer.WriteEndProperty();
                     return;
                 }
             }
