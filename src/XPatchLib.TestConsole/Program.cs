@@ -26,7 +26,7 @@ namespace XPatchLib.TestConsole
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
 #else
-            new SerializeBenchmarks().SerializeLargeXmlFile();
+            new SerializeBenchmarks().SerializeLargeXmlFile_XPatchLib();
 #endif
         }
     }
