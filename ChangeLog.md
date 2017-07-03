@@ -1,3 +1,7 @@
+#### 3.0.0.26
+
+* 优化 - 优化生成增量文档时生成开始节点的性能。
+
 #### 3.0.0.25
 
 * 修正 - 修正获取多语言时使用的是 [CurrentUICulture](https://msdn.microsoft.com/zh-cn/library/system.globalization.cultureinfo.currentuiculture(v=vs.110).aspx)。

@@ -15,17 +15,30 @@ namespace XPatchLib.UnitTest.Benchmarks
     {
         private static readonly IList<RootObject> LargeCollection;
 
-        /// <summary>
-        /// 产生随机大数据
-        /// </summary>
+        ///// <summary>
+        ///// 产生随机大数据
+        ///// </summary>
+        //static SerializeBenchmarks()
+        //{
+        //    int count = 500;
+        //    LargeCollection = new List<RootObject>(count);
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        LargeCollection.Add(RootObject.CreateNew(BenchmarkHelper.RandomNumber(0, 100),
+        //            BenchmarkHelper.RandomNumber(0, 100)));
+        //    }
+        //}
+
         static SerializeBenchmarks()
         {
-            int count = 500;
-            LargeCollection = new List<RootObject>(count);
-            for (int i = 0; i < count; i++)
+            Serializer serializer = new Serializer(typeof(IList<RootObject>));
+            using (FileStream stream = File.OpenRead(ResolvePath("large_xpatchlib.xml")))
             {
-                LargeCollection.Add(RootObject.CreateNew(BenchmarkHelper.RandomNumber(0, 100),
-                    BenchmarkHelper.RandomNumber(0, 100)));
+                using (ITextReader reader =
+                    ForXml.TestHelper.CreateReader(stream))
+                {
+                    serializer.Combine(reader, null);
+                }
             }
         }
 

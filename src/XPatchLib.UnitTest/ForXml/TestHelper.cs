@@ -59,6 +59,14 @@ namespace XPatchLib.UnitTest.ForXml
             return new XmlTextWriter(XmlWriter.Create(output, settings));
         }
 
+        internal static ITextReader CreateReader(Stream stream)
+        {
+            using (XmlReader xmlReader = XmlReader.Create(stream))
+            {
+                return new XmlTextReader(xmlReader);
+            }
+        }
+
         #region Internal Methods
 
         internal static void PrivateAssert(Type pType, object pOriObj, object pChangedObj, string pChangedContext,

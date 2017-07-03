@@ -92,18 +92,30 @@ namespace XPatchLib
                 }
         }
 
-        protected virtual void WriteStart(TypeExtend pType,string pName) {
-            if (pType != null && pType.ParentType != null && (pType.ParentType.IsArray || pType.ParentType.IsICollection || pType.ParentType.IsIEnumerable))
-                Writer.WriteStartArrayItem(pName);
-            else if (pType != null && pType.IsBasicType && pType.ParentType != null && (pType.ParentType.IsArray || pType.ParentType.IsICollection || pType.ParentType.IsIEnumerable))
-                Writer.WriteStartArrayItem(pName);
-            //string类型也是IsIEnumerable，所以要写在前面
-            else if (pType != null && pType.IsBasicType)
-                Writer.WriteStartProperty(pName);
-            else if (pType != null && (pType.IsArray || pType.IsICollection || pType.IsIEnumerable))
-                Writer.WriteStartArray(pName);
-            else
-                Writer.WriteStartObject(pName);
+        protected virtual void WriteStart(TypeExtend pType, string pName)
+        {
+            if (pType != null)
+            {
+                if (pType.ParentType != null &&
+                    (pType.ParentType.IsArray || pType.ParentType.IsICollection ||
+                     pType.ParentType.IsIEnumerable))
+                {
+                    Writer.WriteStartArrayItem(pName);
+                    return;
+                }
+                //string类型也是IsIEnumerable，所以要写在前面
+                else if (pType.IsBasicType)
+                {
+                    Writer.WriteStartProperty(pName);
+                    return;
+                }
+                else if (pType.IsArray || pType.IsICollection || pType.IsIEnumerable)
+                {
+                    Writer.WriteStartArray(pName);
+                    return;
+                }
+            }
+            Writer.WriteStartObject(pName);
         }
 
         protected virtual void WriteStart(ParentObject pParentObject) {
