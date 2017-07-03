@@ -50,16 +50,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XPatchLib.UnitTest\XPatchLib.UnitTest.csproj">
-      <Project>{1deb0516-d274-4afa-9278-3810a500c99f}</Project>
-      <Name>XPatchLib.UnitTest</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\XPatchLib\XPatchLib.csproj">
-      <Project>{c41678d7-0618-4274-8f26-ef08e85a4449}</Project>
-      <Name>XPatchLib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="BenchmarkDotNet, Version=0.10.8.0, Culture=neutral, PublicKeyToken=aa0ca2f9092cefc4, processorArchitecture=MSIL">
       <HintPath>..\packages\BenchmarkDotNet.0.10.8\lib\net46\BenchmarkDotNet.dll</HintPath>
     </Reference>
@@ -152,6 +142,14 @@
     </Reference>
     <Reference Include="System.Xml.XPath.XDocument, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Xml.XPath.XDocument.4.3.0\lib\net46\System.Xml.XPath.XDocument.dll</HintPath>
+    </Reference>
+    <Reference Include="XPatchLib, Version=3.0.0.25, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\XPatchLib.UnitTest\bin\Release\NET46\XPatchLib.dll</HintPath>
+    </Reference>
+    <Reference Include="XPatchLib.UnitTest, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\XPatchLib.UnitTest\bin\Release\NET46\XPatchLib.UnitTest.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
