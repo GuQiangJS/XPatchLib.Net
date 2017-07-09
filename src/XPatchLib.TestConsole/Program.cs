@@ -14,19 +14,30 @@ namespace XPatchLib.TestConsole
 {
     class Program
     {
-        private static ManualConfig Config;
-
-        static void InitConfig()
+        static void SaveLastResult()
         {
-            Config = ManualConfig.Create(DefaultConfig.Instance);
-            string pathName = "logs";
-            if (!Directory.Exists(pathName))
-            {
-                Directory.CreateDirectory(pathName);
-            }
+            string path = @"BenchmarkDotNet.Artifacts\results";
 
-            Config.Add(new StreamLogger(
-                string.Format(@"{0}\{1}.log", pathName, DateTime.Now.ToString("yyyyMMddhhmmss"))));
+            string resultFile= @"BenchmarkDotNet.Artifacts\results\Result.md";
+
+            if (Directory.Exists(path))
+            {
+                string[] files = Directory.GetFiles(path, "SerializeBenchmarks*.md",
+                    SearchOption.TopDirectoryOnly);
+                if (files != null && files.Length > 0)
+                {
+                    foreach (string file in files)
+                    {
+                        File.AppendAllLines(resultFile, new string[]
+                        {
+                            string.Format("## {0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                            System.Environment.NewLine,
+                            File.ReadAllText(file),
+                            System.Environment.NewLine
+                        });
+                    }
+                }
+            }
         }
 
         private static int TIMES = 100;
@@ -34,7 +45,7 @@ namespace XPatchLib.TestConsole
         static void Main(string[] args)
         {
 #if !DOTTRACE
-            InitConfig();
+            SaveLastResult();
             string version = FileVersionInfo.GetVersionInfo(typeof(Serializer).Assembly.Location).FileVersion;
             Console.WriteLine("XPatchLib Version: " + version);
             Console.WriteLine(".NET Version: " + Environment.Version);
@@ -42,7 +53,7 @@ namespace XPatchLib.TestConsole
             new BenchmarkSwitcher(new[]
             {
                 typeof(SerializeBenchmarks)
-            }).Run(new[] {"*"}, Config);
+            }).Run(new[] {"*"});
 
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
