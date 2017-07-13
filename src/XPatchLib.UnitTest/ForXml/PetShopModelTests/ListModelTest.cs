@@ -15,7 +15,7 @@ using Assert = XPatchLib.UnitTest.XUnitAssert;
 namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
 {
     [TestFixture]
-    public class ListModelTest
+    public class ListModelTest:TestBase
     {
         [Test]
         [Description("测试List类型的复杂类型对象增加的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
@@ -35,15 +35,15 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
   <OrderInfo Action=""Add"">
     <BillingAddress>
       <Address1>" + changedObjs[2].BillingAddress.Address1 + @"</Address1>
-      <Address2></Address2>
+      <Address2 />
       <AddressId>" + changedObjs[2].BillingAddress.AddressId + @"</AddressId>
       <City>" + changedObjs[2].BillingAddress.City + @"</City>
       <Country>" + changedObjs[2].BillingAddress.Country + @"</Country>
-      <Email></Email>
+      <Email />
       <FirstName>" + changedObjs[2].BillingAddress.FirstName + @"</FirstName>
       <LastName>" + changedObjs[2].BillingAddress.LastName + @"</LastName>
       <Phone>" + changedObjs[2].BillingAddress.Phone + @"</Phone>
-      <State></State>
+      <State />
       <Zip>" + changedObjs[2].BillingAddress.Zip + @"</Zip>
     </BillingAddress>
     <CreditCard>
@@ -59,9 +59,8 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
   </OrderInfo>
 </" + ReflectionUtils.GetTypeFriendlyName(typeof(List<OrderInfo>)) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(List<OrderInfo>), oriObjs, changedObjs,
-                changedContext,
-                "");
+            DoAssert(typeof(List<OrderInfo>), changedContext, oriObjs, changedObjs, true);
+            DoAssert(typeof(List<OrderInfo>), changedContext, oriObjs, changedObjs, false);
         }
 
         [Test]
@@ -83,15 +82,15 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
   <OrderInfo Action=""Add"">
     <BillingAddress>
       <Address1>" + changedObjs[1].BillingAddress.Address1 + @"</Address1>
-      <Address2></Address2>
+      <Address2 />
       <AddressId>" + changedObjs[1].BillingAddress.AddressId + @"</AddressId>
       <City>" + changedObjs[1].BillingAddress.City + @"</City>
       <Country>" + changedObjs[1].BillingAddress.Country + @"</Country>
-      <Email></Email>
+      <Email />
       <FirstName>" + changedObjs[1].BillingAddress.FirstName + @"</FirstName>
       <LastName>" + changedObjs[1].BillingAddress.LastName + @"</LastName>
       <Phone>" + changedObjs[1].BillingAddress.Phone + @"</Phone>
-      <State></State>
+      <State />
       <Zip>" + changedObjs[1].BillingAddress.Zip + @"</Zip>
     </BillingAddress>
     <CreditCard>
@@ -107,9 +106,8 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
   </OrderInfo>
 </" + ReflectionUtils.GetTypeFriendlyName(typeof(List<OrderInfo>)) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(List<OrderInfo>), oriObjs, changedObjs,
-                changedContext,
-                "");
+            DoAssert(typeof(List<OrderInfo>), changedContext, oriObjs, changedObjs, true);
+            DoAssert(typeof(List<OrderInfo>), changedContext, oriObjs, changedObjs, false);
         }
 
         [Test]
@@ -134,9 +132,8 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
   <OrderInfo Action=""Remove"" OrderId=""5"" />
 </" + ReflectionUtils.GetTypeFriendlyName(typeof(List<OrderInfo>)) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<OrderInfo>(typeof(List<OrderInfo>), oriObjs, changedObjs,
-                changedContext,
-                "");
+            DoAssert(typeof(List<OrderInfo>), changedContext, oriObjs, changedObjs, true);
+            DoAssert(typeof(List<OrderInfo>), changedContext, oriObjs, changedObjs, false);
         }
     }
 }

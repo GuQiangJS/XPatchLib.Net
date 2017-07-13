@@ -48,9 +48,15 @@ namespace XPatchLib
         ///     初始化 <c> Serializer </c> 类的新实例。
         /// </summary>
         /// <param name="pType">此 <see cref="Serializer" /> 可序列化的对象的类型。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="pType"/> 为 <c>null</c> 时。</exception>
         public Serializer(Type pType) : this(pType, true, true) { }
 
         private Serializer(Type pType,bool pClearTypeExtends,bool pClearKeyAttributes) {
+
+            if(pType==null)
+                throw new ArgumentNullException(nameof(pType));
+
+
             if(pClearTypeExtends && pClearKeyAttributes)
                 TypeExtendContainer.ClearAll();
             else if(pClearTypeExtends)
@@ -138,36 +144,31 @@ namespace XPatchLib
                     try
                     {
                         stream = new MemoryStream();
-                        var settings = new XmlWriterSettings();
-                        settings.Encoding = new UTF8Encoding(false);
-                        settings.OmitXmlDeclaration = false;
-                        using (var xmlWriter = XmlWriter.Create(stream, settings))
+                        using (XmlTextWriter writer = new XmlTextWriter(stream, new UTF8Encoding(false)))
                         {
-                            using (XmlTextWriter writer = new XmlTextWriter(xmlWriter))
-                            {
-                                writer.IgnoreAttributeType = null;
-                                writer.Setting.SerializeDefalutValue = true;
-                                new Serializer(_initialType, true, false).Divide(writer, null, pOriValue);
-                            }
-                        }
+                            writer.IgnoreAttributeType = null;
+                            writer.Setting.SerializeDefalutValue = true;
+                            new Serializer(_initialType, true, false).Divide(writer, null, pOriValue);
 #if DEBUG
-                        stream.Position = 0;
+                            stream.Position = 0;
 #if (NET_35 || NETSTANDARD)
-                        XElement ele = XElement.Load(new StreamReader(stream));
-                        System.Diagnostics.Debug.WriteLine(ele.ToString());
+                            XElement ele = XElement.Load(new StreamReader(stream));
+                            System.Diagnostics.Debug.WriteLine(ele.ToString());
 #else
-                        XmlDocument xDoc = new XmlDocument();
-                        xDoc.Load(stream);
-                        System.Diagnostics.Debug.WriteLine(xDoc.InnerXml);
-                        xDoc = null;
+                            XmlDocument xDoc = new XmlDocument();
+                            xDoc.Load(stream);
+                            System.Diagnostics.Debug.WriteLine(xDoc.InnerXml);
+                            xDoc = null;
 #endif
 #endif
-                        stream.Position = 0;
-                        using (XmlReader xmlReader = XmlReader.Create(stream))
-                        {
-                            using (ITextReader reader = new XmlTextReader(xmlReader))
+                            stream.Position = 0;
+                            using (XmlReader xmlReader = XmlReader.Create(stream))
                             {
-                                cloneObjValue = new Serializer(_initialType, true, false).Combine(reader, null, true);
+                                using (ITextReader reader = new XmlTextReader(xmlReader))
+                                {
+                                    cloneObjValue =
+                                        new Serializer(_initialType, true, false).Combine(reader, null, true);
+                                }
                             }
                         }
                     }

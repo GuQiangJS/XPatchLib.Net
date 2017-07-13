@@ -26,6 +26,33 @@ namespace XPatchLib
         ISerializeSetting Setting { get; set; }
 
         /// <summary>
+        /// 指示如何对输出进行格式设置。
+        /// </summary>
+        /// <value><see cref="Formatting"/> 值之一。默认值为 <c>Formatting.Indented</c>（缩进显示）。</value>
+        /// <remarks>
+        /// 如果设置了 <c>Formatting.Indented</c> 选项，则使用 <see cref="ITextWriter.Indentation"/> 和 <see cref="ITextWriter.IndentChar"/> 属性对子元素进行缩进。
+        /// </remarks>
+        Formatting Formatting { get; set; }
+
+        /// <summary>
+        /// 获取或设置当 <see cref="ITextWriter.Formatting"/> 设置为 <c>Formatting.Indented</c> 时将为层次结构中的每个级别书写多少 <see cref="ITextWriter.IndentChar"/>。
+        /// </summary>
+        /// <value>每个级别的 <see cref="ITextWriter.IndentChar"/> 的数目。默认值为 2。</value>
+        int Indentation { get; set; }
+
+        /// <summary>
+        /// 获取或设置当 <see cref="ITextWriter.Formatting"/> 设置为 <c>Formatting.Indented</c> 时哪个字符用于缩进。
+        /// </summary>
+        /// <value>用于缩进的字符。默认为空格。</value>
+        char IndentChar { get; set; }
+
+        /// <summary>
+        /// 获取或设置哪个字符用于将属性值引起来。
+        /// </summary>
+        /// <value>用于将属性值引起来的字符。这必须是单引号 (&#39;) 或双引号 (&#34;)。默认为双引号。</value>
+        char QuoteChar { get; set; }
+
+        /// <summary>
         ///     写入文档开始标记。
         /// </summary>
         void WriteStartDocument();

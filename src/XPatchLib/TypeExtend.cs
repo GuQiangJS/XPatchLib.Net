@@ -24,11 +24,23 @@ namespace XPatchLib
 
         private readonly Dictionary<String, Action<Object, Object>> SetValueFuncs;
 
+        public Boolean IsNullable { get; private set; }
+
+        private Type NullableType;
+
         internal TypeExtend(Type pType,Type pIgnoreAttributeType, TypeExtend pParentType = null)
         {
             ParentType = pParentType;
 
             OriType = pType;
+
+            Type actType;
+            IsNullable = ReflectionUtils.IsNullable(pType, out actType);
+            if (IsNullable)
+            {
+                NullableType = pType = actType;
+            }
+
 #if (NET_20_UP || NETSTANDARD_2_0_UP)
             CustomAttributes = Attribute.GetCustomAttributes(pType);
 #else
@@ -204,12 +216,12 @@ namespace XPatchLib
         {
             if (CreateInstanceFuncs != null && (args == null || args.Length <= 0))
                 return CreateInstanceFuncs();
-
+            
             if (IsBasicType)
             {
-                if (OriType.IsValueType())
+                if (((IsNullable)? NullableType : OriType).IsValueType())
                     return CreateInstanceFuncs();
-                if (OriType == typeof(string))
+                if (((IsNullable) ? NullableType : OriType) == typeof(string))
                     return string.Empty;
             }
             else
@@ -217,7 +229,7 @@ namespace XPatchLib
                 if (IsArray)
                 {
                     Type elementType;
-                    if (ReflectionUtils.TryGetArrayElementType(OriType, out elementType))
+                    if (ReflectionUtils.TryGetArrayElementType(((IsNullable) ? NullableType : OriType), out elementType))
                         return Array.CreateInstance(elementType, 0);
                     throw new NotImplementedException();
                 }
@@ -232,7 +244,7 @@ namespace XPatchLib
                 }
                 BindingFlags flags = BindingFlags.NonPublic | BindingFlags.CreateInstance |
                                      BindingFlags.Instance | BindingFlags.Public;
-                constructorInfo = OriType.GetConstructor(flags, null, ts, null);
+                constructorInfo = ((IsNullable) ? NullableType : OriType).GetConstructor(flags, null, ts, null);
 #if (NET || NETSTANDARD_2_0_UP)
                 if (constructorInfo != null)
                 {
@@ -240,17 +252,17 @@ namespace XPatchLib
                 }
                 else
                 {
-                    return Activator.CreateInstance(OriType, args);
+                    return Activator.CreateInstance(((IsNullable) ? NullableType : OriType), args);
                 }
 #else
                 if (constructorInfo != null)
                 {
-                    ClrHelper.MethodCall<object, object> call = OriType.CreateMethodCall<object>(constructorInfo);
+                    ClrHelper.MethodCall<object, object> call = ((IsNullable) ? NullableType : OriType).CreateMethodCall<object>(constructorInfo);
                     return call.Invoke(null, args);
                 }
                 else
                 {
-                    return Activator.CreateInstance(OriType, args);
+                    return Activator.CreateInstance(((IsNullable) ? NullableType : OriType), args);
                 }
 #endif
             }
@@ -296,15 +308,6 @@ namespace XPatchLib
             return result;
         }
 
-        internal static Boolean ObjectEquals(object objA, object objB)
-        {
-            if (objA == null && objB == null)
-                return true;
-            if (objA == null || objB == null)
-                return false;
-            return objA.Equals(objB);
-        }
-
         internal static Boolean IsDefaultValue(object defaultValue, object value)
         {
             if (defaultValue == null && value == null)
@@ -316,7 +319,7 @@ namespace XPatchLib
 
         internal static Boolean NeedSerialize(object defaultValue, object objA, object objB, bool serializeDefaultValue)
         {
-            bool result = ObjectEquals(objA, objB);
+            bool result = Equals(objA, objB);
             if (result && IsDefaultValue(defaultValue, objA) && serializeDefaultValue)
                 return true;
             return !result;

@@ -152,7 +152,7 @@ namespace XPatchLib
                 //只有当原始对象与变更后的对象不相等时才需要产生增量内容。
                 if (pRevObject == null)
                     return DivideAction(pName, string.Empty, pAttach, Action.SetNull);
-                if (pOriObject == null && TypeExtend.ObjectEquals(Type.DefaultValue, pRevObject))
+                if (pOriObject == null && Equals(Type.DefaultValue, pRevObject))
                 {
                     //原始对象为null，且更新后的对象为类型初始值时，需要判断_SerializeDefaultValue属性来确定是否序列化初始值。
                     if (Writer.Setting.SerializeDefalutValue)

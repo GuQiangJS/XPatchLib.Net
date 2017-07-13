@@ -112,7 +112,10 @@ namespace XPatchLib
             }
             else if (pOriObject == null && pRevObject != null)
             {
-                return WriteParentElementStart(pAttach);
+                result = WriteParentElementStart(pAttach);
+                if (!result)
+                    pAttach.ParentQuere.Dequeue();
+                return result;
             }
 
             if (pAttach != null) pAttach.CurrentAction = Action.Edit;

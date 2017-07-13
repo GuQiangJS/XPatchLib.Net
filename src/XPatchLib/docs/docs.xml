@@ -32,6 +32,10 @@
       是否对 <paramref name="pOriValue" /> 对象实例进行直接修改。
       <para>如果为 <b>true</b> ，那么附加增量数据时将直接更新 <paramref name="pOriValue" /> 对象实例。（性能更加，在无需保留原始数据实例的情况下，建议使用此方式）</para>
       <para>相反，如果为 <b>false</b> ，那么会在附加数据前根据 <paramref name="pOriValue" /> 创建新的对象实例 ，再在新的对象实例上附加增量数据。(适用于不希望原始数据被变更的情况)</para>
+      <para>
+        <c>特例：</c>
+        <para>当待处理的类型是数组类型时，此参数无效，始终创建新实例。</para>
+      </para>
     </param>
     <param class="Serializer" paramtype="Object" method="Divide" paramname="pOriValue">
       原始对象实例。

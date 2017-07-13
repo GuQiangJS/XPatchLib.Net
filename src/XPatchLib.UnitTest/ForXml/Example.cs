@@ -580,7 +580,7 @@ namespace XPatchLib.UnitTest.ForXml
             string changedContext;
             using (var stream = new MemoryStream())
             {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
+                using (ITextWriter writer = new XmlTextWriter(stream, new UTF8Encoding(false)))
                 {
                     serializer.Divide(writer, null, c1);
                     stream.Position = 0;

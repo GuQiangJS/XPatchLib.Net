@@ -267,7 +267,7 @@ namespace XPatchLib
                     var newList = Array.CreateInstance(GenericArgumentType.OriType, oldList.Length - 1);
                     //遍历原始集合中的所有元素
                     for (int i = 0, j = 0; i < oldList.Length; i++)
-                        if (!TypeExtend.ObjectEquals(oldList.GetValue(i), pFoundItem))
+                        if (!Equals(oldList.GetValue(i), pFoundItem))
                         {
                             newList.SetValue(oldList.GetValue(i), j);
                             j++;

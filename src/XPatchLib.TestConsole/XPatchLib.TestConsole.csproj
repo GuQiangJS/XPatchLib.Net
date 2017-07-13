@@ -41,6 +41,16 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'StopWatch|AnyCPU'">
+    <OutputPath>bin\StopWatch\</OutputPath>
+    <DefineConstants>TRACE;STOPWATCH</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -163,7 +173,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>if $(ConfigurationName)==DotTrace OR $(ConfigurationName)==Release(
+    <PreBuildEvent>if $(ConfigurationName)==DotTrace OR $(ConfigurationName)==Release OR $(ConfigurationName)==StopWatch(
 dotnet build "$(SolutionDir)XPatchLib.UnitTest\XPatchLib.UnitTest.csproj" --configuration Release --framework NET46
 )</PreBuildEvent>
   </PropertyGroup>

@@ -44,7 +44,7 @@ namespace XPatchLib.TestConsole
 
         static void Main(string[] args)
         {
-#if !DOTTRACE
+#if Release
             SaveLastResult();
             string version = FileVersionInfo.GetVersionInfo(typeof(Serializer).Assembly.Location).FileVersion;
             Console.WriteLine("XPatchLib Version: " + version);
@@ -57,11 +57,34 @@ namespace XPatchLib.TestConsole
 
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
-#else
+#elif DOTTRACE
             for (int i = 0; i < TIMES; i++)
             {
                 new SerializeBenchmarks().SerializeLargeXmlFile_XPatchLib();
             }
+#elif STOPWATCH
+            Stopwatch watch = new Stopwatch();
+            List<long> xpatch = new List<long>(TIMES);
+            List<long> xml = new List<long>(TIMES);
+            SerializeBenchmarks b=new SerializeBenchmarks();
+            for (int i=0;i<TIMES;i++)
+            {
+                Console.WriteLine("{0}/{1}", i, TIMES);
+                watch.Restart();
+                b.SerializeLargeXmlFile_XPatchLib();
+                watch.Stop();
+                Console.WriteLine("XPatchLib Serialize:{0}.", watch.ElapsedMilliseconds);
+                xpatch.Add(watch.ElapsedMilliseconds);
+                watch.Restart();
+                b.SerializeLargeXmlFile_XmlSerializer();
+                watch.Stop();
+                Console.WriteLine("XmlSerializer:{0}.", watch.ElapsedMilliseconds);
+                xml.Add(watch.ElapsedMilliseconds);
+            }
+
+            Console.WriteLine("XPatchLib Serialize avg:{0}.", xpatch.Average());
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
 #endif
         }
     }

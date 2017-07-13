@@ -16,7 +16,7 @@ using Assert = XPatchLib.UnitTest.XUnitAssert;
 namespace XPatchLib.UnitTest
 {
     [TestFixture]
-    public class TestException
+    public class TestException:TestBase
     {
         [Test]
         public void TestAttributeMissException()
@@ -49,20 +49,13 @@ namespace XPatchLib.UnitTest
         public void TestPrimaryKeyException()
         {
             Type type = typeof(ErrorPrimaryKeyDefineClass);
-
-            bool errorCatched = false;
+            
             try
             {
-                Serializer serializer = new Serializer(type);
-                using (var stream = new MemoryStream())
-                {
-                    using (var writer = ForXml.TestHelper.CreateWriter(stream, ForXml.TestHelper.DocumentSetting))
-                    {
-                        ErrorPrimaryKeyDefineClass c1 = new ErrorPrimaryKeyDefineClass();
-                        ErrorPrimaryKeyDefineClass c2 = new ErrorPrimaryKeyDefineClass();
-                        serializer.Divide(writer, c1, c2);
-                    }
-                }
+                ErrorPrimaryKeyDefineClass c1 = new ErrorPrimaryKeyDefineClass();
+                ErrorPrimaryKeyDefineClass c2 = new ErrorPrimaryKeyDefineClass();
+                DoSerializer_Divide(c1, c2);
+                Assert.Fail();
             }
             catch (PrimaryKeyException ex)
             {
@@ -73,13 +66,11 @@ namespace XPatchLib.UnitTest
                     type.FullName,
                     "Author");
                 Assert.AreEqual(ex.Message, msg);
-                errorCatched = true;
             }
             catch (Exception)
             {
                 Assert.Fail();
             }
-            Assert.IsTrue(errorCatched);
         }
     }
 }

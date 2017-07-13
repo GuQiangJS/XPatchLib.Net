@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using XPatchLib.UnitTest.TestClass;
 #if NUNIT
@@ -25,20 +26,6 @@ namespace XPatchLib.UnitTest.ForXml
     [TestFixture]
     public class TestSerializeArray:TestBase
     {
-#if XUNIT
-        public TestSerializeArray()
-        {
-            TestInitialize();
-        }
-#endif
-#if NUNIT
-        [SetUp]
-#endif
-        public void TestInitialize()
-        {
-            TypeExtendContainer.ClearAll();
-        }
-
         [Test]
         [Description("测试合并集合类型但是传入的类型不是集合类型时，是否抛出ArgumentOutOfRangeException错误")]
         public void TestCombineNonCollectionType()
@@ -143,9 +130,7 @@ namespace XPatchLib.UnitTest.ForXml
         [Description("测试合并一个只有空白的根节点的内容")]
         public void TestCombineSameBookClassCollection()
         {
-            var serializer = new Serializer(typeof(BookClassCollection));
-
-            const string result = @"<?xml version=""1.0"" encoding=""utf-8""?>
+            const string context = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <BookClassCollection />";
 
             var c = new BookClassCollection();
@@ -153,24 +138,26 @@ namespace XPatchLib.UnitTest.ForXml
             c.Add(new BookClass {Name = "B"});
             c.Add(new BookClass {Name = "C"});
             c.Add(new BookClass {Name = "D"});
+            
+            var b = DoSerializer_Combie(context, c, true);
+            Assert.AreEqual(c, b);
+            b = DoSerializer_Combie(context, c, false);
+            Assert.AreEqual(c, b);
 
-            using (XmlReader reader = XmlReader.Create(new StringReader(result)))
-            {
-                using (XmlTextReader xmlReader = new XmlTextReader(reader))
-                {
-                    var b = serializer.Combine(xmlReader, c) as BookClassCollection;
+            DoAssert(string.Empty, null, c, true);
 
-                    Assert.AreEqual(b, c);
-                }
-            }
+            var n=new BookClassCollection();
+            n.Add(new BookClass() {Name = "A", Author = AuthorClass.GetSampleInstance()});
+            n.Add(new BookClass() {Name = "B", Author = AuthorClass.GetSampleInstance()});
+
+            DoAssert(string.Empty, null, n, true);
         }
 
         [Test]
         public void TestDivideAndSerializeBookClassCollection()
         {
-            var b = new BookClassCollection();
 
-            const string result = @"<?xml version=""1.0"" encoding=""utf-8""?>
+            const string context = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <BookClassCollection>
   <BookClass Action=""Add"">
     <Name>A</Name>
@@ -186,14 +173,15 @@ namespace XPatchLib.UnitTest.ForXml
   </BookClass>
 </BookClassCollection>";
 
+            var b = new BookClassCollection();
             b.Add(new BookClass {Name = "A"});
             b.Add(new BookClass {Name = "B"});
             b.Add(new BookClass {Name = "C"});
             b.Add(new BookClass {Name = "D"});
 
-            DoAssert(typeof(BookClassCollection), result, null, b, true);
-            DoAssert(typeof(BookClassCollection), result, new BookClassCollection(), b, true);
-            DoAssert(typeof(BookClassCollection), result, new BookClassCollection(), b, false);
+            DoAssert(typeof(BookClassCollection), context, null, b, true);
+            DoAssert(typeof(BookClassCollection), context, new BookClassCollection(), b, true);
+            DoAssert(typeof(BookClassCollection), context, new BookClassCollection(), b, false);
         }
 
         [Test]
@@ -206,8 +194,8 @@ namespace XPatchLib.UnitTest.ForXml
 
             DoAssert(typeof(BookClassCollection), result, null, b, true);
             //与空白集合产生增量内容，为空白内容。
-            DoAssert(typeof(BookClassCollection), TestHelper.XmlHeaderContext, new BookClassCollection(), b, true);
-            DoAssert(typeof(BookClassCollection), TestHelper.XmlHeaderContext, new BookClassCollection(), b, false);
+            DoAssert(typeof(BookClassCollection), XmlHeaderContext, new BookClassCollection(), b, true);
+            DoAssert(typeof(BookClassCollection), XmlHeaderContext, new BookClassCollection(), b, false);
         }
 
         [Test]
@@ -226,26 +214,31 @@ namespace XPatchLib.UnitTest.ForXml
             c.Add(new BookClass { Name = "C" });
             c.Add(new BookClass { Name = "D" });
 
-            DoAssert(typeof(BookClassCollection), TestHelper.XmlHeaderContext, c, b, true);
-            DoAssert(typeof(BookClassCollection), TestHelper.XmlHeaderContext, c, b, false);
+            DoAssert(typeof(BookClassCollection), XmlHeaderContext, c, b, true);
+            DoAssert(typeof(BookClassCollection), XmlHeaderContext, c, b, false);
         }
-
-        //TODO
-#if NUNIT
+        
         [Test]
-        [Ignore("先跳过")]
-#else
-        [Test(Skip= "先跳过")]
-#endif
         public void TestSerializeInterfaceArray()
         {
-            var b = new List<BookClass>();
-            b.Add(new BookClass { Name = "A" });
-            b.Add(new BookClass { Name = "B" });
-            b.Add(new BookClass { Name = "C" });
-            b.Add(new BookClass { Name = "D" });
+            try
+            {
+                var b = new List<BookClass>();
+                b.Add(new BookClass {Name = "A"});
+                b.Add(new BookClass {Name = "B"});
+                b.Add(new BookClass {Name = "C"});
+                b.Add(new BookClass {Name = "D"});
 
-            DoAssert(typeof(IList<BookClass>), string.Empty, null, b, true);
+                DoAssert(typeof(IList<BookClass>), string.Empty, null, b, true);
+                Assert.Fail("序列化类型是接口，同时原始值是null时，应该因为找不到可用的构造函数而抛出异常");
+            }
+            catch (MissingMethodException)
+            {
+            }
+            catch (Exception)
+            {
+                Assert.Fail("序列化类型是接口，同时原始值是null时，应该因为找不到可用的构造函数而抛出异常");
+            }
         }
 
         [Test]
@@ -254,12 +247,9 @@ namespace XPatchLib.UnitTest.ForXml
         {
             try
             {
-                using (var stream = new MemoryStream())
+                using (ITextWriter writer = CreateWriter(new StringBuilder()))
                 {
-                    using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                    {
-                        new DivideIEnumerable(writer, new TypeExtend(typeof(AuthorClass), writer.IgnoreAttributeType));
-                    }
+                    new DivideIEnumerable(writer, new TypeExtend(typeof(AuthorClass), writer.IgnoreAttributeType));
                 }
                 Assert.Fail("未能抛出ArgumentOutOfRangeException异常");
             }
@@ -310,40 +300,19 @@ namespace XPatchLib.UnitTest.ForXml
   </BookClass>
 </BookClassCollection>";
 
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    var ser = new DivideIEnumerable(writer,
-                        new TypeExtend(typeof(BookClassCollection), writer.IgnoreAttributeType));
-
-                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection)), b1, b2));
-                }
-
-                AssertHelper.AreEqual(result, stream, string.Empty);
-                var com = new CombineIEnumerable(new TypeExtend(typeof(BookClassCollection), null));
-                stream.Position = 0;
-                using (XmlReader xmlReader = XmlReader.Create(stream))
-                {
-                    using (ITextReader reader = new XmlTextReader(xmlReader))
-                    {
-                        var b3 =
-                            com.Combine(reader, b1, ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection))) as
-                                BookClassCollection;
-
-                        Assert.AreEqual(b2, b3);
-                    }
-                }
-            }
+            string context = DoDivideIEnumerable_Divide(b1, b2);
+            Assert.AreEqual(result, context);
+            var b3 = DoCombineIEnumerable_Combie(context, b1);
+            Assert.AreEqual(b2, b3);
             
             b1 = new BookClassCollection() { new BookClass { Name = "A" }, new BookClass { Name = "B" } };
             b2 = new BookClassCollection() { new BookClass { Name = "B" }, new BookClass { Name = "C" } };
 
             DoAssert(typeof(BookClassCollection),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), b1,
+                string.Format("{0}{1}{2}", XmlHeaderContext, System.Environment.NewLine, result), b1,
                 b2, true);
             DoAssert(typeof(BookClassCollection),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), b1,
+                string.Format("{0}{1}{2}", XmlHeaderContext, System.Environment.NewLine, result), b1,
                 b2, false);
 
         }
@@ -368,43 +337,19 @@ namespace XPatchLib.UnitTest.ForXml
     <PublishYear>0</PublishYear>
   </BookClass>
 </BookClassCollection>";
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    writer.Setting.SerializeDefalutValue = true;
-                    var ser = new DivideIEnumerable(writer,
-                        new TypeExtend(typeof(BookClassCollection), writer.IgnoreAttributeType));
 
-                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection)), b1, b2));
-                }
+            ISerializeSetting setting = new XmlSerializeSetting() {SerializeDefalutValue = true};
 
-                AssertHelper.AreEqual(result, stream, string.Empty);
-
-                var com = new CombineIEnumerable(new TypeExtend(typeof(BookClassCollection), null));
-                stream.Position = 0;
-                using (XmlReader xmlReader = XmlReader.Create(stream))
-                {
-                    using (ITextReader reader = new XmlTextReader(xmlReader))
-                    {
-                        var b3 =
-                            com.Combine(reader, b1, ReflectionUtils.GetTypeFriendlyName(typeof(BookClassCollection))) as
-                                BookClassCollection;
-
-                        Assert.AreEqual(b2, b3);
-                    }
-                }
-            }
+            string context = DoDivideIEnumerable_Divide(b1, b2, setting);
+            Assert.AreEqual(result, context);
+            var b3 = DoCombineIEnumerable_Combie(context, b1, setting);
+            Assert.AreEqual(b2, b3);
 
             b1 = new BookClassCollection() { new BookClass { Name = "A" }, new BookClass { Name = "B" } };
             b2 = new BookClassCollection() { new BookClass { Name = "B" }, new BookClass { Name = "C" } };
 
-            DoAssert(typeof(BookClassCollection),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), b1,
-                b2, true, new XmlSerializeSetting() {SerializeDefalutValue = true});
-            DoAssert(typeof(BookClassCollection),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), b1,
-                b2, false, new XmlSerializeSetting() { SerializeDefalutValue = true });
+            DoAssert(typeof(BookClassCollection),result, b1,b2, true, setting);
+            DoAssert(typeof(BookClassCollection),result, b1,b2, false, setting);
         }
 
         [Test]
@@ -423,40 +368,22 @@ namespace XPatchLib.UnitTest.ForXml
   <Byte Action=""Add"">9</Byte>
 </Array1OfByte>";
 
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    var ser = new DivideIEnumerable(writer,
-                        new TypeExtend(t, writer.IgnoreAttributeType));
-                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(t), bytes1, bytes2));
-                }
+            string context = DoDivideIEnumerable_Divide(bytes1, bytes2);
+            Assert.AreEqual(result, context);
+            var bytes3 = DoCombineIEnumerable_Combie(context, bytes1);
+            Assert.AreEqual(bytes2.Length, bytes3.Length);
 
-                AssertHelper.AreEqual(result, stream, string.Empty);
-
-                var com = new CombineIEnumerable(new TypeExtend(t, null));
-                stream.Position = 0;
-                using (XmlReader xmlReader = XmlReader.Create(stream))
-                {
-                    using (ITextReader reader = new XmlTextReader(xmlReader))
-                    {
-                        var bytes3 = com.Combine(reader, bytes1, ReflectionUtils.GetTypeFriendlyName(t)) as Byte[];
-                        Assert.AreEqual(bytes2.Length, bytes3.Length);
-
-                        Assert.IsTrue(bytes3.Contains(bytes2[3]));
-                        Assert.IsTrue(bytes3.Contains(bytes2[4]));
-                    }
-                }
-            }
+            Assert.IsTrue(bytes3.Contains(bytes2[3]));
+            Assert.IsTrue(bytes3.Contains(bytes2[4]));
 
             bytes1 = new Byte[] { 1, 2, 3, 4, 5 };
             bytes2 = new Byte[] { 1, 3, 5, 7, 9 };
 
             DoAssert(typeof(Byte[]),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), bytes1,
+                string.Format("{0}{1}{2}", XmlHeaderContext, System.Environment.NewLine, result), bytes1,
                 bytes2, true);
             DoAssert(typeof(Byte[]),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), bytes1,
+                string.Format("{0}{1}{2}", XmlHeaderContext, System.Environment.NewLine, result), bytes1,
                 bytes2, false);
         }
 
@@ -472,40 +399,22 @@ namespace XPatchLib.UnitTest.ForXml
   <String Action=""Add"">HGI</String>
 </Array1OfString>";
 
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    var ser = new DivideIEnumerable(writer,
-                        new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
-                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, s2));
-                }
+            string context = DoDivideIEnumerable_Divide(s1, s2);
+            Assert.AreEqual(result, context);
+            var s3 = DoCombineIEnumerable_Combie(context, s1);
+            Assert.AreEqual(s2.Length, s3.Length);
 
-                AssertHelper.AreEqual(result, stream, string.Empty);
-
-                var com = new CombineIEnumerable(new TypeExtend(typeof(string[]), null));
-                stream.Position = 0;
-                using (XmlReader xmlReader = XmlReader.Create(stream))
-                {
-                    using (ITextReader reader = new XmlTextReader(xmlReader))
-                    {
-                        var s3 = com.Combine(reader, s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as string[];
-                        Assert.AreEqual(s2.Length, s3.Length);
-
-                        Assert.IsTrue(s3.Contains(s2[0]));
-                        Assert.IsTrue(s3.Contains(s2[1]));
-                    }
-                }
-            }
+            Assert.IsTrue(s3.Contains(s2[0]));
+            Assert.IsTrue(s3.Contains(s2[1]));
 
             s1 = new string[] {"ABC", "DEF"};
             s2 = new string[] {"DEF", "HGI"};
 
             DoAssert(typeof(string[]),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
+                string.Format("{0}{1}{2}", XmlHeaderContext, System.Environment.NewLine, result), s1,
                 s2, true);
             DoAssert(typeof(string[]),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
+                string.Format("{0}{1}{2}", XmlHeaderContext, System.Environment.NewLine, result), s1,
                 s2, false);
         }
 
@@ -520,41 +429,21 @@ namespace XPatchLib.UnitTest.ForXml
   <String Action=""Add"">DEF</String>
 </Array1OfString>";
 
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    var ser = new DivideIEnumerable(writer,
-                        new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
-                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), null, s1));
-                }
+            string context = DoDivideIEnumerable_Divide(null, s1);
+            Assert.AreEqual(result, context);
+            var s2 = DoCombineIEnumerable_Combie(context, new string[] { });
+            Assert.AreEqual(2, s2.Length);
 
-                AssertHelper.AreEqual(result, stream, string.Empty);
-
-                var com = new CombineIEnumerable(new TypeExtend(typeof(string[]), null));
-                stream.Position = 0;
-                using (XmlReader xmlReader = XmlReader.Create(stream))
-                {
-                    using (ITextReader reader = new XmlTextReader(xmlReader))
-                    {
-                        var s2 =
-                            com.Combine(reader, new string[] { }, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as
-                                string[];
-                        Assert.AreEqual(2, s2.Length);
-
-                        Assert.IsTrue(s2.Contains("ABC"));
-                        Assert.IsTrue(s2.Contains("DEF"));
-                    }
-                }
-            }
+            Assert.IsTrue(s2.Contains("ABC"));
+            Assert.IsTrue(s2.Contains("DEF"));
 
             s1 = new string[] { "ABC", "DEF" };
 
             DoAssert(typeof(string[]),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), null,
+                string.Format("{0}{1}{2}", XmlHeaderContext, System.Environment.NewLine, result), null,
                 s1, true);
             DoAssert(typeof(string[]),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), null,
+                string.Format("{0}{1}{2}", XmlHeaderContext, System.Environment.NewLine, result), null,
                 s1, false);
         }
 
@@ -568,38 +457,22 @@ namespace XPatchLib.UnitTest.ForXml
                 @"<Array1OfString>
   <String Action=""Remove"">ABC</String>
 </Array1OfString>";
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    var ser = new DivideIEnumerable(writer,
-                        new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
-                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, s2));
-                }
 
-                AssertHelper.AreEqual(result, stream, string.Empty);
-                using (XmlReader xmlReader = XmlReader.Create(stream))
-                {
-                    using (ITextReader reader = new XmlTextReader(xmlReader))
-                    {
-                        var com = new CombineIEnumerable(new TypeExtend(typeof(string[]), null));
-                        var s3 = com.Combine(reader, s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as string[];
+            string context = DoDivideIEnumerable_Divide(s1, s2);
+            Assert.AreEqual(result, context);
+            var s3 = DoCombineIEnumerable_Combie(context, s1);
+            Assert.AreEqual(s2.Length, s3.Length);
 
-                        Assert.AreEqual(s2.Length, s3.Length);
-
-                        Assert.AreEqual(s2[0], s3[0]);
-                    }
-                }
-            }
+            Assert.AreEqual(s2[0], s3[0]);
 
             s1 = new string[] { "ABC", "DEF" };
             s2 = new string[] { "DEF" };
 
             DoAssert(typeof(string[]),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
+                string.Format("{0}{1}{2}", XmlHeaderContext, System.Environment.NewLine, result), s1,
                 s2, true);
             DoAssert(typeof(string[]),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
+                string.Format("{0}{1}{2}", XmlHeaderContext, System.Environment.NewLine, result), s1,
                 s2, false);
         }
 
@@ -610,39 +483,17 @@ namespace XPatchLib.UnitTest.ForXml
 
             const string result =
                 @"<Array1OfString Action=""SetNull"" />";
+            
+            string context = DoDivideIEnumerable_Divide(s1, null);
+            Assert.AreEqual(result, context);
+            var b3 = DoCombineIEnumerable_Combie(context, s1);
 
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    var ser = new DivideIEnumerable(writer,
-                        new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
-                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, null));
-                }
-
-                AssertHelper.AreEqual(result, stream, string.Empty);
-                using (XmlReader xmlReader = XmlReader.Create(stream))
-                {
-                    using (ITextReader reader = new XmlTextReader(xmlReader))
-                    {
-                        var com = new CombineIEnumerable(new TypeExtend(typeof(BookClassCollection), null));
-                        var b3 =
-                            com.Combine(reader, s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as
-                                BookClassCollection;
-
-                        Assert.AreEqual(null, b3);
-                    }
-                }
-            }
+            Assert.AreEqual(null, b3);
 
             s1 = new string[] { "ABC", "DEF" };
 
-            DoAssert(typeof(string[]),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
-                null, true);
-            DoAssert(typeof(string[]),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
-                null, false);
+            DoAssert(typeof(string[]), result, s1, null, true);
+            DoAssert(typeof(string[]), result, s1, null, false);
         }
 
         [Test]
@@ -655,40 +506,17 @@ namespace XPatchLib.UnitTest.ForXml
             const string result =
                 "<Array1OfString " + newActionName + "=\"SetNull\" />";
 
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    writer.Setting.ActionName = newActionName;
-                    var ser = new DivideIEnumerable(writer,
-                        new TypeExtend(typeof(string[]), writer.IgnoreAttributeType));
-                    Assert.IsTrue(ser.Divide(ReflectionUtils.GetTypeFriendlyName(s1.GetType()), s1, null));
-                }
+            ISerializeSetting setting=new XmlSerializeSetting() { ActionName = newActionName };
 
-                AssertHelper.AreEqual(result, stream, string.Empty);
-                using (XmlReader xmlReader = XmlReader.Create(stream))
-                {
-                    using (ITextReader reader = new XmlTextReader(xmlReader))
-                    {
-                        reader.Setting.ActionName = newActionName;
-                        var com = new CombineIEnumerable(new TypeExtend(typeof(BookClassCollection), null));
-                        var b3 =
-                            com.Combine(reader, s1, ReflectionUtils.GetTypeFriendlyName(s1.GetType())) as
-                                BookClassCollection;
-
-                        Assert.AreEqual(null, b3);
-                    }
-                }
-            }
+            string context = DoDivideIEnumerable_Divide(s1, null, setting);
+            Assert.AreEqual(result, context);
+            var b3 = DoCombineIEnumerable_Combie(context, s1, setting);
+            Assert.AreEqual(null, b3);
 
             s1 = new string[] { "ABC", "DEF" };
 
-            DoAssert(typeof(string[]),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
-                null, true,new XmlSerializeSetting(){ActionName = newActionName });
-            DoAssert(typeof(string[]),
-                string.Format("{0}{1}{2}", ForXml.TestHelper.XmlHeaderContext, System.Environment.NewLine, result), s1,
-                null, false, new XmlSerializeSetting() { ActionName = newActionName });
+            DoAssert(typeof(string[]),result, s1,null, true, setting);
+            DoAssert(typeof(string[]),result, s1,null, false, setting);
         }
     }
 }

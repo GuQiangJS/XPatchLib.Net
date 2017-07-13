@@ -15,7 +15,7 @@ using Assert = XPatchLib.UnitTest.XUnitAssert;
 namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
 {
     [TestFixture]
-    public class SingleModelTest
+    public class SingleModelTest:TestBase
     {
         [Test]
         [Description("测试两个同一类型的复杂对象间改变值的增量内容是否产生正确，是否能够正确合并，并且合并后值相等")]
@@ -41,8 +41,9 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
   <UserId>UserId-3</UserId>
 </OrderInfo>";
 
-            TestHelper.PrivateAssert(typeof(OrderInfo), oriObj, changedObj, changedContext,
-                "更新了一个全新的CreditCard信息，并且重新赋值了UserId属性");
+            //更新了一个全新的CreditCard信息，并且重新赋值了UserId属性
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, true);
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, false);
 
             oriObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
             changedObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
@@ -51,9 +52,9 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
             changedContext = @"<OrderInfo>
   <Date>" + XmlConvert.ToString(changedObj.Date, XmlDateTimeSerializationMode.RoundtripKind) + @"</Date>
 </OrderInfo>";
-
-            TestHelper.PrivateAssert(typeof(OrderInfo), oriObj, changedObj, changedContext,
-                "更新OrderInfo中的Date信息(RoundtripKind)");
+            //更新OrderInfo中的Date信息(RoundtripKind)
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, true);
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, false);
 
             oriObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
             changedObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
@@ -61,10 +62,10 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
             changedContext = @"<OrderInfo>
   <Date>" + XmlConvert.ToString(changedObj.Date, XmlDateTimeSerializationMode.Local) + @"</Date>
 </OrderInfo>";
-
-            TestHelper.PrivateAssert(typeof(OrderInfo), oriObj, changedObj, changedContext,
-                "更新OrderInfo中的Date信息(Local)",
-                DateTimeSerializationMode.Local);
+            //更新OrderInfo中的Date信息(Local)
+            ISerializeSetting setting = new XmlSerializeSetting() {Mode = DateTimeSerializationMode.Local};
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, true, setting);
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, false, setting);
 
             oriObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
             changedObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
@@ -72,9 +73,10 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
             changedContext = @"<OrderInfo>
   <Date>" + XmlConvert.ToString(changedObj.Date, XmlDateTimeSerializationMode.Unspecified) + @"</Date>
 </OrderInfo>";
-
-            TestHelper.PrivateAssert(typeof(OrderInfo), oriObj, changedObj, changedContext,
-                "更新OrderInfo中的Date信息(Unspecified)", DateTimeSerializationMode.Unspecified);
+            //更新OrderInfo中的Date信息(Unspecified)
+            setting = new XmlSerializeSetting() { Mode = DateTimeSerializationMode.Unspecified };
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, true, setting);
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, false, setting);
 
             oriObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
             changedObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
@@ -92,8 +94,9 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
     </LineItemInfo>
   </LineItems>
 </OrderInfo>";
-
-            TestHelper.PrivateAssert(typeof(OrderInfo), oriObj, changedObj, changedContext, "增加一个LineItemInfo");
+            //增加一个LineItemInfo
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, true);
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, false);
 
             oriObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
             changedObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
@@ -108,8 +111,9 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
     </LineItemInfo>
   </LineItems>
 </OrderInfo>";
-
-            TestHelper.PrivateAssert(typeof(OrderInfo), oriObj, changedObj, changedContext, "编辑首个LineItemInfo");
+            //编辑首个LineItemInfo
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, true);
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, false);
 
             oriObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
             changedObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
@@ -139,8 +143,9 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
     </LineItemInfo>
   </LineItems>
 </OrderInfo>";
-
-            TestHelper.PrivateAssert(typeof(OrderInfo), oriObj, changedObj, changedContext, "编辑非首个LineItemInfo");
+            //编辑非首个LineItemInfo
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, true);
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, false);
 
             oriObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
             changedObj = PetShopModelTestHelper.CreateNewOriOrderInfo();
@@ -161,8 +166,9 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
     <LineItemInfo Action=""Remove"" ItemId=""" + oriObj.LineItems[1].ItemId + @""" />
   </LineItems>
 </OrderInfo>";
-
-            TestHelper.PrivateAssert(typeof(OrderInfo), oriObj, changedObj, changedContext, "删除非首个LineItemInfo");
+            //删除非首个LineItemInfo
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, true);
+            DoAssert(typeof(OrderInfo), changedContext, oriObj, changedObj, false);
         }
     }
 }

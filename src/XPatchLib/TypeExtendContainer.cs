@@ -8,19 +8,48 @@ namespace XPatchLib
 {
     internal static class TypeExtendContainer
     {
+        internal class TypeExtendDic
+        {
+            private Dictionary<TypeExtend, TypeExtend> _innerDic = new Dictionary<TypeExtend, TypeExtend>();
+
+            private TypeExtend _nullValue = null;
+            public bool TryGetValue(TypeExtend parentTypeExtend,out TypeExtend typeExtend)
+            {
+                if (parentTypeExtend == null)
+                {
+                    typeExtend = _nullValue;
+                    return typeExtend != null;
+                }
+                else
+                {
+                    return _innerDic.TryGetValue(parentTypeExtend, out typeExtend);
+                }
+            }
+
+            public void Add(TypeExtend parentTypeExtend, TypeExtend typeExtend)
+            {
+                if (parentTypeExtend == null)
+                {
+                    _nullValue = typeExtend;
+                    return;
+                }
+                _innerDic.Add(parentTypeExtend, typeExtend);
+            }
+        }
+
         /// <summary>
         ///     第一个int类型，表示当前Type的HashCode，
         ///     Value字典中的Key值，表示当前Type的ParetnType的HashCode
         ///     Value字典中的Value值，表示根据当前Type和ParentType找到的TypeExtend
         /// </summary>
-        private static readonly Dictionary<int, Dictionary<int, TypeExtend>> InnerDic =
-            new Dictionary<int, Dictionary<int, TypeExtend>>();
+        private static readonly Dictionary<Type, TypeExtendDic> InnerDic =
+            new Dictionary<Type, TypeExtendDic>();
 
         /// <summary>
         ///     记录手工注册的类型主键特性
         /// </summary>
-        private static readonly Dictionary<int, PrimaryKeyAttribute> InnerKeyAttributes =
-            new Dictionary<int, PrimaryKeyAttribute>();
+        private static readonly Dictionary<Type, PrimaryKeyAttribute> InnerKeyAttributes =
+            new Dictionary<Type, PrimaryKeyAttribute>();
 
         internal static void ClearAll()
         {
@@ -55,8 +84,7 @@ namespace XPatchLib
             PrimaryKeyAttribute result = null;
             lock (InnerKeyAttributes)
             {
-                int typeHash = pType.GetHashCode();
-                InnerKeyAttributes.TryGetValue(typeHash, out result);
+                InnerKeyAttributes.TryGetValue(pType, out result);
             }
             return result;
         }
@@ -65,11 +93,10 @@ namespace XPatchLib
         {
             lock (InnerKeyAttributes)
             {
-                int typeHash = pType.GetHashCode();
-                if (!InnerKeyAttributes.ContainsKey(typeHash))
+                if (!InnerKeyAttributes.ContainsKey(pType))
                     lock (InnerKeyAttributes)
                     {
-                        InnerKeyAttributes.Add(typeHash, pAttribute);
+                        InnerKeyAttributes.Add(pType, pAttribute);
                     }
             }
         }
@@ -79,25 +106,22 @@ namespace XPatchLib
             TypeExtend result = null;
             lock (InnerDic)
             {
-                int typeHash = pType.GetHashCode();
-                int parentTypeHash = pParentType != null ? pParentType.GetHashCode() : 0;
+                TypeExtendDic innerDictionary = null;
 
-                Dictionary<int, TypeExtend> innerDictionary = null;
-
-                if (!InnerDic.TryGetValue(typeHash, out innerDictionary))
+                if (!InnerDic.TryGetValue(pType, out innerDictionary))
                 {
-                    innerDictionary = new Dictionary<int, TypeExtend>();
+                    innerDictionary = new TypeExtendDic();
                     lock (InnerDic)
                     {
-                        InnerDic.Add(typeHash, innerDictionary);
+                        InnerDic.Add(pType, innerDictionary);
                     }
                 }
-                if (!innerDictionary.TryGetValue(parentTypeHash, out result))
+                if (!innerDictionary.TryGetValue(pParentType, out result))
                 {
                     result = new TypeExtend(pType, pIgnoreAttributeType, pParentType);
                     lock (InnerDic)
                     {
-                        innerDictionary.Add(parentTypeHash, result);
+                        innerDictionary.Add(pParentType, result);
                     }
                 }
             }

@@ -1,3 +1,15 @@
+#### 3.0.1.4
+
+* 优化 - 修改原有的对象比较方式。
+
+* 优化 - 修改 `ITextWriter` 接口，增加部分属性。
+
+* 优化 - 增加 `Serializer` 构造函数的参数异常判断。
+
+* 新增 - 新增对 [Nullable](https://msdn.microsoft.com/zh-cn/library/system.nullable.aspx) 类型的支持。
+
+* 重构 - 重构 `XmlTextWriter` 。
+
 #### 3.0.0.27
 
 * 优化 - 减少产生基础类型对象增量内容时对类型的判断次数。
@@ -12,7 +24,7 @@
 
 * 修正 - 修正获取多语言时使用的是 [CurrentUICulture](https://msdn.microsoft.com/zh-cn/library/system.globalization.cultureinfo.currentuiculture(v=vs.110).aspx)。
 
-* 修正 - 修正当集合类型可能是接口类型（如IList<T>），调用指定方法时，如果无法在当前类型上找到方法，所以还可以根据实例的类型来查找指定方法。
+* 修正 - 修正当集合类型可能是接口类型（如 `IList<T>`），调用指定方法时，如果无法在当前类型上找到方法，所以还可以根据实例的类型来查找指定方法。
 
 * 修正 - 修正在指定类型上查找指定方法时，如果遇到当前类型的基础类型为空的情况下会死循环的问题。(.NET Standard 2.0 以下版本)
 

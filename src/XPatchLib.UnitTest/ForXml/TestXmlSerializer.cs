@@ -155,28 +155,16 @@ namespace XPatchLib.UnitTest.ForXml
         [Description("测试序列化时指定的XmlTextWriter，更改了Encoding")]
         public void TestXmlSerializerStreamDivideAndCombineChangedEncoding()
         {
-            var settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.OmitXmlDeclaration = false;
-            ;
-            settings.Encoding = Encoding.ASCII;
-
             var serializer = new Serializer(typeof(BookClass));
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream, settings))
+                using (var writer = new XmlTextWriter(stream,Encoding.ASCII))
                 {
                     serializer.Divide(writer, OriObject, RevObject);
-                    var context = UnitTest.TestHelper.StreamToString(stream);
+                    writer.Flush();
+                    var context = StreamToString(stream);
                     Debug.WriteLine(context);
                     Assert.AreEqual(ChangedContext.Replace("utf-8", "us-ascii"), context);
-                }
-            }
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = TestHelper.CreateWriter(stream, settings))
-                {
-                    serializer.Divide(writer, OriObject, RevObject);
                     stream.Position = 0;
                     using (var reader = new XmlTextReader(XmlReader.Create(stream)))
                     {
@@ -185,14 +173,20 @@ namespace XPatchLib.UnitTest.ForXml
                     }
                 }
             }
+        }
 
-            settings.Indent = false;
+        [Test]
+        public void TestXmlSerializerStreamDivideAndCombineChangedIndent()
+        {
+            var serializer = new Serializer(typeof(BookClass));
             using (var stream = new MemoryStream())
             {
-                using (var writer = TestHelper.CreateWriter(stream, settings))
+                using (var writer = new XmlTextWriter(stream, Encoding.ASCII))
                 {
+                    writer.Formatting=Formatting.None;
                     serializer.Divide(writer, OriObject, RevObject);
-                    var context = UnitTest.TestHelper.StreamToString(stream);
+                    writer.Flush();
+                    var context = StreamToString(stream);
                     Debug.WriteLine(context);
                     Assert.AreEqual(
                         ChangedContext.Replace("utf-8", "us-ascii")
@@ -211,30 +205,30 @@ namespace XPatchLib.UnitTest.ForXml
         {
             var c1 = new XmlIgnoreClass {A = "A", B = "B"};
             var c2 = new XmlIgnoreClass {A = "C", B = "D"};
+#if (NET || NETSTANDARD_2_0_UP)
             //因为属性A不参与序列化，所以应该还是原值
             var c3 = new XmlIgnoreClass {A = "A", B = "D"};
-
             var changedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <XmlIgnoreClass>
   <B>D</B>
 </XmlIgnoreClass>";
+#else
+            var c3 = new XmlIgnoreClass {A = "C", B = "D"};
+            var changedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
+<XmlIgnoreClass>
+  <A>C</A>
+  <B>D</B>
+</XmlIgnoreClass>";
+#endif
 
-            using (var stream = new MemoryStream())
-            {
-                var serializer = new Serializer(typeof(XmlIgnoreClass));
-                using (var writer = TestHelper.CreateWriter(stream, TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, c1, c2);
-                    var context = UnitTest.TestHelper.StreamToString(stream);
-                    Assert.AreEqual(changedContext, context);
-                }
-                stream.Position = 0;
-                using (var reader = new XmlTextReader(XmlReader.Create(stream)))
-                {
-                    var changedObj = serializer.Combine(reader, c1) as XmlIgnoreClass;
-                    Assert.AreEqual(c3, changedObj);
-                }
-            }
+            string context = DoSerializer_Divide(c1, c2);
+            Assert.AreEqual(changedContext, context);
+            var c4 = DoSerializer_Combie(context, c1, true);
+            Assert.AreEqual(c3, c4);
+            Assert.AreNotEqual(c1, c4);
+            c4 = DoSerializer_Combie(context, c1, false);
+            Assert.AreEqual(c3, c4);
+            Assert.AreEqual(c1, c4);
         }
     }
 }

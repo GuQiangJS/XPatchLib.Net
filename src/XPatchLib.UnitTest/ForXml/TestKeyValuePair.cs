@@ -27,23 +27,17 @@ namespace XPatchLib.UnitTest.ForXml
         [Description("原始值的Key值与更新后的值的Key值不同时，抛出异常")]
         public void TestCombineSingleKeyValuePairByDifferentKey()
         {
-            Assert.Throws<ArgumentException>(() => { 
-            var k1 = new KeyValuePair<string, string>("1", "1");
-            var k2 = new KeyValuePair<string, string>(null, null);
+            Assert.Throws<ArgumentException>(() =>
+            {
+                var k1 = new KeyValuePair<string, string>("1", "1");
+                var k2 = new KeyValuePair<string, string>(null, null);
 
-            var changedContext = @"<KeyValuePair_String_String Action=""Remove"">
+                var changedContext = @"<KeyValuePair_String_String Action=""Remove"">
   <Key>" + k2.Key + @"</Key>
 </KeyValuePair_String_String>";
 
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(changedContext)))
-            {
-                using (XmlTextReader reader = new XmlTextReader(xmlReader))
-                {
-                    var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType(), null)).Combine(reader, k1,
-                        ReflectionUtils.GetTypeFriendlyName(k2.GetType()));
-                    Assert.AreEqual(k2, combineObj);
-                }
-            }
+                var combineObj = DoCombineKeyValuePair_Combie<KeyValuePair<string, string>>(changedContext, k1);
+                Assert.AreEqual(k2, combineObj);
             }, string.Format(CultureInfo.InvariantCulture,
                 ResourceHelper.GetResourceString(LocalizationRes.Exp_String_KeyValueChanged),
                 "1", null));
@@ -52,68 +46,31 @@ namespace XPatchLib.UnitTest.ForXml
         [Test]
         public void TestDivideAndCombineSingleKeyValuePairByNullOriObject()
         {
-            var k2 = new KeyValuePair<string, string>("1", "2");
+            KeyValuePair<string, string>? k2 = new KeyValuePair<string, string>("1", "2");
             var changedContext = @"<KeyValuePair_String_String>
-  <Key>" + k2.Key + @"</Key>
-  <Value>" + k2.Value + @"</Value>
+  <Key>" + k2.Value.Key + @"</Key>
+  <Value>" + k2.Value.Value + @"</Value>
 </KeyValuePair_String_String>";
 
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    Assert.IsTrue(
-                        new DivideKeyValuePair(writer, new TypeExtend(k2.GetType(), writer.IgnoreAttributeType)).Divide(
-                            ReflectionUtils.GetTypeFriendlyName(k2.GetType()), null, k2));
-                }
-
-                AssertHelper.AreEqual(changedContext, stream, string.Empty);
-
-                using (XmlReader xmlReader = XmlReader.Create(stream))
-                {
-                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
-                    {
-                        var combineObj = new CombineKeyValuePair(new TypeExtend(k2.GetType(), null)).Combine(reader,
-                            null,
-                            ReflectionUtils.GetTypeFriendlyName(k2.GetType()));
-                        Assert.AreEqual(k2, combineObj);
-                    }
-                }
-            }
+            string context = DoDivideKeyValuePair_Divide(null, k2);
+            Assert.AreEqual(changedContext, context);
+            var combineObj = DoCombineKeyValuePair_Combie<KeyValuePair<string, string>?>(context, null);
+            Assert.AreEqual(k2, combineObj);
         }
 
         [Test]
         public void TestDivideAndCombineSingleKeyValuePairByNullRevObject()
         {
-            var k1 = new KeyValuePair<string, string>("1", "1");
+            KeyValuePair<string, string>? k1 = new KeyValuePair<string, string>("1", "1");
 
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    Assert.IsTrue(
-                        new DivideKeyValuePair(writer, new TypeExtend(k1.GetType(), writer.IgnoreAttributeType)).Divide(
-                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()), k1, null));
-                }
-
-                stream.Position = 0;
-
-                var changedContext = @"<KeyValuePair_String_String Action=""Remove"">
-  <Key>" + k1.Key + @"</Key>
+            var changedContext = @"<KeyValuePair_String_String Action=""Remove"">
+  <Key>" + k1.Value.Key + @"</Key>
 </KeyValuePair_String_String>";
 
-                AssertHelper.AreEqual(changedContext, stream, string.Empty);
-
-                using (XmlReader xmlReader = XmlReader.Create(stream))
-                {
-                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
-                    {
-                        var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType(), null)).Combine(reader, k1,
-                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
-                        Assert.AreEqual(null, combineObj);
-                    }
-                }
-            }
+            string context = DoDivideKeyValuePair_Divide(k1, null);
+            Assert.AreEqual(changedContext, context);
+            var combineObj = DoCombineKeyValuePair_Combie<KeyValuePair<string, string>?>(context, k1);
+            Assert.AreEqual(new KeyValuePair<string, string>("1", null), combineObj);
         }
 
         [Test]
@@ -125,35 +82,15 @@ namespace XPatchLib.UnitTest.ForXml
                 var k1 = new KeyValuePair<string, string>(null, null);
                 var k2 = new KeyValuePair<string, string>("1", "2");
 
-                using (var stream = new MemoryStream())
-                {
-                    using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                    {
-                        Assert.IsTrue(
-                            new DivideKeyValuePair(writer, new TypeExtend(k1.GetType(), writer.IgnoreAttributeType))
-                                .Divide(
-                                    ReflectionUtils.GetTypeFriendlyName(k1.GetType()), k1, k2));
-                    }
-
-                    stream.Position = 0;
-                    var changedContext = @"<KeyValuePair_String_String>
+                var changedContext = @"<KeyValuePair_String_String>
   <Key>" + k2.Key + @"</Key>
   <Value>" + k2.Value + @"</Value>
 </KeyValuePair_String_String>";
 
-                    AssertHelper.AreEqual(changedContext, stream, string.Empty);
-
-                    using (XmlReader xmlReader = XmlReader.Create(stream))
-                    {
-                        using (XmlTextReader reader = new XmlTextReader(xmlReader))
-                        {
-                            var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType(), null)).Combine(
-                                reader, k1,
-                                ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
-                            Assert.AreEqual(k2, combineObj);
-                        }
-                    }
-                }
+                string context = DoDivideKeyValuePair_Divide(k1, k2);
+                Assert.AreEqual(changedContext, context);
+                var combineObj = DoCombineKeyValuePair_Combie(context, k1);
+                Assert.AreEqual(k2, combineObj);
             }, string.Format(CultureInfo.InvariantCulture,
                 ResourceHelper.GetResourceString(LocalizationRes.Exp_String_KeyValueChanged),
                 null, "1"));
@@ -165,33 +102,15 @@ namespace XPatchLib.UnitTest.ForXml
             var k1 = new KeyValuePair<string, string>("1", "1");
             var k2 = new KeyValuePair<string, string>("1", "2");
 
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    Assert.IsTrue(
-                        new DivideKeyValuePair(writer, new TypeExtend(k1.GetType(), writer.IgnoreAttributeType)).Divide(
-                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()), k1, k2));
-                }
-
-                stream.Position = 0;
-                var changedContext = @"<KeyValuePair_String_String>
+            var changedContext = @"<KeyValuePair_String_String>
   <Key>" + k2.Key + @"</Key>
   <Value>" + k2.Value + @"</Value>
 </KeyValuePair_String_String>";
 
-                AssertHelper.AreEqual(changedContext, stream, string.Empty);
-
-                using (XmlReader xmlReader = XmlReader.Create(stream))
-                {
-                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
-                    {
-                        var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType(), null)).Combine(reader, k1,
-                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
-                        Assert.AreEqual(k2, combineObj);
-                    }
-                }
-            }
+            string context = DoDivideKeyValuePair_Divide(k1, k2);
+            Assert.AreEqual(changedContext, context);
+            var combineObj = DoCombineKeyValuePair_Combie(context, k1);
+            Assert.AreEqual(k2, combineObj);
         }
 
         [Test]
@@ -200,32 +119,14 @@ namespace XPatchLib.UnitTest.ForXml
             var k1 = new KeyValuePair<string, string>("1", "1");
             var k2 = new KeyValuePair<string, string>("1", null);
 
-            using (var stream = new MemoryStream())
-            {
-                using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                {
-                    Assert.IsTrue(
-                        new DivideKeyValuePair(writer, new TypeExtend(k1.GetType(), writer.IgnoreAttributeType)).Divide(
-                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()), k1, k2));
-                }
-
-                stream.Position = 0;
-                var changedContext = @"<KeyValuePair_String_String Action=""SetNull"">
+            var changedContext = @"<KeyValuePair_String_String Action=""SetNull"">
   <Key>" + k2.Key + @"</Key>
 </KeyValuePair_String_String>";
 
-                AssertHelper.AreEqual(changedContext, stream, string.Empty);
-
-                using (XmlReader xmlReader = XmlReader.Create(stream))
-                {
-                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
-                    {
-                        var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType(), null)).Combine(reader, k1,
-                            ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
-                        Assert.AreEqual(k2, combineObj);
-                    }
-                }
-            }
+            string context = DoDivideKeyValuePair_Divide(k1, k2);
+            Assert.AreEqual(changedContext, context);
+            var combineObj = DoCombineKeyValuePair_Combie(context, k1);
+            Assert.AreEqual(k2, combineObj);
         }
         
 
@@ -238,34 +139,15 @@ namespace XPatchLib.UnitTest.ForXml
                 var k1 = new KeyValuePair<string, string>("1", "1");
                 var k2 = new KeyValuePair<string, string>(null, null);
 
-                using (var stream = new MemoryStream())
-                {
-                    using (ITextWriter writer = TestHelper.CreateWriter(stream))
-                    {
-                        Assert.IsTrue(
-                            new DivideKeyValuePair(writer, new TypeExtend(k1.GetType(), writer.IgnoreAttributeType))
-                                .Divide(
-                                    ReflectionUtils.GetTypeFriendlyName(k1.GetType()), k1, k2));
-                    }
-
-                    stream.Position = 0;
-                    var changedContext = @"<KeyValuePair_String_String Action=""Remove"">
+                var changedContext = @"<KeyValuePair_String_String Action=""Remove"">
   <Key>" + k1.Key + @"</Key>
 </KeyValuePair_String_String>";
 
-                    AssertHelper.AreEqual(changedContext, stream, string.Empty);
+                string context = DoDivideKeyValuePair_Divide(k1, k2);
+                Assert.AreEqual(changedContext, context);
+                var combineObj = DoCombineKeyValuePair_Combie(context, k1);
+                Assert.AreEqual(k2, combineObj);
 
-                    using (XmlReader xmlReader = XmlReader.Create(stream))
-                    {
-                        using (XmlTextReader reader = new XmlTextReader(xmlReader))
-                        {
-                            var combineObj = new CombineKeyValuePair(new TypeExtend(k1.GetType(), null)).Combine(reader,
-                                k1,
-                                ReflectionUtils.GetTypeFriendlyName(k1.GetType()));
-                            Assert.AreEqual(k2, combineObj);
-                        }
-                    }
-                }
             }, string.Format(CultureInfo.InvariantCulture,
                 ResourceHelper.GetResourceString(LocalizationRes.Exp_String_KeyValueChanged),
                 "1", null));

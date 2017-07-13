@@ -14,7 +14,7 @@ using Assert = XPatchLib.UnitTest.XUnitAssert;
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
-    public class TestMulitPrimaryKeyClass
+    public class TestMulitPrimaryKeyClass:TestBase
     {
         [Test]
         public void TestMulitPrimaryKeyClassListRemoveDivideAndCombine()
@@ -35,8 +35,8 @@ namespace XPatchLib.UnitTest.ForXml
   <MulitPrimaryKeyClass Action=""Remove"" Id=""4"" Name=""Name4"" />
 </" + ReflectionUtils.GetTypeFriendlyName(typeof(List<MulitPrimaryKeyClass>)) + @">";
 
-            TestHelper.PrivateAssertIEnumerable<MulitPrimaryKeyClass>(typeof(List<MulitPrimaryKeyClass>), oriList,
-                revList, changedContext, "");
+            DoAssert(typeof(List<MulitPrimaryKeyClass>), changedContext, oriList, revList, true);
+            DoAssert(typeof(List<MulitPrimaryKeyClass>), changedContext, oriList, revList, false);
         }
     }
 }

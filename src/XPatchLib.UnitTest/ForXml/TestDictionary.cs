@@ -20,17 +20,10 @@ namespace XPatchLib.UnitTest.ForXml
     [TestFixture]
     public class TestDictionary : TestBase
     {
-#if XUNIT
-        public TestDictionary()
-        {
-            Init();
-        }
-#endif
-
 #if NUNIT
         [SetUp]
 #endif
-        public void Init()
+        public override void TestInitialize()
         {
             _oriDic = new Dictionary<string, string>(4);
             _oriDic.Add("Akey", "Avalue");
@@ -191,7 +184,7 @@ namespace XPatchLib.UnitTest.ForXml
                     //当原始对象为Null时，会重新创建实例，所以HashCode值肯定不同
                     continue;
                 Assert.AreEqual(_Ori_Dic_Array[i].GetHashCode(), newDic.GetHashCode());
-                Init();
+                TestInitialize();
             }
         }
 
@@ -208,7 +201,7 @@ namespace XPatchLib.UnitTest.ForXml
                     //当原始对象为Null时，会重新创建实例，所以HashCode值肯定不同
                     continue;
                 Assert.AreEqual(_Ori_Dic_Array[i].GetHashCode(), newDic.GetHashCode());
-                Init();
+                TestInitialize();
             }
         }
 
@@ -247,7 +240,7 @@ namespace XPatchLib.UnitTest.ForXml
                     //当原始对象为Null时，会重新创建实例，所以HashCode值肯定不同
                     continue;
                 Assert.AreEqual(_Ori_Dic_Array[i].GetHashCode(), newDic.GetHashCode());
-                Init();
+                TestInitialize();
                 newDic = null;
                 //做深克隆时
                 newDic = DoSerializer_Combie(_Context_Array[i], _Ori_Dic_Array[i], true);
@@ -257,7 +250,7 @@ namespace XPatchLib.UnitTest.ForXml
                     continue;
                 //做深克隆后新对象的 hashCode 值与原始对象不同
                 Assert.AreNotEqual(_Ori_Dic_Array[i].GetHashCode(), newDic.GetHashCode());
-                Init();
+                TestInitialize();
             }
         }
 
@@ -268,7 +261,7 @@ namespace XPatchLib.UnitTest.ForXml
             for (int i = 0; i < _Context_Array.Length; i++)
             {
                 var context = DoSerializer_Divide(_Ori_Dic_Array[i], _Dic_Array[i]);
-                Assert.AreEqual(TestHelper.XmlHeaderContext + Environment.NewLine + _Context_Array[i], context);
+                Assert.AreEqual(XmlHeaderContext + Environment.NewLine + _Context_Array[i], context);
             }
         }
     }

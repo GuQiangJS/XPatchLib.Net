@@ -5,6 +5,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using BenchmarkDotNet.Attributes;
@@ -34,7 +35,7 @@ namespace XPatchLib.UnitTest.Benchmarks
             Serializer serializer = new Serializer(typeof(List<RootObject>));
             using (FileStream stream = File.Open(ResolvePath("large_xpatchlib.xml"),FileMode.Open,FileAccess.Read))
             {
-                using (ITextReader reader = ForXml.TestHelper.CreateReader(stream))
+                using (ITextReader reader = new XmlTextReader(XmlReader.Create(stream)))
                 {
                     LargeCollection = serializer.Combine(reader, null, true) as IList<RootObject>;
                 }
@@ -48,14 +49,9 @@ namespace XPatchLib.UnitTest.Benchmarks
         public void SerializeLargeXmlFile_XPatchLib()
         {
             Serializer serializer = new Serializer(typeof(IList<RootObject>));
-            using (FileStream stream = File.Create(ResolvePath("largewrite_xpatchlib.xml")))
+            using (ITextWriter writer = new XmlTextWriter(ResolvePath("largewrite_xpatchlib.xml"),new UTF8Encoding(false)))
             {
-                using (ITextWriter writer =
-                    ForXml.TestHelper.CreateWriter(stream,
-                        ForXml.TestHelper.DocumentSetting))
-                {
-                    serializer.Divide(writer, null, LargeCollection);
-                }
+                serializer.Divide(writer, null, LargeCollection);
             }
         }
 
@@ -69,8 +65,7 @@ namespace XPatchLib.UnitTest.Benchmarks
             XmlSerializer serializer = new XmlSerializer(typeof(List<RootObject>));
             using (FileStream stream = File.Create(ResolvePath("largewrite_xmlserializer.xml")))
             {
-                using (XmlWriter writer = XmlWriter.Create(stream,
-                    ForXml.TestHelper.DocumentSetting))
+                using (XmlWriter writer = XmlWriter.Create(stream, DocumentSetting))
                 {
                     serializer.Serialize(writer, LargeCollection);
                 }
