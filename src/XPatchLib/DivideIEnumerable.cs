@@ -49,9 +49,12 @@ namespace XPatchLib
 
         #endregion Internal Constructors
 
-        protected override void WriteEnd()
+        protected override void WriteEnd(Object obj)
         {
             Writer.WriteEndArray();
+#if NET || NETSTANDARD_2_0_UP
+            Type.InvokeOnSerialized(obj, new System.Runtime.Serialization.StreamingContext());
+#endif
         }
 
         /// <summary>

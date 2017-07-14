@@ -10,6 +10,9 @@ using System.Linq;
 using XPatchLib.NoLinq;
 #endif
 using System.Reflection;
+#if NET || NETSTANDARD_2_0_UP
+using System.Runtime.Serialization;
+#endif
 
 namespace XPatchLib
 {
@@ -114,6 +117,10 @@ namespace XPatchLib
                 throw new PrimaryKeyException(pType, errorPrimaryKeyName);
 
             CreateInstanceFuncs = ClrHelper.CreateInstanceFunc<Object>(pType);
+
+#if NET
+            ResolveCallbackMethods(OriType);
+#endif
         }
 
         /// <summary>
@@ -454,5 +461,257 @@ namespace XPatchLib
                     SetValueFuncs.Add(pMember.Name, act);
             }
         }
+
+#if NET || NETSTANDARD_2_0_UP
+        internal void InvokeOnSerializing(object o, StreamingContext context)
+        {
+            if (_onSerializingCallbacks != null)
+            {
+                foreach (SerializationCallback callback in _onSerializingCallbacks)
+                {
+                    callback(o, context);
+                }
+            }
+        }
+
+        internal void InvokeOnSerialized(object o, StreamingContext context)
+        {
+            if (_onSerializedCallbacks != null)
+            {
+                foreach (SerializationCallback callback in _onSerializedCallbacks)
+                {
+                    callback(o, context);
+                }
+            }
+        }
+
+        internal void InvokeOnDeserializing(object o, StreamingContext context)
+        {
+            if (_onDeserializingCallbacks != null)
+            {
+                foreach (SerializationCallback callback in _onDeserializingCallbacks)
+                {
+                    callback(o, context);
+                }
+            }
+        }
+
+        internal void InvokeOnDeserialized(object o, StreamingContext context)
+        {
+            if (_onDeserializedCallbacks != null)
+            {
+                foreach (SerializationCallback callback in _onDeserializedCallbacks)
+                {
+                    callback(o, context);
+                }
+            }
+        }
+
+        private List<SerializationCallback> _onDeserializedCallbacks;
+
+        private List<SerializationCallback> _onDeserializingCallbacks;
+
+        private List<SerializationCallback> _onSerializedCallbacks;
+
+        private List<SerializationCallback> _onSerializingCallbacks;
+
+        /// <summary>
+        /// Gets or sets all methods called immediately after deserialization of the object.
+        /// </summary>
+        /// <value>The methods called immediately after deserialization of the object.</value>
+        public IList<SerializationCallback> OnDeserializedCallbacks
+        {
+            get
+            {
+                if (_onDeserializedCallbacks == null)
+                {
+                    _onDeserializedCallbacks = new List<SerializationCallback>();
+                }
+
+                return _onDeserializedCallbacks;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets all methods called during deserialization of the object.
+        /// </summary>
+        /// <value>The methods called during deserialization of the object.</value>
+        public IList<SerializationCallback> OnDeserializingCallbacks
+        {
+            get
+            {
+                if (_onDeserializingCallbacks == null)
+                {
+                    _onDeserializingCallbacks = new List<SerializationCallback>();
+                }
+
+                return _onDeserializingCallbacks;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets all methods called after serialization of the object graph.
+        /// </summary>
+        /// <value>The methods called after serialization of the object graph.</value>
+        public IList<SerializationCallback> OnSerializedCallbacks
+        {
+            get
+            {
+                if (_onSerializedCallbacks == null)
+                {
+                    _onSerializedCallbacks = new List<SerializationCallback>();
+                }
+
+                return _onSerializedCallbacks;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets all methods called before serialization of the object.
+        /// </summary>
+        /// <value>The methods called before serialization of the object.</value>
+        public IList<SerializationCallback> OnSerializingCallbacks
+        {
+            get
+            {
+                if (_onSerializingCallbacks == null)
+                {
+                    _onSerializingCallbacks = new List<SerializationCallback>();
+                }
+
+                return _onSerializingCallbacks;
+            }
+        }
+
+        private void ResolveCallbackMethods(Type t)
+        {
+            List<SerializationCallback> onSerializing;
+            List<SerializationCallback> onSerialized;
+            List<SerializationCallback> onDeserializing;
+            List<SerializationCallback> onDeserialized;
+
+            GetCallbackMethodsForType(t, out onSerializing, out onSerialized, out onDeserializing, out onDeserialized);
+
+            if (onSerializing != null)
+            {
+                OnSerializingCallbacks.AddRange(onSerializing);
+            }
+
+            if (onSerialized != null)
+            {
+                OnSerializedCallbacks.AddRange(onSerialized);
+            }
+
+            if (onDeserializing != null)
+            {
+                OnDeserializingCallbacks.AddRange(onDeserializing);
+            }
+
+            if (onDeserialized != null)
+            {
+                OnDeserializedCallbacks.AddRange(onDeserialized);
+            }
+        }
+
+        private void GetCallbackMethodsForType(Type type, out List<SerializationCallback> onSerializing, out List<SerializationCallback> onSerialized, out List<SerializationCallback> onDeserializing, out List<SerializationCallback> onDeserialized)
+        {
+            onSerializing = null;
+            onSerialized = null;
+            onDeserializing = null;
+            onDeserialized = null;
+
+            foreach (Type baseType in GetClassHierarchyForType(type))
+            {
+                // while we allow more than one OnSerialized total, only one can be defined per class
+                MethodInfo currentOnSerializing = null;
+                MethodInfo currentOnSerialized = null;
+                MethodInfo currentOnDeserializing = null;
+                MethodInfo currentOnDeserialized = null;
+
+                foreach (MethodInfo method in baseType.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+                {
+                    // compact framework errors when getting parameters for a generic method
+                    // lame, but generic methods should not be callbacks anyway
+                    if (method.ContainsGenericParameters)
+                    {
+                        continue;
+                    }
+
+                    Type prevAttributeType = null;
+                    ParameterInfo[] parameters = method.GetParameters();
+
+                    if (IsValidCallback(method, parameters, typeof(OnSerializingAttribute), currentOnSerializing, ref prevAttributeType))
+                    {
+                        onSerializing = onSerializing ?? new List<SerializationCallback>();
+                        onSerializing.Add(CreateSerializationCallback(method));
+                        currentOnSerializing = method;
+                    }
+                    if (IsValidCallback(method, parameters, typeof(OnSerializedAttribute), currentOnSerialized, ref prevAttributeType))
+                    {
+                        onSerialized = onSerialized ?? new List<SerializationCallback>();
+                        onSerialized.Add(CreateSerializationCallback(method));
+                        currentOnSerialized = method;
+                    }
+                    if (IsValidCallback(method, parameters, typeof(OnDeserializingAttribute), currentOnDeserializing, ref prevAttributeType))
+                    {
+                        onDeserializing = onDeserializing ?? new List<SerializationCallback>();
+                        onDeserializing.Add(CreateSerializationCallback(method));
+                        currentOnDeserializing = method;
+                    }
+                    if (IsValidCallback(method, parameters, typeof(OnDeserializedAttribute), currentOnDeserialized, ref prevAttributeType))
+                    {
+                        onDeserialized = onDeserialized ?? new List<SerializationCallback>();
+                        onDeserialized.Add(CreateSerializationCallback(method));
+                        currentOnDeserialized = method;
+                    }
+                }
+            }
+        }
+        internal static SerializationCallback CreateSerializationCallback(MethodInfo callbackMethodInfo)
+        {
+            return (o, context) => callbackMethodInfo.Invoke(o, new object[] { context });
+        }
+
+        private static bool IsValidCallback(MethodInfo method, ParameterInfo[] parameters, Type attributeType, MethodInfo currentCallback, ref Type prevAttributeType)
+        {
+            if (!method.IsDefined(attributeType, false))
+            {
+                return false;
+            }
+            if (currentCallback != null || prevAttributeType != null || method.IsVirtual ||
+                method.ReturnType != typeof(void))
+            {
+                return false;
+            }
+            if (parameters == null || parameters.Length != 1 || parameters[0].ParameterType != typeof(StreamingContext))
+            {
+                return false;
+            }
+
+            prevAttributeType = attributeType;
+
+            return true;
+        }
+
+        private List<Type> GetClassHierarchyForType(Type type)
+        {
+            List<Type> ret = new List<Type>();
+
+            Type current = type;
+            while (current != null && current != typeof(object))
+            {
+                ret.Add(current);
+                current = current.BaseType();
+            }
+
+            // Return the class list in order of simple => complex
+            ret.Reverse();
+            return ret;
+        }
+#endif
     }
+
+#if NET
+    delegate void SerializationCallback(object o, StreamingContext context);
+#endif
 }

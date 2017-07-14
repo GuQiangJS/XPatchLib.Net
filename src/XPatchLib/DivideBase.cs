@@ -61,12 +61,12 @@ namespace XPatchLib
             {
                 if (result)
                 {
-                    WriteEnd();
+                    WriteEnd(pRevObject);
                 }
             }
         }
 
-        protected virtual void WriteEnd()
+        protected virtual void WriteEnd(Object obj)
         {
             if (Type != null)
             {
@@ -87,6 +87,9 @@ namespace XPatchLib
                 }
             }
             Writer.WriteEndObject();
+#if NET || NETSTANDARD_2_0_UP
+            Type.InvokeOnSerialized(obj, new System.Runtime.Serialization.StreamingContext());
+#endif
         }
 
         /// <summary>
@@ -103,7 +106,7 @@ namespace XPatchLib
                 }
         }
 
-        protected virtual void WriteStart(TypeExtend pType, string pName)
+        protected virtual void WriteStart(TypeExtend pType,Object obj, string pName)
         {
             if (pType != null)
             {
@@ -124,11 +127,16 @@ namespace XPatchLib
                     return;
                 }
             }
+#if NET || NETSTANDARD_2_0_UP
+            if (obj!=null)
+                Type.InvokeOnSerializing(obj, new System.Runtime.Serialization.StreamingContext());
+#endif
             Writer.WriteStartObject(pName);
         }
 
-        protected virtual void WriteStart(ParentObject pParentObject) {
-            WriteStart(pParentObject.Type, pParentObject.Name);
+        protected virtual void WriteStart(ParentObject pParentObject)
+        {
+            WriteStart(pParentObject.Type, pParentObject.CurrentObj, pParentObject.Name);
         }
 
         /// <summary>

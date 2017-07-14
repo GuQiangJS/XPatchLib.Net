@@ -35,7 +35,28 @@
 
 * 支持在序列化时排除默认值。
 
+* 支持 [OnSerializingAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializingattribute(v=vs.110).aspx)
+，[OnSerializedAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializedattribute(v=vs.110).aspx)
+，[OnDeserializingAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.ondeserializingattribute(v=vs.110).aspx)
+，[OnDeserializedAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.ondeserializedattribute(v=vs.110).aspx) 特性。
+
 ## 性能对比
+
+```ini
+
+BenchmarkDotNet=v0.10.8, OS=Windows 10 Redstone 2 (10.0.15063)
+Processor=Intel Xeon CPU E3-1231 v3 3.40GHz, ProcessorCount=4
+Frequency=10000000 Hz, Resolution=100.0000 ns, Timer=UNKNOWN
+  [Host]     : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.7.2101.1
+  DefaultJob : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.7.2101.1
+
+
+```
+ |                                        Method |     Mean |    Error |    StdDev |
+ |---------------------------------------------- |---------:|---------:|----------:|
+ |               SerializeLargeXmlFile_XPatchLib | 180.4 ms | 1.334 ms |  1.248 ms |
+ | SerializeLargetXmlFile_DataContractSerializer | 440.6 ms | 8.726 ms | 22.369 ms |
+ |           SerializeLargeXmlFile_XmlSerializer | 432.9 ms | 8.517 ms | 14.917 ms |
 
 ## 编译
 

@@ -66,6 +66,7 @@ namespace XPatchLib.TestConsole
             Stopwatch watch = new Stopwatch();
             List<long> xpatch = new List<long>(TIMES);
             List<long> xml = new List<long>(TIMES);
+            List<long> dataContract = new List<long>(TIMES);
             SerializeBenchmarks b=new SerializeBenchmarks();
             for (int i=0;i<TIMES;i++)
             {
@@ -80,9 +81,16 @@ namespace XPatchLib.TestConsole
                 watch.Stop();
                 Console.WriteLine("XmlSerializer:{0}.", watch.ElapsedMilliseconds);
                 xml.Add(watch.ElapsedMilliseconds);
+                watch.Restart();
+                b.SerializeLargetXmlFile_DataContractSerializer();
+                watch.Stop();
+                Console.WriteLine("DataContractSerializer:{0}.", watch.ElapsedMilliseconds);
+                dataContract.Add(watch.ElapsedMilliseconds);
             }
 
             Console.WriteLine("XPatchLib Serialize avg:{0}.", xpatch.Average());
+            Console.WriteLine("XmlSerializer avg:{0}.", xml.Average());
+            Console.WriteLine("DataContractSerializer avg:{0}.", dataContract.Average());
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
 #endif

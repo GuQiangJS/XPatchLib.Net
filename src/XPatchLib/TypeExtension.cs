@@ -121,6 +121,15 @@ namespace XPatchLib
 #endif
         }
 
+        public static Type BaseType(this Type type)
+        {
+#if (NET || NETSTANDARD_2_0_UP)
+            return type.BaseType;
+#else
+            return type.GetTypeInfo().BaseType;
+#endif
+        }
+
         public static MemberTypes MemberType(this MemberInfo memberInfo)
         {
 #if (NET || NETSTANDARD_1_5_UP)

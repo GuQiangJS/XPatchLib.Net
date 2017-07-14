@@ -124,7 +124,7 @@ namespace XPatchLib
             if (string.IsNullOrEmpty(pElementName))
                 return false;
             WriteParentElementStart(pAttach);
-            WriteStart(Type, pElementName);
+            WriteStart(Type, null, pElementName);
             if (pAttach != null && pAttach.CurrentAction != Action.Edit)
                 Writer.WriteActionAttribute(pAttach.CurrentAction);
             else

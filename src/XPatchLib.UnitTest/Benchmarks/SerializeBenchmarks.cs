@@ -5,9 +5,12 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
+#if NET_35_UP
 using System.Xml.Serialization;
+#endif
 using BenchmarkDotNet.Attributes;
 
 namespace XPatchLib.UnitTest.Benchmarks
@@ -55,7 +58,25 @@ namespace XPatchLib.UnitTest.Benchmarks
             }
         }
 
+#if NET_35_UP
+        /// <summary>
+        /// DataContractSerializer - 原始对象为 <b>null</b> 产生大数据量的增量文档
+        /// </summary>
+        [Benchmark]
+        public void SerializeLargetXmlFile_DataContractSerializer()
+        {
+            DataContractSerializer serializer = new DataContractSerializer(typeof(List<RootObject>));
+            using (FileStream stream = File.Create(ResolvePath("largewrite_dataContractserializer.xml")))
+            {
+                using (XmlWriter writer = XmlWriter.Create(stream, DocumentSetting))
+                {
+                    serializer.WriteObject(writer, LargeCollection);
+                }
+            }
+        }
+#endif
 
+#if NET
         /// <summary>
         /// XmlSerializer - 原始对象为 <b>null</b> 产生大数据量的增量文档
         /// </summary>
@@ -71,6 +92,7 @@ namespace XPatchLib.UnitTest.Benchmarks
                 }
             }
         }
+#endif
     }
 }
 #endif
