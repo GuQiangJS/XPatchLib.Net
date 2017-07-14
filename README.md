@@ -32,7 +32,7 @@
 
 * 支持将枚举序列化到其文本名称。
 
-* 支持自定义跳过属性序列化特性。([XmlTextWriter.IgnoreAttributeType](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/c93887bb-a453-dc88-84a6-a0f44c764d13.htm))
+* 支持自定义跳过属性序列化特性。([ITextWriter.IgnoreAttributeType](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/3b6ecafa-83a3-3cdd-568d-848b70f3f234.htm))
 
 * 支持 [OnSerializingAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializingattribute(v=vs.110).aspx)
 ，[OnSerializedAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializedattribute(v=vs.110).aspx)
