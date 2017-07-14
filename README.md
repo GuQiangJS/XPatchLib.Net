@@ -18,6 +18,20 @@
 
 可以在 Visual Studio 2008 及后续版本中使用 `XPatchLib`。
 
+## 功能
+
+相对于 [XmlSerializer](https://msdn.microsoft.com/en-us/library/system.xml.serialization.xmlserializer(v=vs.110).aspx) 增加如下功能：
+
+* 支持序列化 `IList`，`IEnumerable`，`ICollection`，`IDictionary` 属性。
+
+* 支持序列化 `Struct`，`Interface` 类型属性。
+
+* 支持序列化 [Nullable](https://msdn.microsoft.com/zh-cn/library/system.nullable.aspx)，[Uri](https://msdn.microsoft.com/zh-cn/library/system.uri(v=vs.110).aspx)，[BigInteger](https://msdn.microsoft.com/zh-cn/library/system.numerics.biginteger(v=vs.110).aspx)，[DateTimeOffset](https://msdn.microsoft.com/library/system.datetimeoffset.aspx)，[TimeSpan](https://msdn.microsoft.com/zh-cn/library/system.timespan.aspx) 属性。
+
+* 支持在序列化时排除默认值。
+
+## 性能对比
+
 ## 编译
 
 使用 Visual Studio 2017 及以上版本打开 `src/XPatchLib.sln` 。
