@@ -22,11 +22,16 @@
 
 相对于 [XmlSerializer](https://msdn.microsoft.com/en-us/library/system.xml.serialization.xmlserializer(v=vs.110).aspx) 增加如下功能：
 
-* 支持序列化 `IList`，`IEnumerable`，`ICollection`，`IDictionary` 属性。
-
-* 支持序列化 `Struct`，`Interface` 类型属性。
-
-* 支持序列化 [Nullable](https://msdn.microsoft.com/zh-cn/library/system.nullable.aspx)，[Uri](https://msdn.microsoft.com/zh-cn/library/system.uri(v=vs.110).aspx)，[BigInteger](https://msdn.microsoft.com/zh-cn/library/system.numerics.biginteger(v=vs.110).aspx)，[DateTimeOffset](https://msdn.microsoft.com/library/system.datetimeoffset.aspx)，[TimeSpan](https://msdn.microsoft.com/zh-cn/library/system.timespan.aspx) 属性。
+* 增加支持以下类型属性序列化 
+    - [IList](https://msdn.microsoft.com/zh-cn/library/system.collections.ilist(v=vs.110).aspx) 
+    - [IEnumerable](https://msdn.microsoft.com/zh-cn/library/system.collections.ienumerable(v=vs.110).aspx) 
+    - [ICollection](https://msdn.microsoft.com/zh-cn/library/system.collections.icollection(v=vs.110).aspx) 
+    - [IDictionary](https://msdn.microsoft.com/zh-cn/library/system.collections.idictionary(v=vs.110).aspx) 
+    - [Nullable](https://msdn.microsoft.com/zh-cn/library/system.nullable.aspx) 
+    - [Uri](https://msdn.microsoft.com/zh-cn/library/system.uri(v=vs.110).aspx) 
+    - [BigInteger](https://msdn.microsoft.com/zh-cn/library/system.numerics.biginteger(v=vs.110).aspx) 
+    - [DateTimeOffset](https://msdn.microsoft.com/library/system.datetimeoffset.aspx) 
+    - [TimeSpan](https://msdn.microsoft.com/zh-cn/library/system.timespan.aspx)
 
 * 支持在序列化时排除默认值。
 
