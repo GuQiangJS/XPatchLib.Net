@@ -28,7 +28,11 @@
 
 * 支持属性为接口类型，结构类型，泛型，字典类型。
 
-* 支持在序列化时排除默认值。
+* 支持在序列化时排除默认值。([ISerializeSetting.SerializeDefalutValue](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/08b1d89e-1f80-5c11-319b-55fbcd78e888.htm))
+
+* 支持将枚举序列化到其文本名称。
+
+* 支持自定义跳过属性序列化特性。([XmlTextWriter.IgnoreAttributeType](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/c93887bb-a453-dc88-84a6-a0f44c764d13.htm))
 
 * 支持 [OnSerializingAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializingattribute(v=vs.110).aspx)
 ，[OnSerializedAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializedattribute(v=vs.110).aspx)
@@ -38,7 +42,6 @@
 ## 性能对比
 
 ```ini
-
 BenchmarkDotNet=v0.10.8, OS=Windows 10 Redstone 2 (10.0.15063)
 Processor=Intel Xeon CPU E3-1231 v3 3.40GHz, ProcessorCount=4
 Frequency=10000000 Hz, Resolution=100.0000 ns, Timer=UNKNOWN
@@ -165,5 +168,11 @@ using (var fs = new FileStream(filename, FileMode.Open))
 ## 后续计划
 
 - [x] 部分对象类型尚未支持。例如：`DateTimeOffset`，`BigInteger` 等。
+- [x] 支持自定义跳过属性序列化特性。
+- [ ] 支持 private 属性。
+- [ ] 支持匿名类型。
+- [ ] 支持循环引用实例的处理。
+- [ ] 支持 [ISerializable](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable.aspx) 实例 。
+- [ ] 支持 [DynamicObject](https://msdn.microsoft.com/zh-cn/library/system.dynamic.dynamicobject.aspx) 实例 。
 - [ ] 支持除 `XML` 外的其他格式输出。
 - [ ] 支持更多的 .NET [目标框架](https://docs.microsoft.com/zh-cn/dotnet/standard/frameworks)。
