@@ -22,16 +22,11 @@
 
 相对于 [XmlSerializer](https://msdn.microsoft.com/en-us/library/system.xml.serialization.xmlserializer(v=vs.110).aspx) 增加如下功能：
 
-* 增加支持以下类型属性序列化 
-    - [IList](https://msdn.microsoft.com/zh-cn/library/system.collections.ilist(v=vs.110).aspx) 
-    - [IEnumerable](https://msdn.microsoft.com/zh-cn/library/system.collections.ienumerable(v=vs.110).aspx) 
-    - [ICollection](https://msdn.microsoft.com/zh-cn/library/system.collections.icollection(v=vs.110).aspx) 
-    - [IDictionary](https://msdn.microsoft.com/zh-cn/library/system.collections.idictionary(v=vs.110).aspx) 
-    - [Nullable](https://msdn.microsoft.com/zh-cn/library/system.nullable.aspx) 
-    - [Uri](https://msdn.microsoft.com/zh-cn/library/system.uri(v=vs.110).aspx) 
-    - [BigInteger](https://msdn.microsoft.com/zh-cn/library/system.numerics.biginteger(v=vs.110).aspx) 
-    - [DateTimeOffset](https://msdn.microsoft.com/library/system.datetimeoffset.aspx) 
-    - [TimeSpan](https://msdn.microsoft.com/zh-cn/library/system.timespan.aspx)
+* 支持 [Nullable\<T\>](https://msdn.microsoft.com/zh-cn/library/b3h38hb0.aspx) 结构类型属性。
+
+* 支持 [IList\<T\>](https://msdn.microsoft.com/zh-cn/library/5y536ey6(v=vs.110).aspx)，[IEnumerable\<T\>](https://msdn.microsoft.com/zh-cn/library/9eekhta0(v=vs.110).aspx)，[ICollection\<T\>](https://msdn.microsoft.com/zh-cn/library/92t2ye13(v=vs.110).aspx)，[IDictionary\<TKey, TValue\>](https://msdn.microsoft.com/zh-cn/library/s4ys34ea(v=vs.110).aspx) 类型属性。
+
+* 支持属性为接口类型，结构类型，泛型，字典类型。
 
 * 支持在序列化时排除默认值。
 
@@ -49,14 +44,13 @@ Processor=Intel Xeon CPU E3-1231 v3 3.40GHz, ProcessorCount=4
 Frequency=10000000 Hz, Resolution=100.0000 ns, Timer=UNKNOWN
   [Host]     : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.7.2101.1
   DefaultJob : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.7.2101.1
-
-
 ```
- |                                        Method |     Mean |    Error |    StdDev |
- |---------------------------------------------- |---------:|---------:|----------:|
- |               SerializeLargeXmlFile_XPatchLib | 180.4 ms | 1.334 ms |  1.248 ms |
- | SerializeLargetXmlFile_DataContractSerializer | 440.6 ms | 8.726 ms | 22.369 ms |
- |           SerializeLargeXmlFile_XmlSerializer | 432.9 ms | 8.517 ms | 14.917 ms |
+
+ |                                        Method |     Mean |    Error |    StdDev |            Size |
+ |---------------------------------------------- |---------:|---------:|----------:|----------------:|
+ |               SerializeLargeXmlFile_XPatchLib | 180.4 ms | 1.334 ms |  1.248 ms | 5,730,304 bytes |
+ | SerializeLargetXmlFile_DataContractSerializer | 440.6 ms | 8.726 ms | 22.369 ms | 5,369,856 bytes |
+ |           SerializeLargeXmlFile_XmlSerializer | 432.9 ms | 8.517 ms | 14.917 ms | 5,095,424 bytes |
 
 ## 编译
 
