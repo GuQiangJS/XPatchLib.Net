@@ -729,9 +729,12 @@ namespace XPatchLib
         ///     用于控制如何 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 序列化对象。
         /// </remarks>
         /// <value>
-        ///     <see cref="XmlIgnoreAttribute" />
+        ///     默认值：<see cref="XmlIgnoreAttribute" />。
         /// </value>
-#else 
+        /// <example>
+        ///     <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\IgnoreAttributeType.cs" />
+        /// </example>
+#else
         /// <summary>
         ///     获取或设置指示 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 进行序列化的公共字段或公共读/写属性值。
         /// </summary>
@@ -739,8 +742,11 @@ namespace XPatchLib
         ///     用于控制如何 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 序列化对象。
         /// </remarks>
         /// <value>
-        ///     null.
+        ///     默认值：<c>null</c>。
         /// </value>
+        /// <example>
+        ///     <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\IgnoreAttributeType.cs" />
+        /// </example>
 #endif
         public Type IgnoreAttributeType { get; set; }
 
