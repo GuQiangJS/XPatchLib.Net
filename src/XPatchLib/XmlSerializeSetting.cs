@@ -44,6 +44,9 @@ namespace XPatchLib
         ///     获取或设置是否序列化默认值。
         /// </summary>
         /// <value>默认为 <c>false</c>。</value>
+        /// <example>
+        ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="XmlSerializeSetting" and @property="SerializeDefalutValue"]/*' />
+        /// </example>
         public bool SerializeDefalutValue
         {
             get { return _serializeDefalutValue; }
@@ -61,10 +64,13 @@ namespace XPatchLib
         ///     获取或设置序列化/反序列化时，文本中标记 '<b>动作</b>' 的文本。
         /// </summary>
         /// <value>
-        ///     默认值是 "<b>Action</b>" 。
+        ///     默认值是 <c>Action</c> 。
         /// </value>
         /// <exception cref="ArgumentNullException">当设置值是传入 <b>null</b> 时。</exception>
         /// <exception cref="ArgumentException">当设置值为空时。</exception>
+        /// <example>
+        ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="XmlSerializeSetting" and @property="ActionName"]/*' />
+        /// </example>
         public string ActionName
         {
             get { return _actionName; }

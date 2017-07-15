@@ -229,5 +229,23 @@ Small Widget
 </List_OrderedItem>]]>
       </code>
     </example>
+    <example class="XmlSerializeSetting" property="ActionName">
+      <para>
+        下面的示例展示了 ActionName 的使用效果，以及如何修改 ActionName 。
+      </para>
+      <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\ActionName.cs" />
+    </example>
+    <example class="XmlSerializeSetting" property="SerializeDefalutValue">
+      <para>
+        下面的示例展示了 SerializeDefalutValue 的使用效果。
+      </para>
+      <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\SerializeDefalutValue.cs" />
+    </example>
+    <example class="XmlTextWriter" property="IgnoreAttributeType">
+      <para>
+        下面的示例展示了 IgnoreAttributeType 的使用效果，以及如何修改 IgnoreAttributeType 。
+      </para>
+      <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\IgnoreAttributeType.cs" />
+    </example>
   </examples>
 </Comments>

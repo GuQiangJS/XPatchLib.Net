@@ -721,32 +721,34 @@ namespace XPatchLib
 
         #region
 
-#if (NET || NETSTANDARD_2_0_UP)
+#if NET || NETSTANDARD_2_0_UP
         /// <summary>
-        ///     获取或设置指示 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 进行序列化的公共字段或公共读/写属性值。
+        /// 获取或设置指示<see cref="Serializer" /> 方法<see cref= "Serializer.Divide" /> 进行序列化的公共字段或公共读 / 写属性值。
         /// </summary>
         /// <remarks>
-        ///     用于控制如何 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 序列化对象。
+        /// 用于控制如何<see cref="Serializer" /> 方法 <see cref = "Serializer.Divide" /> 序列化对象。
         /// </remarks>
-        /// <value>
-        ///     默认值：<see cref="XmlIgnoreAttribute" />。
-        /// </value>
         /// <example>
-        ///     <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\IgnoreAttributeType.cs" />
+        /// <include file='docs/docs.xml' path='Comments/examples/example[@class="XmlTextWriter" and @property="IgnoreAttributeType"]/*'/>
         /// </example>
+        /// <value>
+        /// 默认值：
+        /// <see cref = "System.Xml.Serialization.XmlIgnoreAttribute" />。
+        /// </value>
 #else
         /// <summary>
-        ///     获取或设置指示 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 进行序列化的公共字段或公共读/写属性值。
+        /// 获取或设置指示<see cref="Serializer" /> 方法<see cref= "Serializer.Divide" /> 进行序列化的公共字段或公共读 / 写属性值。
         /// </summary>
         /// <remarks>
-        ///     用于控制如何 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 序列化对象。
+        /// 用于控制如何<see cref="Serializer" /> 方法 <see cref = "Serializer.Divide" /> 序列化对象。
         /// </remarks>
-        /// <value>
-        ///     默认值：<c>null</c>。
-        /// </value>
         /// <example>
-        ///     <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\IgnoreAttributeType.cs" />
+        /// <include file='docs/docs.xml' path='Comments/examples/example[@class="XmlTextWriter" and @property="IgnoreAttributeType"]/*'/>
         /// </example>
+        /// <value>
+        /// 默认值：
+        /// <c>null</c>。
+        /// </value>
 #endif
         public Type IgnoreAttributeType { get; set; }
 
