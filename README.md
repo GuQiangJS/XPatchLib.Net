@@ -111,28 +111,18 @@ CreditCard card2 = new CreditCard()
 
 ```cs
 Serializer serializer = new Serializer(typeof(CreditCard));
-string context = string.Empty;
-using (MemoryStream stream = new MemoryStream())
+StringBuilder context = new StringBuilder();
+using(StringWriter strWriter = new StringWriter(context))
 {
-    var settings = new XmlWriterSettings();
-    settings.Encoding = Encoding.UTF8;
-    settings.Indent = true;
-    using (var xmlWriter = XmlWriter.Create(fs, settings))
-    {
-         using (var writer = new XmlTextWriter(xmlWriter))
-         {
-              serializer.Divide(writer, card1, card2);
-         }
-    }
-    using (var stremReader = new StreamReader(stream, settings.Encoding))
-    {
-        context = stremReader.ReadToEnd();
-    }
+	using (ITextWriter xmlWriter = new XmlTextWriter(strWriter))
+	{
+		serializer.Divide(xmlWriter, card1, card2);
+	}
 }
 ```
 经过执行以上代码，context的内容将为：
 ```xml
-<?xml version=""1.0"" encoding=""utf-8""?>
+<?xml version=""1.0"" encoding=""utf-16""?>
 <CreditCard>
   <CardExpiration>05/17</CardExpiration>
   <CardNumber>9876543210</CardNumber>

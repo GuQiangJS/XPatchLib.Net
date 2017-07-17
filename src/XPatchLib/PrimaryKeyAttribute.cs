@@ -16,6 +16,9 @@ namespace XPatchLib
     /// <remarks>
     ///     用来标记一个对象由哪些属性组合成为主键，用以判断对象是否相等，并在生成增量文档时作为标记。
     /// </remarks>
+    /// <example>
+    ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="PrimaryKeyAttribute" and @method="none"]/*' />
+    /// </example>
     [SuppressMessage("Microsoft.Design", "CA1019:DefineAccessorsForAttributeArguments")]
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public sealed class PrimaryKeyAttribute : Attribute

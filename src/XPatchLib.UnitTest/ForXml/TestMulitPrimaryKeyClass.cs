@@ -29,11 +29,17 @@ namespace XPatchLib.UnitTest.ForXml
 
             revList.Add(new MulitPrimaryKeyClass {Name = "Name1", Id = 1});
             revList.Add(new MulitPrimaryKeyClass {Name = "Name2", Id = 2});
+            revList.Add(new MulitPrimaryKeyClass {Name = "Name5", Id = 5});
 
-            var changedContext = @"<" + ReflectionUtils.GetTypeFriendlyName(typeof(List<MulitPrimaryKeyClass>)) + @">
+            var changedContext = @"<?xml version=""1.0"" encoding=""utf-8""?>
+<List_MulitPrimaryKeyClass>
   <MulitPrimaryKeyClass Action=""Remove"" Id=""3"" Name=""Name3"" />
   <MulitPrimaryKeyClass Action=""Remove"" Id=""4"" Name=""Name4"" />
-</" + ReflectionUtils.GetTypeFriendlyName(typeof(List<MulitPrimaryKeyClass>)) + @">";
+  <MulitPrimaryKeyClass Action=""Add"">
+    <Id>5</Id>
+    <Name>Name5</Name>
+  </MulitPrimaryKeyClass>
+</List_MulitPrimaryKeyClass>";
 
             DoAssert(typeof(List<MulitPrimaryKeyClass>), changedContext, oriList, revList, true);
             DoAssert(typeof(List<MulitPrimaryKeyClass>), changedContext, oriList, revList, false);

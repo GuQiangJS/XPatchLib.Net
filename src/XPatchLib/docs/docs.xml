@@ -33,8 +33,8 @@
       <para>如果为 <b>true</b> ，那么附加增量数据时将直接更新 <paramref name="pOriValue" /> 对象实例。（性能更加，在无需保留原始数据实例的情况下，建议使用此方式）</para>
       <para>相反，如果为 <b>false</b> ，那么会在附加数据前根据 <paramref name="pOriValue" /> 创建新的对象实例 ，再在新的对象实例上附加增量数据。(适用于不希望原始数据被变更的情况)</para>
       <para>
-        <c>特例：</c>
-        <para>当待处理的类型是数组类型时，此参数无效，始终创建新实例。</para>
+        <c>当待处理的类型是以下类型时，此参数无效，始终创建新实例：</c>
+        <para>数组类型，<see cref="ISerializable" />。 </para>
       </para>
     </param>
     <param class="Serializer" paramtype="Object" method="Divide" paramname="pOriValue">
@@ -246,6 +246,27 @@ Small Widget
         下面的示例展示了 IgnoreAttributeType 的使用效果，以及如何修改 IgnoreAttributeType 。
       </para>
       <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\IgnoreAttributeType.cs" />
+    </example>
+    <example class="PrimaryKeyAttribute" method="none">
+      <para>
+        以下示例展示了如何使用属性作为主键。
+      </para>
+      <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\PrimaryKeyAttribute.cs" />
+      <para>
+        输出内容如下：
+      </para>
+      <code language="xml">
+        <![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<List_MulitPrimaryKeyClass>
+  <MulitPrimaryKeyClass Action="Remove" Id="3" Name="Name3" />
+  <MulitPrimaryKeyClass Action="Remove" Id="4" Name="Name4" />
+  <MulitPrimaryKeyClass Action="Add">
+    <Id>5</Id>
+    <Name>Name5</Name>
+  </MulitPrimaryKeyClass>
+</List_MulitPrimaryKeyClass>]]>
+      </code>
     </example>
   </examples>
 </Comments>

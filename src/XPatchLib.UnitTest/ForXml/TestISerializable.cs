@@ -42,6 +42,14 @@ namespace XPatchLib.UnitTest.ForXml
         }
 
         [Test]
+        public void TestISerializable3()
+        {
+            Person person = new Person("XXX", 9999);
+
+            DoAssert("<Person Action=\"SetNull\" />", person,null, true);
+        }
+
+        [Test]
         public void TestISerializable2()
         {
             Person person1 = new Person("XXX", 9999);
