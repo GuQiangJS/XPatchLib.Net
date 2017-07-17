@@ -30,6 +30,14 @@ namespace XPatchLib
         public Boolean IsNullable { get; private set; }
 
         private Type NullableType;
+        
+        /// <summary>
+        /// 是否为 <see cref="ISerializable"/> 接口的实现
+        /// </summary>
+        /// <remarks>
+        /// https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable(v=vs.110).aspx
+        /// </remarks>
+        public Boolean IsISerializable { get; private set; }
 
         internal TypeExtend(Type pType,Type pIgnoreAttributeType, TypeExtend pParentType = null)
         {
@@ -120,6 +128,10 @@ namespace XPatchLib
 
 #if NET
             ResolveCallbackMethods(OriType);
+#endif
+
+#if NET || NETSTANDARD_2_0_UP
+            IsISerializable = typeof(ISerializable).IsAssignableFrom(OriType);
 #endif
         }
 
@@ -226,8 +238,13 @@ namespace XPatchLib
             
             if (IsBasicType)
             {
-                if (((IsNullable)? NullableType : OriType).IsValueType())
-                    return CreateInstanceFuncs();
+                if (((IsNullable) ? NullableType : OriType).IsValueType())
+                {
+                    if (CreateInstanceFuncs == null)
+                        return DefaultValue;
+                    else
+                        return CreateInstanceFuncs();
+                }
                 if (((IsNullable) ? NullableType : OriType) == typeof(string))
                     return string.Empty;
             }

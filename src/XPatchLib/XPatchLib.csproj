@@ -11,8 +11,8 @@
     <Description>Patch Serialization Library for the .Net</Description>
     <Company />
     <Authors>Qiang Gu</Authors>
-    <FileVersion>3.0.1.5</FileVersion>
-    <VersionPrefix>3.0.1.5</VersionPrefix>
+    <FileVersion>3.0.1.7</FileVersion>
+    <VersionPrefix>3.0.1.7</VersionPrefix>
     <PackageLicenseUrl>https://github.com/GuQiangJS/XPatchLib.Net/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/GuQiangJS/XPatchLib.Net</PackageProjectUrl>
     <NeutralLanguage>zh-Hans</NeutralLanguage>

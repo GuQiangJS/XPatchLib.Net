@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
+#if NET || NETSTANDARD_2_0_UP
+using System.Runtime.Serialization;
+#endif
 #if NUNIT
 using NUnit.Framework;
 
@@ -287,6 +290,22 @@ namespace XPatchLib.UnitTest
             }
             return result.ToString();
         }
+
+#if NET || NETSTANDARD_2_0_UP
+        protected string DoDivideISerializable_Divide<T>(T ori, T rev, bool succeed) where T:ISerializable
+        {
+            StringBuilder result = new StringBuilder();
+            using (var writer = CreateWriter(result))
+            {
+                TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(typeof(T), null, null);
+                var serializer = new DivideISerializable(writer, typeExtend);
+                bool succeeded = serializer.Divide(typeExtend.TypeFriendlyName, ori, rev);
+                Assert.AreEqual(succeed, succeeded);
+            }
+            return result.ToString();
+        }
+#endif
+
         protected string DoDivideBasic_Divide(Type type,object ori, object rev, bool succeed)
         {
             return DoDivideBasic_Divide(type, ori, rev, succeed, null);

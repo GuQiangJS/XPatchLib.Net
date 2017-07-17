@@ -66,6 +66,10 @@ namespace XPatchLib
                 divide = new DivideIEnumerable(Writer, Type);
             else if (Type.IsGenericType && Type.OriType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
                 divide = new DivideKeyValuePair(Writer, Type);
+#if NET || NETSTANDARD_2_0_UP
+            else if (Type.IsISerializable)
+                divide=new DivideISerializable(Writer,Type);
+#endif
             else
                 divide = new DivideObject(Writer, Type);
 

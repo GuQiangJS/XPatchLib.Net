@@ -33,6 +33,10 @@ namespace XPatchLib
                         result = new CombineIEnumerable(pType);
                     else if (pType.IsGenericType && pType.OriType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
                         result = new CombineKeyValuePair(pType);
+#if NET || NETSTANDARD_2_0_UP
+                    else if (pType.IsISerializable)
+                        result=new CombineISerializable(pType);
+#endif
                     else
                         result = new CombineObject(pType);
 

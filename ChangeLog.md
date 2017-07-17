@@ -1,3 +1,11 @@
+#### 3.0.1.7
+
+* 新增 - 新增对 [ISerializable](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable(v=vs.110).aspx) 的支持。
+
+#### 3.0.1.6
+
+* 修正 - 判断类型是否为ICollection时，如果遇到不是泛型集合时会报 `System.InvalidOperationException 当前对象不是泛型类型`。
+
 #### 3.0.1.5
 
 * 新增 - 新增对 [OnSerializingAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializingattribute(v=vs.110).aspx)

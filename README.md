@@ -28,6 +28,8 @@
 
 * 支持属性为接口类型，结构类型，泛型，字典类型。
 
+* 支持 [ISerializable](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable.aspx) 实例 。
+
 * 支持在序列化时排除默认值。([ISerializeSetting.SerializeDefalutValue](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/08b1d89e-1f80-5c11-319b-55fbcd78e888.htm))
 
 * 支持将枚举序列化到其文本名称。
@@ -172,7 +174,7 @@ using (var fs = new FileStream(filename, FileMode.Open))
 - [ ] 支持 private 属性。
 - [ ] 支持匿名类型。
 - [ ] 支持循环引用实例的处理。
-- [ ] 支持 [ISerializable](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable.aspx) 实例 。
+- [x] 支持 [ISerializable](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable.aspx) 实例 。
 - [ ] 支持 [DynamicObject](https://msdn.microsoft.com/zh-cn/library/system.dynamic.dynamicobject.aspx) 实例 。
 - [ ] 支持除 `XML` 外的其他格式输出。
 - [ ] 支持更多的 .NET [目标框架](https://docs.microsoft.com/zh-cn/dotnet/standard/frameworks)。

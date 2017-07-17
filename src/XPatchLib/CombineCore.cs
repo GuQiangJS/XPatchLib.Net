@@ -25,8 +25,10 @@ namespace XPatchLib
         /// <returns></returns>
         protected override Object CombineAction(ITextReader pReader, Object pOriObject, String pName)
         {
-            if (pOriObject == null)
+            if (pOriObject == null && Type.IsISerializable)
+            {
                 pOriObject = Type.CreateInstance();
+            }
 
             return CombineInstanceContainer.GetCombineInstance(Type).Combine(pReader, pOriObject, pName);
         }

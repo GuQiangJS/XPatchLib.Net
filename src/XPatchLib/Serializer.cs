@@ -179,7 +179,13 @@ namespace XPatchLib
                     }
                 }
             else
-                cloneObjValue = _type.CreateInstance();
+            {
+                //如果是ISerializable接口派生类，则不主动创建实例
+                if (!_type.IsISerializable)
+                {
+                    cloneObjValue = _type.CreateInstance();
+                }
+            }
 
             //var ele = XElement.Load(pReader, LoadOptions.None);
             return CombineInstanceContainer.GetCombineInstance(_type).Combine(pReader, cloneObjValue, _type.TypeFriendlyName);

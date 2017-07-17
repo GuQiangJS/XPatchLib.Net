@@ -157,7 +157,7 @@ namespace XPatchLib
         internal static bool IsICollection(Type type)
         {
             // a direct reference to the interface itself is also OK. 
-            if (type.IsInterface() && type.GetGenericTypeDefinition() == typeof(ICollection<>))
+            if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(ICollection<>))
                 return true;
 
             foreach (Type interfaceType in type.GetInterfaces())
@@ -217,7 +217,7 @@ namespace XPatchLib
         internal static bool IsIList(Type type)
         {
             // a direct reference to the interface itself is also OK. 
-            if (type.IsInterface() && type.GetGenericTypeDefinition() == typeof(IList<>))
+            if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(IList<>))
                 return true;
 
             foreach (Type interfaceType in type.GetInterfaces())
