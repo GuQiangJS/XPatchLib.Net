@@ -257,7 +257,7 @@ Small Widget
       </para>
       <code language="xml">
         <![CDATA[
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-16"?>
 <List_MulitPrimaryKeyClass>
   <MulitPrimaryKeyClass Action="Remove" Id="3" Name="Name3" />
   <MulitPrimaryKeyClass Action="Remove" Id="4" Name="Name4" />
