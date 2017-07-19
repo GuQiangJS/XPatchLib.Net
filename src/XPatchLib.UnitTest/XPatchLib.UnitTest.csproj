@@ -26,7 +26,9 @@
   <ItemGroup Condition="'$(TargetFramework)'=='NET46'">
     <PackageReference Include="BenchmarkDotNet" Version="0.10.8" />
   </ItemGroup>
-
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>DEBUG</DefineConstants>
+  </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.1'">
     <PackageReference Include="xunit" Version="2.2.0" />

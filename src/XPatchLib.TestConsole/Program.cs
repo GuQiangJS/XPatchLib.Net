@@ -22,7 +22,7 @@ namespace XPatchLib.TestConsole
 
             if (Directory.Exists(path))
             {
-                string[] files = Directory.GetFiles(path, "SerializeBenchmarks*.md",
+                string[] files = Directory.GetFiles(path, "*Benchmarks*.md",
                     SearchOption.TopDirectoryOnly);
                 if (files != null && files.Length > 0)
                 {
@@ -52,15 +52,41 @@ namespace XPatchLib.TestConsole
 
             new BenchmarkSwitcher(new[]
             {
-                typeof(SerializeBenchmarks)
+                typeof(SerializeBenchmarks),
+                typeof(DeserializeBenchmarks)
             }).Run(new[] {"*"});
 
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
+#elif DEBUG
+            new SerializeBenchmarks().SerializeLargeXmlFile_XPatchLib();
+            new SerializeBenchmarks().SerializeLargeXmlFile_XmlSerializer();
+            new SerializeBenchmarks().SerializeLargetXmlFile_DataContractSerializer();
+            new DeserializeBenchmarks().DeserializeLargeXmlFile_XPatchLib();
+            new DeserializeBenchmarks().DeserializeLargeXmlFile_XmlSerializer();
+            new DeserializeBenchmarks().DeserializeLargetXmlFile_DataContractSerializer();
 #elif DOTTRACE
-            for (int i = 0; i < TIMES; i++)
+            if (args.Length <= 0)
             {
-                new SerializeBenchmarks().SerializeLargeXmlFile_XPatchLib();
+                Console.WriteLine("启动参数:");
+                Console.WriteLine("Ser:测试序列化");
+                Console.WriteLine("DSer:测试反序列化");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+            }
+            if (string.Equals(args[0], "ser", StringComparison.OrdinalIgnoreCase))
+            {
+                for (int i = 0; i < TIMES; i++)
+                {
+                    new SerializeBenchmarks().SerializeLargeXmlFile_XPatchLib();
+                }
+            }
+            else if (string.Equals(args[0], "dser", StringComparison.OrdinalIgnoreCase))
+            {
+                for (int i = 0; i < TIMES; i++)
+                {
+                    new DeserializeBenchmarks().DeserializeLargeXmlFile_XPatchLib();
+                }
             }
 #elif STOPWATCH
             Stopwatch watch = new Stopwatch();
