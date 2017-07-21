@@ -2,6 +2,7 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
 
@@ -30,17 +31,21 @@ namespace XPatchLib
                 if (pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) &&
                     pReader.NodeType == NodeType.EndElement)
                     break;
-                //读取除Action以外的所有Action，将其赋值给属性
-                foreach (var variable in Attributes.KeysValuePairs)
+                if (Attributes.Keys != null)
                 {
-                    MemberWrapper member;
-                    if (TryFindMember(variable.Key, out member))
+                    //读取除Action以外的所有Action，将其赋值给属性
+                    for (int i = 0; i < Attributes.Count; i++)
                     {
-                        Type.SetMemberValue(pOriObject, variable.Key, variable.Value);
+                        MemberWrapper member;
+                        String key = Attributes.Keys[i];
+                        if (TryFindMember(key, out member))
+                        {
+                            Type.SetMemberValue(pOriObject, key, Attributes.Values[i]);
 #if DEBUG
-                        Debug.WriteLine(string.Format("{2} SetMemberValue: {0}={1}", variable.Key, variable.Value,
-                            Type.TypeFriendlyName));
+                            Debug.WriteLine(string.Format("{2} SetMemberValue: {0}={1}", key, Attributes.Values[i],
+                                Type.TypeFriendlyName));
 #endif
+                        }
                     }
                 }
 

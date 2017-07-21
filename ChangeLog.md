@@ -1,3 +1,7 @@
+#### 3.0.1.8
+
+* 优化 - 优化合并增量文档时调用对象方法的性能。
+
 #### 3.0.1.7
 
 * 新增 - 新增对 [ISerializable](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable(v=vs.110).aspx) 的支持。

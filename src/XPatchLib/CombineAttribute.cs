@@ -18,39 +18,17 @@ namespace XPatchLib
 
         private readonly Queue<int> _valuesHash;
 
+        public int Count { get; private set; }
+
         public CombineAttribute(Action pAction, int capacity)
         {
             Action = pAction;
-            if (capacity > 0)
-            {
-                InitKeysValuePairs(capacity);
-            }
             _keys = new Queue<string>();
             _values = new Queue<object>();
             _valuesHash = new Queue<int>();
         }
 
-        private void InitKeysValuePairs(int capacity)
-        {
-            _keysValuePairs = new KeyValuePairs<String, Object>(capacity);
-            _keysValuePairs.OnAdd += _keysValuePairs_OnAdd;
-        }
-
         public Action Action { get; set; }
-
-        private KeyValuePairs<String, Object> _keysValuePairs;
-
-        public KeyValuePairs<String, Object> KeysValuePairs
-        {
-            get
-            {
-                if (_keysValuePairs == null)
-                {
-                    InitKeysValuePairs(0);
-                }
-                return _keysValuePairs;
-            }
-        }
 
         public string[] Keys { get; private set; }
 
@@ -58,67 +36,17 @@ namespace XPatchLib
 
         public object[] Values { get; private set; }
 
-        private void _keysValuePairs_OnAdd(object sender, AddEventArgs<String, Object> e)
+        public void Add(string key, object value)
         {
-            _keys.Enqueue(e.Item.Key);
-            _values.Enqueue(e.Item.Value);
-            _valuesHash.Enqueue(e.Item.Value.GetHashCode());
+            _keys.Enqueue(key);
+            _values.Enqueue(value);
+            _valuesHash.Enqueue(value.GetHashCode());
 
+            Count++;
 
             Keys = _keys.ToArray();
             Values = _values.ToArray();
             ValuesHash = _valuesHash.ToArray();
-        }
-    }
-
-    internal class AddEventArgs<TKey, TValue> : EventArgs
-    {
-        public AddEventArgs(TKey key, TValue value)
-        {
-            Item = new KeyValuePair<TKey, TValue>(key, value);
-        }
-
-        public KeyValuePair<TKey, TValue> Item { get; private set; }
-    }
-
-    internal class KeyValuePairs<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
-    {
-        private readonly List<KeyValuePair<TKey, TValue>> _innerCol;
-
-        public KeyValuePairs() : this(0)
-        {
-        }
-
-        public KeyValuePairs(int capacity)
-        {
-            _innerCol = new List<KeyValuePair<TKey, TValue>>(capacity);
-        }
-
-        #region IEnumerable<KeyValuePair<TKey,TValue>> 成员
-
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
-        {
-            return _innerCol.GetEnumerator();
-        }
-
-        #endregion
-
-        #region IEnumerable 成员
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _innerCol.GetEnumerator();
-        }
-
-        #endregion
-
-        public event EventHandler<AddEventArgs<TKey, TValue>> OnAdd;
-
-        public void Add(TKey key, TValue value)
-        {
-            _innerCol.Add(new KeyValuePair<TKey, TValue>(key, value));
-            if (OnAdd != null)
-                OnAdd(this, new AddEventArgs<TKey, TValue>(key, value));
         }
     }
 }

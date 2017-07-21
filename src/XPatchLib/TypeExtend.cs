@@ -10,6 +10,7 @@ using System.Linq;
 using XPatchLib.NoLinq;
 #endif
 using System.Reflection;
+using System.Reflection.Emit;
 #if NET || NETSTANDARD_2_0_UP
 using System.Runtime.Serialization;
 #endif
@@ -26,6 +27,11 @@ namespace XPatchLib
         private readonly Dictionary<String, Func<Object, Object>> GetValueFuncs;
 
         private readonly Dictionary<String, Action<Object, Object>> SetValueFuncs;
+#if (NET || NETSTANDARD_2_0_UP)
+        private readonly Dictionary<String, MethodInfo> Methods;
+#else
+        private readonly Dictionary<String, ClrHelper.MethodCall<object, object>> Methods;
+#endif
 
         public Boolean IsNullable { get; private set; }
 
@@ -65,6 +71,11 @@ namespace XPatchLib
 
             GetValueFuncs = new Dictionary<string, Func<object, object>>();
             SetValueFuncs = new Dictionary<string, Action<object, object>>();
+#if (NET || NETSTANDARD_2_0_UP)
+            Methods = new Dictionary<string, MethodInfo>();
+#else
+            Methods = new Dictionary<string, ClrHelper.MethodCall<object, object>>();
+#endif
 
             IsBasicType = ReflectionUtils.IsBasicType(pType);
             IsIDictionary = ReflectionUtils.IsIDictionary(pType);
@@ -352,21 +363,37 @@ namespace XPatchLib
         internal Object InvokeMember(string name, BindingFlags invokeAttr, object target, object[] args,
             CultureInfo culture)
         {
-            MethodInfo methodInfo = OriType.GetMethod(name, invokeAttr);
-            Type t = OriType;
-            if (methodInfo == null)
+#if (NET || NETSTANDARD_2_0_UP)
+            MethodInfo methodInfo = null;
+            if (!TryGetMethod(name, out methodInfo))
             {
-                //当前OriType可能是接口类型（如IList<T>，调用 Add 方法时，无法在当前类型上找到方法，所以还可以根据实例的类型来找方法）
-                t = target.GetType();
-                methodInfo = t.GetMethod(name);
+#else
+            ClrHelper.MethodCall<Object, Object> methodCall = null;
+            if (!TryGetMethod(name, out methodCall))
+            {
+                MethodInfo
+#endif
+                methodInfo = OriType.GetMethod(name, invokeAttr);
+                Type t = OriType;
                 if (methodInfo == null)
-                    return null;
+                {
+                    //当前OriType可能是接口类型（如IList<T>，调用 Add 方法时，无法在当前类型上找到方法，所以还可以根据实例的类型来找方法）
+                    t = target.GetType();
+                    methodInfo = t.GetMethod(name);
+                    if (methodInfo == null)
+                        return null;
+                }
+#if (NET || NETSTANDARD_2_0_UP)
+                Methods.Add(name, methodInfo);
+#else
+                methodCall = t.CreateMethodCall<object>(methodInfo);
+                Methods.Add(name, methodCall);
+#endif
             }
 #if (NET || NETSTANDARD_2_0_UP)
-            return t.InvokeMember(name, invokeAttr, null, target, args, culture);
+            return methodInfo.Invoke(target, args);
 #else
-            ClrHelper.MethodCall<object, object> call = t.CreateMethodCall<object>(methodInfo);
-            return call.Invoke(target, args);
+            return methodCall.Invoke(target, args);
 #endif
         }
 
@@ -433,6 +460,18 @@ namespace XPatchLib
             }
             return false;
         }
+
+#if NET || NETSTANDARD_2_0_UP
+        internal Boolean TryGetMethod(String pMethodName, out MethodInfo pMethod)
+        {
+            return Methods.TryGetValue(pMethodName, out pMethod);
+        }
+#else
+        internal Boolean TryGetMethod(String pMethodName, out ClrHelper.MethodCall<Object,Object> pMethod)
+        {
+            return Methods.TryGetValue(pMethodName, out pMethod);
+        }
+#endif
 
         internal Boolean TryGetSetValueFunc(String pPropertyName, out Action<Object, Object> pFunc)
         {

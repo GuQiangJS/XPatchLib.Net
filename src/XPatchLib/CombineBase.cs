@@ -103,7 +103,7 @@ namespace XPatchLib
                         continue;
                     }
 
-                    result.KeysValuePairs.Add(pReader.Name,
+                    result.Add(pReader.Name,
                         AnlysisKeyAttributeValueObject(pReader, pReader.Name, pReader.Value));
                 }
                 pReader.MoveToElement();

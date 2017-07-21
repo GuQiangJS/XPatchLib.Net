@@ -1,14 +1,15 @@
 ﻿// Copyright © 2013-2017 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 
 namespace XPatchLib
 {
     internal static class CombineInstanceContainer
     {
-        private static readonly Dictionary<TypeExtend, ICombineBase> InnerDic =
-            new Dictionary<TypeExtend, ICombineBase>();
+        private static readonly Dictionary<Type, ICombineBase> InnerDic =
+            new Dictionary<Type, ICombineBase>();
 
         internal static void Clear()
         {
@@ -23,7 +24,7 @@ namespace XPatchLib
             ICombineBase result = null;
             lock (InnerDic)
             {
-                if (!InnerDic.TryGetValue(pType, out result))
+                if (!InnerDic.TryGetValue(pType.OriType, out result))
                 {
                     if (pType.IsBasicType)
                         result = new CombineBasic(pType);
@@ -42,7 +43,7 @@ namespace XPatchLib
 
                     lock (InnerDic)
                     {
-                        InnerDic.Add(pType, result);
+                        InnerDic.Add(pType.OriType, result);
                     }
                 }
             }

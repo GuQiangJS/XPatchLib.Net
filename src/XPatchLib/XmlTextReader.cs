@@ -123,8 +123,9 @@ namespace XPatchLib
         /// <para>Note: 文本节点可以是元素或属性文本节点。</para></returns>
         public string ReadString()
         {
-            object result = Read(typeof(string));
-            return (result == null) ? string.Empty : result.ToString();
+            if (_reader.NodeType == XmlNodeType.Element)
+                return _reader.ReadElementContentAsString();
+            return _reader.ReadContentAsString();
         }
 
         /// <summary>
@@ -153,7 +154,7 @@ namespace XPatchLib
         /// </summary>
         public string Name
         {
-            get { return _reader.Name; }
+            get { return _reader.LocalName; }
         }
 
         /// <summary>

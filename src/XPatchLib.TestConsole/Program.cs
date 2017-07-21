@@ -52,7 +52,7 @@ namespace XPatchLib.TestConsole
 
             new BenchmarkSwitcher(new[]
             {
-                typeof(SerializeBenchmarks),
+                //typeof(SerializeBenchmarks),
                 typeof(DeserializeBenchmarks)
             }).Run(new[] {"*"});
 
