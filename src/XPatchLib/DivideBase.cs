@@ -45,7 +45,7 @@ namespace XPatchLib
             try
             {
                 //当前节点是被SetNull时，直接写入节点并增加SetNull Attribute，并返回写入成功。
-                if (IsSetNull(pOriObject, pRevObject))
+                if (IsSetNull(pOriObject, pRevObject, Writer.Setting.SerializeDefalutValue))
                 {
                     WriteParentElementStart(pAttach);
                     Writer.WriteStartObject(pName);
@@ -186,6 +186,30 @@ namespace XPatchLib
         protected virtual bool IsSetNull(object pOriObject, object pRevObject)
         {
             return pOriObject != null && pRevObject == null;
+        }
+
+        /// <summary>
+        ///     判断当前节点是否为 SetNull 操作。
+        /// </summary>
+        /// <param name="pOriObject">原始对象。</param>
+        /// <param name="pRevObject">更新后的对象。</param>
+        /// <param name="pSerializeDefalutValue">是否序列化默认值</param>
+        /// <returns>
+        ///     <para>当<paramref name="pRevObject" />为 <c>null</c> 时</para>
+        ///     <para>如果<paramref name="pOriObject"/>不为 <c>null</c> ，返回<c>true</c>；</para>
+        ///     <para>如果<paramref name="pOriObject"/>为 <c>null</c> 且 <paramref name="pSerializeDefalutValue" />为 <c>true</c> 时，返回 <c>true</c></para>
+        ///     <para>否则返回 <c>false</c> 。</para>
+        /// </returns>
+        protected virtual bool IsSetNull(Object pOriObject, Object pRevObject, bool pSerializeDefalutValue)
+        {
+            if (pRevObject == null)
+            {
+                if (pOriObject != null)
+                    return true;
+                else if (pSerializeDefalutValue)
+                    return true;
+            }
+            return false;
         }
 
         /// <summary>

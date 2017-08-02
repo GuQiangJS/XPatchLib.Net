@@ -40,7 +40,7 @@ namespace XPatchLib.TestConsole
             }
         }
 
-        private static int TIMES = 100;
+        private static int TIMES = 50;
 
         static void Main(string[] args)
         {
@@ -53,7 +53,8 @@ namespace XPatchLib.TestConsole
             new BenchmarkSwitcher(new[]
             {
                 //typeof(SerializeBenchmarks),
-                typeof(DeserializeBenchmarks)
+                typeof(ReaderBenchmarks),
+                typeof(DeserializeBenchmarks),
             }).Run(new[] {"*"});
 
             Console.WriteLine("Press any key to continue...");
@@ -94,6 +95,7 @@ namespace XPatchLib.TestConsole
             List<long> xml = new List<long>(TIMES);
             List<long> dataContract = new List<long>(TIMES);
             SerializeBenchmarks b=new SerializeBenchmarks();
+            Console.WriteLine("Test Serializer");
             for (int i=0;i<TIMES;i++)
             {
                 Console.WriteLine("{0}/{1}", i, TIMES);
@@ -109,6 +111,35 @@ namespace XPatchLib.TestConsole
                 xml.Add(watch.ElapsedMilliseconds);
                 watch.Restart();
                 b.SerializeLargetXmlFile_DataContractSerializer();
+                watch.Stop();
+                Console.WriteLine("DataContractSerializer:{0}.", watch.ElapsedMilliseconds);
+                dataContract.Add(watch.ElapsedMilliseconds);
+            }
+
+            xpatch = new List<long>(TIMES);
+            xml = new List<long>(TIMES);
+            dataContract = new List<long>(TIMES);
+            Console.WriteLine("XPatchLib Serialize avg:{0}.", xpatch.Average());
+            Console.WriteLine("XmlSerializer avg:{0}.", xml.Average());
+            Console.WriteLine("DataContractSerializer avg:{0}.", dataContract.Average());
+            DeserializeBenchmarks d = new DeserializeBenchmarks();
+
+            Console.WriteLine("Test Serializer");
+            for (int i = 0; i < TIMES; i++)
+            {
+                Console.WriteLine("{0}/{1}", i, TIMES);
+                watch.Restart();
+                d.DeserializeLargeXmlFile_XPatchLib();
+                watch.Stop();
+                Console.WriteLine("XPatchLib Serialize:{0}.", watch.ElapsedMilliseconds);
+                xpatch.Add(watch.ElapsedMilliseconds);
+                watch.Restart();
+                d.DeserializeLargeXmlFile_XmlSerializer();
+                watch.Stop();
+                Console.WriteLine("XmlSerializer:{0}.", watch.ElapsedMilliseconds);
+                xml.Add(watch.ElapsedMilliseconds);
+                watch.Restart();
+                d.DeserializeLargetXmlFile_DataContractSerializer();
                 watch.Stop();
                 Console.WriteLine("DataContractSerializer:{0}.", watch.ElapsedMilliseconds);
                 dataContract.Add(watch.ElapsedMilliseconds);

@@ -327,10 +327,7 @@ namespace XPatchLib.UnitTest.ForXml
                 @"<BookClassCollection>
   <BookClass Action=""Remove"" Name=""A"" />
   <BookClass Action=""Add"">
-    <Author>
-      <Comments Action=""SetNull"" />
-      <Name Action=""SetNull"" />
-    </Author>
+    <Author Action=""SetNull"" />
     <Comments Action=""SetNull"" />
     <Name>C</Name>
     <Price>0</Price>

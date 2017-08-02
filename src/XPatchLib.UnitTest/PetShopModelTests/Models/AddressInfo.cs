@@ -15,6 +15,24 @@ namespace XPatchLib.UnitTest.PetShopModelTests.Models
         /// </summary>
         public AddressInfo()
         {
+            Address1 = string.Empty;
+            Address2 = string.Empty;
+
+            City = string.Empty;
+
+            Country = string.Empty;
+
+            Email = string.Empty;
+
+            // Properties 
+            FirstName = string.Empty;
+
+            LastName = string.Empty;
+
+            Phone = string.Empty;
+
+            State = string.Empty;
+            Zip = string.Empty;
         }
 
         /// <summary>

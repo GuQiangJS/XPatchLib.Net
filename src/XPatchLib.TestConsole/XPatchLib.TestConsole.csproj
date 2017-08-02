@@ -185,10 +185,15 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>if '$(ConfigurationName)'=='DotTrace' OR '$(ConfigurationName)'=='Release' OR '$(ConfigurationName)'=='Benchmark' (
+    <PostBuildEvent>if '$(ConfigurationName)'=='Debug' (
+dotnet build "$(SolutionDir)XPatchLib.UnitTest\XPatchLib.UnitTest.csproj" --configuration Debug --framework NET46
+xcopy /s /e /y "$(SolutionDir)XPatchLib.UnitTest\bin\Debug\NET46\XPatchLib.dll" "$(TargetDir)"
+xcopy /s /e /y "$(SolutionDir)XPatchLib.UnitTest\bin\Debug\NET46\XPatchLib.UnitTest.dll" "$(TargetDir)"
+) ELSE (
 dotnet build "$(SolutionDir)XPatchLib.UnitTest\XPatchLib.UnitTest.csproj" --configuration Release --framework NET46
 xcopy /s /e /y "$(SolutionDir)XPatchLib.UnitTest\bin\Release\NET46\XPatchLib.dll" "$(TargetDir)"
 xcopy /s /e /y "$(SolutionDir)XPatchLib.UnitTest\bin\Release\NET46\XPatchLib.UnitTest.dll" "$(TargetDir)"
-)</PostBuildEvent>
+)
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

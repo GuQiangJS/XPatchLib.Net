@@ -35,7 +35,7 @@ namespace XPatchLib
                     pReader.NodeType == NodeType.EndElement)
                     break;
 
-                pReader.MoveToElement();
+                //pReader.MoveToElement();
 
                 if (string.Equals(pName, pReader.Name))
                 {

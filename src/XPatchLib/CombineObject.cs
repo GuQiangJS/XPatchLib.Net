@@ -49,7 +49,7 @@ namespace XPatchLib
                     }
                 }
 
-                if (pReader.NodeType == NodeType.Element)
+                if (pReader.NodeType == NodeType.Element || pReader.NodeType==NodeType.FullElement)
                 {
                     MemberWrapper member;
 
@@ -68,11 +68,11 @@ namespace XPatchLib
                         //当前处理的属性的类型是 基础 类型时
                         if (member.IsEnum)
                             Type.SetMemberValue(pOriObject, member.Name,
-                                new EnumWrapper(memberType).TransFromString(pReader.ReadString()));
+                                new EnumWrapper(memberType).TransFromString(pReader.Value));
 #if (NET || NETSTANDARD_2_0_UP)
                         else  if (member.IsColor)
                             Type.SetMemberValue(pOriObject, member.Name,
-                                ColorHelper.TransFromString(pReader.ReadString()));
+                                ColorHelper.TransFromString(pReader.Value));
 #endif
                         else
                             Type.SetMemberValue(pOriObject, member.Name,
@@ -109,8 +109,10 @@ namespace XPatchLib
                         if (!(created && TypeExtendContainer.GetTypeExtend(memberType, null, Type).CreateInstance().Equals(memberObj)))
                             Type.SetMemberValue(pOriObject, member.Name, memberObj);
                     }
-                    if (string.Equals(pReader.Name, member.Name))
+                    while (string.Equals(pReader.Name, member.Name))
+                    {
                         pReader.Read();
+                    }
                     continue;
                 }
 

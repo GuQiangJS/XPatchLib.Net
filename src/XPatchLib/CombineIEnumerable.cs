@@ -65,15 +65,16 @@ namespace XPatchLib
                     pReader.NodeType == NodeType.EndElement)
                     break;
 
-                pReader.MoveToElement();
+                //pReader.MoveToElement();
 
-                if (pReader.Name == GenericArgumentType.TypeFriendlyName && pReader.NodeType == NodeType.Element)
+                if (pReader.Name == GenericArgumentType.TypeFriendlyName)
                     CombineCore(pReader, ref pOriObject, kvs, GenericArgumentType.TypeFriendlyName);
 
                 if (pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) &&
                     pReader.NodeType == NodeType.EndElement)
                     break;
-                pReader.MoveToNextElement(GenericArgumentType.TypeFriendlyName, pName);
+                //pReader.MoveToNextElement(GenericArgumentType.TypeFriendlyName, pName);
+                pReader.Read();
             }
             return pOriObject;
         }
@@ -160,7 +161,12 @@ namespace XPatchLib
 
                 case Action.Remove:
                     CombineRemovedItem(pReader, attrs, ref pOriObject, pOriEnumerable);
-                    pReader.MoveToCurrentElementEnd(pName);
+                    while (pName.Equals(pReader.Name) && pReader.NodeType != NodeType.EndElement &&
+                           pReader.NodeType != NodeType.FullElement)
+                    {
+                        pReader.Read();
+                    }
+                    //pReader.MoveToCurrentElementEnd(pName);
                     break;
             }
         }
@@ -189,7 +195,7 @@ namespace XPatchLib
                 KeyValuesObject o = null;
                 if (GenericArgumentType.IsBasicType && pOriEnumerable != null)
                 {
-                    var value = pReader.ReadString();
+                    var value = pReader.Value;
                     o = pOriEnumerable.FirstOrDefault(x => x.Equals(value));
                 }
                 else
@@ -224,7 +230,8 @@ namespace XPatchLib
                 //当当前集合是数组类型时
                 if (GenericArgumentType.IsBasicType)
                 {
-                    var value = new KeyValuesObject(pReader.Read(GenericArgumentType.OriType));
+                    var value = new KeyValuesObject(CombineBasic.CombineAction(GenericArgumentType.TypeCode,
+                        GenericArgumentType.IsGuid, pReader.Setting.Mode, pReader.Value));
                     //当时基础类型时，按照基础类型获取所有的方式查找索引。
 
                     o = pOriEnumerable.FirstOrDefault(x => x.Equals(value));

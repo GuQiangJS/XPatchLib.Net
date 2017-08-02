@@ -2,7 +2,8 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Xml;
+using System.Collections.Generic;
+using System.IO;
 
 namespace XPatchLib
 {
@@ -12,27 +13,111 @@ namespace XPatchLib
     /// <seealso cref="XPatchLib.ITextReader" />
     public class XmlTextReader : ITextReader
     {
-        private readonly XmlReader _reader;
+        private const int DefaultSize = 0x100000;
+        private int _charPos = 0;
+        private readonly TextReader _reader;
 
-        /// <summary>
-        ///     以指定的 <paramref name="pReader" /> 实例创建 <see cref="XmlTextReader" /> 类型实例。
-        /// </summary>
-        /// <param name="pReader">指定的 XML 读取器。</param>
-        public XmlTextReader(XmlReader pReader)
+        ///// <summary>
+        /////     是否认为 \r \n 是换行。
+        ///// </summary>
+        //private bool enableNewLine;
+
+        //private ReadState readState;
+
+        ///// <summary>
+        /////     是否跳过空白字符
+        ///// </summary>
+        //private bool _skipWhiteSpace;
+
+        internal XmlTextReader()
         {
-            Guard.ArgumentNotNull(pReader, "pReader");
-            _reader = pReader;
-            Setting = new XmlSerializeSetting();
+            //enableNewLine = true;
+            Name = string.Empty;
+            Value = string.Empty;
+            NodeType = NodeType.None;
+            ReadState = ReadState.Initial;
         }
 
         /// <summary>
-        /// 执行与释放或重置非托管资源相关的应用程序定义的任务。
+        /// 使用指定的流初始化 <see cref="XmlTextReader"/> 类的新实例。
         /// </summary>
-        public void Dispose()
+        /// <param name="input">包含要读取的 XML 数据的流。</param>
+        public XmlTextReader(Stream input) : this()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            _reader = new StreamReader(input);
+            ReadData();
         }
+
+        /// <summary>
+        /// 使用指定的 <see cref="TextReader"/> 初始化 <see cref="XmlTextReader"/> 类的新实例。
+        /// </summary>
+        /// <param name="input">包含要读取的 XML 数据的 <see cref="TextReader"/>。</param>
+        public XmlTextReader(TextReader input) : this()
+        {
+            _reader = input;
+            ReadData();
+        }
+
+        internal string Text { get; private set; }
+
+        /// <summary>
+        ///     获取当前节点的限定名。
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
+        ///     获取当前节点的文本值。
+        /// </summary>
+        public string Value { get; private set; }
+
+        /// <summary>
+        ///     获取当前节点的类型。
+        /// </summary>
+        public NodeType NodeType { get; private set; }
+
+        /// <summary>
+        ///     获取一个值，该值指示此读取器是否定位在流的结尾。
+        /// </summary>
+        public bool EOF { get; private set; }
+
+        /// <summary>
+        /// 获取当前解析的节点是否包含特性节点。
+        /// </summary>
+        public bool HasAttribute { get; private set; }
+
+        private KeyValuePair<String, String>[] _attributes;
+
+        private readonly KeyValuePair<String, String>[] _emptyAttributes = new KeyValuePair<string, string>[0];
+
+        /// <summary>
+        ///     获取当前节点的特性名称与值的键值对字典
+        /// </summary>
+        public KeyValuePair<String, String>[] GetAttributes()
+        {
+            if (!HasAttribute)
+                return _emptyAttributes;
+            return _attributes;
+        }
+
+        private ISerializeSetting _setting = new XmlSerializeSetting();
+        private char[] _chars;
+
+        /// <summary>
+        ///     获取或设置读取器设置。
+        /// </summary>
+        public ISerializeSetting Setting
+        {
+            get { return _setting; }
+            set
+            {
+                if (value != null) _setting = value;
+            }
+        }
+
+        /// <summary>
+        ///     获取读取器的状态。
+        /// </summary>
+        public ReadState ReadState { get; private set; }
 
         /// <summary>
         ///     从流中读取下一个节点。
@@ -40,246 +125,422 @@ namespace XPatchLib
         /// <returns>如果成功读取了下一个节点，则为 <c>true</c>；如果没有其他节点可读取，则为 <c>false</c>。</returns>
         public bool Read()
         {
-            return _reader.Read();
-        }
+            ReadState = ReadState.Interactive;
+            while (true)
+            {
+                int endIndex = -1;
+                if (EOF)
+                    return false;
 
-        /// <summary>
-        ///     从流中读取下一个同级节点。
-        /// </summary>
-        /// <param name="nextElementName">下一个同级节点的名称。</param>
-        /// <param name="parentElementName">父级节点的名称。</param>
-        /// <returns>如果成功读取了下一个节点，则为 <c>true</c>；如果没有其他节点可读取，则为 <c>false</c>。</returns>
-        public bool MoveToNextElement(string nextElementName, string parentElementName)
-        {
-            if (_reader.Name == parentElementName)
-            {
-                _reader.Read();
-            }
-            while (_reader.Name != nextElementName)
-            {
-                if (_reader.EOF)
-                    break;
-                if (_reader.Name == parentElementName && _reader.NodeType == XmlNodeType.EndElement)
-                    break;
-                _reader.Read();
-            }
-            if (_reader.Name == nextElementName)
-                if (_reader.NodeType == XmlNodeType.EndElement)
-                    _reader.Read();
-                if(_reader.NodeType == XmlNodeType.Element)
-                    return true;
-            return false;
-        }
+                int pos = _charPos;
 
-        /// <summary>
-        ///     移动到当前节点的结尾。
-        /// </summary>
-        /// <param name="currentElementName">当前节点的名称。</param>
-        public void MoveToCurrentElementEnd(string currentElementName)
-        {
-            while (_reader.Name == currentElementName && _reader.NodeType != XmlNodeType.EndElement)
-            {
-                _reader.Read();
-            }
-        }
-
-        /// <summary>
-        ///     获取读取器的状态。
-        /// </summary>
-        /// <exception cref="System.NotSupportedException">
-        ///<para>当 内部读取器 <see cref="System.Xml.XmlReader"/> 的状态不包含在以下状态中时：</para>
-        /// <para><see cref="System.Xml.ReadState.Closed"/></para>
-        /// <para><see cref="System.Xml.ReadState.EndOfFile"/></para>
-        /// <para><see cref="System.Xml.ReadState.Error"/></para>
-        /// <para><see cref="System.Xml.ReadState.Initial"/></para>
-        /// <para><see cref="System.Xml.ReadState.Interactive"/></para>
-        /// </exception>
-        public ReadState ReadState
-        {
-            get
-            {
-                switch (_reader.ReadState)
+                try
                 {
-                    case System.Xml.ReadState.Closed:
-                        return ReadState.Closed;
-                    case System.Xml.ReadState.EndOfFile:
-                        return ReadState.EndOfFile;
-                    case System.Xml.ReadState.Error:
-                        return ReadState.Error;
-                    case System.Xml.ReadState.Initial:
-                        return ReadState.Initial;
-                    case System.Xml.ReadState.Interactive:
-                        return ReadState.Interactive;
-                    default:
-                        throw new NotSupportedException(_reader.ReadState.ToString());
+                    switch (_chars[pos])
+                    {
+                        case '<':
+                            switch (_chars[pos + 1])
+                            {
+                                case '?':
+                                    //XML描述标记
+                                    NodeType = NodeType.XmlDeclaration;
+                                    endIndex = FindFirstIndex(_chars, pos + 1, new[] {'?', '>'});
+                                    if (endIndex >= 0)
+                                    {
+                                        SetText(_chars, pos, endIndex - pos + 2);
+                                        _charPos = endIndex + 1;
+                                        return true;
+                                    }
+                                    break;
+                                case '/':
+                                    //XML节点结束标志
+                                    NodeType = NodeType.EndElement;
+                                    //找到最近的 '>' 节点，成为结束标志
+                                    endIndex = FindFirstIndex(_chars, pos + 1, new[] {'>'});
+                                    if (endIndex >= 0)
+                                    {
+                                        SetText(_chars, pos, endIndex - pos + 1);
+                                        _charPos = endIndex + 1;
+                                        return true;
+                                    }
+                                    break;
+                                default:
+                                    endIndex = FindFirstEndTagIndex(_chars, pos);
+
+                                    if (_chars[endIndex] == '/')
+                                    {
+                                        // '/>'
+                                        NodeType = NodeType.FullElement;
+                                        SetText(_chars, pos, endIndex - pos + 2);
+                                        _charPos = endIndex + 1;
+                                        return true;
+                                    }
+                                    else if (_chars[endIndex] == '>')
+                                    {
+                                        // '>'
+                                        NodeType = NodeType.Element;
+                                        SetText(_chars, pos, endIndex - pos + 1);
+                                        _charPos = endIndex + 1;
+                                        return true;
+                                    }
+                                    break;
+                            }
+                            break;
+                        case '/':
+                            if (_chars[pos + 1] == '>')
+                            {
+                                _charPos = pos + 1;
+                                NodeType = NodeType.FullElement;
+                                ParseAttribute();
+                                ParseName();
+                                ParseValue(1);
+                            }
+                            _charPos++;
+                            break;
+                        //换行
+                        case '\r':
+                        case '\n':
+                            //if(enableNewLine)
+                            _charPos++;
+                            break;
+                        case ' ':
+                            //if (skipWhiteSpace)
+                            _charPos++;
+                            break;
+                        default:
+                            _charPos++;
+                            break;
+                    }
+                }
+                finally
+                {
+                    EOF = _chars.Length <= _charPos + 1;
                 }
             }
         }
 
         /// <summary>
-        ///     将元素或文本节点的内容当做字符串读取。
+        ///     读取所有内容至 <see cref="_ps" /> 中。
         /// </summary>
-        /// <returns>该元素或文本节点的内容。如果读取器定位在元素或文本节点以外的位置，或者当前上下文中没有其他文本内容可返回，则这可以是空字符串。 
-        /// <para>Note: 文本节点可以是元素或属性文本节点。</para></returns>
-        public string ReadString()
+        private void ReadData()
         {
-            if (_reader.NodeType == XmlNodeType.Element)
-                return _reader.ReadElementContentAsString();
-            return _reader.ReadContentAsString();
-        }
+            int readIndex = 0;
 
-        /// <summary>
-        ///     将元素或文本节点的内容当做 <paramref name="pType"/> 读取。
-        /// </summary>
-        /// <param name="pType">读取节点内容的类型。</param>
-        /// <returns>该元素或文本节点的内容。如果读取器定位在元素或文本节点以外的位置，或者当前上下文中没有其他文本内容可返回，则这可以是空字符串。 
-        /// <para>Note: 文本节点可以是元素或属性文本节点。</para></returns>
-        public Object Read(Type pType)
-        {
-            if (_reader.NodeType == XmlNodeType.Element)
-                return _reader.ReadElementContentAs(pType, null);
-            return _reader.ReadContentAs(pType, null);
-        }
-
-        /// <summary>
-        ///     获取一个值，该值指示此读取器是否定位在流的结尾。
-        /// </summary>
-        public bool EOF
-        {
-            get { return _reader.EOF; }
-        }
-
-        /// <summary>
-        ///     获取当前节点的限定名。
-        /// </summary>
-        public string Name
-        {
-            get { return _reader.LocalName; }
-        }
-
-        /// <summary>
-        ///     获取当前节点的文本值。
-        /// </summary>
-        public string Value
-        {
-            get { return _reader.Value; }
-        }
-
-        /// <summary>
-        ///     获取当前节点上的属性数。
-        /// </summary>
-        public int AttributeCount
-        {
-            get { return _reader.AttributeCount; }
-        }
-
-        /// <summary>
-        ///     移动到下一个属性。
-        /// </summary>
-        /// <returns>如果存在下一个属性，则为 <c>true</c>；如果没有其他属性，则为 <c>false</c>。</returns>
-        public bool MoveToNextAttribute()
-        {
-            return _reader.MoveToNextAttribute();
-        }
-
-        /// <summary>
-        ///     移动到包含当前属性节点的元素。
-        /// </summary>
-        /// <returns>如果读取器定位在属性上，则为 <c>true</c>（读取器移动到拥有该属性的元素）；如果读取器不是定位在属性上，则为 <c>false</c>（读取器的位置不改变）。</returns>
-        public bool MoveToElement()
-        {
-            return _reader.MoveToElement();
-        }
-
-        /// <summary>
-        ///     获取当前节点的类型。
-        /// </summary>
-        /// <exception cref="System.NotSupportedException">
-        ///<para>当 内部读取器 <see cref="System.Xml.XmlReader"/> 的读取的节点类型不包含在以下状态中时：</para>
-        /// <para><see cref="System.Xml.XmlNodeType.None"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.Element"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.Attribute"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.Text"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.CDATA"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.EntityReference"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.Entity"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.ProcessingInstruction"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.Comment"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.Document"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.DocumentType"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.DocumentFragment"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.Notation"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.Whitespace"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.SignificantWhitespace"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.EndElement"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.EndEntity"/></para>
-        /// <para><see cref="System.Xml.XmlNodeType.XmlDeclaration"/></para>
-        /// </exception>
-        public NodeType NodeType
-        {
-            get
+            while (true)
             {
-                switch (_reader.NodeType)
+                if (_chars == null)
+                    _chars = new char[DefaultSize];
+
+                int re = _reader.Read(_chars, readIndex, DefaultSize);
+
+                if (re == 0)
+                    break;
+                readIndex = readIndex + re;
+                char[] newchars = new char[_chars.Length + DefaultSize * 2];
+                Array.Copy(_chars, newchars, _chars.Length);
+                _chars = newchars;
+            }
+
+            char[] nChars = new char[readIndex];
+            Array.Copy(_chars, nChars, readIndex);
+            _chars = nChars;
+        }
+
+        private char[] _textChars;
+        
+        internal static void BlockCopyChars(char[] src, int srcOffset, char[] dst, int dstOffset, int count)
+        {
+            Buffer.BlockCopy(src, srcOffset * sizeof(char), dst, dstOffset * sizeof(char), count * sizeof(char));
+        }
+
+        internal static void BlockCopy(byte[] src, int srcOffset, byte[] dst, int dstOffset, int count)
+        { 
+            Buffer.BlockCopy(src, srcOffset, dst, dstOffset, count);
+
+        }
+
+        private void SetText(char[] chars, int startIndex, int len)
+        {
+            Text = string.Empty;
+            Text = new string(chars, startIndex, len);
+
+            _textChars = new char[len];
+
+            BlockCopyChars(chars, startIndex, _textChars, 0, len);
+
+            ParseAttribute();
+            ParseName();
+            ParseValue(len + 1);
+        }
+
+        private int FindFirstIndex(char[] chars, int startIndex, char[] findChars)
+        {
+            for (int i = 0;; i++)
+            {
+                int j = startIndex + i;
+                if (chars[j] == findChars[0])
                 {
-                    case XmlNodeType.None:
-                        return NodeType.None;
-                    case XmlNodeType.Element:
-                        return NodeType.Element;
-                    case XmlNodeType.Attribute:
-                        return NodeType.Attribute;
-                    case XmlNodeType.Text:
-                        return NodeType.Text;
-                    case XmlNodeType.CDATA:
-                        return NodeType.CDATA;
-                    case XmlNodeType.EntityReference:
-                        return NodeType.EntityReference;
-                    case XmlNodeType.Entity:
-                        return NodeType.Entity;
-                    case XmlNodeType.ProcessingInstruction:
-                        return NodeType.ProcessingInstruction;
-                    case XmlNodeType.Comment:
-                        return NodeType.Comment;
-                    case XmlNodeType.Document:
-                        return NodeType.Document;
-                    case XmlNodeType.DocumentType:
-                        return NodeType.DocumentType;
-                    case XmlNodeType.DocumentFragment:
-                        return NodeType.DocumentFragment;
-                    case XmlNodeType.Notation:
-                        return NodeType.Notation;
-                    case XmlNodeType.Whitespace:
-                        return NodeType.Whitespace;
-                    case XmlNodeType.SignificantWhitespace:
-                        return NodeType.SignificantWhitespace;
-                    case XmlNodeType.EndElement:
-                        return NodeType.EndElement;
-                    case XmlNodeType.EndEntity:
-                        return NodeType.EndEntity;
-                    case XmlNodeType.XmlDeclaration:
-                        return NodeType.XmlDeclaration;
-                    default:
-                        throw new NotSupportedException(_reader.NodeType.ToString());
+                    var found = true;
+                    for (int k = 1; i < findChars.Length; k++)
+                        if (chars[j + k] != findChars[k])
+                        {
+                            found = false;
+                            break;
+                        }
+                    if (found)
+                        return j;
                 }
             }
         }
 
+        ///// <summary>
+        /////     找到最先出现的 '>' 符号
+        ///// </summary>
+        ///// <returns>如果找到了就返回首先发现 '/' 字符的位置，否则返回-1。</returns>
+        //private int FindFirstGreaterThanIndex(char[] chars, int startIndex)
+        //{
+        //    for (int i = 0;; i++)
+        //    {
+        //        int j = startIndex + i;
+        //        if (chars[j] == '>')
+        //            return j - startIndex;
+        //    }
+        //}
+
+        ///// <summary>
+        /////     找到最先出现的 '/>' 符号
+        ///// </summary>
+        ///// <returns>如果找到了就返回首先发现 '>' 字符的位置，否则返回-1。</returns>
+        //private int FindFirstSelfClosingIndex(char[] chars, int startIndex)
+        //{
+        //    for (int i = 0;; i++)
+        //    {
+        //        int j = startIndex + i;
+        //        if (chars[j] == '/' && chars[j + 1] == '>')
+        //            return j - startIndex;
+        //    }
+        //}
+
         /// <summary>
-        ///     执行与释放或重置非托管资源相关的应用程序定义的任务。
+        ///     找到最先出现的 '>' 或 '/>' 符号
         /// </summary>
+        /// <returns>如果找到了就返回首先发现 '/' 或 '>' 字符的位置，否则返回-1。</returns>
+        private int FindFirstEndTagIndex(char[] chars, int startIndex)
+        {
+            for (int i = 0;; i++)
+            {
+                int j = startIndex + i;
+                if (chars[j] == '>' || (chars[j] == '/' && chars[j + 1] == '>'))
+                    return j;
+            }
+        }
+
+        private void ParseValue(int startLen)
+        {
+            Value = string.Empty;
+            if (NodeType == NodeType.EndElement || NodeType == NodeType.FullElement)
+                return;
+
+            int pos = _charPos;
+
+            if (_chars[pos + startLen - 1] == '<')
+                return;
+            int len = 0;
+
+            if(pos + startLen + 1 < _chars.Length)
+                while (true)
+                {
+                    if (_chars[pos + startLen + len] == '<')
+                        break;
+                    len++;
+                }
+            if (startLen + pos + len >= _chars.Length)
+            {
+                Value = string.Empty;
+                return;
+            }
+
+            int s = startLen + pos - 1;
+            Queue<char> cs = new Queue<char>(len + 1);
+            for (int i = 0; i < len + 1;)
+            {
+                /*
+                 * &(逻辑与)  &amp;        
+                 * <(小于)    &lt;        
+                 * >(大于)    &gt;        
+                 * "(双引号)  &quot;      
+                 * '(单引号)  &apos;
+                 */
+                if (_chars[s + i] == '&')
+                {
+                    if (_chars[s + i + 1] == 'a' && _chars[s + i + 2] == 'm' && _chars[s + i + 3] == 'p' &&
+                        _chars[s + i + 4] == ';')
+                    {
+                        cs.Enqueue('&');
+                        i = i + 5;
+                        continue;
+                    }
+                    if (_chars[s + i + 1] == 'l' && _chars[s + i + 2] == 't' && _chars[s + i + 3] == ';')
+                    {
+                        cs.Enqueue('<');
+                        i = i + 4;
+                        continue;
+                    }
+                    if (_chars[s + i + 1] == 'g' && _chars[s + i + 2] == 't' && _chars[s + i + 3] == ';')
+                    {
+                        cs.Enqueue('>');
+                        i = i + 4;
+                        continue;
+                    }
+                    if (_chars[s + i + 1] == 'q' && _chars[s + i + 2] == 'u' && _chars[s + i + 3] == 'o' &&
+                        _chars[s + i + 4] == 't' && _chars[s + i + 5] == ';')
+                    {
+                        cs.Enqueue('"');
+                        i = i + 6;
+                        continue;
+                    }
+                    if (_chars[s + i + 1] == 'a' && _chars[s + i + 2] == 'p' && _chars[s + i + 3] == 'o' &&
+                        _chars[s + i + 4] == 's' && _chars[s + i + 5] == ';')
+                    {
+                        cs.Enqueue('\'');
+                        i = i + 6;
+                        continue;
+                    }
+                }
+                cs.Enqueue(_chars[s + i]);
+                i++;
+            }
+            Value = new string(cs.ToArray());
+        }
+
+        private void ParseName()
+        {
+            Name = string.Empty;
+            if (NodeType == NodeType.XmlDeclaration) return;
+            //char[] cs = Text.ToCharArray();
+            int start = 0;
+            int end = 0;
+            int len = _textChars.Length;
+
+            for (int i = 0; i < len; i++)
+            {
+                if (_textChars[i] == '<')
+                {
+                    start = i + 1;
+                    continue;
+                }
+                if (_textChars[i] == '/' && i > 0 && _textChars[i - 1] == '<')
+                {
+                    start = i + 1;
+                    continue;
+                }
+                if (_textChars[i] == ' ' && i > start)
+                {
+                    end = i - start;
+                    break;
+                }
+                if (_textChars[i] == '>' || i + 1 != _textChars.Length && _textChars[i] == '/' && _textChars[i + 1] == '>')
+                {
+                    end = i - start;
+                    break;
+                }
+            }
+            Name = new string(_textChars, start, end).Trim();
+        }
+
+        private void ParseAttribute()
+        {
+            ResetAttributes();
+
+            if (NodeType == NodeType.XmlDeclaration) return;
+            
+            int startName = 0;
+            int endName = 0;
+            int startValue = 0;
+            int endValue = 0;
+            int len = _textChars.Length;
+
+            Queue<KeyValuePair<string, string>> kvs = new Queue<KeyValuePair<string, string>>(10);
+
+            for (int i = 0; i < len; i++)
+            {
+                if (_textChars[i] == ' ')
+                {
+                    startName = i + 1;
+                    continue;
+                }
+                if (_textChars[i] == '=')
+                    endName = i - 1;
+                if (_textChars[i] == '"')
+                    if (startValue == 0)
+                        startValue = i + 1;
+                    else
+                        endValue = i - 1;
+                if (startName >= 0 && endName > 0 && startValue > 0 && endValue > 0)
+                {
+                    //KeyValuePair<String, String>[] c = new KeyValuePair<string, string>[_attributes.Length + 1];
+                    //Array.Copy(_attributes, c, _attributes.Length);
+                    //c[_attributes.Length] = new KeyValuePair<string, string>(
+                    //    new string(cs, startName, endName - startName + 1),
+                    //    new string(cs, startValue, endValue - startValue + 1));
+
+                    kvs.Enqueue(new KeyValuePair<string, string>(
+                        new string(_textChars, startName, endName - startName + 1),
+                        new string(_textChars, startValue, endValue - startValue + 1)));
+
+                    //_attributes = c;
+                    HasAttribute = true;
+
+                    startName = endName = startValue = endValue = 0;
+                }
+            }
+
+            if (HasAttribute)
+            {
+                _attributes = kvs.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// 将 <see cref="XmlTextReader.ReadState"/> 改为 Closed。
+        /// </summary>
+        public void Close()
+        {
+#if NET || NETSTANDARD_2_0_UP
+            if (_reader != null)
+                _reader.Close();
+#endif
+            //readState = ReadState.Closed;
+            ResetAttributes();
+        }
+
+        private void ResetAttributes()
+        {
+            //_attributes = new KeyValuePair<String, String>[0];
+            HasAttribute = false;
+        }
+
+#region Dispose
+
+        /// <summary>执行与释放或重置非托管资源关联的应用程序定义的任务。</summary>
+        /// <filterpriority>2</filterpriority>
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        /// <summary>
+        /// 释放 <see cref="XmlTextReader"/> 类的当前实例所使用的所有资源。
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
+            //the boolean flag may be used by subclasses to differentiate between disposing and finalizing
+            //if (disposing && readState != ReadState.Closed)
             if (disposing)
-            {
-                IDisposable d = _reader as IDisposable;
-                if (d != null)
-                    d.Dispose();
-            }
+                Close();
         }
 
-        /// <summary>
-        /// 获取或设置读取器设置。
-        /// </summary>
-        /// <value>默认返回以无参数构造函数创建的<see cref="XmlSerializeSetting"/>实例。</value>
-        public ISerializeSetting Setting { get; set; }
+#endregion
     }
 }

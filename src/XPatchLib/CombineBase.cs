@@ -30,8 +30,10 @@ namespace XPatchLib
 
             if (pReader.ReadState == ReadState.Initial)
             {
-                //首次读取XML时，读取的内容可能是XML头信息，而不是需要的根节点，所以用while循环，直到读到第一个Element
-                while (pReader.NodeType != NodeType.Element)
+                //刚开始读取时，先读取XML头信息
+                pReader.Read();
+                //再次读取XML头信息
+                if (pReader.NodeType == NodeType.XmlDeclaration)
                 {
                     pReader.Read();
                 }
@@ -85,28 +87,31 @@ namespace XPatchLib
         /// <remarks>执行此操作会移动到移动到包含当前属性节点的元素。<see cref="XmlReader.MoveToElement()" /></remarks>
         protected virtual CombineAttribute AnlysisAttributes(ITextReader pReader, string pName)
         {
-            CombineAttribute result = new CombineAttribute(Action.Edit, pReader.AttributeCount);
-            if (pReader.AttributeCount > 0 && pReader.NodeType == NodeType.Element &&
-                pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase))
+            bool hasAttr = pReader.HasAttribute;
+            KeyValuePair<String, String>[] kv = pReader.GetAttributes();
+            int attrLen = kv.Length;
+            CombineAttribute result = new CombineAttribute(Action.Edit,
+                hasAttr ? attrLen : 0);
+            if (hasAttr && pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase))
             {
                 //读取除Action以外的所有Action，将其赋值给属性
-                while (pReader.MoveToNextAttribute())
+                foreach (KeyValuePair<string, string> keyValuePair in kv)
                 {
 #if DEBUG
-                    Debug.WriteLine("Attributes of <" + pReader.Name + "," + pReader.Value + "<");
+                    Debug.WriteLine("Attributes of <" + keyValuePair.Key + "," + keyValuePair.Value + ">");
 #endif
-                    if (pReader.Setting.ActionName.Equals(pReader.Name))
+                    if (pReader.Setting.ActionName.Equals(keyValuePair.Key))
                     {
                         Action action;
-                        if (ActionHelper.TryParse(pReader.Value, out action))
+                        if (ActionHelper.TryParse(keyValuePair.Value, out action))
                             result.Action = action;
                         continue;
                     }
 
-                    result.Add(pReader.Name,
-                        AnlysisKeyAttributeValueObject(pReader, pReader.Name, pReader.Value));
+                    result.Add(keyValuePair.Key,
+                        AnlysisKeyAttributeValueObject(pReader, keyValuePair.Key, keyValuePair.Value));
                 }
-                pReader.MoveToElement();
+                //pReader.MoveToElement();
             }
             return result;
         }

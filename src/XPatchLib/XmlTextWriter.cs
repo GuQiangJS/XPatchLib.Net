@@ -81,10 +81,6 @@ namespace XPatchLib
             /* Token.Whitespace     */ State.Prolog, State.Prolog, State.PostDtd, State.Content, State.Attribute,
             State.Content, State.Attribute, State.Epilog
         };
-
-        private static readonly char[] _specChars = {'<', '>', '&', '\'', '"'};
-
-        private static readonly bool[] _specCharsFlags = new bool[128];
         private readonly Encoding _encoding;
 
         private readonly TextWriter _textWriter;
@@ -101,12 +97,6 @@ namespace XPatchLib
         private TagInfo[] _stack;
         private State[] _stateTable;
         private int _top;
-
-        static XmlTextWriter()
-        {
-            for (int i = 0; i < _specChars.Length; i++)
-                _specCharsFlags[_specChars[i]] = true;
-        }
 
         /// <summary>
         ///     创建 <see cref="XmlTextWriter" /> 类型实例。
@@ -613,7 +603,7 @@ namespace XPatchLib
             char ch = (char) 0;
             for (;;)
             {
-                while (i < len && (text[i] < 128 && !_specCharsFlags[text[i]] || text[i] >= 128))
+                while (i < len && (text[i] < 128 && !SpecChar.SpecCharsFlags[text[i]] || text[i] >= 128))
                     i++;
                 if (i == len)
                 {
@@ -684,7 +674,7 @@ namespace XPatchLib
                 }
                 i++;
                 startPos = i;
-                while (i < len && (text[i] < 128 && !_specCharsFlags[text[i]] || text[i] >= 128))
+                while (i < len && (text[i] < 128 && !SpecChar.SpecCharsFlags[text[i]] || text[i] >= 128))
                     i++;
             }
         }

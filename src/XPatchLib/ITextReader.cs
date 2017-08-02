@@ -2,6 +2,7 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
 namespace XPatchLib
 {
@@ -37,60 +38,24 @@ namespace XPatchLib
         string Value { get; }
 
         /// <summary>
-        ///     获取当前节点上的属性数。
+        ///     获取当前节点的类型。
         /// </summary>
-        int AttributeCount { get; }
+        NodeType NodeType { get; }
+
+        /// <summary>
+        /// 获取当前解析的节点是否包含特性节点。
+        /// </summary>
+        Boolean HasAttribute { get; }
+
+        /// <summary>
+        ///     获取当前节点的特性名称与值的键值对字典
+        /// </summary>
+        KeyValuePair<String, String>[] GetAttributes();
 
         /// <summary>
         ///     从流中读取下一个节点。
         /// </summary>
         /// <returns>如果成功读取了下一个节点，则为 <c>true</c>；如果没有其他节点可读取，则为 <c>false</c>。</returns>
         bool Read();
-
-        /// <summary>
-        ///     移动到当前节点的结尾。
-        /// </summary>
-        /// <param name="currentElementName">当前节点的名称。</param>
-        void MoveToCurrentElementEnd(string currentElementName);
-
-        /// <summary>
-        ///     从流中读取下一个同级节点。
-        /// </summary>
-        /// <param name="nextElementName">下一个同级节点的名称。</param>
-        /// <param name="parentElementName">父级节点的名称。</param>
-        /// <returns>如果成功读取了下一个节点，则为 <c>true</c>；如果没有其他节点可读取，则为 <c>false</c>。</returns>
-        bool MoveToNextElement(string nextElementName,string parentElementName);
-
-        /// <summary>
-        ///     将元素或文本节点的内容当做字符串读取。
-        /// </summary>
-        /// <returns>该元素或文本节点的内容。如果读取器定位在元素或文本节点以外的位置，或者当前上下文中没有其他文本内容可返回，则这可以是空字符串。 
-        /// <para>Note: 文本节点可以是元素或属性文本节点。</para></returns>
-        string ReadString();
-
-        /// <summary>
-        ///     将元素或文本节点的内容当做 <paramref name="pType"/> 读取。
-        /// </summary>
-        /// <param name="pType">读取节点内容的类型。</param>
-        /// <returns>该元素或文本节点的内容。如果读取器定位在元素或文本节点以外的位置，或者当前上下文中没有其他文本内容可返回，则这可以是空字符串。 
-        /// <para>Note: 文本节点可以是元素或属性文本节点。</para></returns>
-        Object Read(Type pType);
-
-        /// <summary>
-        ///     移动到下一个属性。
-        /// </summary>
-        /// <returns>如果存在下一个属性，则为 <c>true</c>；如果没有其他属性，则为 <c>false</c>。</returns>
-        bool MoveToNextAttribute();
-
-        /// <summary>
-        ///     移动到包含当前属性节点的元素。
-        /// </summary>
-        /// <returns>如果读取器定位在属性上，则为 <c>true</c>（读取器移动到拥有该属性的元素）；如果读取器不是定位在属性上，则为 <c>false</c>（读取器的位置不改变）。</returns>
-        bool MoveToElement();
-
-        /// <summary>
-        /// 获取当前节点的类型。
-        /// </summary>
-        NodeType NodeType { get; }
     }
 }

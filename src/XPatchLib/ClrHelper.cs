@@ -37,7 +37,7 @@ namespace XPatchLib
             return (Func<T>) dynamicMethod.CreateDelegate(typeof(Func<T>));
 #elif NETSTANDARD
             
-            if (pType.IsAbstract())
+            if (pType.IsAbstract() || emptyConstructor.IsStatic)
             {
                 return () => (T)Activator.CreateInstance(pType);
             }

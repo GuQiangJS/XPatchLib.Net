@@ -38,7 +38,7 @@ namespace XPatchLib.UnitTest.Benchmarks
             Serializer serializer = new Serializer(typeof(List<RootObject>));
             using (FileStream stream = File.Open(ResolvePath("large_xpatchlib.xml"),FileMode.Open,FileAccess.Read))
             {
-                using (ITextReader reader = new XmlTextReader(XmlReader.Create(stream)))
+                using (ITextReader reader = new XmlTextReader(stream))
                 {
                     LargeCollection = serializer.Combine(reader, null, true) as IList<RootObject>;
                 }

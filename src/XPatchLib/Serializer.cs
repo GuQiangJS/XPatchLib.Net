@@ -151,24 +151,28 @@ namespace XPatchLib
                             new Serializer(_initialType, true, false).Divide(writer, null, pOriValue);
 #if DEBUG
                             stream.Position = 0;
+                            try
+                            {
 #if (NET_35 || NETSTANDARD)
                             XElement ele = XElement.Load(new StreamReader(stream));
                             System.Diagnostics.Debug.WriteLine(ele.ToString());
 #else
-                            XmlDocument xDoc = new XmlDocument();
-                            xDoc.Load(stream);
-                            System.Diagnostics.Debug.WriteLine(xDoc.InnerXml);
-                            xDoc = null;
+                                XmlDocument xDoc = new XmlDocument();
+                                xDoc.Load(stream);
+                                System.Diagnostics.Debug.WriteLine(xDoc.InnerXml);
+                                xDoc = null;
 #endif
+                            }
+                            catch (Exception)
+                            {
+                            }
 #endif
                             stream.Position = 0;
-                            using (XmlReader xmlReader = XmlReader.Create(stream))
+                            using (ITextReader reader = new XmlTextReader(stream))
                             {
-                                using (ITextReader reader = new XmlTextReader(xmlReader))
-                                {
-                                    cloneObjValue =
-                                        new Serializer(_initialType, true, false).Combine(reader, null, true);
-                                }
+                                cloneObjValue =
+                                    new Serializer(_initialType, true, false).Combine(reader, null, true);
+
                             }
                         }
                     }

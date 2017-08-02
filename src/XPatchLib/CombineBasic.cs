@@ -99,7 +99,7 @@ namespace XPatchLib
         /// <returns></returns>
         protected override object CombineAction(ITextReader pReader, object pOriObject, string pName)
         {
-            return CombineAction(Type.TypeCode, Type.IsGuid, pReader.Setting.Mode, pReader.ReadString());
+            return CombineAction(Type.TypeCode, Type.IsGuid, pReader.Setting.Mode, pReader.Value);
         }
 
 #region Internal Constructors
@@ -190,7 +190,8 @@ namespace XPatchLib
 
         private static object CombineString(string pValue)
         {
-            return pValue.Replace("\n", "\r\n");
+            //return pValue.Replace("\n", "\r\n");
+            return pValue;
         }
 
         private static object CombineUnsignedByte(string pValue)

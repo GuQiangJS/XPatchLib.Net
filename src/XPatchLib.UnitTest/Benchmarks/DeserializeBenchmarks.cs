@@ -25,15 +25,12 @@ namespace XPatchLib.UnitTest.Benchmarks
             using (FileStream stream =
                 new FileStream(ResolvePath("large_xpatchlib.xml"), FileMode.Open, FileAccess.Read))
             {
-                using (XmlReader xmlReader = XmlReader.Create(stream))
+                using (XmlTextReader reader = new XmlTextReader(stream))
                 {
-                    using (XmlTextReader reader = new XmlTextReader(xmlReader))
-                    {
 #if DEBUG
-                        object obj=
+                    object obj =
 #endif
                         serializer.Combine(reader, null);
-                    }
                 }
             }
         }

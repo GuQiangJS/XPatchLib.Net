@@ -34,7 +34,7 @@ namespace XPatchLib
                     pReader.NodeType == NodeType.EndElement)
                     break;
 
-                pReader.MoveToElement();
+                //pReader.MoveToElement();
 
                 if (pReader.Name == GenericArgumentType.TypeFriendlyName && pReader.NodeType == NodeType.Element)
                     CombineCore(pReader, ref pOriObject, GenericArgumentType.TypeFriendlyName);

@@ -166,7 +166,7 @@ namespace XPatchLib.UnitTest.ForXml
                     Debug.WriteLine(context);
                     Assert.AreEqual(ChangedContext.Replace("utf-8", "us-ascii"), context);
                     stream.Position = 0;
-                    using (var reader = new XmlTextReader(XmlReader.Create(stream)))
+                    using (var reader = new XmlTextReader(stream))
                     {
                         var changedObj = serializer.Combine(reader, OriObject) as BookClass;
                         Assert.AreEqual(RevObject, changedObj);

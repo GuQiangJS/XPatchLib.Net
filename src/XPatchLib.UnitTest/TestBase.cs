@@ -210,66 +210,51 @@ namespace XPatchLib.UnitTest
 
         protected object DoCombineBasic_Combie(string context, Type type, object expected)
         {
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
+            using (var reader = new XmlTextReader(new StringReader(context)))
             {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    return
-                        new CombineBasic(new TypeExtend(type, null)).Combine(reader, expected,
-                            ReflectionUtils.GetTypeFriendlyName(type));
-                }
+                return
+                    new CombineBasic(new TypeExtend(type, null)).Combine(reader, expected,
+                        ReflectionUtils.GetTypeFriendlyName(type));
             }
         }
 
         protected T DoCombineBasic_Combie<T>(string context, T expected) where T : class
         {
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
+            using (var reader = new XmlTextReader(new StringReader(context)))
             {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    return
-                        new CombineBasic(new TypeExtend(typeof(T), null)).Combine(reader, expected,
-                            ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
-                }
+                return
+                    new CombineBasic(new TypeExtend(typeof(T), null)).Combine(reader, expected,
+                        ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
             }
         }
 
-        protected object DoCombineObject_Combie(Type type,string context, object expected)
+        protected object DoCombineObject_Combie(Type type, string context, object expected)
         {
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
+            using (var reader = new XmlTextReader(new StringReader(context)))
             {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    return
-                        new CombineObject(new TypeExtend(type, null)).Combine(reader, expected,
-                            ReflectionUtils.GetTypeFriendlyName(type));
-                }
+                return
+                    new CombineObject(new TypeExtend(type, null)).Combine(reader, expected,
+                        ReflectionUtils.GetTypeFriendlyName(type));
             }
         }
 
         protected T DoCombineObject_Combie<T>(string context, T expected) where T : class
         {
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
+            using (var reader = new XmlTextReader(new StringReader(context)))
             {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    return
-                        new CombineObject(new TypeExtend(typeof(T), null)).Combine(reader, expected,
-                            ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
-                }
+                return
+                    new CombineObject(new TypeExtend(typeof(T), null)).Combine(reader, expected,
+                        ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
             }
         }
 
         protected T DoCombineCore_Combie<T>(string context, T expected) where T : class
         {
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
+            using (var reader = new XmlTextReader(new StringReader(context)))
             {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    return
-                        new CombineCore(new TypeExtend(typeof(T), null)).Combine(reader, expected,
-                            ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
-                }
+                return
+                    new CombineCore(new TypeExtend(typeof(T), null)).Combine(reader, expected,
+                        ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
             }
         }
 
@@ -411,37 +396,30 @@ namespace XPatchLib.UnitTest
         protected T DoSerializer_Combie<T>(string context, T expected, bool deepClone = false) where T : class
         {
             XmlReaderSettings settings = new XmlReaderSettings {ConformanceLevel = ConformanceLevel.Fragment};
-            using (XmlReader reader = XmlReader.Create(new StringReader(context), settings))
+
+            using (var reader = new XmlTextReader(new StringReader(context)))
             {
-                using (var xmlTextReader = new XmlTextReader(reader))
-                {
-                    return new Serializer(typeof(T)).Combine(xmlTextReader, expected, !deepClone) as T;
-                }
+                return new Serializer(typeof(T)).Combine(reader, expected, !deepClone) as T;
             }
         }
 
-        protected object DoSerializer_Combie(Type type,string context, object expected, bool deepClone = false)
+        protected object DoSerializer_Combie(Type type, string context, object expected, bool deepClone = false)
         {
-            XmlReaderSettings settings = new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment };
-            using (XmlReader reader = XmlReader.Create(new StringReader(context), settings))
+            XmlReaderSettings settings = new XmlReaderSettings {ConformanceLevel = ConformanceLevel.Fragment};
+
+            using (var reader = new XmlTextReader(new StringReader(context)))
             {
-                using (var xmlTextReader = new XmlTextReader(reader))
-                {
-                    return new Serializer(type).Combine(xmlTextReader, expected, !deepClone);
-                }
+                return new Serializer(type).Combine(reader, expected, !deepClone);
             }
         }
 
         protected T DoCombineIDictionary_Combie<T>(string context, T expected) where T : class
         {
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
+            using (var reader = new XmlTextReader(new StringReader(context)))
             {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    return
-                        new CombineIDictionary(new TypeExtend(typeof(T), null)).Combine(reader, expected,
-                            ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
-                }
+                return
+                    new CombineIDictionary(new TypeExtend(typeof(T), null)).Combine(reader, expected,
+                        ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
             }
         }
 
@@ -450,31 +428,26 @@ namespace XPatchLib.UnitTest
             return DoCombineIEnumerable_Combie(context, expected, null);
         }
 
-        protected T DoCombineIEnumerable_Combie<T>(string context, T expected,ISerializeSetting setting) where T : class
+        protected T DoCombineIEnumerable_Combie<T>(string context, T expected, ISerializeSetting setting)
+            where T : class
         {
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
+            using (var reader = new XmlTextReader(new StringReader(context)))
             {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    if (setting != null)
-                        reader.Setting = setting;
-                    return
-                        new CombineIEnumerable(new TypeExtend(typeof(T), null)).Combine(reader, expected,
-                            ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
-                }
+                if (setting != null)
+                    reader.Setting = setting;
+                return
+                    new CombineIEnumerable(new TypeExtend(typeof(T), null)).Combine(reader, expected,
+                        ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
             }
         }
 
         protected T DoCombineKeyValuePair_Combie<T>(string context, T expected)
         {
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(context)))
+            using (var reader = new XmlTextReader(new StringReader(context)))
             {
-                using (var reader = new XmlTextReader(xmlReader))
-                {
-                    return (T)
-                        new CombineKeyValuePair(new TypeExtend(typeof(T), null)).Combine(reader, expected,
-                            ReflectionUtils.GetTypeFriendlyName(typeof(T)));
-                }
+                return (T)
+                    new CombineKeyValuePair(new TypeExtend(typeof(T), null)).Combine(reader, expected,
+                        ReflectionUtils.GetTypeFriendlyName(typeof(T)));
             }
         }
 
@@ -572,7 +545,7 @@ namespace XPatchLib.UnitTest
             {
                 context = string.Concat(XmlHeaderContext, System.Environment.NewLine, context);
             }
-            
+
             Serializer serializer = new Serializer(pType);
             if (pTypes != null && pTypes.Count > 0)
                 serializer.RegisterTypes(pTypes);
@@ -587,45 +560,47 @@ namespace XPatchLib.UnitTest
                 Assert.AreEqual(context, sb.ToString(), "输出内容与预期不符");
             if (string.Equals(XmlHeaderContext, sb.ToString()))
                 return default(T);
-            using (XmlReader xmlReader = XmlReader.Create(new StringReader(sb.ToString())))
+            using (XmlTextReader reader = new XmlTextReader(new StringReader(sb.ToString())))
             {
-                using (XmlTextReader reader = new XmlTextReader(xmlReader))
+                if (setting != null)
+                    reader.Setting = setting;
+                T result = (T)serializer.Combine(reader,
+                pOriValue,
+                !createNew);
+                if (createNew)
                 {
-                    if (setting != null)
-                        reader.Setting = setting;
-                    T result = (T)serializer.Combine(reader, pOriValue, !createNew);
-                    if (createNew)
-                    {
-                        Assert.AreNotEqual(result, pOriValue);
-                        if (pOriValue != null && pRevValue != null)
-                            Assert.AreNotEqual(result.GetHashCode(), pOriValue.GetHashCode());
-                    }
-                    else
-                    {
-                        //类型如果是数组，始终会创建新实例
-                        if (!IsValueType(pType) && !pType.IsArray)
-                        {
-                            if (pOriValue != null)
-                                //如果pOriValue为null，那么会始终创建一个新的实例，所以肯定不相同
-                                Assert.AreEqual(result, pOriValue);
-                            if (pOriValue != null && pRevValue != null)
-                                Assert.AreEqual(result.GetHashCode(), pOriValue.GetHashCode());
-                        }
-                    }
-                    if (XPatchLib.ReflectionUtils.IsIEnumerable(pType))
-                    {
-                        AssertIEnumerable(pRevValue, result, pType, string.Empty);
-                    }
-                    else
-                    {
-                        Assert.AreEqual(pRevValue, result);
-                    }
-                    if (!IsValueType(pType) && pRevValue != null)
-                        Assert.AreNotEqual(result.GetHashCode(), pRevValue.GetHashCode());
-                    return result;
+                    Assert.AreNotEqual(result,
+                    pOriValue);
+                    if (pOriValue != null && pRevValue != null)
+                        Assert.AreNotEqual(result.GetHashCode(),
+                        pOriValue.GetHashCode());
                 }
+                else
+                {
+                    //类型如果是数组，始终会创建新实例
+                    if (!IsValueType(pType) && !pType.IsArray)
+                    {
+                        if (pOriValue != null)
+                            //如果pOriValue为null，那么会始终创建一个新的实例，所以肯定不相同
+                            Assert.AreEqual(result, pOriValue);
+                        if (pOriValue != null && pRevValue != null)
+                            Assert.AreEqual(result.GetHashCode(), pOriValue.GetHashCode());
+                    }
+                }
+                if (XPatchLib.ReflectionUtils.IsIEnumerable(pType))
+                {
+                    AssertIEnumerable(pRevValue, result, pType, string.Empty);
+                }
+                else
+                {
+                    Assert.AreEqual(pRevValue, result);
+                }
+                if (!IsValueType(pType) && pRevValue != null)
+                    Assert.AreNotEqual(result.GetHashCode(), pRevValue.GetHashCode());
+                return result;
             }
         }
+
         private void AssertIEnumerable(object A, object B, Type pType, string pAssert)
         {
             if (A == null && B == null)
