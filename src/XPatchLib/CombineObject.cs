@@ -68,11 +68,11 @@ namespace XPatchLib
                         //当前处理的属性的类型是 基础 类型时
                         if (member.IsEnum)
                             Type.SetMemberValue(pOriObject, member.Name,
-                                new EnumWrapper(memberType).TransFromString(pReader.Value));
+                                new EnumWrapper(memberType).TransFromString(pReader.GetValue()));
 #if (NET || NETSTANDARD_2_0_UP)
                         else  if (member.IsColor)
                             Type.SetMemberValue(pOriObject, member.Name,
-                                ColorHelper.TransFromString(pReader.Value));
+                                ColorHelper.TransFromString(pReader.GetValue()));
 #endif
                         else
                             Type.SetMemberValue(pOriObject, member.Name,

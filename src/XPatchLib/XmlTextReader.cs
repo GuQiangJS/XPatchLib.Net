@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using BufferBuilder = System.Text.StringBuilder;
 
 namespace XPatchLib
 {
@@ -16,6 +17,8 @@ namespace XPatchLib
         private const int DefaultSize = 0x100000;
         private int _charPos = 0;
         private readonly TextReader _reader;
+
+        private string _value;
 
         ///// <summary>
         /////     是否认为 \r \n 是换行。
@@ -33,9 +36,9 @@ namespace XPatchLib
         {
             //enableNewLine = true;
             Name = string.Empty;
-            Value = string.Empty;
             NodeType = NodeType.None;
-            ReadState = ReadState.Initial;
+            _readState = ReadState.Initial;
+            _stringBuilder = new BufferBuilder();
         }
 
         /// <summary>
@@ -58,7 +61,9 @@ namespace XPatchLib
             ReadData();
         }
 
-        internal string Text { get; private set; }
+        private string _text;
+
+        internal string Text { get { return _text; } }
 
         /// <summary>
         ///     获取当前节点的限定名。
@@ -68,22 +73,38 @@ namespace XPatchLib
         /// <summary>
         ///     获取当前节点的文本值。
         /// </summary>
-        public string Value { get; private set; }
+        public string GetValue()
+        {
+            if (NodeType == NodeType.Element)
+            {
+                if (_value == null)
+                {
+                    int e = FindFirstIndex(_chars, _charPos, new[] {'<'});
+                    _value = ParseValue(_chars, _charPos, e);
+                }
+                return _value;
+            }
+            return string.Empty;
+        }
 
         /// <summary>
         ///     获取当前节点的类型。
         /// </summary>
         public NodeType NodeType { get; private set; }
 
+        private bool _eof;
+
         /// <summary>
         ///     获取一个值，该值指示此读取器是否定位在流的结尾。
         /// </summary>
-        public bool EOF { get; private set; }
+        public bool EOF { get { return _eof; } }
+
+        private bool _hasAttribute;
 
         /// <summary>
         /// 获取当前解析的节点是否包含特性节点。
         /// </summary>
-        public bool HasAttribute { get; private set; }
+        public bool HasAttribute { get { return _hasAttribute; } }
 
         private KeyValuePair<String, String>[] _attributes;
 
@@ -94,8 +115,58 @@ namespace XPatchLib
         /// </summary>
         public KeyValuePair<String, String>[] GetAttributes()
         {
-            if (!HasAttribute)
+            if (!HasAttribute || NodeType == NodeType.XmlDeclaration)
+            {
                 return _emptyAttributes;
+            }
+
+            if (_attributes == null)
+            {
+                int startName = 0;
+                int endName = 0;
+                int startValue = 0;
+                int endValue = 0;
+
+                Queue<KeyValuePair<string, string>> kvs = new Queue<KeyValuePair<string, string>>(10);
+
+                for (int i = 0; i < _textLen; i++)
+                {
+                    if (_textChars[i] == ' ')
+                    {
+                        startName = i + 1;
+                        continue;
+                    }
+                    if (_textChars[i] == '=')
+                        endName = i - 1;
+                    if (_textChars[i] == '"')
+                        if (startValue == 0)
+                            startValue = i + 1;
+                        else
+                            endValue = i - 1;
+                    if (startName >= 0 && endName > 0 && startValue > 0 && endValue > 0)
+                    {
+                        //KeyValuePair<String, String>[] c = new KeyValuePair<string, string>[_attributes.Length + 1];
+                        //Array.Copy(_attributes, c, _attributes.Length);
+                        //c[_attributes.Length] = new KeyValuePair<string, string>(
+                        //    new string(cs, startName, endName - startName + 1),
+                        //    new string(cs, startValue, endValue - startValue + 1));
+
+                        kvs.Enqueue(new KeyValuePair<string, string>(
+                            new string(_textChars, startName, endName - startName + 1),
+                            new string(_textChars, startValue, endValue - startValue + 1)));
+
+                        //_attributes = c;
+                        //HasAttribute = true;
+
+                        startName = endName = startValue = endValue = 0;
+                    }
+                }
+
+                if (kvs.Count > 0)
+                {
+                    _attributes = kvs.ToArray();
+                }
+            }
             return _attributes;
         }
 
@@ -114,10 +185,14 @@ namespace XPatchLib
             }
         }
 
+        private ReadState _readState;
+
         /// <summary>
         ///     获取读取器的状态。
         /// </summary>
-        public ReadState ReadState { get; private set; }
+        public ReadState ReadState {
+            get { return _readState; }
+        }
 
         /// <summary>
         ///     从流中读取下一个节点。
@@ -125,18 +200,22 @@ namespace XPatchLib
         /// <returns>如果成功读取了下一个节点，则为 <c>true</c>；如果没有其他节点可读取，则为 <c>false</c>。</returns>
         public bool Read()
         {
-            ReadState = ReadState.Interactive;
+            if (_readState == ReadState.Initial)
+                _readState = ReadState.Interactive;
             while (true)
             {
                 int endIndex = -1;
-                if (EOF)
+                if (_eof)
                     return false;
 
                 int pos = _charPos;
 
+                ResetAll();
+
                 try
                 {
-                    switch (_chars[pos])
+                    char ch = _chars[pos];
+                    switch (ch)
                     {
                         case '<':
                             switch (_chars[pos + 1])
@@ -160,6 +239,7 @@ namespace XPatchLib
                                     if (endIndex >= 0)
                                     {
                                         SetText(_chars, pos, endIndex - pos + 1);
+                                        ParseName();
                                         _charPos = endIndex + 1;
                                         return true;
                                     }
@@ -167,11 +247,13 @@ namespace XPatchLib
                                 default:
                                     endIndex = FindFirstEndTagIndex(_chars, pos);
 
-                                    if (_chars[endIndex] == '/')
+                                    if (_chars[endIndex] == '/' && _chars[endIndex + 1] == '>')
                                     {
                                         // '/>'
                                         NodeType = NodeType.FullElement;
                                         SetText(_chars, pos, endIndex - pos + 2);
+                                        ParseName();
+                                        ParseAttribute();
                                         _charPos = endIndex + 1;
                                         return true;
                                     }
@@ -180,47 +262,57 @@ namespace XPatchLib
                                         // '>'
                                         NodeType = NodeType.Element;
                                         SetText(_chars, pos, endIndex - pos + 1);
+                                        ParseName();
+                                        ParseValue(_chars, pos, endIndex);
+                                        ParseAttribute();
                                         _charPos = endIndex + 1;
                                         return true;
                                     }
                                     break;
                             }
                             break;
-                        case '/':
-                            if (_chars[pos + 1] == '>')
-                            {
-                                _charPos = pos + 1;
-                                NodeType = NodeType.FullElement;
-                                ParseAttribute();
-                                ParseName();
-                                ParseValue(1);
-                            }
-                            _charPos++;
-                            break;
+                        //case '/':
+                        //    if (_chars[pos + 1] == '>')
+                        //    {
+                        //        _charPos = pos + 1;
+                        //        NodeType = NodeType.FullElement;
+                        //        ResetAttributes();
+                        //        ParseAttribute();
+                        //        ParseName();
+                        //        ResetValue();
+                        //        //ParseValue(1);
+                        //    }
+                        //    _charPos++;
+                        //    break;
                         //换行
                         case '\r':
                         case '\n':
-                            //if(enableNewLine)
-                            _charPos++;
-                            break;
                         case ' ':
-                            //if (skipWhiteSpace)
-                            _charPos++;
-                            break;
                         default:
+                            //if(enableNewLine)
                             _charPos++;
                             break;
                     }
                 }
                 finally
                 {
-                    EOF = _chars.Length <= _charPos + 1;
+                    _eof = _chars.Length <= _charPos + 1;
                 }
             }
         }
 
+        private void ResetAll()
+        {
+            _text = null;
+            _textChars = null;
+            _textLen = -1;
+            _hasAttribute = false;
+            _attributes = null;
+            _value = null;
+        }
+
         /// <summary>
-        ///     读取所有内容至 <see cref="_ps" /> 中。
+        ///     读取所有内容至 <see cref="_chars" /> 中。
         /// </summary>
         private void ReadData()
         {
@@ -247,7 +339,8 @@ namespace XPatchLib
         }
 
         private char[] _textChars;
-        
+        private int _textLen;
+
         internal static void BlockCopyChars(char[] src, int srcOffset, char[] dst, int dstOffset, int count)
         {
             Buffer.BlockCopy(src, srcOffset * sizeof(char), dst, dstOffset * sizeof(char), count * sizeof(char));
@@ -256,70 +349,68 @@ namespace XPatchLib
         internal static void BlockCopy(byte[] src, int srcOffset, byte[] dst, int dstOffset, int count)
         { 
             Buffer.BlockCopy(src, srcOffset, dst, dstOffset, count);
-
         }
 
         private void SetText(char[] chars, int startIndex, int len)
         {
-            Text = string.Empty;
-            Text = new string(chars, startIndex, len);
-
+            _text = new string(chars, startIndex, len);
+            _textLen = len;
             _textChars = new char[len];
 
             BlockCopyChars(chars, startIndex, _textChars, 0, len);
 
-            ParseAttribute();
-            ParseName();
-            ParseValue(len + 1);
+            //ResetAttributes();
+            //ResetValue();
+
+            //ParseAttribute();
+            //ParseName();
+            //ParseValue(len + 1);
+        }
+
+        private void ResetValue()
+        {
+            _value = null;
         }
 
         private int FindFirstIndex(char[] chars, int startIndex, char[] findChars)
         {
-            for (int i = 0;; i++)
+            int targetLength = findChars.Length;
+            int count = 0;
+            char currentCharToSearch = findChars[0];
+            int len = chars.Length;
+            for (; startIndex < len; startIndex++)
             {
-                int j = startIndex + i;
-                if (chars[j] == findChars[0])
+                if (chars[startIndex] == currentCharToSearch)
                 {
-                    var found = true;
-                    for (int k = 1; i < findChars.Length; k++)
-                        if (chars[j + k] != findChars[k])
-                        {
-                            found = false;
-                            break;
-                        }
-                    if (found)
-                        return j;
+                    count++;
+                    if (count == targetLength)
+                    {
+                        return startIndex;
+                    }
+                    else
+                    {
+                        currentCharToSearch = findChars[count];
+                    }
+                }
+                else
+                {
+                    count = 0;
+                    currentCharToSearch = findChars[0];
                 }
             }
+            return 0;
         }
 
-        ///// <summary>
-        /////     找到最先出现的 '>' 符号
-        ///// </summary>
-        ///// <returns>如果找到了就返回首先发现 '/' 字符的位置，否则返回-1。</returns>
-        //private int FindFirstGreaterThanIndex(char[] chars, int startIndex)
-        //{
-        //    for (int i = 0;; i++)
-        //    {
-        //        int j = startIndex + i;
-        //        if (chars[j] == '>')
-        //            return j - startIndex;
-        //    }
-        //}
-
-        ///// <summary>
-        /////     找到最先出现的 '/>' 符号
-        ///// </summary>
-        ///// <returns>如果找到了就返回首先发现 '>' 字符的位置，否则返回-1。</returns>
-        //private int FindFirstSelfClosingIndex(char[] chars, int startIndex)
-        //{
-        //    for (int i = 0;; i++)
-        //    {
-        //        int j = startIndex + i;
-        //        if (chars[j] == '/' && chars[j + 1] == '>')
-        //            return j - startIndex;
-        //    }
-        //}
+        private bool FindFirstIndexCore(char[] chars, int startIndex, char[] findChars)
+        {
+            int len = findChars.Length;
+            for (int i = 0; i < len; i++)
+            {
+                if (chars[i + startIndex] != findChars[i])
+                    return false;
+            }
+            return true;
+        }
 
         /// <summary>
         ///     找到最先出现的 '>' 或 '/>' 符号
@@ -327,90 +418,73 @@ namespace XPatchLib
         /// <returns>如果找到了就返回首先发现 '/' 或 '>' 字符的位置，否则返回-1。</returns>
         private int FindFirstEndTagIndex(char[] chars, int startIndex)
         {
-            for (int i = 0;; i++)
+            for (;; startIndex++)
             {
-                int j = startIndex + i;
-                if (chars[j] == '>' || (chars[j] == '/' && chars[j + 1] == '>'))
-                    return j;
+                char ch = chars[startIndex];
+                if (ch == '>' || (ch == '/' && chars[startIndex + 1] == '>'))
+                    return startIndex;
             }
         }
 
-        private void ParseValue(int startLen)
+        BufferBuilder _stringBuilder;
+
+        private string ParseValue(char[] chars,int startIndex,int endIndex)
         {
-            Value = string.Empty;
-            if (NodeType == NodeType.EndElement || NodeType == NodeType.FullElement)
-                return;
+            if (endIndex <= 0 || chars.Length < endIndex)
+                return string.Empty;
 
-            int pos = _charPos;
-
-            if (_chars[pos + startLen - 1] == '<')
-                return;
-            int len = 0;
-
-            if(pos + startLen + 1 < _chars.Length)
-                while (true)
-                {
-                    if (_chars[pos + startLen + len] == '<')
-                        break;
-                    len++;
-                }
-            if (startLen + pos + len >= _chars.Length)
+            string result;
+            while (true)
             {
-                Value = string.Empty;
-                return;
-            }
-
-            int s = startLen + pos - 1;
-            Queue<char> cs = new Queue<char>(len + 1);
-            for (int i = 0; i < len + 1;)
-            {
-                /*
-                 * &(逻辑与)  &amp;        
-                 * <(小于)    &lt;        
-                 * >(大于)    &gt;        
-                 * "(双引号)  &quot;      
-                 * '(单引号)  &apos;
-                 */
-                if (_chars[s + i] == '&')
+                int end = FindFirstIndex(chars, startIndex, new[] {'&'});
+                if (end > 0 && endIndex > end)
                 {
-                    if (_chars[s + i + 1] == 'a' && _chars[s + i + 2] == 'm' && _chars[s + i + 3] == 'p' &&
-                        _chars[s + i + 4] == ';')
+                    if (_chars[end + 1] == 'a' && _chars[end + 2] == 'm' && _chars[end + 3] == 'p' &&
+                        _chars[end + 4] == ';')
                     {
-                        cs.Enqueue('&');
-                        i = i + 5;
+                        _stringBuilder.Append('&');
+                        startIndex = startIndex + 5;
                         continue;
                     }
-                    if (_chars[s + i + 1] == 'l' && _chars[s + i + 2] == 't' && _chars[s + i + 3] == ';')
+                    if (_chars[end + 1] == 'l' && _chars[end + 2] == 't' && _chars[end + 3] == ';')
                     {
-                        cs.Enqueue('<');
-                        i = i + 4;
+                        _stringBuilder.Append('<');
+                        startIndex = startIndex + 4;
                         continue;
                     }
-                    if (_chars[s + i + 1] == 'g' && _chars[s + i + 2] == 't' && _chars[s + i + 3] == ';')
+                    if (_chars[end + 1] == 'g' && _chars[end + 2] == 't' && _chars[end + 3] == ';')
                     {
-                        cs.Enqueue('>');
-                        i = i + 4;
+                        _stringBuilder.Append('>');
+                        startIndex = startIndex + 4;
                         continue;
                     }
-                    if (_chars[s + i + 1] == 'q' && _chars[s + i + 2] == 'u' && _chars[s + i + 3] == 'o' &&
-                        _chars[s + i + 4] == 't' && _chars[s + i + 5] == ';')
+                    if (_chars[end + 1] == 'q' && _chars[end + 2] == 'u' && _chars[end + 3] == 'o' &&
+                        _chars[end + 4] == 't' && _chars[end + 5] == ';')
                     {
-                        cs.Enqueue('"');
-                        i = i + 6;
+                        _stringBuilder.Append('"');
+                        startIndex = startIndex + 6;
                         continue;
                     }
-                    if (_chars[s + i + 1] == 'a' && _chars[s + i + 2] == 'p' && _chars[s + i + 3] == 'o' &&
-                        _chars[s + i + 4] == 's' && _chars[s + i + 5] == ';')
+                    if (_chars[end + 1] == 'a' && _chars[end + 2] == 'p' && _chars[end + 3] == 'o' &&
+                        _chars[end + 4] == 's' && _chars[end + 5] == ';')
                     {
-                        cs.Enqueue('\'');
-                        i = i + 6;
+                        _stringBuilder.Append('\'');
+                        startIndex = startIndex + 6;
                         continue;
                     }
                 }
-                cs.Enqueue(_chars[s + i]);
-                i++;
+                else
+                {
+                    break;
+                }
             }
-            Value = new string(cs.ToArray());
+            if (endIndex > startIndex)
+            {
+                _stringBuilder.Append(chars, startIndex, endIndex - startIndex);
+            }
+            result = _stringBuilder.ToString();
+            _stringBuilder.Length = 0;
+            return result;
         }
 
         private void ParseName()
@@ -420,9 +494,8 @@ namespace XPatchLib
             //char[] cs = Text.ToCharArray();
             int start = 0;
             int end = 0;
-            int len = _textChars.Length;
 
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < _textLen; i++)
             {
                 if (_textChars[i] == '<')
                 {
@@ -439,7 +512,7 @@ namespace XPatchLib
                     end = i - start;
                     break;
                 }
-                if (_textChars[i] == '>' || i + 1 != _textChars.Length && _textChars[i] == '/' && _textChars[i + 1] == '>')
+                if (_textChars[i] == '>' || i + 1 != _textLen && _textChars[i] == '/' && _textChars[i + 1] == '>')
                 {
                     end = i - start;
                     break;
@@ -448,56 +521,28 @@ namespace XPatchLib
             Name = new string(_textChars, start, end).Trim();
         }
 
+        /// <summary>
+        /// 解析当前Text是否包含Attribute
+        /// </summary>
         private void ParseAttribute()
         {
-            ResetAttributes();
+            //ResetAttributes();
 
             if (NodeType == NodeType.XmlDeclaration) return;
             
-            int startName = 0;
-            int endName = 0;
-            int startValue = 0;
-            int endValue = 0;
-            int len = _textChars.Length;
-
-            Queue<KeyValuePair<string, string>> kvs = new Queue<KeyValuePair<string, string>>(10);
-
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < _textLen; i++)
             {
                 if (_textChars[i] == ' ')
                 {
-                    startName = i + 1;
-                    continue;
+                    for (int j = i; j < _textLen; j++)
+                    {
+                        if (_textChars[j] == '=')
+                        {
+                            _hasAttribute = true;
+                            return;
+                        }
+                    }
                 }
-                if (_textChars[i] == '=')
-                    endName = i - 1;
-                if (_textChars[i] == '"')
-                    if (startValue == 0)
-                        startValue = i + 1;
-                    else
-                        endValue = i - 1;
-                if (startName >= 0 && endName > 0 && startValue > 0 && endValue > 0)
-                {
-                    //KeyValuePair<String, String>[] c = new KeyValuePair<string, string>[_attributes.Length + 1];
-                    //Array.Copy(_attributes, c, _attributes.Length);
-                    //c[_attributes.Length] = new KeyValuePair<string, string>(
-                    //    new string(cs, startName, endName - startName + 1),
-                    //    new string(cs, startValue, endValue - startValue + 1));
-
-                    kvs.Enqueue(new KeyValuePair<string, string>(
-                        new string(_textChars, startName, endName - startName + 1),
-                        new string(_textChars, startValue, endValue - startValue + 1)));
-
-                    //_attributes = c;
-                    HasAttribute = true;
-
-                    startName = endName = startValue = endValue = 0;
-                }
-            }
-
-            if (HasAttribute)
-            {
-                _attributes = kvs.ToArray();
             }
         }
 
@@ -517,7 +562,8 @@ namespace XPatchLib
         private void ResetAttributes()
         {
             //_attributes = new KeyValuePair<String, String>[0];
-            HasAttribute = false;
+            _hasAttribute = false;
+            _attributes = null;
         }
 
 #region Dispose

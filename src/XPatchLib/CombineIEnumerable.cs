@@ -195,8 +195,8 @@ namespace XPatchLib
                 KeyValuesObject o = null;
                 if (GenericArgumentType.IsBasicType && pOriEnumerable != null)
                 {
-                    var value = pReader.Value;
-                    o = pOriEnumerable.FirstOrDefault(x => x.Equals(value));
+                    //var value = pReader.GetValue();
+                    o = pOriEnumerable.FirstOrDefault(x => x.Equals(pReader.GetValue()));
                 }
                 else
                 {
@@ -231,7 +231,7 @@ namespace XPatchLib
                 if (GenericArgumentType.IsBasicType)
                 {
                     var value = new KeyValuesObject(CombineBasic.CombineAction(GenericArgumentType.TypeCode,
-                        GenericArgumentType.IsGuid, pReader.Setting.Mode, pReader.Value));
+                        GenericArgumentType.IsGuid, pReader.Setting.Mode, pReader.GetValue()));
                     //当时基础类型时，按照基础类型获取所有的方式查找索引。
 
                     o = pOriEnumerable.FirstOrDefault(x => x.Equals(value));

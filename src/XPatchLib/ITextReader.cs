@@ -35,7 +35,7 @@ namespace XPatchLib
         /// <summary>
         ///     获取当前节点的文本值。
         /// </summary>
-        string Value { get; }
+        string GetValue();
 
         /// <summary>
         ///     获取当前节点的类型。

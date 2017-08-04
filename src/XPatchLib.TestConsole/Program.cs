@@ -40,7 +40,7 @@ namespace XPatchLib.TestConsole
             }
         }
 
-        private static int TIMES = 50;
+        private static int TIMES = 100;
 
         static void Main(string[] args)
         {
@@ -60,6 +60,8 @@ namespace XPatchLib.TestConsole
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
 #elif DEBUG
+            new ReaderBenchmarks().ReadByXmlReader();
+            new ReaderBenchmarks().ReadByPatchLib();
             new SerializeBenchmarks().SerializeLargeXmlFile_XPatchLib();
             new SerializeBenchmarks().SerializeLargeXmlFile_XmlSerializer();
             new SerializeBenchmarks().SerializeLargetXmlFile_DataContractSerializer();
@@ -67,6 +69,13 @@ namespace XPatchLib.TestConsole
             new DeserializeBenchmarks().DeserializeLargeXmlFile_XmlSerializer();
             new DeserializeBenchmarks().DeserializeLargetXmlFile_DataContractSerializer();
 #elif DOTTRACE
+            //ReaderBenchmarks r=new ReaderBenchmarks();
+            //for (int i = 0; i < TIMES; i++)
+            //{
+            //    r.ReadByPatchLib();
+            //    r.ReadByXmlReader();
+            //}
+            //return;
             if (args.Length <= 0)
             {
                 Console.WriteLine("启动参数:");
