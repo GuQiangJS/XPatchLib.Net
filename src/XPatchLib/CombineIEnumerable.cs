@@ -67,7 +67,8 @@ namespace XPatchLib
 
                 //pReader.MoveToElement();
 
-                if (pReader.Name == GenericArgumentType.TypeFriendlyName)
+                if (pReader.Name == GenericArgumentType.TypeFriendlyName &&
+                    (pReader.NodeType == NodeType.Element || pReader.NodeType == NodeType.FullElement))
                     CombineCore(pReader, ref pOriObject, kvs, GenericArgumentType.TypeFriendlyName);
 
                 if (pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) &&

@@ -49,13 +49,17 @@ Processor=Intel Xeon CPU E3-1231 v3 3.40GHz, ProcessorCount=4
 Frequency=10000000 Hz, Resolution=100.0000 ns, Timer=UNKNOWN
   [Host]     : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.7.2101.1
   DefaultJob : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.7.2101.1
-```
 
- |                                        Method |     Mean |    Error |    StdDev |            Size |
- |---------------------------------------------- |---------:|---------:|----------:|----------------:|
- |               SerializeLargeXmlFile_XPatchLib | 180.4 ms | 1.334 ms |  1.248 ms | 5,730,304 bytes |
- | SerializeLargetXmlFile_DataContractSerializer | 440.6 ms | 8.726 ms | 22.369 ms | 5,369,856 bytes |
- |           SerializeLargeXmlFile_XmlSerializer | 432.9 ms | 8.517 ms | 14.917 ms | 5,095,424 bytes |
+```
+ |                                        Method |     Mean |    Error |   StdDev |
+ |---------------------------------------------- |---------:|---------:|---------:|
+ |               SerializeLargeXmlFile_XPatchLib | 185.6 ms | 1.383 ms | 1.226 ms |
+ | SerializeLargetXmlFile_DataContractSerializer | 402.9 ms | 7.868 ms | 9.662 ms |
+ |           SerializeLargeXmlFile_XmlSerializer | 386.2 ms | 7.593 ms | 9.873 ms |
+ |------------------------------------------------ |----------:|----------:|----------:|
+ |               DeserializeLargeXmlFile_XPatchLib | 186.12 ms | 0.6233 ms | 0.5830 ms |
+ | DeserializeLargetXmlFile_DataContractSerializer |  80.90 ms | 0.2640 ms | 0.2470 ms |
+ |           DeserializeLargeXmlFile_XmlSerializer |  84.15 ms | 0.2591 ms | 0.2297 ms |
 
 ## 编译
 

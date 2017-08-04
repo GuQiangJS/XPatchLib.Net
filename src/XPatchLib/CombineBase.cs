@@ -88,30 +88,38 @@ namespace XPatchLib
         protected virtual CombineAttribute AnlysisAttributes(ITextReader pReader, string pName)
         {
             bool hasAttr = pReader.HasAttribute;
-            KeyValuePair<String, String>[] kv = pReader.GetAttributes();
-            int attrLen = kv.Length;
-            CombineAttribute result = new CombineAttribute(Action.Edit,
-                hasAttr ? attrLen : 0);
-            if (hasAttr && pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase))
+            CombineAttribute result = null;
+            if (hasAttr)
             {
-                //读取除Action以外的所有Action，将其赋值给属性
-                foreach (KeyValuePair<string, string> keyValuePair in kv)
+                Dictionary<String, String> kv = pReader.GetAttributes();
+                int attrLen = kv.Count;
+                result = new CombineAttribute(Action.Edit,
+                    hasAttr ? attrLen : 0);
+                if (hasAttr && pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase))
                 {
-#if DEBUG
-                    Debug.WriteLine("Attributes of <" + keyValuePair.Key + "," + keyValuePair.Value + ">");
-#endif
-                    if (pReader.Setting.ActionName.Equals(keyValuePair.Key))
+                    //读取除Action以外的所有Action，将其赋值给属性
+                    foreach (KeyValuePair<string, string> keyValuePair in kv)
                     {
-                        Action action;
-                        if (ActionHelper.TryParse(keyValuePair.Value, out action))
-                            result.Action = action;
-                        continue;
-                    }
+#if DEBUG
+                        Debug.WriteLine("Attributes of <" + keyValuePair.Key + "," + keyValuePair.Value + ">");
+#endif
+                        if (pReader.Setting.ActionName.Equals(keyValuePair.Key))
+                        {
+                            Action action;
+                            if (ActionHelper.TryParse(keyValuePair.Value, out action))
+                                result.Action = action;
+                            continue;
+                        }
 
-                    result.Add(keyValuePair.Key,
-                        AnlysisKeyAttributeValueObject(pReader, keyValuePair.Key, keyValuePair.Value));
+                        result.Add(keyValuePair.Key,
+                            AnlysisKeyAttributeValueObject(pReader, keyValuePair.Key, keyValuePair.Value));
+                    }
+                    //pReader.MoveToElement();
                 }
-                //pReader.MoveToElement();
+            }
+            if (result == null)
+            {
+                result = new CombineAttribute(Action.Edit, 0);
             }
             return result;
         }
