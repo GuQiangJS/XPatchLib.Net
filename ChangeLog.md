@@ -4,7 +4,7 @@
 
 #### 3.0.2.3
 
-* 重构 - 重构 `XmlTextReader`。使用 `XmlReader`作为读取器。
+* 重构 - 重构 `XmlTextReader` 。使用 `XmlReader` 作为读取器。
 
 #### 3.0.1.8
 
