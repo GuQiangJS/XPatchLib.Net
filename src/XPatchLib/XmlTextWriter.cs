@@ -203,13 +203,14 @@ namespace XPatchLib
         ///     <see cref="ITextWriter.IndentChar" />。
         /// </summary>
         /// <value>每个级别的 <see cref="ITextWriter.IndentChar" /> 的数目。默认值为 2。</value>
+        /// <exception cref="ArgumentException">当设置值小于等于0时。</exception>
         public int Indentation
         {
             get { return _indentation; }
             set
             {
                 if (value < 0)
-                    throw new ArgumentException( /*Res.GetString(Res.Xml_InvalidIndentation)*/);
+                    throw new ArgumentException(ResourceHelper.GetResourceString(LocalizationRes.Exp_String_InvalidIndentation));
                 _indentation = value;
             }
         }
@@ -232,13 +233,14 @@ namespace XPatchLib
         ///     获取或设置哪个字符用于将属性值引起来。
         /// </summary>
         /// <value>用于将属性值引起来的字符。这必须是单引号 (&#39;) 或双引号 (&#34;)。默认为双引号。</value>
+        /// <exception cref="ArgumentException">当设定字符串不是 <c>'</c> 及 <c>"</c> 时。</exception>
         public char QuoteChar
         {
             get { return _quoteChar; }
             set
             {
                 if (value != '"' && value != '\'')
-                    throw new ArgumentException( /*Res.GetString(Res.Xml_InvalidQuote)*/);
+                    throw new ArgumentException(ResourceHelper.GetResourceString(LocalizationRes.Exp_String_InvalidQuote));
                 _quoteChar = value;
             }
         }
@@ -279,7 +281,7 @@ namespace XPatchLib
         private void AutoComplete(Token token)
         {
             if (_currentState == State.Closed)
-                throw new InvalidOperationException( /*Res.GetString(Res.Xml_Closed)*/);
+                throw new InvalidOperationException(ResourceHelper.GetResourceString(LocalizationRes.Exp_String_WriteClosed));
             if (_currentState == State.Error)
                 throw new InvalidOperationException(
                     /*Res.GetString(Res.Xml_WrongToken, tokenName[(int)token], stateName[(int)State.Error])*/);

@@ -123,6 +123,12 @@
   <data name="Exp_String_FileNotExists" xml:space="preserve">
     <value>文件 '{0}' 不存在。</value>
   </data>
+  <data name="Exp_String_InvalidIndentation" xml:space="preserve">
+    <value>缩进值必须大于0。</value>
+  </data>
+  <data name="Exp_String_InvalidQuote" xml:space="preserve">
+    <value>XML属性引用字符无效。 有效的属性引号字符是 ' 和 "。</value>
+  </data>
   <data name="Exp_String_IsNotColor" xml:space="preserve">
     <value>'{0}' 不能被转换成 System.Drawing.Color 对象。</value>
   </data>
@@ -140,5 +146,8 @@
   </data>
   <data name="Exp_String_PrimaryKey" xml:space="preserve">
     <value>'{0}' 的 主键 '{1}' 设置异常。</value>
+  </data>
+  <data name="Exp_String_WriteClosed" xml:space="preserve">
+    <value>写入器被关闭。</value>
   </data>
 </root>

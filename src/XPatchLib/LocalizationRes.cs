@@ -44,5 +44,20 @@ namespace XPatchLib
         {
             get { return "Exp_String_KeyValue_KeyIsNull"; }
         }
+
+        internal static string Exp_String_InvalidIndentation
+        {
+            get { return "Exp_String_InvalidIndentation"; }
+        }
+
+        internal static string Exp_String_InvalidQuote
+        {
+            get { return "Exp_String_InvalidQuote"; }
+        }
+
+        internal static string Exp_String_WriteClosed
+        {
+            get { return "Exp_String_WriteClosed"; }
+        }
     }
 }

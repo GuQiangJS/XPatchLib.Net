@@ -192,7 +192,6 @@ namespace XPatchLib
                         return true;
                 }
             }
-            return true;
         }
 
         private void SetXmlReaderNormalization()
