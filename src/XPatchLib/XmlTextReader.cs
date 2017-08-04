@@ -20,11 +20,11 @@ namespace XPatchLib
     public class XmlTextReader : ITextReader
     {
         private static readonly Regex Regex = new Regex(@"\r\n|\n\r|\n|\r", RegexOptions.CultureInvariant);
-        private readonly Dictionary<string, string> _emptyAttributeDic = new Dictionary<string, string>(0);
+        private readonly string[,] _emptyAttributeDic = new string[0, 0];
         private readonly XmlReaderSettings _settings;
         private readonly XmlReader _xmlReader;
 
-        private Dictionary<string, string> _attributes;
+        private string[,] _attributes;
 
         private ISerializeSetting _setting = new XmlSerializeSetting();
 
@@ -116,10 +116,11 @@ namespace XPatchLib
             get { return _xmlReader.EOF; }
         }
 
+        private string _name;
         /// <summary>
         ///     获取当前节点的限定名。
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get { return _name; } }
 
         /// <summary>
         ///     获取当前节点的文本值。
@@ -131,10 +132,12 @@ namespace XPatchLib
             return _value;
         }
 
+        private NodeType _nodeType;
+
         /// <summary>
         ///     获取当前节点的类型。
         /// </summary>
-        public NodeType NodeType { get; private set; }
+        public NodeType NodeType { get { return _nodeType; } }
 
         /// <summary>
         ///     获取当前解析的节点是否包含特性节点。
@@ -147,7 +150,7 @@ namespace XPatchLib
         /// <summary>
         ///     获取当前节点的特性名称与值的键值对字典
         /// </summary>
-        public Dictionary<string, string> GetAttributes()
+        public string[,] GetAttributes()
         {
             return _attributes;
         }
@@ -173,22 +176,22 @@ namespace XPatchLib
 #endif
                         return true;
                     case XmlNodeType.Element:
-                        NodeType = _xmlReader.IsEmptyElement ? NodeType.FullElement : NodeType.Element;
-                        Name = _xmlReader.LocalName;
+                        _nodeType = _xmlReader.IsEmptyElement ? NodeType.FullElement : NodeType.Element;
+                        _name = _xmlReader.LocalName;
                         ParseAttributes();
                         _value = _xmlReader.IsEmptyElement ? string.Empty : null;
                         return true;
                     case XmlNodeType.EndElement:
-                        NodeType = NodeType.EndElement;
+                        _nodeType = NodeType.EndElement;
                         _attributes = _emptyAttributeDic;
                         _value = null;
-                        Name = _xmlReader.LocalName;
+                        _name = _xmlReader.LocalName;
                         return true;
                     case XmlNodeType.XmlDeclaration:
-                        NodeType = NodeType.XmlDeclaration;
+                        _nodeType = NodeType.XmlDeclaration;
                         _value = null;
                         _attributes = _emptyAttributeDic;
-                        Name = null;
+                        _name = null;
                         return true;
                 }
             }
@@ -235,11 +238,17 @@ namespace XPatchLib
         {
             if (_xmlReader.HasAttributes)
             {
-                _attributes = new Dictionary<string, string>(_xmlReader.AttributeCount);
+                _attributes = new string[_xmlReader.AttributeCount, 2];
                 _xmlReader.MoveToFirstAttribute();
-                _attributes.Add(_xmlReader.Name, _xmlReader.Value);
+                _attributes[0, 0] = _xmlReader.Name;
+                _attributes[0, 1] = _xmlReader.Value;
+                int index = 1;
                 while (_xmlReader.MoveToNextAttribute())
-                    _attributes.Add(_xmlReader.Name, _xmlReader.Value);
+                {
+                    _attributes[index, 0] = _xmlReader.Name;
+                    _attributes[index, 1] = _xmlReader.Value;
+                    index++;
+                }
             }
         }
 

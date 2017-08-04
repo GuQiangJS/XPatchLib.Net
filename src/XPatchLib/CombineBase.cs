@@ -91,28 +91,28 @@ namespace XPatchLib
             CombineAttribute result = null;
             if (hasAttr)
             {
-                Dictionary<String, String> kv = pReader.GetAttributes();
-                int attrLen = kv.Count;
-                result = new CombineAttribute(Action.Edit,
-                    hasAttr ? attrLen : 0);
-                if (hasAttr && pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase))
+                string[,] kv = pReader.GetAttributes();
+                int attrLen = kv.GetLength(0);
+                result = new CombineAttribute(Action.Edit, attrLen);
+                if (pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase))
                 {
                     //读取除Action以外的所有Action，将其赋值给属性
-                    foreach (KeyValuePair<string, string> keyValuePair in kv)
+                    for (int i = 0; i < attrLen; i++)
                     {
+                        string n = kv[i, 0];
+                        string v = kv[i, 1];
 #if DEBUG
-                        Debug.WriteLine("Attributes of <" + keyValuePair.Key + "," + keyValuePair.Value + ">");
+                        Debug.WriteLine("Attributes of <" + n + "," + v + ">");
 #endif
-                        if (pReader.Setting.ActionName.Equals(keyValuePair.Key))
+                        if (pReader.Setting.ActionName.Equals(n))
                         {
                             Action action;
-                            if (ActionHelper.TryParse(keyValuePair.Value, out action))
+                            if (ActionHelper.TryParse(v, out action))
                                 result.Action = action;
                             continue;
                         }
 
-                        result.Add(keyValuePair.Key,
-                            AnlysisKeyAttributeValueObject(pReader, keyValuePair.Key, keyValuePair.Value));
+                        result.Add(n, AnlysisKeyAttributeValueObject(pReader, n, v));
                     }
                     //pReader.MoveToElement();
                 }

@@ -50,7 +50,7 @@ namespace XPatchLib
         /// <summary>
         ///     获取当前节点的特性名称与值的键值对字典
         /// </summary>
-        Dictionary<String, String> GetAttributes();
+        string[,] GetAttributes();
 
         /// <summary>
         ///     从流中读取下一个节点。
