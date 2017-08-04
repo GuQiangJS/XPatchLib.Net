@@ -1,84 +1,84 @@
 #### 3.0.2.4
 
-* ÓÅ»¯ - ĞŞ¸Ä²¿·ÖÒì³£ÌáÊ¾¡£
+* ä¼˜åŒ– - ä¿®æ”¹éƒ¨åˆ†å¼‚å¸¸æç¤ºã€‚
 
 #### 3.0.2.3
 
-* ÖØ¹¹ - ÖØ¹¹ `XmlTextReader`¡£Ê¹ÓÃ `XmlReader`×÷Îª¶ÁÈ¡Æ÷¡£
+* é‡æ„ - é‡æ„ `XmlTextReader` ã€‚ä½¿ç”¨ `XmlReader` ä½œä¸ºè¯»å–å™¨ã€‚
 
 #### 3.0.1.8
 
-* ÓÅ»¯ - ÓÅ»¯ºÏ²¢ÔöÁ¿ÎÄµµÊ±µ÷ÓÃ¶ÔÏó·½·¨µÄĞÔÄÜ¡£
+* ä¼˜åŒ– - ä¼˜åŒ–åˆå¹¶å¢é‡æ–‡æ¡£æ—¶è°ƒç”¨å¯¹è±¡æ–¹æ³•çš„æ€§èƒ½ã€‚
 
 #### 3.0.1.7
 
-* ĞÂÔö - ĞÂÔö¶Ô [ISerializable](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable(v=vs.110).aspx) µÄÖ§³Ö¡£
+* æ–°å¢ - æ–°å¢å¯¹ [ISerializable](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable(v=vs.110).aspx) çš„æ”¯æŒã€‚
 
 #### 3.0.1.6
 
-* ĞŞÕı - ÅĞ¶ÏÀàĞÍÊÇ·ñÎªICollectionÊ±£¬Èç¹ûÓöµ½²»ÊÇ·ºĞÍ¼¯ºÏÊ±»á±¨ `System.InvalidOperationException µ±Ç°¶ÔÏó²»ÊÇ·ºĞÍÀàĞÍ`¡£
+* ä¿®æ­£ - åˆ¤æ–­ç±»å‹æ˜¯å¦ä¸ºICollectionæ—¶ï¼Œå¦‚æœé‡åˆ°ä¸æ˜¯æ³›å‹é›†åˆæ—¶ä¼šæŠ¥ `System.InvalidOperationException å½“å‰å¯¹è±¡ä¸æ˜¯æ³›å‹ç±»å‹`ã€‚
 
 #### 3.0.1.5
 
-* ĞÂÔö - ĞÂÔö¶Ô [OnSerializingAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializingattribute(v=vs.110).aspx)
-£¬[OnSerializedAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializedattribute(v=vs.110).aspx)
-£¬[OnDeserializingAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.ondeserializingattribute(v=vs.110).aspx)
-£¬[OnDeserializedAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.ondeserializedattribute(v=vs.110).aspx) ÌØĞÔµÄÖ§³Ö¡£
+* æ–°å¢ - æ–°å¢å¯¹ [OnSerializingAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializingattribute(v=vs.110).aspx)
+ï¼Œ[OnSerializedAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializedattribute(v=vs.110).aspx)
+ï¼Œ[OnDeserializingAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.ondeserializingattribute(v=vs.110).aspx)
+ï¼Œ[OnDeserializedAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.ondeserializedattribute(v=vs.110).aspx) ç‰¹æ€§çš„æ”¯æŒã€‚
 
 #### 3.0.1.4
 
-* ÓÅ»¯ - ĞŞ¸ÄÔ­ÓĞµÄ¶ÔÏó±È½Ï·½Ê½¡£
+* ä¼˜åŒ– - ä¿®æ”¹åŸæœ‰çš„å¯¹è±¡æ¯”è¾ƒæ–¹å¼ã€‚
 
-* ÓÅ»¯ - ĞŞ¸Ä `ITextWriter` ½Ó¿Ú£¬Ôö¼Ó²¿·ÖÊôĞÔ¡£
+* ä¼˜åŒ– - ä¿®æ”¹ `ITextWriter` æ¥å£ï¼Œå¢åŠ éƒ¨åˆ†å±æ€§ã€‚
 
-* ÓÅ»¯ - Ôö¼Ó `Serializer` ¹¹Ôìº¯ÊıµÄ²ÎÊıÒì³£ÅĞ¶Ï¡£
+* ä¼˜åŒ– - å¢åŠ  `Serializer` æ„é€ å‡½æ•°çš„å‚æ•°å¼‚å¸¸åˆ¤æ–­ã€‚
 
-* ĞÂÔö - ĞÂÔö¶Ô [Nullable](https://msdn.microsoft.com/zh-cn/library/system.nullable.aspx) ÀàĞÍµÄÖ§³Ö¡£
+* æ–°å¢ - æ–°å¢å¯¹ [Nullable](https://msdn.microsoft.com/zh-cn/library/system.nullable.aspx) ç±»å‹çš„æ”¯æŒã€‚
 
-* ÖØ¹¹ - ÖØ¹¹ `XmlTextWriter` ¡£
+* é‡æ„ - é‡æ„ `XmlTextWriter` ã€‚
 
 #### 3.0.0.27
 
-* ÓÅ»¯ - ¼õÉÙ²úÉú»ù´¡ÀàĞÍ¶ÔÏóÔöÁ¿ÄÚÈİÊ±¶ÔÀàĞÍµÄÅĞ¶Ï´ÎÊı¡£
+* ä¼˜åŒ– - å‡å°‘äº§ç”ŸåŸºç¡€ç±»å‹å¯¹è±¡å¢é‡å†…å®¹æ—¶å¯¹ç±»å‹çš„åˆ¤æ–­æ¬¡æ•°ã€‚
 
-* ÓÅ»¯ - ĞŞ¸ÄÔ­ÓĞµ÷ÓÃ¹¹Ôìº¯ÊıÊ±µÄÒì³£´¦Àí·½Ê½£¬¸ÄÎªÏÈÕÒ¹¹Ôìº¯Êı¡£
+* ä¼˜åŒ– - ä¿®æ”¹åŸæœ‰è°ƒç”¨æ„é€ å‡½æ•°æ—¶çš„å¼‚å¸¸å¤„ç†æ–¹å¼ï¼Œæ”¹ä¸ºå…ˆæ‰¾æ„é€ å‡½æ•°ã€‚
 
 #### 3.0.0.26
 
-* ÓÅ»¯ - ÓÅ»¯Éú³ÉÔöÁ¿ÎÄµµÊ±Éú³É¿ªÊ¼½ÚµãµÄĞÔÄÜ¡£
+* ä¼˜åŒ– - ä¼˜åŒ–ç”Ÿæˆå¢é‡æ–‡æ¡£æ—¶ç”Ÿæˆå¼€å§‹èŠ‚ç‚¹çš„æ€§èƒ½ã€‚
 
 #### 3.0.0.25
 
-* ĞŞÕı - ĞŞÕı»ñÈ¡¶àÓïÑÔÊ±Ê¹ÓÃµÄÊÇ [CurrentUICulture](https://msdn.microsoft.com/zh-cn/library/system.globalization.cultureinfo.currentuiculture(v=vs.110).aspx)¡£
+* ä¿®æ­£ - ä¿®æ­£è·å–å¤šè¯­è¨€æ—¶ä½¿ç”¨çš„æ˜¯ [CurrentUICulture](https://msdn.microsoft.com/zh-cn/library/system.globalization.cultureinfo.currentuiculture(v=vs.110).aspx)ã€‚
 
-* ĞŞÕı - ĞŞÕıµ±¼¯ºÏÀàĞÍ¿ÉÄÜÊÇ½Ó¿ÚÀàĞÍ£¨Èç `IList<T>`£©£¬µ÷ÓÃÖ¸¶¨·½·¨Ê±£¬Èç¹ûÎŞ·¨ÔÚµ±Ç°ÀàĞÍÉÏÕÒµ½·½·¨£¬ËùÒÔ»¹¿ÉÒÔ¸ù¾İÊµÀıµÄÀàĞÍÀ´²éÕÒÖ¸¶¨·½·¨¡£
+* ä¿®æ­£ - ä¿®æ­£å½“é›†åˆç±»å‹å¯èƒ½æ˜¯æ¥å£ç±»å‹ï¼ˆå¦‚ `IList<T>`ï¼‰ï¼Œè°ƒç”¨æŒ‡å®šæ–¹æ³•æ—¶ï¼Œå¦‚æœæ— æ³•åœ¨å½“å‰ç±»å‹ä¸Šæ‰¾åˆ°æ–¹æ³•ï¼Œæ‰€ä»¥è¿˜å¯ä»¥æ ¹æ®å®ä¾‹çš„ç±»å‹æ¥æŸ¥æ‰¾æŒ‡å®šæ–¹æ³•ã€‚
 
-* ĞŞÕı - ĞŞÕıÔÚÖ¸¶¨ÀàĞÍÉÏ²éÕÒÖ¸¶¨·½·¨Ê±£¬Èç¹ûÓöµ½µ±Ç°ÀàĞÍµÄ»ù´¡ÀàĞÍÎª¿ÕµÄÇé¿öÏÂ»áËÀÑ­»·µÄÎÊÌâ¡£(.NET Standard 2.0 ÒÔÏÂ°æ±¾)
+* ä¿®æ­£ - ä¿®æ­£åœ¨æŒ‡å®šç±»å‹ä¸ŠæŸ¥æ‰¾æŒ‡å®šæ–¹æ³•æ—¶ï¼Œå¦‚æœé‡åˆ°å½“å‰ç±»å‹çš„åŸºç¡€ç±»å‹ä¸ºç©ºçš„æƒ…å†µä¸‹ä¼šæ­»å¾ªç¯çš„é—®é¢˜ã€‚(.NET Standard 2.0 ä»¥ä¸‹ç‰ˆæœ¬)
 
 #### 3.0.0.24
 
-* ĞŞÕı - ĞŞÕıºÏ²¢ÔöÁ¿Ê±£¬Èç¹ûÔöÁ¿Ö»ÓĞÒ»¸öµ¥¶ÀµÄ¸ù½Úµã£¬»áÎŞ·¨ºÏ²¢ÔöÁ¿¡£
+* ä¿®æ­£ - ä¿®æ­£åˆå¹¶å¢é‡æ—¶ï¼Œå¦‚æœå¢é‡åªæœ‰ä¸€ä¸ªå•ç‹¬çš„æ ¹èŠ‚ç‚¹ï¼Œä¼šæ— æ³•åˆå¹¶å¢é‡ã€‚
 
 #### 3.0.0.23
 
-* ĞŞÕı - ĞŞÕıStructÀàĞÍ£¨`Size`,`Point`,`Rectangle`µÈ£©¶ÔÏó×öÔöÁ¿ĞòÁĞ»¯Ê±»á±¨ [System.Security.VerificationException](https://msdn.microsoft.com/zh-cn/library/system.security.verificationexception(v=vs.110).aspx) Òì³£¡£
+* ä¿®æ­£ - ä¿®æ­£Structç±»å‹ï¼ˆ`Size`,`Point`,`Rectangle`ç­‰ï¼‰å¯¹è±¡åšå¢é‡åºåˆ—åŒ–æ—¶ä¼šæŠ¥ [System.Security.VerificationException](https://msdn.microsoft.com/zh-cn/library/system.security.verificationexception(v=vs.110).aspx) å¼‚å¸¸ã€‚
 
 #### 3.0.0.22
 
-* ĞŞÕı - ĞŞÕıÖµÀàĞÍ¶ÔÏóÊı×é×öÔöÁ¿·´ĞòÁĞ»¯Ê±µÄ´íÎó¡£
+* ä¿®æ­£ - ä¿®æ­£å€¼ç±»å‹å¯¹è±¡æ•°ç»„åšå¢é‡ååºåˆ—åŒ–æ—¶çš„é”™è¯¯ã€‚
 
 #### 3.0.0.21
 
-* ĞÂÔö - ĞÂÔö¶Ô [Uri](https://msdn.microsoft.com/zh-cn/library/system.uri(v=vs.110).aspx) ÀàĞÍµÄÖ§³Ö¡£
+* æ–°å¢ - æ–°å¢å¯¹ [Uri](https://msdn.microsoft.com/zh-cn/library/system.uri(v=vs.110).aspx) ç±»å‹çš„æ”¯æŒã€‚
 
 #### 3.0.0.20
 
-* ĞÂÔö - ĞÂÔö¶Ô [BigInteger](https://msdn.microsoft.com/zh-cn/library/system.numerics.biginteger(v=vs.110).aspx) ÀàĞÍµÄÖ§³Ö¡£
+* æ–°å¢ - æ–°å¢å¯¹ [BigInteger](https://msdn.microsoft.com/zh-cn/library/system.numerics.biginteger(v=vs.110).aspx) ç±»å‹çš„æ”¯æŒã€‚
 
 #### 3.0.0.19
 
-* ĞÂÔö - ĞÂÔö¶Ô [DateTimeOffset](https://msdn.microsoft.com/library/system.datetimeoffset.aspx) ÀàĞÍµÄÖ§³Ö¡£
+* æ–°å¢ - æ–°å¢å¯¹ [DateTimeOffset](https://msdn.microsoft.com/library/system.datetimeoffset.aspx) ç±»å‹çš„æ”¯æŒã€‚
 
 #### 3.0.0.18
 
-* ĞÂÔö - ĞÂÔö¶Ô [TimeSpan](https://msdn.microsoft.com/zh-cn/library/system.timespan.aspx) ÀàĞÍµÄÖ§³Ö¡£
+* æ–°å¢ - æ–°å¢å¯¹ [TimeSpan](https://msdn.microsoft.com/zh-cn/library/system.timespan.aspx) ç±»å‹çš„æ”¯æŒã€‚
