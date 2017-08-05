@@ -56,7 +56,7 @@ Frequency=10000000 Hz, Resolution=100.0000 ns, Timer=UNKNOWN
  |               SerializeLargeXmlFile_XPatchLib | 185.6 ms | 1.383 ms | 1.226 ms |
  | SerializeLargetXmlFile_DataContractSerializer | 402.9 ms | 7.868 ms | 9.662 ms |
  |           SerializeLargeXmlFile_XmlSerializer | 386.2 ms | 7.593 ms | 9.873 ms |
- |------------------------------------------------ |----------:|----------:|----------:|
+ |------------------------------------------------ |----------|----------|----------|
  |               DeserializeLargeXmlFile_XPatchLib | 186.12 ms | 0.6233 ms | 0.5830 ms |
  | DeserializeLargetXmlFile_DataContractSerializer |  80.90 ms | 0.2640 ms | 0.2470 ms |
  |           DeserializeLargeXmlFile_XmlSerializer |  84.15 ms | 0.2591 ms | 0.2297 ms |
@@ -141,13 +141,10 @@ CreditCard card3 = null;
 Serializer serializer = new Serializer(typeof(CreditCard));
 using (var fs = new FileStream(filename, FileMode.Open))
 {
-     using (var xmlReader = XmlReader.Create(fs))
-     {
-           using (var reader = new XmlTextReader(xmlReader))
-           {
-                card3 = (CreditCard)serializer.Combine(reader, card1);
-           }
-     }
+	using (var reader = new XmlTextReader(xmlReader))
+    {
+		card3 = (CreditCard)serializer.Combine(reader, card1);
+    }
 }
 ```
 经过以上代码，可以使新增的 card3 实例的 CardExpiration 属性的值由card1实例中的 "05/12" 变更为增量内容中记录的 "05/17"，CardNumber的值也由card1实例中的"0123456789"变更为了增量内容中记录的"9876543210"。如果使用值比较的方式比较 card3 和 card2 两个实例，会发现这两个实例完全相同。
