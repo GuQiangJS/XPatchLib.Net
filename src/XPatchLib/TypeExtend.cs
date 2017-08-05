@@ -4,15 +4,16 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 #if (NET_35_UP || NETSTANDARD)
 using System.Linq;
+
 #else
 using XPatchLib.NoLinq;
 #endif
-using System.Reflection;
-using System.Reflection.Emit;
 #if NET || NETSTANDARD_2_0_UP
 using System.Runtime.Serialization;
+
 #endif
 
 namespace XPatchLib
@@ -32,42 +33,65 @@ namespace XPatchLib
 #else
         private readonly Dictionary<String, ClrHelper.MethodCall<object, object>> Methods;
 #endif
+        private readonly Boolean _isNullable;
+        private readonly bool _isGenericType;
+        private readonly bool _isGuid;
+        private readonly bool _isICollection;
+        private readonly bool _isIDictionary;
+        private readonly bool _isIEnumerable;
+        private readonly bool _isKeyValuePair;
+        private readonly Type _keyArgumentType;
+        private readonly Type _oriType;
+        private PrimaryKeyAttribute _primaryKeyAttr;
+        private readonly TypeCode _typeCode;
+        private readonly string _typeFriendlyName;
+        private readonly Type _valueArgumentType;
+        private readonly object _defaultValue;
+        private IEnumerable<Attribute> _customAttributes;
+        private readonly TypeExtend _parentType;
+        private readonly MemberWrapper[] _fieldsToBeSerialized;
+        private readonly bool _isArrayItem;
+        private readonly bool _isArray;
 
-        public Boolean IsNullable { get; private set; }
+        public Boolean IsNullable
+        {
+            get { return _isNullable; }
+        }
 
-        private Type NullableType;
-        
+        private readonly Type NullableType;
+
+        private readonly Boolean _isISerializable;
+
         /// <summary>
-        /// 是否为 <see cref="ISerializable"/> 接口的实现
+        ///     是否为 <see cref="ISerializable" /> 接口的实现
         /// </summary>
         /// <remarks>
-        /// https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable(v=vs.110).aspx
+        ///     https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable(v=vs.110).aspx
         /// </remarks>
-        public Boolean IsISerializable { get; private set; }
-
-        internal TypeExtend(Type pType,Type pIgnoreAttributeType, TypeExtend pParentType = null)
+        public Boolean IsISerializable
         {
-            ParentType = pParentType;
+            get { return _isISerializable; }
+        }
 
-            OriType = pType;
+        internal TypeExtend(Type pType, Type pIgnoreAttributeType, TypeExtend pParentType = null)
+        {
+            _parentType = pParentType;
+
+            _oriType = pType;
 
             Type actType;
-            IsNullable = ReflectionUtils.IsNullable(pType, out actType);
-            if (IsNullable)
-            {
+            _isNullable = ReflectionUtils.IsNullable(pType, out actType);
+            if (_isNullable)
                 NullableType = pType = actType;
-            }
 
 #if (NET_20_UP || NETSTANDARD_2_0_UP)
             CustomAttributes = Attribute.GetCustomAttributes(pType);
 #else
             CustomAttributes = pType.GetTypeInfo().GetCustomAttributes().ToArray();
 #endif
-            PrimaryKeyAttr = GetCustomAttribute<PrimaryKeyAttribute>();
+            _primaryKeyAttr = GetCustomAttribute<PrimaryKeyAttribute>();
 
-            if (PrimaryKeyAttr == null) {
-                PrimaryKeyAttr = TypeExtendContainer.GetPrimaryKeyAttribute(pType);
-            }
+            if (_primaryKeyAttr == null) _primaryKeyAttr = TypeExtendContainer.GetPrimaryKeyAttribute(pType);
 
             GetValueFuncs = new Dictionary<string, Func<object, object>>();
             SetValueFuncs = new Dictionary<string, Action<object, object>>();
@@ -77,136 +101,198 @@ namespace XPatchLib
             Methods = new Dictionary<string, ClrHelper.MethodCall<object, object>>();
 #endif
 
-            IsBasicType = ReflectionUtils.IsBasicType(pType);
-            IsIDictionary = ReflectionUtils.IsIDictionary(pType);
-            IsICollection = ReflectionUtils.IsICollection(pType);
-
-            IsIEnumerable = ReflectionUtils.IsIEnumerable(pType);
-            DefaultValue = ReflectionUtils.GetDefaultValue(pType);
-            IsArray = ReflectionUtils.IsArray(pType);
-            IsArrayItem = ParentType != null &&
-                          (ParentType.IsArray || ParentType.IsICollection ||
-                           ParentType.IsIEnumerable);
-            TypeCode = ConvertHelper.GetTypeCode(pType);
-            IsGenericType = OriType.IsGenericType();
-            IsGuid = pType == typeof(Guid);
-            TypeFriendlyName = ReflectionUtils.GetTypeFriendlyName(pType);
-
-            FieldsToBeSerialized = new MemberWrapper[] { };
-            if (!(IsIEnumerable || IsIDictionary || IsICollection || IsBasicType || IsArray ))
+            _isBasicType = ReflectionUtils.IsBasicType(pType);
+            if (!_isBasicType)
             {
-                FieldsToBeSerialized = ReflectionUtils.GetFieldsToBeSerialized(pType, pIgnoreAttributeType);
-                foreach (MemberWrapper member in FieldsToBeSerialized)
+                _isIDictionary = ReflectionUtils.IsIDictionary(pType);
+                _isICollection = ReflectionUtils.IsICollection(pType);
+                _isIEnumerable = ReflectionUtils.IsIEnumerable(pType);
+                _isArray = ReflectionUtils.IsArray(pType);
+            }
+            _defaultValue = ReflectionUtils.GetDefaultValue(pType);
+            _isArrayItem = ParentType != null &&
+                           (ParentType.IsArray || ParentType.IsICollection ||
+                            ParentType.IsIEnumerable);
+            _typeCode = ConvertHelper.GetTypeCode(pType);
+            _isGenericType = OriType.IsGenericType();
+            _isGuid = pType == typeof(Guid);
+            _typeFriendlyName = ReflectionUtils.GetTypeFriendlyName(pType);
+
+            _fieldsToBeSerialized = new MemberWrapper[] { };
+            if (!(_isIEnumerable || _isIDictionary || _isICollection || _isBasicType || _isArray))
+            {
+                _fieldsToBeSerialized = ReflectionUtils.GetFieldsToBeSerialized(pType, pIgnoreAttributeType);
+                foreach (MemberWrapper member in _fieldsToBeSerialized)
                 {
                     AddGetValueFunc(member);
                     AddSetValueFunc(member);
                 }
             }
 
-            if (IsIDictionary)
+            if (_isIDictionary)
             {
                 Type keyType = typeof(object);
                 Type valueType = typeof(object);
                 ReflectionUtils.IsIDictionary(pType, out keyType, out valueType);
 
-                KeyArgumentType = keyType;
-                ValueArgumentType = valueType;
+                _keyArgumentType = keyType;
+                _valueArgumentType = valueType;
             }
 
-            IsKeyValuePair = ReflectionUtils.IsKeyValuePair(pType);
-            if (IsKeyValuePair)
+            _isKeyValuePair = ReflectionUtils.IsKeyValuePair(pType);
+            if (_isKeyValuePair)
             {
                 Type keyType = typeof(object);
                 Type valueType = typeof(object);
                 ReflectionUtils.IsKeyValuePair(pType, out keyType, out valueType);
 
-                KeyArgumentType = keyType;
-                ValueArgumentType = valueType;
+                _keyArgumentType = keyType;
+                _valueArgumentType = valueType;
 
                 MemberWrapper[] members =
                 {
                     new MemberWrapper(pType.GetProperty(ConstValue.KEY)),
                     new MemberWrapper(pType.GetProperty(ConstValue.VALUE))
                 };
-                FieldsToBeSerialized = members.OrderBy(x => x.Name).ToArray();
+                _fieldsToBeSerialized = members.OrderBy(x => x.Name).ToArray();
             }
 
             string errorPrimaryKeyName = string.Empty;
             if (!CheckPrimaryKeyAttribute(false, out errorPrimaryKeyName))
                 throw new PrimaryKeyException(pType, errorPrimaryKeyName);
 
-            CreateInstanceFuncs = ClrHelper.CreateInstanceFunc<Object>(pType);
-
+            if (!_isBasicType)
+                CreateInstanceFuncs = ClrHelper.CreateInstanceFunc<Object>(pType);
 #if NET
             ResolveCallbackMethods(OriType);
 #endif
 
 #if NET || NETSTANDARD_2_0_UP
-            IsISerializable = typeof(ISerializable).IsAssignableFrom(OriType);
+            _isISerializable = typeof(ISerializable).IsAssignableFrom(OriType);
 #endif
         }
 
         /// <summary>
         ///     获取父级类型定义。
         /// </summary>
-        internal TypeExtend ParentType { get; private set; }
+        internal TypeExtend ParentType
+        {
+            get { return _parentType; }
+        }
 
         /// <summary>
         ///     获取该类型的自定义Attributes。
         /// </summary>
-        internal IEnumerable<Attribute> CustomAttributes { get; private set; }
+        internal IEnumerable<Attribute> CustomAttributes
+        {
+            get { return _customAttributes; }
+            private set { _customAttributes = value; }
+        }
 
         /// <summary>
         ///     获取该类型的默认值。
         /// </summary>
-        internal Object DefaultValue { get; private set; }
+        internal Object DefaultValue
+        {
+            get { return _defaultValue; }
+        }
 
         /// <summary>
         ///     获取该类型下可以被序列化的字段。
         /// </summary>
-        internal MemberWrapper[] FieldsToBeSerialized { get; private set; }
+        internal MemberWrapper[] FieldsToBeSerialized
+        {
+            get { return _fieldsToBeSerialized; }
+        }
 
-        internal Boolean IsArrayItem { get; private set; }
+        internal Boolean IsArrayItem
+        {
+            get { return _isArrayItem; }
+        }
 
-        internal Boolean IsArray { get; private set; }
+        internal Boolean IsArray
+        {
+            get { return _isArray; }
+        }
+
+        private readonly bool _isBasicType;
 
         /// <summary>
         ///     获取是否为基础类型。
         /// </summary>
-        internal Boolean IsBasicType { get; private set; }
+        internal Boolean IsBasicType
+        {
+            get { return _isBasicType; }
+        }
 
-        internal Boolean IsGenericType { get; private set; }
+        internal Boolean IsGenericType
+        {
+            get { return _isGenericType; }
+        }
 
-        internal Boolean IsGuid { get; private set; }
+        internal Boolean IsGuid
+        {
+            get { return _isGuid; }
+        }
 
-        internal Boolean IsICollection { get; private set; }
+        internal Boolean IsICollection
+        {
+            get { return _isICollection; }
+        }
 
-        internal Boolean IsIDictionary { get; private set; }
+        internal Boolean IsIDictionary
+        {
+            get { return _isIDictionary; }
+        }
 
-        internal Boolean IsIEnumerable { get; private set; }
+        internal Boolean IsIEnumerable
+        {
+            get { return _isIEnumerable; }
+        }
 
-        internal Boolean IsKeyValuePair { get; private set; }
+        internal Boolean IsKeyValuePair
+        {
+            get { return _isKeyValuePair; }
+        }
 
         /// <summary>
         ///     只有当是字典类型或KeyValue类型时才会有值
         /// </summary>
-        internal Type KeyArgumentType { get; private set; }
+        internal Type KeyArgumentType
+        {
+            get { return _keyArgumentType; }
+        }
 
         /// <summary>
         ///     获取原始类型定义。
         /// </summary>
-        internal Type OriType { get; private set; }
+        internal Type OriType
+        {
+            get { return _oriType; }
+        }
 
-        internal PrimaryKeyAttribute PrimaryKeyAttr { get; private set; }
+        internal PrimaryKeyAttribute PrimaryKeyAttr
+        {
+            get { return _primaryKeyAttr; }
+        }
 
-        internal TypeCode TypeCode { get; private set; }
+        internal TypeCode TypeCode
+        {
+            get { return _typeCode; }
+        }
 
-        internal String TypeFriendlyName { get; private set; }
+        internal String TypeFriendlyName
+        {
+            get { return _typeFriendlyName; }
+        }
 
         /// <summary>
         ///     只有当是字典类型或KeyValue类型时才会有值
         /// </summary>
-        internal Type ValueArgumentType { get; private set; }
+        internal Type ValueArgumentType
+        {
+            get { return _valueArgumentType; }
+        }
 
         /// <summary>
         ///     检测类型上的PrimaryKeyAttribute特性是否符合要求。
@@ -246,59 +332,46 @@ namespace XPatchLib
         {
             if (CreateInstanceFuncs != null && (args == null || args.Length <= 0))
                 return CreateInstanceFuncs();
-            
-            if (IsBasicType)
+
+            if (_isBasicType)
             {
-                if (((IsNullable) ? NullableType : OriType).IsValueType())
-                {
+                if ((IsNullable ? NullableType : OriType).IsValueType())
                     if (CreateInstanceFuncs == null)
                         return DefaultValue;
                     else
                         return CreateInstanceFuncs();
-                }
-                if (((IsNullable) ? NullableType : OriType) == typeof(string))
+                if ((IsNullable ? NullableType : OriType) == typeof(string))
                     return string.Empty;
             }
             else
             {
-                if (IsArray)
+                if (_isArray)
                 {
                     Type elementType;
-                    if (ReflectionUtils.TryGetArrayElementType(((IsNullable) ? NullableType : OriType), out elementType))
+                    if (ReflectionUtils.TryGetArrayElementType(IsNullable ? NullableType : OriType, out elementType))
                         return Array.CreateInstance(elementType, 0);
                     throw new NotImplementedException();
                 }
                 ConstructorInfo constructorInfo = null;
-                Type[] ts = (args != null) ? new Type[args.Length] : new Type[0];
+                Type[] ts = args != null ? new Type[args.Length] : new Type[0];
                 if (args != null && args.Length > 0)
-                {
                     for (int i = 0; i < args.Length; i++)
-                    {
                         ts[i] = args[i] != null ? args[i].GetType() : typeof(object);
-                    }
-                }
                 BindingFlags flags = BindingFlags.NonPublic | BindingFlags.CreateInstance |
                                      BindingFlags.Instance | BindingFlags.Public;
-                constructorInfo = ((IsNullable) ? NullableType : OriType).GetConstructor(flags, null, ts, null);
+                constructorInfo = (IsNullable ? NullableType : OriType).GetConstructor(flags, null, ts, null);
 #if (NET || NETSTANDARD_2_0_UP)
                 if (constructorInfo != null)
-                {
                     return constructorInfo.Invoke(args);
-                }
-                else
-                {
-                    return Activator.CreateInstance(((IsNullable) ? NullableType : OriType), args);
-                }
+                return Activator.CreateInstance(IsNullable ? NullableType : OriType, args);
 #else
                 if (constructorInfo != null)
                 {
-                    ClrHelper.MethodCall<object, object> call = ((IsNullable) ? NullableType : OriType).CreateMethodCall<object>(constructorInfo);
+                    ClrHelper.MethodCall<object, object> call =
+                        (IsNullable ? NullableType : OriType).CreateMethodCall<object>(constructorInfo);
                     return call.Invoke(null, args);
                 }
-                else
-                {
-                    return Activator.CreateInstance(((IsNullable) ? NullableType : OriType), args);
-                }
+                return Activator.CreateInstance(IsNullable ? NullableType : OriType, args);
 #endif
             }
             return null;
@@ -347,7 +420,7 @@ namespace XPatchLib
         {
             if (defaultValue == null && value == null)
                 return true;
-            else if (defaultValue != null)
+            if (defaultValue != null)
                 return defaultValue.Equals(value);
             return value.Equals(defaultValue);
         }
@@ -373,7 +446,7 @@ namespace XPatchLib
             {
                 MethodInfo
 #endif
-                methodInfo = OriType.GetMethod(name, invokeAttr);
+                    methodInfo = OriType.GetMethod(name, invokeAttr);
                 Type t = OriType;
                 if (methodInfo == null)
                 {
@@ -432,10 +505,10 @@ namespace XPatchLib
             pIsProperty = false;
             MemberWrapper member = null;
 
-            for (int i = 0; i < FieldsToBeSerialized.Length; i++)
-                if (FieldsToBeSerialized[i].Name.Equals(pPropertyName, StringComparison.OrdinalIgnoreCase))
+            for (int i = 0; i < _fieldsToBeSerialized.Length; i++)
+                if (_fieldsToBeSerialized[i].Name.Equals(pPropertyName, StringComparison.OrdinalIgnoreCase))
                 {
-                    member = FieldsToBeSerialized[i];
+                    member = _fieldsToBeSerialized[i];
                     break;
                 }
 
@@ -467,7 +540,7 @@ namespace XPatchLib
             return Methods.TryGetValue(pMethodName, out pMethod);
         }
 #else
-        internal Boolean TryGetMethod(String pMethodName, out ClrHelper.MethodCall<Object,Object> pMethod)
+        internal Boolean TryGetMethod(String pMethodName, out ClrHelper.MethodCall<Object, Object> pMethod)
         {
             return Methods.TryGetValue(pMethodName, out pMethod);
         }
@@ -483,7 +556,7 @@ namespace XPatchLib
             IEnumerable<Attribute> newAttrs = CustomAttributes.Where(x => x.GetType() != typeof(PrimaryKeyAttribute));
             CustomAttributes = newAttrs.Union(new Attribute[] {pAttribute});
 
-            PrimaryKeyAttr = pAttribute;
+            _primaryKeyAttr = pAttribute;
         }
 
         private void AddGetValueFunc(MemberWrapper pMember)
@@ -522,45 +595,29 @@ namespace XPatchLib
         internal void InvokeOnSerializing(object o, StreamingContext context)
         {
             if (_onSerializingCallbacks != null)
-            {
                 foreach (SerializationCallback callback in _onSerializingCallbacks)
-                {
                     callback(o, context);
-                }
-            }
         }
 
         internal void InvokeOnSerialized(object o, StreamingContext context)
         {
             if (_onSerializedCallbacks != null)
-            {
                 foreach (SerializationCallback callback in _onSerializedCallbacks)
-                {
                     callback(o, context);
-                }
-            }
         }
 
         internal void InvokeOnDeserializing(object o, StreamingContext context)
         {
             if (_onDeserializingCallbacks != null)
-            {
                 foreach (SerializationCallback callback in _onDeserializingCallbacks)
-                {
                     callback(o, context);
-                }
-            }
         }
 
         internal void InvokeOnDeserialized(object o, StreamingContext context)
         {
             if (_onDeserializedCallbacks != null)
-            {
                 foreach (SerializationCallback callback in _onDeserializedCallbacks)
-                {
                     callback(o, context);
-                }
-            }
         }
 
         private List<SerializationCallback> _onDeserializedCallbacks;
@@ -572,7 +629,7 @@ namespace XPatchLib
         private List<SerializationCallback> _onSerializingCallbacks;
 
         /// <summary>
-        /// Gets or sets all methods called immediately after deserialization of the object.
+        ///     Gets or sets all methods called immediately after deserialization of the object.
         /// </summary>
         /// <value>The methods called immediately after deserialization of the object.</value>
         public IList<SerializationCallback> OnDeserializedCallbacks
@@ -580,16 +637,14 @@ namespace XPatchLib
             get
             {
                 if (_onDeserializedCallbacks == null)
-                {
                     _onDeserializedCallbacks = new List<SerializationCallback>();
-                }
 
                 return _onDeserializedCallbacks;
             }
         }
 
         /// <summary>
-        /// Gets or sets all methods called during deserialization of the object.
+        ///     Gets or sets all methods called during deserialization of the object.
         /// </summary>
         /// <value>The methods called during deserialization of the object.</value>
         public IList<SerializationCallback> OnDeserializingCallbacks
@@ -597,16 +652,14 @@ namespace XPatchLib
             get
             {
                 if (_onDeserializingCallbacks == null)
-                {
                     _onDeserializingCallbacks = new List<SerializationCallback>();
-                }
 
                 return _onDeserializingCallbacks;
             }
         }
 
         /// <summary>
-        /// Gets or sets all methods called after serialization of the object graph.
+        ///     Gets or sets all methods called after serialization of the object graph.
         /// </summary>
         /// <value>The methods called after serialization of the object graph.</value>
         public IList<SerializationCallback> OnSerializedCallbacks
@@ -614,16 +667,14 @@ namespace XPatchLib
             get
             {
                 if (_onSerializedCallbacks == null)
-                {
                     _onSerializedCallbacks = new List<SerializationCallback>();
-                }
 
                 return _onSerializedCallbacks;
             }
         }
 
         /// <summary>
-        /// Gets or sets all methods called before serialization of the object.
+        ///     Gets or sets all methods called before serialization of the object.
         /// </summary>
         /// <value>The methods called before serialization of the object.</value>
         public IList<SerializationCallback> OnSerializingCallbacks
@@ -631,9 +682,7 @@ namespace XPatchLib
             get
             {
                 if (_onSerializingCallbacks == null)
-                {
                     _onSerializingCallbacks = new List<SerializationCallback>();
-                }
 
                 return _onSerializingCallbacks;
             }
@@ -649,27 +698,21 @@ namespace XPatchLib
             GetCallbackMethodsForType(t, out onSerializing, out onSerialized, out onDeserializing, out onDeserialized);
 
             if (onSerializing != null)
-            {
                 OnSerializingCallbacks.AddRange(onSerializing);
-            }
 
             if (onSerialized != null)
-            {
                 OnSerializedCallbacks.AddRange(onSerialized);
-            }
 
             if (onDeserializing != null)
-            {
                 OnDeserializingCallbacks.AddRange(onDeserializing);
-            }
 
             if (onDeserialized != null)
-            {
                 OnDeserializedCallbacks.AddRange(onDeserialized);
-            }
         }
 
-        private void GetCallbackMethodsForType(Type type, out List<SerializationCallback> onSerializing, out List<SerializationCallback> onSerialized, out List<SerializationCallback> onDeserializing, out List<SerializationCallback> onDeserialized)
+        private void GetCallbackMethodsForType(Type type, out List<SerializationCallback> onSerializing,
+            out List<SerializationCallback> onSerialized, out List<SerializationCallback> onDeserializing,
+            out List<SerializationCallback> onDeserialized)
         {
             onSerializing = null;
             onSerialized = null;
@@ -684,37 +727,40 @@ namespace XPatchLib
                 MethodInfo currentOnDeserializing = null;
                 MethodInfo currentOnDeserialized = null;
 
-                foreach (MethodInfo method in baseType.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+                foreach (MethodInfo method in baseType.GetMethods(BindingFlags.NonPublic | BindingFlags.Public |
+                                                                  BindingFlags.Instance | BindingFlags.DeclaredOnly))
                 {
                     // compact framework errors when getting parameters for a generic method
                     // lame, but generic methods should not be callbacks anyway
                     if (method.ContainsGenericParameters)
-                    {
                         continue;
-                    }
 
                     Type prevAttributeType = null;
                     ParameterInfo[] parameters = method.GetParameters();
 
-                    if (IsValidCallback(method, parameters, typeof(OnSerializingAttribute), currentOnSerializing, ref prevAttributeType))
+                    if (IsValidCallback(method, parameters, typeof(OnSerializingAttribute), currentOnSerializing,
+                        ref prevAttributeType))
                     {
                         onSerializing = onSerializing ?? new List<SerializationCallback>();
                         onSerializing.Add(CreateSerializationCallback(method));
                         currentOnSerializing = method;
                     }
-                    if (IsValidCallback(method, parameters, typeof(OnSerializedAttribute), currentOnSerialized, ref prevAttributeType))
+                    if (IsValidCallback(method, parameters, typeof(OnSerializedAttribute), currentOnSerialized,
+                        ref prevAttributeType))
                     {
                         onSerialized = onSerialized ?? new List<SerializationCallback>();
                         onSerialized.Add(CreateSerializationCallback(method));
                         currentOnSerialized = method;
                     }
-                    if (IsValidCallback(method, parameters, typeof(OnDeserializingAttribute), currentOnDeserializing, ref prevAttributeType))
+                    if (IsValidCallback(method, parameters, typeof(OnDeserializingAttribute), currentOnDeserializing,
+                        ref prevAttributeType))
                     {
                         onDeserializing = onDeserializing ?? new List<SerializationCallback>();
                         onDeserializing.Add(CreateSerializationCallback(method));
                         currentOnDeserializing = method;
                     }
-                    if (IsValidCallback(method, parameters, typeof(OnDeserializedAttribute), currentOnDeserialized, ref prevAttributeType))
+                    if (IsValidCallback(method, parameters, typeof(OnDeserializedAttribute), currentOnDeserialized,
+                        ref prevAttributeType))
                     {
                         onDeserialized = onDeserialized ?? new List<SerializationCallback>();
                         onDeserialized.Add(CreateSerializationCallback(method));
@@ -723,26 +769,22 @@ namespace XPatchLib
                 }
             }
         }
+
         internal static SerializationCallback CreateSerializationCallback(MethodInfo callbackMethodInfo)
         {
-            return (o, context) => callbackMethodInfo.Invoke(o, new object[] { context });
+            return (o, context) => callbackMethodInfo.Invoke(o, new object[] {context});
         }
 
-        private static bool IsValidCallback(MethodInfo method, ParameterInfo[] parameters, Type attributeType, MethodInfo currentCallback, ref Type prevAttributeType)
+        private static bool IsValidCallback(MethodInfo method, ParameterInfo[] parameters, Type attributeType,
+            MethodInfo currentCallback, ref Type prevAttributeType)
         {
             if (!method.IsDefined(attributeType, false))
-            {
                 return false;
-            }
             if (currentCallback != null || prevAttributeType != null || method.IsVirtual ||
                 method.ReturnType != typeof(void))
-            {
                 return false;
-            }
             if (parameters == null || parameters.Length != 1 || parameters[0].ParameterType != typeof(StreamingContext))
-            {
                 return false;
-            }
 
             prevAttributeType = attributeType;
 
@@ -768,6 +810,6 @@ namespace XPatchLib
     }
 
 #if NET
-    delegate void SerializationCallback(object o, StreamingContext context);
+    internal delegate void SerializationCallback(object o, StreamingContext context);
 #endif
 }

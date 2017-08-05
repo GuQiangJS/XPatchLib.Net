@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 namespace XPatchLib
 {
@@ -12,41 +13,59 @@ namespace XPatchLib
     /// </summary>
     internal class CombineAttribute
     {
-        private readonly Queue<string> _keys;
+        private string[] _keys;
 
-        private readonly Queue<object> _values;
+        private object[] _values;
 
-        private readonly Queue<int> _valuesHash;
+        private int[] _valuesHash;
 
-        public int Count { get; private set; }
+        private int _count = 0;
+
+        private int _index = 0;
+
+        public int Count { get { return _index; } }
 
         public CombineAttribute(Action pAction, int capacity)
         {
-            Action = pAction;
-            _keys = new Queue<string>();
-            _values = new Queue<object>();
-            _valuesHash = new Queue<int>();
+            _action = pAction;
+            _keys = new string[capacity];
+            _values = new object[capacity];
+            _valuesHash = new int[capacity];
+            _count = capacity;
         }
 
-        public Action Action { get; set; }
+        private Action _action;
 
-        public string[] Keys { get; private set; }
+        public Action Action { get { return _action; }set { _action = value; } }
 
-        public int[] ValuesHash { get; private set; }
+        public string[] Keys { get { return _keys; } }
 
-        public object[] Values { get; private set; }
+        public int[] ValuesHash { get { return _valuesHash; } }
 
-        public void Add(string key, object value)
+        public object[] Values { get { return _values; } }
+
+        public void Set(string key, object value)
         {
-            _keys.Enqueue(key);
-            _values.Enqueue(value);
-            _valuesHash.Enqueue(value.GetHashCode());
+            //if (_count == _index)
+            //{
+            //    _keys = CloneArray(_keys);
+            //    _values = CloneArray(_values);
+            //    _valuesHash = CloneArray(_valuesHash);
+            //}
 
-            Count++;
+            _keys[_index] = key;
+            _values[_index] = value;
+            _valuesHash[_index] = value.GetHashCode();
 
-            Keys = _keys.ToArray();
-            Values = _values.ToArray();
-            ValuesHash = _valuesHash.ToArray();
+            _index++;
+            //_count++;
+        }
+
+        T[] CloneArray<T>(T[] source)
+        {
+            T[] temp = new T[_count * 2];
+            Buffer.BlockCopy(source, 0, temp, 0, _count);
+            return temp;
         }
     }
 }

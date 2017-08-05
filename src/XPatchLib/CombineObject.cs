@@ -31,8 +31,8 @@ namespace XPatchLib
                 if (pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) &&
                     pReader.NodeType == NodeType.EndElement)
                     break;
-                if (Attributes.Keys != null)
-                {
+                //if (Attributes.Keys != null)
+                //{
                     //读取除Action以外的所有Action，将其赋值给属性
                     for (int i = 0; i < Attributes.Count; i++)
                     {
@@ -47,7 +47,7 @@ namespace XPatchLib
 #endif
                         }
                     }
-                }
+                //}
 
                 if (pReader.NodeType == NodeType.Element || pReader.NodeType==NodeType.FullElement)
                 {

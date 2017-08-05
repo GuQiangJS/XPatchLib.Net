@@ -75,6 +75,18 @@ namespace XPatchLib
             return true;
         }
 
+        public bool EqualsByCombineAttr(CombineAttribute attrs)
+        {
+            if (attrs == null || ValuesHash == null || Keys.Length != attrs.Count ||
+                ValuesHash.Length != attrs.Count)
+                return false;
+
+            for (int i = 0; i < attrs.Count; i++)
+                if (!string.Equals(Keys[i], attrs.Keys[i]) || ValuesHash[i] != attrs.ValuesHash[i])
+                    return false;
+            return true;
+        }
+
         // override object.GetHashCode 
         public override int GetHashCode()
         {

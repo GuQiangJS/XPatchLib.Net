@@ -139,12 +139,14 @@ namespace XPatchLib
         /// </summary>
         public NodeType NodeType { get { return _nodeType; } }
 
+        private bool _hasAttribute;
+
         /// <summary>
         ///     获取当前解析的节点是否包含特性节点。
         /// </summary>
         public bool HasAttribute
         {
-            get { return _xmlReader.HasAttributes; }
+            get { return _hasAttribute; }
         }
 
         /// <summary>
@@ -179,22 +181,28 @@ namespace XPatchLib
                         _nodeType = _xmlReader.IsEmptyElement ? NodeType.FullElement : NodeType.Element;
                         _name = _xmlReader.LocalName;
                         ParseAttributes();
-                        _value = _xmlReader.IsEmptyElement ? string.Empty : null;
+                        _value = _nodeType==NodeType.FullElement ? string.Empty : null;
                         return true;
                     case XmlNodeType.EndElement:
                         _nodeType = NodeType.EndElement;
-                        _attributes = _emptyAttributeDic;
+                        ResetAttribute();
                         _value = null;
                         _name = _xmlReader.LocalName;
                         return true;
                     case XmlNodeType.XmlDeclaration:
                         _nodeType = NodeType.XmlDeclaration;
+                        ResetAttribute();
                         _value = null;
-                        _attributes = _emptyAttributeDic;
                         _name = null;
                         return true;
                 }
             }
+        }
+
+        void ResetAttribute()
+        {
+            _attributes = _emptyAttributeDic;
+            _hasAttribute = false;
         }
 
         private void SetXmlReaderNormalization()
@@ -249,7 +257,11 @@ namespace XPatchLib
                     _attributes[index, 1] = _xmlReader.Value;
                     index++;
                 }
+                _hasAttribute = true;
+                return;
             }
+            _hasAttribute = false;
+            _attributes = _emptyAttributeDic;
         }
 
         #region Dispose

@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<IList_RootObject>
+  <RootObject Action="Add">
+    <_id>(Pwk=Tn:Lh</_id>
+    <friends>
+      <Friend Action="Add">
+        <guid>a9098925-1389-45ab-b2b5-81f268fe64ee</guid>
+        <id>-359241716</id>
+        <name>[lA(U4UdS1</name>
+      </Friend>
+    </friends>
+    <gender>nXuK[XEgBP</gender>
+    <greeting>C,P&amp;Mxs{ep</greeting>
+    <guid>e5451f7c-9390-4fff-8544-989cab3393d2</guid>
+    <index>1631059836</index>
+    <latitude>0.45812195327976807</latitude>
+    <longitude>0.685606567508358</longitude>
+    <name>nd(_u?fWbH</name>
+    <phone>)[_qyc+{O%</phone>
+    <registered>2014-08-03T00:00:00</registered>
+    <tags>
+      <String Action="Add">!YR].8"\!(</String>
+    </tags>
+  </RootObject>
+</IList_RootObject>

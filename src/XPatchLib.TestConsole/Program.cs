@@ -60,6 +60,7 @@ namespace XPatchLib.TestConsole
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
 #elif DEBUG
+            new DotTraceDes().TestDeserializer();
             new ReaderBenchmarks().ReadByXmlReader();
             new ReaderBenchmarks().ReadByPatchLib();
             new SerializeBenchmarks().SerializeLargeXmlFile_XPatchLib();
@@ -81,6 +82,7 @@ namespace XPatchLib.TestConsole
                 Console.WriteLine("启动参数:");
                 Console.WriteLine("Ser:测试序列化");
                 Console.WriteLine("DSer:测试反序列化");
+                Console.WriteLine("Count:测试函数调用次数");
                 Console.WriteLine("Press any key to continue...");
                 Console.ReadKey();
             }
@@ -97,6 +99,10 @@ namespace XPatchLib.TestConsole
                 {
                     new DeserializeBenchmarks().DeserializeLargeXmlFile_XPatchLib();
                 }
+            }
+            else if (string.Equals(args[0], "count", StringComparison.OrdinalIgnoreCase))
+            {
+                new DotTraceDes().TestDeserializer();
             }
 #elif STOPWATCH
             Stopwatch watch = new Stopwatch();

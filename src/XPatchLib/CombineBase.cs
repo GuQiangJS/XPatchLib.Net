@@ -112,7 +112,7 @@ namespace XPatchLib
                             continue;
                         }
 
-                        result.Add(n, AnlysisKeyAttributeValueObject(pReader, n, v));
+                        result.Set(n, AnlysisKeyAttributeValueObject(pReader, n, v));
                     }
                     //pReader.MoveToElement();
                 }
