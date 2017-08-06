@@ -1,3 +1,7 @@
+#### 3.0.2.7
+
+* 重构 - 重构 `XmlSerializeSetting` ，增加基类 `SerializeSetting` 。
+
 #### 3.0.2.6
 
 * 优化 - 优化增量反序列化性能。

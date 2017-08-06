@@ -10,7 +10,7 @@ namespace XPatchLib
     ///     XML类型写入器的默认设置。
     /// </summary>
     /// <seealso cref="XPatchLib.ISerializeSetting" />
-    public class XmlSerializeSetting : ISerializeSetting, INotifyPropertyChanged
+    public class XmlSerializeSetting : SerializeSetting
     {
         private string _actionName = "Action";
 
