@@ -118,10 +118,10 @@ Serializer serializer = new Serializer(typeof(CreditCard));
 StringBuilder context = new StringBuilder();
 using(StringWriter strWriter = new StringWriter(context))
 {
-	using (ITextWriter xmlWriter = new XmlTextWriter(strWriter))
-	{
-		serializer.Divide(xmlWriter, card1, card2);
-	}
+    using (ITextWriter xmlWriter = new XmlTextWriter(strWriter))
+    {
+        serializer.Divide(xmlWriter, card1, card2);
+    }
 }
 ```
 经过执行以上代码，context的内容将为：
@@ -141,10 +141,10 @@ CreditCard card3 = null;
 Serializer serializer = new Serializer(typeof(CreditCard));
 using (var fs = new FileStream(filename, FileMode.Open))
 {
-	using (var reader = new XmlTextReader(xmlReader))
-	{
-		card3 = (CreditCard)serializer.Combine(reader, card1);
-	}
+    using (var reader = new XmlTextReader(xmlReader))
+    {
+        card3 = (CreditCard)serializer.Combine(reader, card1);
+    }
 }
 ```
 经过以上代码，可以使新增的 card3 实例的 CardExpiration 属性的值由card1实例中的 "05/12" 变更为增量内容中记录的 "05/17"，CardNumber的值也由card1实例中的"0123456789"变更为了增量内容中记录的"9876543210"。如果使用值比较的方式比较 card3 和 card2 两个实例，会发现这两个实例完全相同。
