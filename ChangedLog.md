@@ -1,3 +1,7 @@
+#### 3.0.2.8
+
+* 修正 - 修正 3.0.2.7 版本带来的BUG。
+
 #### 3.0.2.7
 
 * 重构 - 重构 `XmlSerializeSetting` ，增加基类 `SerializeSetting` 。

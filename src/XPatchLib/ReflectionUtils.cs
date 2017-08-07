@@ -40,8 +40,9 @@ namespace XPatchLib
                 if (memberInfo.MemberType() == MemberTypes.Property || memberInfo.MemberType() == MemberTypes.Field)
                 {
                     MemberWrapper wrapper = new MemberWrapper(memberInfo);
-                    if (wrapper.GetIgnore(pIngoreAttributeType) == null && wrapper.HasPublicGetter &&
-                        wrapper.HasPublicSetter)
+                    if (wrapper.GetIgnore(pIngoreAttributeType) == null
+                        && wrapper.HasPublicGetter && wrapper.HasPublicSetter
+                        )
                         r.Enqueue(wrapper);
                 }
             return r.OrderBy(x => x.Name).ToArray();

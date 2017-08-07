@@ -11,12 +11,13 @@ namespace XPatchLib
     /// </summary>
     public abstract class SerializeSetting : ISerializeSetting, INotifyPropertyChanged
     {
-        private SerializeMemberType _memberType = SerializeMemberType.PropertyOnly;
+        private SerializeMemberType _memberType = SerializeMemberType.All;
 
         /// <summary>
         ///     获取或设置在产生增量时类或结构中哪些成员参与序列化。
         /// </summary>
-        /// <value>默认为 <see cref="SerializeMemberType.PropertyOnly" />。</value>
+        /// <value>默认为 <see cref="SerializeMemberType.All" />。</value>
+        [Obsolete("暂时无效，暂时会获取所有Property和Field，但是必须同时存在Get,Set")]
         public virtual SerializeMemberType MemberType
         {
             get { return _memberType; }

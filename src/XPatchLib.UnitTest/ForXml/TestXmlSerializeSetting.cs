@@ -55,11 +55,13 @@ namespace XPatchLib.UnitTest.ForXml
             setting.ActionName = "123";
             setting.Mode = DateTimeSerializationMode.Local;
             setting.SerializeDefalutValue = true;
+            setting.MemberType = SerializeMemberType.PropertyOnly;
 
             Assert.AreEqual(propertyInfos.Length, changedProNames.Count);
             foreach (var VARIABLE in propertyInfos)
                 if (!changedProNames.Contains(VARIABLE.Name))
                     Assert.Fail();
+            Assert.AreEqual(SerializeMemberType.PropertyOnly, setting.MemberType);
             Assert.AreEqual("123", setting.ActionName);
             Assert.AreEqual(DateTimeSerializationMode.Local, setting.Mode);
             Assert.IsTrue(setting.SerializeDefalutValue);
