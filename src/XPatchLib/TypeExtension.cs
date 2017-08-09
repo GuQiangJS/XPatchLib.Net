@@ -132,7 +132,7 @@ namespace XPatchLib
 
         public static MemberTypes MemberType(this MemberInfo memberInfo)
         {
-#if (NET || NETSTANDARD_1_5_UP)
+#if !NETSTANDARD_1_0 && !NETSTANDARD_1_1 && !NETSTANDARD_1_3
             return memberInfo.MemberType;
 #else
             if (memberInfo is PropertyInfo)
