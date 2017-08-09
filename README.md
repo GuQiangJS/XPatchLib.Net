@@ -24,10 +24,10 @@
 
 * 支持选择不同访问修饰符成员的序列化或反序列化 [Private](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/private)
 ，[Protected](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/protected)
-，[Internal](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/internal) 。[ISerializeSetting.Modifier]()。
+，[Internal](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/internal) 。详见：[ISerializeSetting.Modifier]()。
 
 * 支持选择序列化或反序列化 [属性](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/properties)
-，[字段](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/fields) 。[ISerializeSetting.MemberType]()。
+，[字段](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/fields) 。详见：[ISerializeSetting.MemberType]()。
 
 * 支持 [Nullable\<T\>](https://msdn.microsoft.com/zh-cn/library/b3h38hb0.aspx) 结构类型属性。
 
@@ -52,7 +52,7 @@
 ，[ISerializeSetting.EnableOnSerializedAttribute]()
 ，[ISerializeSetting.EnableOnDeserializedAttribute]()
 ，[ISerializeSetting.EnableOnDeserializingAttribute]()
-> 此功能仅在 `.NET Framework 2.0` 及以上版本 或 `.NET Standard 2.0` 及以上版本被支持。
+  > 此功能仅在 `.NET Framework 2.0` 及以上版本 或 `.NET Standard 2.0` 及以上版本被支持。
 
 ## 性能对比
 
