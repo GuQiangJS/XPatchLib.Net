@@ -18,10 +18,10 @@ namespace XPatchLib.UnitTest.ForXml
         [Test]
         public void BasicDeserializeCtorTest()
         {
-            //var ser = new CombineBasic(new TypeExtend(typeof(string)));
+            //var ser = new CombineBasic(new TypeExtend(DefaultXmlSerializeSetting, typeof(string)));
             //ser.Setting.Mode = DateTimeSerializationMode.RoundtripKind;
 
-            //ser = new CombineBasic(new TypeExtend(typeof(string)), DateTimeSerializationMode.Unspecified);
+            //ser = new CombineBasic(new TypeExtend(DefaultXmlSerializeSetting, typeof(string)), DateTimeSerializationMode.Unspecified);
             //ser.Setting.Mode = DateTimeSerializationMode.Unspecified;
         }
     }

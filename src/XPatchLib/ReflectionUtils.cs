@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Linq;
 #endif
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace XPatchLib
 {
@@ -30,22 +31,154 @@ namespace XPatchLib
         /// <summary>
         /// 获取一个类型上需要序列化的属性或字段集合。
         /// </summary>
+        /// <param name="pSetting">序列化/反序列化时的设置。</param>
         /// <param name="pObjType">Type of the p object.</param>
         /// <param name="pIngoreAttributeType">不序列化的特性类型定义。</param>
         /// <returns></returns>
-        internal static MemberWrapper[] GetFieldsToBeSerialized(Type pObjType,Type pIngoreAttributeType)
+        internal static MemberWrapper[] GetFieldsToBeSerialized(ISerializeSetting pSetting,Type pObjType, Type pIngoreAttributeType)
         {
-            Queue<MemberWrapper> r = new Queue<MemberWrapper>();
-            foreach (MemberInfo memberInfo in pObjType.GetMembers(BindingFlags.Instance | BindingFlags.Public))
-                if (memberInfo.MemberType() == MemberTypes.Property || memberInfo.MemberType() == MemberTypes.Field)
+            List<MemberInfo> members = GetFieldsAndProperties(pObjType, pSetting);
+
+            Queue<MemberWrapper> result = new Queue<MemberWrapper>(members.Count);
+
+            foreach (MemberInfo memberInfo in members)
+            {
+                if (TestAccessibility(memberInfo, pSetting))
                 {
                     MemberWrapper wrapper = new MemberWrapper(memberInfo);
-                    if (wrapper.GetIgnore(pIngoreAttributeType) == null
-                        && wrapper.HasPublicGetter && wrapper.HasPublicSetter
-                        )
-                        r.Enqueue(wrapper);
+
+                    //if (wrapper.IsProperty)
+                    //{
+                    //    //属性必须同时具有Get和Set
+                    //    if(!(wrapper.HasPublicGetter && wrapper.HasPublicSetter))
+                    //        continue;
+                    //}
+
+                    if (wrapper.GetIgnore(pIngoreAttributeType) != null)
+                        continue;
+                    result.Enqueue(wrapper);
                 }
-            return r.OrderBy(x => x.Name).ToArray();
+            }
+
+            return result.OrderBy(x => x.Name).ToArray();
+        }
+
+        private static bool TestAccessibility(MemberInfo memberInfo, ISerializeSetting pSetting)
+        {
+            if (memberInfo.IsDefined(typeof(CompilerGeneratedAttribute), true))
+                return false;
+
+            if (memberInfo is FieldInfo)
+            {
+                return TestAccessibility((FieldInfo)memberInfo, pSetting);
+            }
+            else if (memberInfo is PropertyInfo)
+            {
+                return TestAccessibility((PropertyInfo)memberInfo, pSetting);
+            }
+            return false;
+        }
+
+        static bool TestAccessibility(FieldInfo fieldInfo, ISerializeSetting pSetting)
+        {
+            bool visibility = (fieldInfo.IsPublic && pSetting.Modifier.HasFlag(SerializeMemberModifier.Public)) ||
+                              (fieldInfo.IsPrivate && pSetting.Modifier.HasFlag(SerializeMemberModifier.Private)) ||
+                              (fieldInfo.IsAssembly && pSetting.Modifier.HasFlag(SerializeMemberModifier.Internal)) ||
+                              (fieldInfo.IsFamily && pSetting.Modifier.HasFlag(SerializeMemberModifier.Protected));
+
+            bool instance = true;
+            //bool instance = (member.IsStatic && bindingFlags.HasFlag(BindingFlags.Static)) ||
+            //                (!member.IsStatic && bindingFlags.HasFlag(BindingFlags.Instance));
+
+            return visibility && instance;
+        }
+
+        private static bool TestAccessibility(PropertyInfo member, ISerializeSetting pSetting)
+        {
+            bool hasGetMethod = false;
+            bool hasSetMethod = false;
+            if (member.GetGetMethod() != null && TestAccessibility(member.GetGetMethod(), pSetting)
+                ||
+                member.GetGetMethod(true) != null && TestAccessibility(member.GetGetMethod(true), pSetting))
+            {
+                hasGetMethod = true;
+            }
+
+            if (member.GetSetMethod() != null && TestAccessibility(member.GetSetMethod(), pSetting)
+                ||
+                member.GetSetMethod(true) != null && TestAccessibility(member.GetSetMethod(true), pSetting))
+            {
+                hasSetMethod = true;
+            }
+
+            return hasGetMethod & hasSetMethod;
+        }
+
+        static bool TestAccessibility(MethodInfo methodInfo, ISerializeSetting pSetting)
+        {
+            bool visibility = (methodInfo.IsPublic && pSetting.Modifier.HasFlag(SerializeMemberModifier.Public)) ||
+                              (methodInfo.IsPrivate && pSetting.Modifier.HasFlag(SerializeMemberModifier.Private)) ||
+                              (methodInfo.IsAssembly && pSetting.Modifier.HasFlag(SerializeMemberModifier.Internal)) ||
+                              (methodInfo.IsFamily && pSetting.Modifier.HasFlag(SerializeMemberModifier.Protected));
+
+            bool instance = true;
+            //bool instance = (member.IsStatic && bindingFlags.HasFlag(BindingFlags.Static)) ||
+            //                (!member.IsStatic && bindingFlags.HasFlag(BindingFlags.Instance));
+
+            return visibility && instance;
+        }
+
+        public static IEnumerable<MemberInfo> GetProperties(Type targetType, BindingFlags bindingAttr)
+        {
+            Guard.ArgumentNotNull(targetType, nameof(targetType));
+            
+            return targetType.GetProperties(bindingAttr);
+        }
+
+        private static List<MemberInfo> GetFieldsAndProperties(Type pObjType, ISerializeSetting pSetting)
+        {
+            List<MemberInfo> result = new List<MemberInfo>();
+            BindingFlags bindingFlags = GetBindingFlags(pSetting);
+            if(pSetting.MemberType.HasFlag(SerializeMemberType.Field))
+                result.AddRange(GetFields(pObjType, bindingFlags));
+            if (pSetting.MemberType.HasFlag(SerializeMemberType.Property))
+                result.AddRange(GetProperties(pObjType, bindingFlags));
+
+            return result;
+        }
+
+        private static IEnumerable<MemberInfo> GetFields(Type targetType, BindingFlags bindingAttr)
+        {
+            Guard.ArgumentNotNull(targetType, nameof(targetType));
+
+            return targetType.GetFields(bindingAttr);
+        }
+
+        static BindingFlags GetBindingFlags(ISerializeSetting pSettings)
+        {
+            switch ((int)pSettings.Modifier)
+            {
+                case 1://public
+                    return BindingFlags.Instance | BindingFlags.Public;
+                case 2://private
+                case 4://protected
+                case 6://private | protected
+                case 8://internal
+                case 10://private | internal
+                case 12://protected | internal
+                case 14://private | protected | internal
+                    return BindingFlags.Instance | BindingFlags.NonPublic;
+                case 3://public | private
+                case 5://public | protected
+                case 7://public | private | protected
+                case 9://public | internal
+                case 11://public | private | internal
+                case 13://public | protected | internal
+                case 15://public | private | protected | internal 
+                    return BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         /// <summary>
@@ -274,13 +407,13 @@ namespace XPatchLib
             return false;
         }
 
-        internal static void RegisterTypes(IDictionary<Type, string[]> pTypes)
+        internal static void RegisterTypes(ISerializeSetting pSetting, IDictionary<Type, string[]> pTypes)
         {
             Guard.ArgumentNotNull(pTypes, "pTypes");
 
             foreach (KeyValuePair<Type, string[]> kv in pTypes)
             {
-                TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(kv.Key, null);
+                TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(pSetting, kv.Key, null);
                 PrimaryKeyAttribute attr = new PrimaryKeyAttribute(kv.Value);
                 typeExtend.UpdatePrimaryKeyAttributes(attr);
                 TypeExtendContainer.AddPrimaryKeyAttribute(kv.Key, attr);

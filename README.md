@@ -22,6 +22,13 @@
 
 相对于 [XmlSerializer](https://msdn.microsoft.com/en-us/library/system.xml.serialization.xmlserializer(v=vs.110).aspx) 增加如下功能：
 
+* 支持选择不同访问修饰符成员的序列化或反序列化 [Private](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/private)
+，[Protected](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/protected)
+，[Internal](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/internal) 。[ISerializeSetting.Modifier]()。
+
+* 支持选择序列化或反序列化 [属性](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/properties)
+，[字段](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/fields) 。[ISerializeSetting.MemberType]()。
+
 * 支持 [Nullable\<T\>](https://msdn.microsoft.com/zh-cn/library/b3h38hb0.aspx) 结构类型属性。
 
 * 支持 [IList\<T\>](https://msdn.microsoft.com/zh-cn/library/5y536ey6(v=vs.110).aspx)，[IEnumerable\<T\>](https://msdn.microsoft.com/zh-cn/library/9eekhta0(v=vs.110).aspx)，[ICollection\<T\>](https://msdn.microsoft.com/zh-cn/library/92t2ye13(v=vs.110).aspx)，[IDictionary\<TKey, TValue\>](https://msdn.microsoft.com/zh-cn/library/s4ys34ea(v=vs.110).aspx) 类型属性。
@@ -40,6 +47,12 @@
 ，[OnSerializedAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializedattribute(v=vs.110).aspx)
 ，[OnDeserializingAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.ondeserializingattribute(v=vs.110).aspx)
 ，[OnDeserializedAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.ondeserializedattribute(v=vs.110).aspx) 特性。
+同时支持在序列化或反序列化开始前关闭其中某一项或多项的支持。
+[ISerializeSetting.EnableOnSerializingAttribute]()
+，[ISerializeSetting.EnableOnSerializedAttribute]()
+，[ISerializeSetting.EnableOnDeserializedAttribute]()
+，[ISerializeSetting.EnableOnDeserializingAttribute]()
+> 此功能仅在 `.NET Framework 2.0` 及以上版本 或 `.NET Standard 2.0` 及以上版本被支持。
 
 ## 性能对比
 
@@ -162,7 +175,7 @@ using (var fs = new FileStream(filename, FileMode.Open))
 
 - [x] 部分对象类型尚未支持。例如：`DateTimeOffset`，`BigInteger` 等。
 - [x] 支持自定义跳过属性序列化特性。
-- [ ] 支持 private 属性。
+- [x] 支持 private 属性。
 - [ ] 支持匿名类型。
 - [ ] 支持循环引用实例的处理。
 - [x] 支持 [ISerializable](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable.aspx) 实例 。

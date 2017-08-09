@@ -88,7 +88,8 @@ namespace XPatchLib
             }
             Writer.WriteEndObject();
 #if NET || NETSTANDARD_2_0_UP
-            Type.InvokeOnSerialized(obj, new System.Runtime.Serialization.StreamingContext());
+            if(Writer.Setting.EnableOnSerializedAttribute)
+                Type.InvokeOnSerialized(obj, new System.Runtime.Serialization.StreamingContext());
 #endif
         }
 
@@ -128,7 +129,7 @@ namespace XPatchLib
                 }
             }
 #if NET || NETSTANDARD_2_0_UP
-            if (obj!=null)
+            if (Writer.Setting.EnableOnSerializingAttribute && obj != null)
                 Type.InvokeOnSerializing(obj, new System.Runtime.Serialization.StreamingContext());
 #endif
             Writer.WriteStartObject(pName);

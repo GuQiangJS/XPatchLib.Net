@@ -70,14 +70,16 @@ namespace XPatchLib
                             Type.SetMemberValue(pOriObject, member.Name,
                                 new EnumWrapper(memberType).TransFromString(pReader.GetValue()));
 #if (NET || NETSTANDARD_2_0_UP)
-                        else  if (member.IsColor)
+                        else if (member.IsColor)
                             Type.SetMemberValue(pOriObject, member.Name,
                                 ColorHelper.TransFromString(pReader.GetValue()));
 #endif
                         else
                             Type.SetMemberValue(pOriObject, member.Name,
-                                CombineInstanceContainer.GetCombineInstance(TypeExtendContainer.GetTypeExtend(memberType, null, Type)).Combine(pReader,
-                                    pOriObject, member.Name));
+                                CombineInstanceContainer
+                                    .GetCombineInstance(
+                                        TypeExtendContainer.GetTypeExtend(pReader.Setting, memberType, null, Type))
+                                    .Combine(pReader, pOriObject, member.Name));
                     }
                     else if (member.IsIEnumerable)
                     {
@@ -85,8 +87,10 @@ namespace XPatchLib
                         Object memberObj = Type.GetMemberValue(pOriObject, member.Name);
 
                         memberObj =
-                            CombineInstanceContainer.GetCombineInstance(TypeExtendContainer.GetTypeExtend(memberType, null, Type)).Combine(
-                                pReader, memberObj, member.Name);
+                            CombineInstanceContainer
+                                .GetCombineInstance(
+                                    TypeExtendContainer.GetTypeExtend(pReader.Setting, memberType, null, Type))
+                                .Combine(pReader, memberObj, member.Name);
                         Type.SetMemberValue(pOriObject, member.Name, memberObj);
                     }
                     else
@@ -98,15 +102,19 @@ namespace XPatchLib
                         //如果当前正在处理的属性的现有属性值实例为null时，先创建一个新的实例。
                         if (memberObj == null)
                         {
-                            memberObj = TypeExtendContainer.GetTypeExtend(memberType, null, Type).CreateInstance();
+                            memberObj = TypeExtendContainer.GetTypeExtend(pReader.Setting, memberType, null, Type)
+                                .CreateInstance();
                             created = true;
                         }
                         //调用CombineObject类型的Combine方法，对现有属性实例（或新创建的属性实例）进行增量数据合并。
-                        CombineInstanceContainer.GetCombineInstance(TypeExtendContainer.GetTypeExtend(memberType, null, Type)).Combine(pReader, memberObj,
-                            member.Name);
+                        CombineInstanceContainer
+                            .GetCombineInstance(
+                                TypeExtendContainer.GetTypeExtend(pReader.Setting, memberType, null, Type))
+                            .Combine(pReader, memberObj, member.Name);
                         //将数据合并后的实例赋值给当前正在处理的属性，替换原有的数据实例。实现数据合并功能。
 
-                        if (!(created && TypeExtendContainer.GetTypeExtend(memberType, null, Type).CreateInstance().Equals(memberObj)))
+                        if (!(created && TypeExtendContainer.GetTypeExtend(pReader.Setting, memberType, null, Type)
+                                  .CreateInstance().Equals(memberObj)))
                             Type.SetMemberValue(pOriObject, member.Name, memberObj);
                     }
                     while (string.Equals(pReader.Name, member.Name))

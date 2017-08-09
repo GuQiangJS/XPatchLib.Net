@@ -13,12 +13,12 @@ using Assert = XPatchLib.UnitTest.XUnitAssert;
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
-    public class TestKeyValuesObjectEqualityComparer
+    public class TestKeyValuesObjectEqualityComparer:TestBase
     {
         private void TestKeyValuesObjectEqualityComparerEquals<T>(T[] s1, T[] s2)
         {
-            var l1 = KeyValuesObject.Translate(s1);
-            var l2 = KeyValuesObject.Translate(s2);
+            var l1 = KeyValuesObject.Translate(s1, DefaultXmlSerializeSetting);
+            var l2 = KeyValuesObject.Translate(s2, DefaultXmlSerializeSetting);
 
             var newList = l2.Except(l1, new KeyValuesObjectEqualityComparer()).ToList();
             Assert.AreEqual(newList.Count, 1);
@@ -36,8 +36,8 @@ namespace XPatchLib.UnitTest.ForXml
 
         private void TestKeyValuesObjectEqualityComparerEqualsAdd<T>(T[] s1, T[] s2)
         {
-            var l1 = KeyValuesObject.Translate(s1);
-            var l2 = KeyValuesObject.Translate(s2);
+            var l1 = KeyValuesObject.Translate(s1, DefaultXmlSerializeSetting);
+            var l2 = KeyValuesObject.Translate(s2, DefaultXmlSerializeSetting);
 
             var newList = l2.Except(l1, new KeyValuesObjectEqualityComparer()).ToList();
             Assert.AreEqual(newList.Count, 1);

@@ -101,7 +101,7 @@ namespace XPatchLib
             }
         }
 
-        internal static TypeExtend GetTypeExtend(Type pType, Type pIgnoreAttributeType, TypeExtend pParentType = null)
+        internal static TypeExtend GetTypeExtend(ISerializeSetting pSetting,Type pType, Type pIgnoreAttributeType, TypeExtend pParentType = null)
         {
             TypeExtend result = null;
             lock (InnerDic)
@@ -118,7 +118,7 @@ namespace XPatchLib
                 }
                 if (!innerDictionary.TryGetValue(pParentType, out result))
                 {
-                    result = new TypeExtend(pType, pIgnoreAttributeType, pParentType);
+                    result = new TypeExtend(pSetting, pType, pIgnoreAttributeType, pParentType);
                     lock (InnerDic)
                     {
                         innerDictionary.Add(pParentType, result);

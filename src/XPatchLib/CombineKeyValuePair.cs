@@ -39,8 +39,9 @@ namespace XPatchLib
         protected override object CombineAction(ITextReader pReader, object pOriObject, string pName)
         {
             //获取KeyValuePair类型对象的Key值与Value值的类型
-            TypeExtend keyType = TypeExtendContainer.GetTypeExtend(Type.KeyArgumentType, null, Type);
-            TypeExtend valueType = TypeExtendContainer.GetTypeExtend(Type.ValueArgumentType, null, Type);
+            TypeExtend keyType = TypeExtendContainer.GetTypeExtend(pReader.Setting, Type.KeyArgumentType, null, Type);
+            TypeExtend valueType =
+                TypeExtendContainer.GetTypeExtend(pReader.Setting, Type.ValueArgumentType, null, Type);
 
             //获取原始值的Key值和Value值
             object oriKeyObj = null;

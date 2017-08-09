@@ -73,10 +73,20 @@ namespace XPatchLib
             get { return _isISerializable; }
         }
 
-        internal TypeExtend(Type pType, Type pIgnoreAttributeType, TypeExtend pParentType = null)
+        private ISerializeSetting _setting;
+
+        /// <summary>
+        ///     获取序列化/反序列化时的设置。
+        /// </summary>
+        public ISerializeSetting Setting
+        {
+            get { return _setting; }
+        }
+
+        internal TypeExtend(ISerializeSetting pSetting,Type pType, Type pIgnoreAttributeType, TypeExtend pParentType = null)
         {
             _parentType = pParentType;
-
+            _setting = pSetting;
             _oriType = pType;
 
             Type actType;
@@ -121,7 +131,7 @@ namespace XPatchLib
             _fieldsToBeSerialized = new MemberWrapper[] { };
             if (!(_isIEnumerable || _isIDictionary || _isICollection || _isBasicType || _isArray))
             {
-                _fieldsToBeSerialized = ReflectionUtils.GetFieldsToBeSerialized(pType, pIgnoreAttributeType);
+                _fieldsToBeSerialized = ReflectionUtils.GetFieldsToBeSerialized(pSetting, pType, pIgnoreAttributeType);
                 foreach (MemberWrapper member in _fieldsToBeSerialized)
                 {
                     AddGetValueFunc(member);

@@ -36,33 +36,35 @@ namespace XPatchLib.UnitTest
             revObj.member3 = "123";
             revObj.member4 = "123";
 
-            string result = DoSerializer_Divide(oriObj, revObj);
+            ISerializeSetting setting = new XmlSerializeSetting() {MemberType = SerializeMemberType.Field};
+
+            string result = DoSerializer_Divide(oriObj, revObj, setting);
 
             Assert.AreEqual(Context, result);
             Assert.AreEqual(TestSimpleObject.Member2Serialized, revObj.member2);
 
             //反序列化时，使用深克隆模式。返回对象与传入的原始对象不相同
             TestSimpleObject newObj1 =
-                DoSerializer_Combie(typeof(TestSimpleObject), Context, oriObj, true) as TestSimpleObject;
+                DoSerializer_Combie(typeof(TestSimpleObject), Context, oriObj, setting, true) as TestSimpleObject;
             //反序列化完成后，member4的值应该是 OnDeserializedMethod 后的值
             Assert.AreEqual(TestSimpleObject.Member4Deserialized, newObj1.member4);
             //OnDeserializingMethod 是在反序列化之前执行，所以member3的值应该是Context中的值
             Assert.AreEqual(revObj.member3, revObj.member3);
             Assert.AreNotEqual(TestSimpleObject.Member3Default, revObj.member3);
-            Assert.AreNotEqual(TestSimpleObject.Member3Deserializing, newObj1.member3);
+            Assert.AreEqual(TestSimpleObject.Member3Deserializing, newObj1.member3);
             //反序列化时，使用深克隆模式。原始传入的对象不会被改变
             Assert.AreEqual(TestSimpleObject.Member3Default, oriObj.member3);
             Assert.AreEqual(TestSimpleObject.Member4Default, oriObj.member4);
 
             //反序列化时，不使用深克隆模式。返回对象与传入的原始对象相同
             TestSimpleObject newObj2 =
-                DoSerializer_Combie(typeof(TestSimpleObject), Context, oriObj, false) as TestSimpleObject;
+                DoSerializer_Combie(typeof(TestSimpleObject), Context, oriObj, setting, false) as TestSimpleObject;
             //反序列化完成后，member4的值应该是 OnDeserializedMethod 后的值
             Assert.AreEqual(TestSimpleObject.Member4Deserialized, newObj1.member4);
             //OnDeserializingMethod 是在反序列化之前执行，所以member3的值应该是Context中的值
             Assert.AreEqual(revObj.member3, revObj.member3);
             Assert.AreNotEqual(TestSimpleObject.Member3Default, revObj.member3);
-            Assert.AreNotEqual(TestSimpleObject.Member3Deserializing, newObj1.member3);
+            Assert.AreEqual(TestSimpleObject.Member3Deserializing, newObj1.member3);
             //反序列化时，不使用深克隆模式。原始传入的对象会被改变
             Assert.AreEqual(newObj2.member3, oriObj.member3);
             Assert.AreEqual(newObj2.member4, oriObj.member4);

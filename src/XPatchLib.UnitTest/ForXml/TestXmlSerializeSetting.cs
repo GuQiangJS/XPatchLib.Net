@@ -55,16 +55,30 @@ namespace XPatchLib.UnitTest.ForXml
             setting.ActionName = "123";
             setting.Mode = DateTimeSerializationMode.Local;
             setting.SerializeDefalutValue = true;
-            setting.MemberType = SerializeMemberType.PropertyOnly;
+            setting.MemberType = SerializeMemberType.All;
+            setting.Modifier = SerializeMemberModifier.NonPublic;
+#if NET || NETSTANDARD_2_0_UP
+            setting.EnableOnDeserializedAttribute = false;
+            setting.EnableOnDeserializingAttribute = false;
+            setting.EnableOnSerializedAttribute = false;
+            setting.EnableOnSerializingAttribute = false;
+#endif
 
             Assert.AreEqual(propertyInfos.Length, changedProNames.Count);
             foreach (var VARIABLE in propertyInfos)
                 if (!changedProNames.Contains(VARIABLE.Name))
                     Assert.Fail();
-            Assert.AreEqual(SerializeMemberType.PropertyOnly, setting.MemberType);
+            Assert.AreEqual(SerializeMemberType.All, setting.MemberType);
             Assert.AreEqual("123", setting.ActionName);
             Assert.AreEqual(DateTimeSerializationMode.Local, setting.Mode);
+            Assert.AreEqual(SerializeMemberModifier.NonPublic, setting.Modifier);
             Assert.IsTrue(setting.SerializeDefalutValue);
+#if NET || NETSTANDARD_2_0_UP
+            Assert.IsFalse(setting.EnableOnSerializedAttribute);
+            Assert.IsFalse(setting.EnableOnDeserializingAttribute);
+            Assert.IsFalse(setting.EnableOnSerializedAttribute);
+            Assert.IsFalse(setting.EnableOnSerializingAttribute);
+#endif
         }
     }
 

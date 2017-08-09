@@ -11,16 +11,16 @@ namespace XPatchLib
     {
         private static readonly string PRIMARY_KEY_MISS = typeof(PrimaryKeyAttribute).Name;
 
-        public KeyValuesObject(Object pValue, Object pKey)
+        public KeyValuesObject(Object pValue, Object pKey, ISerializeSetting pSetting)
         {
             OriValue = pValue;
-            SetKeyValues(pKey);
+            SetKeyValues(pKey, pSetting);
         }
 
-        public KeyValuesObject(Object pValue)
+        public KeyValuesObject(Object pValue, ISerializeSetting pSetting)
         {
             OriValue = pValue;
-            SetKeyValues(pValue);
+            SetKeyValues(pValue, pSetting);
         }
 
         public string[] Keys { get; private set; }
@@ -30,21 +30,21 @@ namespace XPatchLib
         //public Object[] KeyValues { get; private set; }
         public int[] ValuesHash { get; private set; }
 
-        public static IEnumerable<KeyValuesObject> Translate(IEnumerable pValue)
+        public static IEnumerable<KeyValuesObject> Translate(IEnumerable pValue,ISerializeSetting pSetting)
         {
             if (pValue != null)
             {
                 Queue<KeyValuesObject> result = new Queue<KeyValuesObject>();
                 foreach (var VARIABLE in pValue)
-                    result.Enqueue(new KeyValuesObject(VARIABLE));
+                    result.Enqueue(new KeyValuesObject(VARIABLE, pSetting));
                 return result;
             }
             return null;
         }
 
-        public static IEnumerator<KeyValuesObject> TranslateEnumerator(IEnumerable pValue)
+        public static IEnumerator<KeyValuesObject> TranslateEnumerator(IEnumerable pValue, ISerializeSetting pSetting)
         {
-            IEnumerable<KeyValuesObject> v = Translate(pValue);
+            IEnumerable<KeyValuesObject> v = Translate(pValue, pSetting);
             if (v != null)
                 return v.GetEnumerator();
             return null;
@@ -97,11 +97,11 @@ namespace XPatchLib
             return result;
         }
 
-        private void SetKeyValues(Object pValue)
+        private void SetKeyValues(Object pValue, ISerializeSetting pSetting)
         {
             if (pValue != null)
             {
-                TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(pValue.GetType(), null);
+                TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(pSetting, pValue.GetType(), null);
                 if (!typeExtend.IsBasicType)
                 {
                     PrimaryKeyAttribute keyAttr = typeExtend.PrimaryKeyAttr;

@@ -75,18 +75,21 @@ namespace XPatchLib
                     }
 #endif
                     divide = new DivideBasic(Writer,
-                        TypeExtendContainer.GetTypeExtend(memberType, Writer.IgnoreAttributeType, Type));
+                        TypeExtendContainer.GetTypeExtend(Writer.Setting, memberType, Writer.IgnoreAttributeType,
+                            Type));
                 }
                 //集合类型
                 else if (member.IsIEnumerable)
                 {
                     divide = new DivideIEnumerable(Writer,
-                        TypeExtendContainer.GetTypeExtend(memberType, Writer.IgnoreAttributeType, Type));
+                        TypeExtendContainer.GetTypeExtend(Writer.Setting, memberType, Writer.IgnoreAttributeType,
+                            Type));
                 }
                 else
                 {
                     divide = new DivideCore(Writer,
-                        TypeExtendContainer.GetTypeExtend(memberType, Writer.IgnoreAttributeType, Type));
+                        TypeExtendContainer.GetTypeExtend(Writer.Setting, memberType, Writer.IgnoreAttributeType,
+                            Type));
                 }
 
                 if (pAttach == null)

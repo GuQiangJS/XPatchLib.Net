@@ -1,31 +1,32 @@
 ﻿// Copyright © 2013-2017 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Xml;
-using XPatchLib.UnitTest.TestClass;
 #if (NET || NETSTANDARD_2_0_UP)
 using System.Drawing;
 #endif
 #if (NET_35_UP || NETSTANDARD)
-using System.Xml.Linq;
 #endif
+#if (NETSTANDARD_1_0 || NETSTANDARD_1_1 || NETSTANDARD_1_3)
+#endif
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Reflection;
+using System.Xml;
+using XPatchLib.UnitTest.TestClass;
 #if NUNIT
 using NUnit.Framework;
 #elif XUNIT
-using Xunit;
 using Test = Xunit.FactAttribute;
 using Assert = XPatchLib.UnitTest.XUnitAssert;
+
 #endif
 
 namespace XPatchLib.UnitTest.ForXml
 {
     [TestFixture]
-    public class TestSerializeBasic:TestBase
+    public class TestSerializeBasic : TestBase
     {
         [Test]
         public void BasicSerializeCtorTest()
@@ -58,20 +59,20 @@ namespace XPatchLib.UnitTest.ForXml
                 ushort.MinValue, uint.MinValue, ulong.MinValue, float.MinValue, decimal.MinValue, DateTime.MinValue, g1,
                 'a', TimeSpan.MinValue, DateTimeOffset.MinValue
 #if NET_40_UP || NETSTANDARD_1_1_UP
-                ,System.Numerics.BigInteger.Zero
+                , System.Numerics.BigInteger.Zero
 #endif
-                ,uri1
+                , uri1
             };
 
             var revObjs = new object[]
             {
                 true, int.MaxValue, double.MaxValue, s2, long.MaxValue, short.MaxValue, sbyte.MaxValue, byte.MaxValue,
                 ushort.MaxValue, uint.MaxValue, ulong.MaxValue, float.MaxValue, decimal.MaxValue, DateTime.MaxValue, g2,
-                'b',TimeSpan.MaxValue, DateTimeOffset.MaxValue
+                'b', TimeSpan.MaxValue, DateTimeOffset.MaxValue
 #if NET_40_UP || NETSTANDARD_1_1_UP
-                ,System.Numerics.BigInteger.MinusOne
+                , System.Numerics.BigInteger.MinusOne
 #endif
-                ,uri2
+                , uri2
             };
 
             var types = new[]
@@ -80,9 +81,9 @@ namespace XPatchLib.UnitTest.ForXml
                 typeof(byte), typeof(ushort), typeof(uint), typeof(ulong), typeof(float), typeof(decimal),
                 typeof(DateTime), typeof(Guid), typeof(char), typeof(TimeSpan), typeof(DateTimeOffset)
 #if NET_40_UP || NETSTANDARD_1_1_UP
-                ,typeof(System.Numerics.BigInteger)
+                , typeof(System.Numerics.BigInteger)
 #endif
-                ,typeof(Uri)
+                , typeof(Uri)
             };
 
             var serializedResults = new[]
@@ -102,9 +103,9 @@ namespace XPatchLib.UnitTest.ForXml
                 "<TimeSpan>" + XmlConvert.ToString(TimeSpan.MaxValue) + "</TimeSpan>",
                 "<DateTimeOffset>" + XmlConvert.ToString(DateTimeOffset.MaxValue) + "</DateTimeOffset>"
 #if NET_40_UP || NETSTANDARD_1_1_UP
-                ,"<BigInteger>" + System.Numerics.BigInteger.MinusOne.ToString(CultureInfo.InvariantCulture) + "</BigInteger>"
+                , "<BigInteger>" + System.Numerics.BigInteger.MinusOne.ToString(CultureInfo.InvariantCulture) + "</BigInteger>"
 #endif
-                ,"<Uri>" + uri2.ToString() + "</Uri>"
+                , "<Uri>" + uri2 + "</Uri>"
             };
             var serializedSetNullResults = new[]
             {
@@ -113,11 +114,12 @@ namespace XPatchLib.UnitTest.ForXml
                 @"<SByte Action=""SetNull"" />", @"<Byte Action=""SetNull"" />", @"<UInt16 Action=""SetNull"" />",
                 @"<UInt32 Action=""SetNull"" />", @"<UInt64 Action=""SetNull"" />", @"<Single Action=""SetNull"" />",
                 @"<Decimal Action=""SetNull"" />", @"<DateTime Action=""SetNull"" />", @"<Guid Action=""SetNull"" />",
-                @"<Char Action=""SetNull"" />", @"<TimeSpan Action=""SetNull"" />", @"<DateTimeOffset Action=""SetNull"" />"
+                @"<Char Action=""SetNull"" />", @"<TimeSpan Action=""SetNull"" />",
+                @"<DateTimeOffset Action=""SetNull"" />"
 #if NET_40_UP || NETSTANDARD_1_1_UP
-                ,@"<BigInteger Action=""SetNull"" />"
+                , @"<BigInteger Action=""SetNull"" />"
 #endif
-                ,@"<Uri Action=""SetNull"" />"
+                , @"<Uri Action=""SetNull"" />"
             };
             //值类型默认值
             //https://msdn.microsoft.com/zh-cn/library/83fhsxwc.aspx
@@ -134,38 +136,44 @@ namespace XPatchLib.UnitTest.ForXml
                 "<Guid>" + XmlConvert.ToString(Guid.Empty) + "</Guid>",
                 "<Char>" + XmlConvert.ToString((ushort) '\0') + "</Char>",
                 "<TimeSpan>" + XmlConvert.ToString(TimeSpan.Zero) + "</TimeSpan>",
-                "<DateTimeOffset>" + XmlConvert.ToString((DateTimeOffset)ReflectionUtils.GetDefaultValue(typeof(DateTimeOffset))) + "</DateTimeOffset>"
+                "<DateTimeOffset>" +
+                XmlConvert.ToString((DateTimeOffset) ReflectionUtils.GetDefaultValue(typeof(DateTimeOffset))) +
+                "</DateTimeOffset>"
 #if NET_40_UP || NETSTANDARD_1_1_UP
-                ,"<BigInteger>" + System.Numerics.BigInteger.Zero.ToString(CultureInfo.InvariantCulture) + "</BigInteger>"
+                , "<BigInteger>" + System.Numerics.BigInteger.Zero.ToString(CultureInfo.InvariantCulture) + "</BigInteger>"
 #endif
-                ,null
+                , null
             };
 
             string context = string.Empty;
 
             for (var i = 0; i < types.Length; i++)
             {
-
                 #region 原始值与更新值不同时
 
                 context = DoDivideBasic_Divide(types[i], oriObjs[i], revObjs[i], true);
                 Assert.AreEqual(serializedResults[i], context, "输出内容与预期不符");
                 var newObj1 = DoCombineBasic_Combie(context, types[i], null);
                 Assert.AreEqual(revObjs[i], newObj1);
+
                 #endregion
 
                 #region 原始值有值，更新值为null时，序列化为<XXX Action="SetNull" />
+
                 context = DoDivideBasic_Divide(types[i], oriObjs[i], null, true);
                 Assert.AreEqual(serializedSetNullResults[i], context, "输出内容与预期不符");
                 var newObj2 = DoCombineBasic_Combie(context, types[i], null);
                 Assert.AreEqual(null, newObj2);
+
                 #endregion
 
                 #region 原始值为null，更新值有值时序列化更新值
+
                 context = DoDivideBasic_Divide(types[i], null, revObjs[i], true);
                 Assert.AreEqual(serializedResults[i], context, "输出内容与预期不符");
                 var newObj3 = DoCombineBasic_Combie(context, types[i], null);
                 Assert.AreEqual(revObjs[i], newObj3);
+
                 #endregion
 
                 //原始值与更新值相同时不做序列化
@@ -180,7 +188,7 @@ namespace XPatchLib.UnitTest.ForXml
                 if (!string.IsNullOrEmpty(serializedDefaultValues[i]))
                 {
                     //只有当默认值不为null时，才做以下判断
-                    ISerializeSetting setting = new XmlSerializeSetting() {SerializeDefalutValue = true};
+                    ISerializeSetting setting = new XmlSerializeSetting {SerializeDefalutValue = true};
                     string c = DoDivideBasic_Divide(types[i], null, ReflectionUtils.GetDefaultValue(types[i]), true,
                         setting);
                     Assert.AreEqual(serializedDefaultValues[i], c);
@@ -215,7 +223,6 @@ namespace XPatchLib.UnitTest.ForXml
             Assert.IsNotNull(c2);
             Assert.AreEqual(SingleQuarter.Second, c2.SingleQuarter);
             Assert.AreEqual(MultiQuarter.Second | MultiQuarter.Fourth, c2.MultiQuarter);
-            
         }
 
 #if (NET || NETSTANDARD_2_0_UP)
@@ -378,5 +385,246 @@ namespace XPatchLib.UnitTest.ForXml
         }
 
 #endif
+
+        internal void AssertPropertyValue(Type type, object objA, object objB, string proName, BindingFlags bindingAttr)
+        {
+            PropertyInfo pro = type.GetProperty(proName, bindingAttr);
+            if (pro == null)
+                Assert.Fail("pro==null");
+            Assert.AreEqual(pro.GetValue(objA, null), pro.GetValue(objB, null));
+        }
+
+        internal void AssertFieldValue(Type type, object objA, object objB, string proName, BindingFlags bindingAttr)
+        {
+            FieldInfo fi = type.GetField(proName, bindingAttr);
+            if (fi == null)
+                Assert.Fail("fi==null");
+            Assert.AreEqual(fi.GetValue(objA), fi.GetValue(objB));
+        }
+
+        [Test]
+        public void TestSerializeMemberTypeAndModifier()
+        {
+            Type t = typeof(TestOverrideClass);
+
+            List<ISerializeSetting> settings = new List<ISerializeSetting>();
+            List<BindingFlags> flags = new List<BindingFlags>();
+            List<string[]> proNames = new List<string[]>();
+            List<string[]> fieldNames = new List<string[]>();
+
+            //只序列化Public属性
+            settings.Add(new XmlSerializeSetting());
+            flags.Add(BindingFlags.Public | BindingFlags.Instance);
+            proNames.Add(new[] {"PublicPro"});
+            fieldNames.Add(new string[] { });
+
+            //只序列化Public参数
+            settings.Add(new XmlSerializeSetting {MemberType = SerializeMemberType.Field});
+            flags.Add(BindingFlags.Public | BindingFlags.Instance);
+            proNames.Add(new string[] { });
+            fieldNames.Add(new[] {"PublicField"});
+
+            //序列化Public属性+参数
+            settings.Add(new XmlSerializeSetting {MemberType = SerializeMemberType.All});
+            flags.Add(BindingFlags.Public | BindingFlags.Instance);
+            proNames.Add(new[] {"PublicPro"});
+            fieldNames.Add(new[] {"PublicField"});
+
+            //只序列化Public属性
+            settings.Add(new XmlSerializeSetting {Modifier = SerializeMemberModifier.Public});
+            flags.Add(BindingFlags.Public | BindingFlags.Instance);
+            proNames.Add(new[] {"PublicPro"});
+            fieldNames.Add(new string[] { });
+
+            //只序列化Public参数
+            settings.Add(new XmlSerializeSetting
+            {
+                MemberType = SerializeMemberType.Field,
+                Modifier = SerializeMemberModifier.Public
+            });
+            flags.Add(BindingFlags.Public | BindingFlags.Instance);
+            proNames.Add(new string[] { });
+            fieldNames.Add(new[] {"PublicField"});
+
+            //序列化Public属性+参数
+            settings.Add(new XmlSerializeSetting
+            {
+                MemberType = SerializeMemberType.All,
+                Modifier = SerializeMemberModifier.Public
+            });
+            flags.Add(BindingFlags.Public | BindingFlags.Instance);
+            proNames.Add(new[] {"PublicPro"});
+            fieldNames.Add(new[] {"PublicField"});
+
+            //只序列化Private属性
+            settings.Add(new XmlSerializeSetting {Modifier = SerializeMemberModifier.Private});
+            flags.Add(BindingFlags.NonPublic | BindingFlags.Instance);
+            proNames.Add(new[] {"PrivatePro"});
+            fieldNames.Add(new string[] { });
+
+            //只序列化Private参数
+            settings.Add(new XmlSerializeSetting
+            {
+                MemberType = SerializeMemberType.Field,
+                Modifier = SerializeMemberModifier.Private
+            });
+            flags.Add(BindingFlags.NonPublic | BindingFlags.Instance);
+            proNames.Add(new string[] { });
+            fieldNames.Add(new[] {"PrivateField"});
+
+            //序列化Private属性+参数
+            settings.Add(new XmlSerializeSetting
+            {
+                MemberType = SerializeMemberType.All,
+                Modifier = SerializeMemberModifier.Private
+            });
+            flags.Add(BindingFlags.NonPublic | BindingFlags.Instance);
+            proNames.Add(new[] {"PrivatePro"});
+            fieldNames.Add(new[] {"PrivateField"});
+
+            //只序列化Protected属性
+            settings.Add(new XmlSerializeSetting {Modifier = SerializeMemberModifier.Protected});
+            flags.Add(BindingFlags.NonPublic | BindingFlags.Instance);
+            proNames.Add(new[] {"ProtectedPro"});
+            fieldNames.Add(new string[] { });
+
+            //只序列化Protected参数
+            settings.Add(new XmlSerializeSetting
+            {
+                MemberType = SerializeMemberType.Field,
+                Modifier = SerializeMemberModifier.Protected
+            });
+            flags.Add(BindingFlags.NonPublic | BindingFlags.Instance);
+            proNames.Add(new string[] { });
+            fieldNames.Add(new[] {"ProtectedField"});
+
+            //序列化Protected属性+参数
+            settings.Add(new XmlSerializeSetting
+            {
+                MemberType = SerializeMemberType.All,
+                Modifier = SerializeMemberModifier.Protected
+            });
+            flags.Add(BindingFlags.NonPublic | BindingFlags.Instance);
+            proNames.Add(new[] {"ProtectedPro"});
+            fieldNames.Add(new[] {"ProtectedField"});
+
+            //只序列化Internal属性
+            settings.Add(new XmlSerializeSetting {Modifier = SerializeMemberModifier.Internal});
+            flags.Add(BindingFlags.NonPublic | BindingFlags.Instance);
+            proNames.Add(new[] {"InternalPro"});
+            fieldNames.Add(new string[] { });
+
+            //只序列化Internal参数
+            settings.Add(new XmlSerializeSetting
+            {
+                MemberType = SerializeMemberType.Field,
+                Modifier = SerializeMemberModifier.Internal
+            });
+            flags.Add(BindingFlags.NonPublic | BindingFlags.Instance);
+            proNames.Add(new string[] { });
+            fieldNames.Add(new[] {"InternalField"});
+
+            //序列化Internal属性+参数
+            settings.Add(new XmlSerializeSetting
+            {
+                MemberType = SerializeMemberType.All,
+                Modifier = SerializeMemberModifier.Internal
+            });
+            flags.Add(BindingFlags.NonPublic | BindingFlags.Instance);
+            proNames.Add(new[] {"InternalPro"});
+            fieldNames.Add(new[] {"InternalField"});
+
+            //序列化NonPublic属性
+            settings.Add(new XmlSerializeSetting {Modifier = SerializeMemberModifier.NonPublic});
+            flags.Add(BindingFlags.NonPublic | BindingFlags.Instance);
+            proNames.Add(new[] {"PrivatePro", "InternalPro", "ProtectedPro"});
+            fieldNames.Add(new string[] { });
+
+            //只序列化NonPublic参数
+            settings.Add(new XmlSerializeSetting
+            {
+                MemberType = SerializeMemberType.Field,
+                Modifier = SerializeMemberModifier.NonPublic
+            });
+            flags.Add(BindingFlags.NonPublic | BindingFlags.Instance);
+            proNames.Add(new string[] { });
+            fieldNames.Add(new[] { "PrivateField", "InternalField", "ProtectedField"});
+
+            //序列化NonPublic属性+参数
+            settings.Add(new XmlSerializeSetting
+            {
+                MemberType = SerializeMemberType.All,
+                Modifier = SerializeMemberModifier.NonPublic
+            });
+            flags.Add(BindingFlags.NonPublic | BindingFlags.Instance);
+            proNames.Add(new[] {"PrivatePro", "InternalPro", "ProtectedPro"});
+            fieldNames.Add(new[] { "PrivateField", "InternalField", "ProtectedField"});
+
+            for (int i = 0; i < settings.Count; i++)
+            {
+                string result = DoSerializer_Divide(new TestOverrideClass(), TestOverrideClass.CreateInstance(),
+                    settings[i]);
+                Debug.WriteLine(result);
+                //Assert.AreEqual(GetCompleteContext(contexts[i]), result);
+                TestOverrideClass newObj =
+                    DoSerializer_Combie(t, result, new TestOverrideClass(), settings[i]) as TestOverrideClass;
+                foreach (var proName in proNames[i])
+                    AssertPropertyValue(t, newObj, TestOverrideClass.CreateInstance(), proName, flags[i]);
+                foreach (var fieldName in fieldNames[i])
+                    AssertFieldValue(t, newObj, TestOverrideClass.CreateInstance(), fieldName, flags[i]);
+            }
+        }
+
+        private abstract class TestAbstractClass
+        {
+            internal string InternalField;
+            protected string ProtectedField;
+
+            public string PublicField;
+            public virtual string PublicPro { get; set; }
+            protected virtual string ProtectedPro { get; set; }
+            internal virtual string InternalPro { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                TestAbstractClass c = obj as TestAbstractClass;
+                if (c == null) return false;
+                return string.Equals(PublicPro, c.PublicPro, StringComparison.Ordinal)
+                       && string.Equals(ProtectedPro, c.ProtectedPro, StringComparison.Ordinal)
+                       && string.Equals(InternalPro, c.InternalPro, StringComparison.Ordinal)
+                       && string.Equals(PublicField, c.PublicField, StringComparison.Ordinal)
+                       && string.Equals(ProtectedField, c.ProtectedField, StringComparison.Ordinal)
+                       && string.Equals(InternalField, c.InternalField, StringComparison.Ordinal);
+            }
+        }
+
+        private class TestOverrideClass : TestAbstractClass
+        {
+            private string PrivateField;
+            private string PrivatePro { get; set; }
+
+            public static TestOverrideClass CreateInstance()
+            {
+                TestOverrideClass result = new TestOverrideClass();
+                result.PublicPro = "PublicPro";
+                result.ProtectedPro = "ProtectedPro";
+                result.InternalPro = "InternalPro";
+                result.PrivatePro = "PrivatePro";
+                result.PublicField = "PublicField";
+                result.ProtectedField = "ProtectedField";
+                result.InternalField = "InternalField";
+                result.PrivateField = "PrivateField";
+                return result;
+            }
+
+            public override bool Equals(object obj)
+            {
+                TestOverrideClass c = obj as TestOverrideClass;
+                if (c == null) return false;
+                return base.Equals(obj)
+                       && string.Equals(PrivatePro, c.PrivatePro, StringComparison.Ordinal)
+                       && string.Equals(PrivateField, c.PrivateField, StringComparison.Ordinal);
+            }
+        }
     }
 }

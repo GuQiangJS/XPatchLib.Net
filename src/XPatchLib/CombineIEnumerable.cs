@@ -33,7 +33,7 @@ namespace XPatchLib
             Type t;
             if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, out t))
             {
-                GenericArgumentType = TypeExtendContainer.GetTypeExtend(t, null, pType);
+                GenericArgumentType = TypeExtendContainer.GetTypeExtend(pType.Setting, t, null, pType);
 
                 GenericArgumentTypePrimaryKeyAttribute = GenericArgumentType.PrimaryKeyAttr;
 
@@ -58,7 +58,7 @@ namespace XPatchLib
         /// <returns></returns>
         protected override object CombineAction(ITextReader pReader, object pOriObject, string pName)
         {
-            var kvs = KeyValuesObject.Translate(pOriObject as IEnumerable);
+            var kvs = KeyValuesObject.Translate(pOriObject as IEnumerable, pReader.Setting);
             while (!pReader.EOF)
             {
                 if (pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) &&
@@ -232,7 +232,7 @@ namespace XPatchLib
                 if (GenericArgumentType.IsBasicType)
                 {
                     var value = new KeyValuesObject(CombineBasic.CombineAction(GenericArgumentType.TypeCode,
-                        GenericArgumentType.IsGuid, pReader.Setting.Mode, pReader.GetValue()));
+                        GenericArgumentType.IsGuid, pReader.Setting.Mode, pReader.GetValue()), pReader.Setting);
                     //当时基础类型时，按照基础类型获取所有的方式查找索引。
 
                     o = pOriEnumerable.FirstOrDefault(x => x.Equals(value));

@@ -181,15 +181,97 @@ namespace XPatchLib
         {
             return type.GetTypeInfo().ImplementedInterfaces;
         }
+        
+        public static IEnumerable<FieldInfo> GetFields(this Type type, BindingFlags bindingFlags)
+        {
+            IList<FieldInfo> fields = (bindingFlags.HasFlag(BindingFlags.DeclaredOnly))
+                ? type.GetTypeInfo().DeclaredFields.ToList()
+                : type.GetTypeInfo().GetFieldsRecursive();
+
+            return fields.Where(f => TestAccessibility(f, bindingFlags)).ToList();
+        }
+
+        private static IList<FieldInfo> GetFieldsRecursive(this TypeInfo type)
+        {
+            TypeInfo t = type;
+            IList<FieldInfo> fields = new List<FieldInfo>();
+            while (t != null)
+            {
+                foreach (FieldInfo member in t.DeclaredFields)
+                {
+                    if (!fields.Any(p => p.Name == member.Name))
+                    {
+                        fields.Add(member);
+                    }
+                }
+                t = (t.BaseType != null) ? t.BaseType.GetTypeInfo() : null;
+            }
+
+            return fields;
+        }
 
         internal static PropertyInfo GetProperty(this Type type, string name)
         {
             return type.GetProperty(name, DefaultFlags);
         }
 
+        internal static IEnumerable<PropertyInfo> GetProperties(this Type type, BindingFlags bindingFlags)
+        {
+            IList<PropertyInfo> properties = (bindingFlags.HasFlag(BindingFlags.DeclaredOnly))
+                ? type.GetTypeInfo().DeclaredProperties.ToList()
+                : type.GetTypeInfo().GetPropertiesRecursive();
+
+            return properties.Where(p => TestAccessibility(p, bindingFlags));
+        }
+
+        private static IList<PropertyInfo> GetPropertiesRecursive(this TypeInfo type)
+        {
+            TypeInfo t = type;
+            IList<PropertyInfo> properties = new List<PropertyInfo>();
+            while (t != null)
+            {
+                foreach (PropertyInfo member in t.DeclaredProperties)
+                {
+                    if (!properties.Any(p => p.Name == member.Name))
+                    {
+                        properties.Add(member);
+                    }
+                }
+                t = (t.BaseType != null) ? t.BaseType.GetTypeInfo() : null;
+            }
+
+            return properties;
+        }
+
+        public static FieldInfo GetField(this Type type, string member)
+        {
+            return type.GetField(member, DefaultFlags);
+        }
+
+        public static FieldInfo GetField(this Type type, string name, BindingFlags bindingFlags)
+        {
+            Type t = type;
+            FieldInfo result = null;
+            while (t != null)
+            {
+                result = t.GetTypeInfo().GetDeclaredField(name);
+                if (result != null) return result;
+                t = (t.BaseType() != null) ? t.BaseType() : null;
+            }
+            return null;
+        }
+
         internal static PropertyInfo GetProperty(this Type type, string name, BindingFlags bindingFlags)
         {
-            return type.GetTypeInfo().GetDeclaredProperty(name);
+            Type t = type;
+            PropertyInfo result = null;
+            while (t!= null)
+            {
+                result = t.GetTypeInfo().GetDeclaredProperty(name);
+                if (result != null) return result;
+                t = (t.BaseType() != null) ? t.BaseType() : null;
+            }
+            return null;
         }
 
         internal static Type[] GetGenericArguments(this Type type)

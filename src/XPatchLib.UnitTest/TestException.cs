@@ -26,7 +26,7 @@ namespace XPatchLib.UnitTest
             string attrName = typeof(PrimaryKeyAttribute).Name;
             try
             {
-                new KeyValuesObject(author);
+                new KeyValuesObject(author, DefaultXmlSerializeSetting);
             }
             catch (AttributeMissException ex)
             {

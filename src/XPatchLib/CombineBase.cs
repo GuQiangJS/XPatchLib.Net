@@ -45,14 +45,14 @@ namespace XPatchLib
                 return null;
 
 #if NET || NETSTANDARD_2_0_UP
-            if (pOriObject!=null)
+            if (pReader.Setting.EnableOnDeserializingAttribute && pOriObject != null)
                 Type.InvokeOnDeserializing(pOriObject,new System.Runtime.Serialization.StreamingContext());
 #endif
 
             Object result = CombineAction(pReader, pOriObject, pName);
 
 #if NET || NETSTANDARD_2_0_UP
-            if (pOriObject != null)
+            if (pReader.Setting.EnableOnDeserializedAttribute && pOriObject != null)
                 Type.InvokeOnDeserialized(pOriObject, new System.Runtime.Serialization.StreamingContext());
 #endif
             return result;

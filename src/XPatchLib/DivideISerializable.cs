@@ -70,7 +70,8 @@ namespace XPatchLib
             {
                 foreach(SerializationEntry revPro in revSerializationInfo)
                 {
-                    TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(revPro.ObjectType, Writer.IgnoreAttributeType, null);
+                    TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(Writer.Setting, revPro.ObjectType,
+                        Writer.IgnoreAttributeType, null);
                     DivideCore ser = new DivideCore(Writer, typeExtend);
 
                     s.Enqueue(revPro.Name);

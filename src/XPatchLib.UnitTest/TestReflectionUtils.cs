@@ -4,10 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Reflection;
 using XPatchLib.UnitTest.TestClass;
 #if NUNIT
 using NUnit.Framework;
+
 #elif XUNIT
 using Xunit;
 using Test = Xunit.FactAttribute;
@@ -17,14 +17,25 @@ using Assert = XPatchLib.UnitTest.XUnitAssert;
 namespace XPatchLib.UnitTest
 {
     [TestFixture]
-    public class TestReflectionUtils
+    public class TestReflectionUtils:TestBase
     {
         public void GetNullTypeFriendlyNameTest()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                ReflectionUtils.GetTypeFriendlyName(null);
-            });
+            Assert.Throws<ArgumentNullException>(() => { ReflectionUtils.GetTypeFriendlyName(null); });
+        }
+        
+
+        private class TestReflectionClass
+        {
+            public string B1;
+
+            private string B2;
+            protected string B3;
+            internal string B4;
+            public string A1 { get; set; }
+            private string A2 { get; set; }
+            protected string A3 { get; set; }
+            internal string A4 { get; set; }
         }
 
         [Test]
@@ -94,167 +105,80 @@ namespace XPatchLib.UnitTest
             Assert.AreEqual(typeof(DateTime), valueType);
         }
 
+
         [Test]
         [Description("测试查找参与序列化的字段或属性")]
         public void TestGetSetProperty()
         {
-            MemberWrapper[] publicMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassPublicPropertyGetSet), null);
-            Assert.AreEqual(1, publicMember.Length);
-            Assert.AreEqual(nameof(ClassPublicPropertyGetSet.A), publicMember[0].Name);
-            Assert.IsNotNull(publicMember[0].MemberInfo as PropertyInfo);
-            Assert.IsTrue(publicMember[0].IsProperty);
+            MemberWrapper[] member = null;
+            member = ReflectionUtils.GetFieldsToBeSerialized(DefaultXmlSerializeSetting, typeof(TestReflectionClass),
+                null);
+            Assert.AreEqual(1, member.Length);
+            Assert.AreEqual(nameof(TestReflectionClass.A1), member[0].Name);
+            Assert.IsTrue(member[0].IsProperty);
 
-            MemberWrapper[] privateMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassPrivatePropertyGetSet), null);
-            Assert.AreEqual(0, privateMember.Length);
+            member = ReflectionUtils.GetFieldsToBeSerialized(
+                new XmlSerializeSetting() {MemberType = SerializeMemberType.Property}, typeof(TestReflectionClass),
+                null);
+            Assert.AreEqual(1, member.Length);
+            Assert.AreEqual(nameof(TestReflectionClass.A1), member[0].Name);
+            Assert.IsTrue(member[0].IsProperty);
 
-            MemberWrapper[] protectedMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassProtectedPropertyGetSet), null);
-            Assert.AreEqual(0, protectedMember.Length);
+            member = ReflectionUtils.GetFieldsToBeSerialized(
+                new XmlSerializeSetting { MemberType = SerializeMemberType.Field}, typeof(TestReflectionClass),
+                null);
+            Assert.AreEqual(1, member.Length);
+            Assert.AreEqual(nameof(TestReflectionClass.B1), member[0].Name);
+            Assert.IsFalse(member[0].IsProperty);
 
-            MemberWrapper[] internalMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassInternalPropertyGetSet), null);
-            Assert.AreEqual(0, internalMember.Length);
-        }
+            member = ReflectionUtils.GetFieldsToBeSerialized(
+                new XmlSerializeSetting { Modifier = SerializeMemberModifier.Private}, typeof(TestReflectionClass),
+                null);
+            Assert.AreEqual(1, member.Length);
+            Assert.AreEqual("A2", member[0].Name);
+            Assert.IsTrue(member[0].IsProperty);
 
-        [Test]
-        [Description("测试查找参与序列化的字段或属性")]
-        public void TestOnlyGetProperty()
-        {
-            MemberWrapper[] publicMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassPublicPropertyGetOnly), null);
-            Assert.AreEqual(0, publicMember.Length);
+            member = ReflectionUtils.GetFieldsToBeSerialized(
+                new XmlSerializeSetting
+                {
+                    Modifier = SerializeMemberModifier.Private,
+                    MemberType = SerializeMemberType.Property
+                }, typeof(TestReflectionClass), null);
+            Assert.AreEqual(1, member.Length);
+            Assert.AreEqual("A2", member[0].Name);
+            Assert.IsTrue(member[0].IsProperty);
 
-            MemberWrapper[] privateMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassPrivatePropertyGetOnly), null);
-            Assert.AreEqual(0, privateMember.Length);
+            member = ReflectionUtils.GetFieldsToBeSerialized(
+                new XmlSerializeSetting { Modifier = SerializeMemberModifier.NonPublic}, typeof(TestReflectionClass),
+                null);
+            Assert.AreEqual(3, member.Length);
+            Assert.AreEqual("A2", member[0].Name);
+            Assert.AreEqual("A3", member[1].Name);
+            Assert.AreEqual("A4", member[2].Name);
+            Assert.IsTrue(member[0].IsProperty);
+            Assert.IsTrue(member[1].IsProperty);
+            Assert.IsTrue(member[2].IsProperty);
 
-            MemberWrapper[] protectedMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassProtectedPropertyGetOnly), null);
-            Assert.AreEqual(0, protectedMember.Length);
-
-            MemberWrapper[] internalMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassInternalPropertyGetOnly), null);
-            Assert.AreEqual(0, internalMember.Length);
-        }
-
-        [Test]
-        [Description("测试查找参与序列化的字段或属性")]
-        public void TestOnlySetProperty()
-        {
-            MemberWrapper[] publicMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassPublicPropertySetOnly), null);
-            Assert.AreEqual(0, publicMember.Length);
-
-            MemberWrapper[] privateMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassPrivatePropertySetOnly), null);
-            Assert.AreEqual(0, privateMember.Length);
-
-            MemberWrapper[] protectedMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassProtectedPropertySetOnly), null);
-            Assert.AreEqual(0, protectedMember.Length);
-
-            MemberWrapper[] internalMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassInternalPropertySetOnly), null);
-            Assert.AreEqual(0, internalMember.Length);
-        }
-        
-        [Test]
-        [Description("测试查找参与序列化的字段或属性")]
-        public void TestField()
-        {
-            MemberWrapper[] publicMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassPublicField), null);
-            Assert.AreEqual(1, publicMember.Length);
-            Assert.AreEqual(nameof(ClassPublicPropertyGetSet.A), publicMember[0].Name);
-            Assert.IsNotNull(publicMember[0].MemberInfo as FieldInfo);
-            Assert.IsFalse(publicMember[0].IsProperty);
-
-            MemberWrapper[] privateMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassPrivateField), null);
-            Assert.AreEqual(0, privateMember.Length);
-
-            MemberWrapper[] protectedMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassProtectedField), null);
-            Assert.AreEqual(0, protectedMember.Length);
-
-            MemberWrapper[] internalMember =
-                ReflectionUtils.GetFieldsToBeSerialized(typeof(ClassInternalField), null);
-            Assert.AreEqual(0, internalMember.Length);
-        }
-
-        public class ClassPublicPropertyGetSet
-        {
-            public string A { get; set; }
-        }
-
-        public class ClassPrivatePropertyGetSet
-        {
-            private string A { get; set; }
-        }
-
-        public class ClassProtectedPropertyGetSet
-        {
-            protected string A { get; set; }
-        }
-
-        public class ClassInternalPropertyGetSet
-        {
-            internal string A { get; set; }
-        }
-
-        public class ClassPublicPropertyGetOnly
-        {
-            public string A { get; }
-        }
-        public class ClassPrivatePropertyGetOnly
-        {
-            private string A { get; }
-        }
-        public class ClassProtectedPropertyGetOnly
-        {
-            protected string A { get; }
-        }
-        public class ClassInternalPropertyGetOnly
-        {
-            internal string A { get; }
-        }
-
-
-        public class ClassPublicPropertySetOnly
-        {
-            public string A { get; }
-        }
-        public class ClassPrivatePropertySetOnly
-        {
-            private string A { get; }
-        }
-        public class ClassProtectedPropertySetOnly
-        {
-            protected string A { get; }
-        }
-        public class ClassInternalPropertySetOnly
-        {
-            internal string A { get; }
-        }
-
-
-        public class ClassPublicField
-        {
-            public string A;
-        }
-        public class ClassPrivateField
-        {
-            private string A;
-        }
-        public class ClassProtectedField
-        {
-            protected string A;
-        }
-        public class ClassInternalField
-        {
-            internal string A;
+            member = ReflectionUtils.GetFieldsToBeSerialized(
+                new XmlSerializeSetting
+                {
+                    MemberType = SerializeMemberType.All,
+                    Modifier = SerializeMemberModifier.NonPublic
+                }, typeof(TestReflectionClass),
+                null);
+            Assert.AreEqual(6, member.Length);
+            Assert.AreEqual("A2", member[0].Name);
+            Assert.AreEqual("A3", member[1].Name);
+            Assert.AreEqual("A4", member[2].Name);
+            Assert.AreEqual("B2", member[3].Name);
+            Assert.AreEqual("B3", member[4].Name);
+            Assert.AreEqual("B4", member[5].Name);
+            Assert.IsTrue(member[0].IsProperty);
+            Assert.IsTrue(member[1].IsProperty);
+            Assert.IsTrue(member[2].IsProperty);
+            Assert.IsFalse(member[3].IsProperty);
+            Assert.IsFalse(member[4].IsProperty);
+            Assert.IsFalse(member[5].IsProperty);
         }
     }
 }

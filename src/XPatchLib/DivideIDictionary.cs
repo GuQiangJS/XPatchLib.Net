@@ -33,7 +33,8 @@ namespace XPatchLib
                 throw new ArgumentException("类型需要是字典类型");
             Type t = null;
             if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, out t))
-                GenericArgumentType = TypeExtendContainer.GetTypeExtend(t, Writer.IgnoreAttributeType, pType);
+                GenericArgumentType =
+                    TypeExtendContainer.GetTypeExtend(pWriter.Setting, t, Writer.IgnoreAttributeType, pType);
             else
                 throw new ArgumentOutOfRangeException(pType.OriType.FullName);
         }
@@ -67,8 +68,8 @@ namespace XPatchLib
             IEnumerable pOriItems = pOriObject as IEnumerable;
             IEnumerable pRevItems = pRevObject as IEnumerable;
 
-            KeyValuesObject[] oriKey = Translate(pOriItems);
-            KeyValuesObject[] revKey = Translate(pRevItems);
+            KeyValuesObject[] oriKey = Translate(pOriItems, Writer.Setting);
+            KeyValuesObject[] revKey = Translate(pRevItems, Writer.Setting);
             if (pAttach == null)
                 pAttach = new DivideAttachment();
             //将当前节点加入附件中，如果遇到子节点被写入前，会首先根据队列先进先出写入附件中的节点的开始标记
@@ -105,7 +106,7 @@ namespace XPatchLib
 
         #region Private Methods
 
-        private static KeyValuesObject[] Translate(IEnumerable pValue)
+        private static KeyValuesObject[] Translate(IEnumerable pValue,ISerializeSetting pSetting)
         {
             if (pValue != null)
             {
@@ -118,7 +119,7 @@ namespace XPatchLib
                         Object key =
                             enumerator.Current.GetType().GetProperty(ConstValue.KEY).GetValue(enumerator.Current, null);
 
-                        result.Enqueue(new KeyValuesObject(enumerator.Current, key));
+                        result.Enqueue(new KeyValuesObject(enumerator.Current, key, pSetting));
                     }
                 return result.ToArray();
             }

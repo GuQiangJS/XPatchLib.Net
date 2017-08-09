@@ -47,8 +47,8 @@ namespace XPatchLib
                 {
                     string proName = pReader.Name;
                     object newValue =
-                        new CombineCore(TypeExtendContainer.GetTypeExtend(typeof(string), null, null)).Combine(
-                            pReader, null, proName);
+                        new CombineCore(TypeExtendContainer.GetTypeExtend(pReader.Setting, typeof(string), null, null))
+                            .Combine(pReader, null, proName);
                     serializationInfo.AddValue(proName, newValue);
                 }
                 pReader.Read();

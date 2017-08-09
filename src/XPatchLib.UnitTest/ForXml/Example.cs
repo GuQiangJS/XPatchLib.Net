@@ -582,6 +582,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = new XmlTextWriter(stream, new UTF8Encoding(false)))
                 {
+                    writer.Setting.MemberType=SerializeMemberType.Field;
                     serializer.Divide(writer, null, c1);
                     stream.Position = 0;
                     using (var stremReader = new StreamReader(stream, Encoding.UTF8))

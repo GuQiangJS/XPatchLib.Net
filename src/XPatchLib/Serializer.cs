@@ -3,10 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Xml;
+
 #if (NET_35_UP || NETSTANDARD)
 using System.Xml.Linq;
 #endif
@@ -31,10 +33,55 @@ namespace XPatchLib
     /// </example>
     public class Serializer
     {
+        private bool _needRegistTypes;
+        private IDictionary<Type, String[]> _registerTypes;
+
+        private void RegisterTypes(ISerializeSetting pSetting)
+        {
+            if (_needRegistTypes && _registerTypes != null && _registerTypes.Count > 0)
+            {
+                ReflectionUtils.RegisterTypes(pSetting, _registerTypes);
+                _needRegistTypes = false;
+            }
+        }
+
+        private void InitType(ISerializeSetting pSetting, Type pType, Type pIgnoreAttributeType)
+        {
+            _type = TypeExtendContainer.GetTypeExtend(pSetting, pType, pIgnoreAttributeType, null);
+        }
+
+        /// <summary>
+        ///     类型与主键集合
+        /// </summary>
+        public struct RegisterType
+        {
+            /// <summary>
+            ///     初始化 <c> Serializer </c> 类的新实例。
+            /// </summary>
+            /// <param name="pType">待注册主键的类型。</param>
+            /// <param name="pKeys">待注册的主键名称集合。</param>
+            public RegisterType(Type pType, string[] pKeys)
+            {
+                Guard.ArgumentNotNull(pType, nameof(pType));
+                Guard.ArgumentNotNullOrEmpty(pKeys, nameof(pKeys));
+                Type = pType;
+                Keys = pKeys;
+            }
+
+            /// <summary>
+            /// 获取注册主键的类型。
+            /// </summary>
+            public Type Type { get; }
+            /// <summary>
+            /// 获取注册主键的名称集合。
+            /// </summary>
+            public string[] Keys { get; }
+        }
+
         #region Private Fields
 
         /// <summary>
-        /// 初始类型。
+        ///     初始类型。
         /// </summary>
         private readonly Type _initialType;
 
@@ -48,20 +95,28 @@ namespace XPatchLib
         ///     初始化 <c> Serializer </c> 类的新实例。
         /// </summary>
         /// <param name="pType">此 <see cref="Serializer" /> 可序列化的对象的类型。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="pType"/> 为 <c>null</c> 时。</exception>
-        public Serializer(Type pType) : this(pType, true, true) { }
+        /// <exception cref="ArgumentNullException"><paramref name="pType" /> 为 <c>null</c> 时。</exception>
+        public Serializer(Type pType) : this(pType, true, true)
+        {
+        }
 
-        private Serializer(Type pType,bool pClearTypeExtends,bool pClearKeyAttributes) {
-
-            if(pType==null)
+        private Serializer(Type pType, bool pClearTypeExtends, bool pClearKeyAttributes)
+        {
+            if (pType == null)
                 throw new ArgumentNullException(nameof(pType));
 
 
-            if(pClearTypeExtends && pClearKeyAttributes)
+            if (pClearTypeExtends && pClearKeyAttributes)
+            {
                 TypeExtendContainer.ClearAll();
-            else if(pClearTypeExtends)
+                CombineInstanceContainer.Clear();
+            }
+            else if (pClearTypeExtends)
+            {
                 TypeExtendContainer.ClearTypeExtends();
-            else if(pClearKeyAttributes)
+                CombineInstanceContainer.Clear();
+            }
+            else if (pClearKeyAttributes)
                 TypeExtendContainer.ClearKeyAttributes();
             _initialType = pType;
         }
@@ -93,7 +148,7 @@ namespace XPatchLib
         /// <example>
         ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="Serializer" and @method="Combine"]/*' />
         /// </example>
-        /// <seealso cref="Combine(XPatchLib.ITextReader,object,bool)"/>
+        /// <seealso cref="Combine(XPatchLib.ITextReader,object,bool)" />
         public object Combine(ITextReader pReader, Object pOriValue)
         {
             return Combine(pReader, pOriValue, false);
@@ -123,17 +178,19 @@ namespace XPatchLib
         /// <example>
         ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="Serializer" and @method="Combine"]/*' />
         /// </example>
-        /// <seealso cref="Combine(XPatchLib.ITextReader,object)"/>
+        /// <seealso cref="Combine(XPatchLib.ITextReader,object)" />
         [SuppressMessage("Microsoft.Usage", "CA2202:不要多次释放对象")]
         public object Combine(ITextReader pReader, object pOriValue, bool pOverride)
         {
             Guard.ArgumentNotNull(pReader, "pReader");
-            
-            InitType(_initialType, null);
+
+            InitType(pReader.Setting, _initialType, null);
+            RegisterTypes(pReader.Setting);
 
             object cloneObjValue = null;
             //当原始值不为Null时，需要先对原始值进行克隆，否则做数据合并时会侵入到原始数据
             if (pOriValue != null)
+            {
                 if (pOverride)
                 {
                     cloneObjValue = pOriValue;
@@ -147,6 +204,7 @@ namespace XPatchLib
                         using (XmlTextWriter writer = new XmlTextWriter(stream, new UTF8Encoding(false)))
                         {
                             writer.IgnoreAttributeType = null;
+                            writer.Setting = pReader.Setting.Clone() as ISerializeSetting;
                             writer.Setting.SerializeDefalutValue = true;
                             new Serializer(_initialType, true, false).Divide(writer, null, pOriValue);
 #if DEBUG
@@ -159,7 +217,7 @@ namespace XPatchLib
 #else
                                 XmlDocument xDoc = new XmlDocument();
                                 xDoc.Load(stream);
-                                System.Diagnostics.Debug.WriteLine(xDoc.InnerXml);
+                                Debug.WriteLine(xDoc.InnerXml);
                                 xDoc = null;
 #endif
                             }
@@ -172,7 +230,6 @@ namespace XPatchLib
                             {
                                 cloneObjValue =
                                     new Serializer(_initialType, true, false).Combine(reader, null, true);
-
                             }
                         }
                     }
@@ -182,17 +239,17 @@ namespace XPatchLib
                             stream.Dispose();
                     }
                 }
+            }
             else
             {
                 //如果是ISerializable接口派生类，则不主动创建实例
                 if (!_type.IsISerializable)
-                {
                     cloneObjValue = _type.CreateInstance();
-                }
             }
 
             //var ele = XElement.Load(pReader, LoadOptions.None);
-            return CombineInstanceContainer.GetCombineInstance(_type).Combine(pReader, cloneObjValue, _type.TypeFriendlyName);
+            return CombineInstanceContainer.GetCombineInstance(_type)
+                .Combine(pReader, cloneObjValue, _type.TypeFriendlyName);
         }
 
         /// <summary>
@@ -221,7 +278,8 @@ namespace XPatchLib
         {
             Guard.ArgumentNotNull(pWriter, "pWriter");
 
-            InitType(_initialType, pWriter.IgnoreAttributeType);
+            InitType(pWriter.Setting, _initialType, pWriter.IgnoreAttributeType);
+            RegisterTypes(pWriter.Setting);
 
             pWriter.WriteStartDocument();
             if (new DivideCore(pWriter, _type).Divide(_type.TypeFriendlyName,
@@ -231,10 +289,10 @@ namespace XPatchLib
         }
 
         /// <summary>
-        ///     向 <see cref="Serializer" /> 注册类型与主键集合的键值对集合。
+        ///     向 <see cref="Serializer" /> 注册类型与主键集合。
         /// </summary>
         /// <param name="pTypes">
-        ///     类型与主键集合的键值对集合。
+        ///     类型与主键集合。
         /// </param>
         /// <remarks>
         ///     在无法修改类型定义，为其增加或修改 <see cref="PrimaryKeyAttribute" /> 的情况下， 可以在调用
@@ -250,18 +308,43 @@ namespace XPatchLib
         ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="Serializer" and @method="RegisterTypes"]/*' />
         /// </example>
         [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-        public void RegisterTypes(IDictionary<Type, string[]> pTypes)
+        public void RegisterTypes(RegisterType[] pTypes)
         {
-            Guard.ArgumentNotNull(pTypes, "pTypes");
+            Guard.ArgumentNotNull(pTypes, nameof(pTypes));
 
-            ReflectionUtils.RegisterTypes(pTypes);
+            if (pTypes != null && pTypes.Length > 0)
+            {
+                _needRegistTypes = true;
+                _registerTypes = new Dictionary<Type, string[]>(pTypes.Length);
+                foreach (RegisterType type in pTypes)
+                    _registerTypes.Add(type.Type, type.Keys);
+            }
+        }
+
+        /// <summary>
+        ///     向 <see cref="Serializer" /> 注册类型与主键集合。
+        /// </summary>
+        /// <param name="pType">
+        ///     类型与主键集合。
+        /// </param>
+        /// <remarks>
+        ///     在无法修改类型定义，为其增加或修改 <see cref="PrimaryKeyAttribute" /> 的情况下， 可以在调用
+        ///     <c>
+        ///         Divide
+        ///     </c>
+        ///     或 <c> Combine </c> 方法前，调用此方法，传入需要修改的Type及与其对应的主键名称集合。 系统在处理时会按照传入的设置进行处理。
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">
+        ///     当参数 <paramref name="pType" /> is null 时。
+        /// </exception>
+        /// <seealso cref="RegisterTypes(RegisterType[])" />
+        public void RegisterTypes(RegisterType pType)
+        {
+            Guard.ArgumentNotNull(pType, nameof(pType));
+
+            RegisterTypes(new[] {pType});
         }
 
         #endregion Public Methods
-
-        void InitType(Type pType,Type pIgnoreAttributeType)
-        {
-            _type = TypeExtendContainer.GetTypeExtend(pType, pIgnoreAttributeType, null);
-        }
     }
 }

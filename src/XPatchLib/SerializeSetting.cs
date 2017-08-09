@@ -11,13 +11,98 @@ namespace XPatchLib
     /// </summary>
     public abstract class SerializeSetting : ISerializeSetting, INotifyPropertyChanged
     {
-        private SerializeMemberType _memberType = SerializeMemberType.All;
+        private string _actionName = "Action";
+        private SerializeMemberType _memberType = SerializeMemberType.Property;
+
+        private DateTimeSerializationMode _mode = DateTimeSerializationMode.RoundtripKind;
+        private SerializeMemberModifier _modifier = SerializeMemberModifier.Public;
+
+#if NET || NETSTANDARD_2_0_UP
+        /// <summary>
+        /// 获取或设置序列化时是否支持 <see cref="System.Runtime.Serialization.OnSerializingAttribute"/>。
+        /// </summary>
+        /// <value>默认值：<c>true</c> 。</value>
+        public virtual bool EnableOnSerializingAttribute
+        {
+            get { return _enableOnSerializingAttribute; }
+            set
+            {
+                if (_enableOnSerializingAttribute != value)
+                {
+                    _enableOnSerializingAttribute = value;
+                    OnPropertyChanged(nameof(EnableOnSerializingAttribute));
+                }
+            }
+        }
 
         /// <summary>
-        ///     获取或设置在产生增量时类或结构中哪些成员参与序列化。
+        /// 获取或设置序列化时是否支持 <see cref="System.Runtime.Serialization.OnSerializedAttribute"/>。
         /// </summary>
-        /// <value>默认为 <see cref="SerializeMemberType.All" />。</value>
-        [Obsolete("暂时无效，暂时会获取所有Property和Field，但是必须同时存在Get,Set")]
+        /// <value>默认值：<c>true</c> 。</value>
+        public virtual bool EnableOnSerializedAttribute
+        {
+            get { return _enableOnSerializedAttribute; }
+            set
+            {
+                if (_enableOnSerializedAttribute != value)
+                {
+                    _enableOnSerializedAttribute = value;
+                    OnPropertyChanged(nameof(EnableOnSerializedAttribute));
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置反序列化时是否支持 <see cref="System.Runtime.Serialization.OnDeserializedAttribute"/>。
+        /// </summary>
+        /// <value>默认值：<c>true</c> 。</value>
+        public virtual bool EnableOnDeserializedAttribute
+        {
+            get { return _enableOnDeserializedAttribute; }
+            set
+            {
+                if (_enableOnDeserializedAttribute != value)
+                {
+                    _enableOnDeserializedAttribute = value;
+                    OnPropertyChanged(nameof(EnableOnDeserializedAttribute));
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置反序列化时是否支持 <see cref="System.Runtime.Serialization.OnDeserializingAttribute"/>。
+        /// </summary>
+        /// <value>默认值：<c>true</c> 。</value>
+        public virtual bool EnableOnDeserializingAttribute
+        {
+            get { return _enableOnDeserializingAttribute; }
+            set
+            {
+                if (_enableOnDeserializingAttribute != value)
+                {
+                    _enableOnDeserializingAttribute = value;
+                    OnPropertyChanged(nameof(EnableOnDeserializingAttribute));
+                }
+            }
+        }
+#endif
+
+
+        private bool _serializeDefalutValue;
+        private bool _enableOnSerializingAttribute = true;
+        private bool _enableOnSerializedAttribute = true;
+        private bool _enableOnDeserializedAttribute = true;
+        private bool _enableOnDeserializingAttribute = true;
+
+        /// <summary>
+        ///     在更改属性值时发生。
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        ///     获取或设置在产生增量时类或结构中哪些类型的成员参与序列化。
+        /// </summary>
+        /// <value>默认为 <see cref="SerializeMemberType.Property" />。</value>
         public virtual SerializeMemberType MemberType
         {
             get { return _memberType; }
@@ -31,16 +116,22 @@ namespace XPatchLib
             }
         }
 
-        private string _actionName = "Action";
-
-        private DateTimeSerializationMode _mode = DateTimeSerializationMode.RoundtripKind;
-
-        private bool _serializeDefalutValue;
-
         /// <summary>
-        ///     在更改属性值时发生。
+        ///     获取或设置在产生增量时类或结构中哪些修饰符的成员参与序列化。
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        /// <value>默认为 <see cref="SerializeMemberModifier.Public" />。</value>
+        public virtual SerializeMemberModifier Modifier
+        {
+            get { return _modifier; }
+            set
+            {
+                if (_modifier != value)
+                {
+                    _modifier = value;
+                    OnPropertyChanged(nameof(Modifier));
+                }
+            }
+        }
 
         /// <summary>
         ///     获取或设置在字符串与 <see cref="DateTime" /> 之间转换时，如何处理时间值。
@@ -115,27 +206,10 @@ namespace XPatchLib
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
 
-    /// <summary>
-    /// 指定产生增量时类或结构中哪些成员参与序列化。
-    /// </summary>
-    public enum SerializeMemberType
-    {
-        /// <summary>
-        /// 只包含属性
-        /// </summary>
-        /// <summary>https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/properties</summary>
-        PropertyOnly,
-        /// <summary>
-        /// 只包含字段
-        /// </summary>
-        /// <summary>https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/fields</summary>
-        FieldOnly,
-        /// <summary>
-        /// 属性及字段
-        /// </summary>
-        All= FieldOnly | PropertyOnly
+        /// <summary>创建作为当前实例副本的新对象。</summary>
+        /// <returns>作为此实例副本的新对象。</returns>
+        /// <filterpriority>2</filterpriority>
+        public abstract object Clone();
     }
-
 }

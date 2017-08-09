@@ -33,7 +33,8 @@ namespace XPatchLib
             Type t = null;
             if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, out t))
             {
-                GenericArgumentType = TypeExtendContainer.GetTypeExtend(t, Writer.IgnoreAttributeType, pType);
+                GenericArgumentType =
+                    TypeExtendContainer.GetTypeExtend(pWriter.Setting, t, Writer.IgnoreAttributeType, pType);
 
                 GenericArgumentTypePrimaryKeyAttribute = GenericArgumentType.PrimaryKeyAttr;
 
@@ -53,7 +54,8 @@ namespace XPatchLib
         {
             Writer.WriteEndArray();
 #if NET || NETSTANDARD_2_0_UP
-            Type.InvokeOnSerialized(obj, new System.Runtime.Serialization.StreamingContext());
+            if(Writer.Setting.EnableOnSerializedAttribute)
+                Type.InvokeOnSerialized(obj, new System.Runtime.Serialization.StreamingContext());
 #endif
         }
 
@@ -74,8 +76,8 @@ namespace XPatchLib
 
             IEnumerable pOriItems = pOriObject as IEnumerable;
             IEnumerable pRevItems = pRevObject as IEnumerable;
-            IEnumerable<KeyValuesObject> oriObjects = KeyValuesObject.Translate(pOriItems);
-            IEnumerable<KeyValuesObject> revObjects = KeyValuesObject.Translate(pRevItems);
+            IEnumerable<KeyValuesObject> oriObjects = KeyValuesObject.Translate(pOriItems, Writer.Setting);
+            IEnumerable<KeyValuesObject> revObjects = KeyValuesObject.Translate(pRevItems, Writer.Setting);
 
             if (pAttach == null)
                 pAttach = new DivideAttachment();
