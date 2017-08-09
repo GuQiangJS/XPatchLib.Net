@@ -22,10 +22,10 @@
 
 相对于 [XmlSerializer](https://msdn.microsoft.com/en-us/library/system.xml.serialization.xmlserializer(v=vs.110).aspx) 增加如下功能：
 
-* 支持被不同 [访问修饰符](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/access-modifiers) 声明的成员参与序列化或反序列化。详见：[ISerializeSetting.Modifier](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/84d9897c-6316-c9d4-90c3-3c80753691a3.htm)。
+* 支持被不同 [访问修饰符](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/access-modifiers) 声明的成员参与序列化或反序列化。参见：[ISerializeSetting.Modifier](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/84d9897c-6316-c9d4-90c3-3c80753691a3.htm)。
 
 * 支持选择序列化或反序列化 [属性](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/properties)
-，[字段](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/fields)。详见：[ISerializeSetting.MemberType](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/d99d22aa-d2ce-68ec-a765-24ccaffd3441.htm)。
+，[字段](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/fields)。参见：[ISerializeSetting.MemberType](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/d99d22aa-d2ce-68ec-a765-24ccaffd3441.htm)。
 
 * 支持 [Nullable\<T\>](https://msdn.microsoft.com/zh-cn/library/b3h38hb0.aspx) 结构类型属性。
 
@@ -35,17 +35,17 @@
 
 * 支持 [ISerializable](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable.aspx) 实例 。
 
-* 支持在序列化时排除默认值。详见：([ISerializeSetting.SerializeDefalutValue](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/08b1d89e-1f80-5c11-319b-55fbcd78e888.htm))
+* 支持在序列化时排除默认值。参见：([ISerializeSetting.SerializeDefalutValue](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/08b1d89e-1f80-5c11-319b-55fbcd78e888.htm))
 
 * 支持将枚举序列化到其文本名称。
 
-* 支持自定义跳过属性序列化特性。详见：([ITextWriter.IgnoreAttributeType](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/3b6ecafa-83a3-3cdd-568d-848b70f3f234.htm))
+* 支持自定义跳过属性序列化特性。参见：([ITextWriter.IgnoreAttributeType](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/3b6ecafa-83a3-3cdd-568d-848b70f3f234.htm))
 
 * 支持 [OnSerializingAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializingattribute(v=vs.110).aspx)
 ，[OnSerializedAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializedattribute(v=vs.110).aspx)
 ，[OnDeserializingAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.ondeserializingattribute(v=vs.110).aspx)
 ，[OnDeserializedAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.ondeserializedattribute(v=vs.110).aspx) 特性。
-同时支持在序列化或反序列化开始前关闭其中某一项或多项的支持。
+同时支持在序列化或反序列化开始前关闭其中某一项或多项的支持。参见：
 [ISerializeSetting.EnableOnSerializingAttribute](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/2415ef52-6307-c846-5843-1aaadea585f0.htm)
 ，[ISerializeSetting.EnableOnSerializedAttribute](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/18a0a8e8-54a4-0c66-a598-21e4fd9dfa4b.htm)
 ，[ISerializeSetting.EnableOnDeserializedAttribute](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/63752b2a-22fc-3bef-6ce6-2f7fd414dc6e.htm)
