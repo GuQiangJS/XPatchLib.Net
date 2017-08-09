@@ -580,12 +580,10 @@ namespace XPatchLib.UnitTest
             Serializer serializer = new Serializer(pType);
             if (pTypes != null && pTypes.Count > 0)
             {
-                List<Serializer.RegisterType> s = new List<Serializer.RegisterType>(pTypes.Count);
                 foreach (KeyValuePair<Type, string[]> pair in pTypes)
                 {
-                    s.Add(new Serializer.RegisterType(pair.Key, pair.Value));
+                    serializer.RegisterType(pair.Key, pair.Value);
                 }
-                serializer.RegisterTypes(s.ToArray());
             }
             StringBuilder sb = new StringBuilder();
             using (ITextWriter writer = CreateWriter(sb))

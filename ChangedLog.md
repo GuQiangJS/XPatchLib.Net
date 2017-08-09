@@ -1,3 +1,7 @@
+#### 3.0.3.2
+
+* 修正 - 修正 `Serializer.RegisterType` 方法签名。
+
 #### 3.0.3.1
 
 * 新增 - 支持选择不同访问修饰符成员的序列化或反序列化 [Private](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/private)

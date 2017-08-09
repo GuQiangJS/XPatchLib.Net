@@ -50,34 +50,6 @@ namespace XPatchLib
             _type = TypeExtendContainer.GetTypeExtend(pSetting, pType, pIgnoreAttributeType, null);
         }
 
-        /// <summary>
-        ///     类型与主键集合
-        /// </summary>
-        public struct RegisterType
-        {
-            /// <summary>
-            ///     初始化 <c> Serializer </c> 类的新实例。
-            /// </summary>
-            /// <param name="pType">待注册主键的类型。</param>
-            /// <param name="pKeys">待注册的主键名称集合。</param>
-            public RegisterType(Type pType, string[] pKeys)
-            {
-                Guard.ArgumentNotNull(pType, nameof(pType));
-                Guard.ArgumentNotNullOrEmpty(pKeys, nameof(pKeys));
-                Type = pType;
-                Keys = pKeys;
-            }
-
-            /// <summary>
-            /// 获取注册主键的类型。
-            /// </summary>
-            public Type Type { get; }
-            /// <summary>
-            /// 获取注册主键的名称集合。
-            /// </summary>
-            public string[] Keys { get; }
-        }
-
         #region Private Fields
 
         /// <summary>
@@ -291,41 +263,11 @@ namespace XPatchLib
         /// <summary>
         ///     向 <see cref="Serializer" /> 注册类型与主键集合。
         /// </summary>
-        /// <param name="pTypes">
-        ///     类型与主键集合。
-        /// </param>
-        /// <remarks>
-        ///     在无法修改类型定义，为其增加或修改 <see cref="PrimaryKeyAttribute" /> 的情况下， 可以在调用
-        ///     <c>
-        ///         Divide
-        ///     </c>
-        ///     或 <c> Combine </c> 方法前，调用此方法，传入需要修改的Type及与其对应的主键名称集合。 系统在处理时会按照传入的设置进行处理。
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">
-        ///     当参数 <paramref name="pTypes" /> is null 时。
-        /// </exception>
-        /// <example>
-        ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="Serializer" and @method="RegisterTypes"]/*' />
-        /// </example>
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-        public void RegisterTypes(RegisterType[] pTypes)
-        {
-            Guard.ArgumentNotNull(pTypes, nameof(pTypes));
-
-            if (pTypes != null && pTypes.Length > 0)
-            {
-                _needRegistTypes = true;
-                _registerTypes = new Dictionary<Type, string[]>(pTypes.Length);
-                foreach (RegisterType type in pTypes)
-                    _registerTypes.Add(type.Type, type.Keys);
-            }
-        }
-
-        /// <summary>
-        ///     向 <see cref="Serializer" /> 注册类型与主键集合。
-        /// </summary>
         /// <param name="pType">
-        ///     类型与主键集合。
+        ///     待注册的类型。
+        /// </param>
+        /// <param name="pPrimaryKeys">
+        ///     <paramref name="pType"/> 的主键名称集合。
         /// </param>
         /// <remarks>
         ///     在无法修改类型定义，为其增加或修改 <see cref="PrimaryKeyAttribute" /> 的情况下， 可以在调用
@@ -335,14 +277,20 @@ namespace XPatchLib
         ///     或 <c> Combine </c> 方法前，调用此方法，传入需要修改的Type及与其对应的主键名称集合。 系统在处理时会按照传入的设置进行处理。
         /// </remarks>
         /// <exception cref="ArgumentNullException">
-        ///     当参数 <paramref name="pType" /> is null 时。
+        ///     当参数 <paramref name="pType" /> 或 <paramref name="pPrimaryKeys"/> is null 时。
         /// </exception>
-        /// <seealso cref="RegisterTypes(RegisterType[])" />
-        public void RegisterTypes(RegisterType pType)
+        /// <exception cref="ArgumentException">
+        ///     当参数 <paramref name="pPrimaryKeys"/>.Length == 0 时。
+        /// </exception>
+        public void RegisterType(Type pType,string[] pPrimaryKeys)
         {
             Guard.ArgumentNotNull(pType, nameof(pType));
-
-            RegisterTypes(new[] {pType});
+            Guard.ArgumentNotNullOrEmpty(pPrimaryKeys, nameof(pPrimaryKeys));
+            
+            _needRegistTypes = true;
+            if(_registerTypes==null)
+                _registerTypes = new Dictionary<Type, string[]>();
+            _registerTypes.Add(pType, pPrimaryKeys);
         }
 
         #endregion Public Methods
