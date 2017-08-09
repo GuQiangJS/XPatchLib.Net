@@ -24,10 +24,10 @@
 
 * 支持选择不同访问修饰符成员的序列化或反序列化 [Private](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/private)
 ，[Protected](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/protected)
-，[Internal](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/internal) 。详见：[ISerializeSetting.Modifier]()。
+，[Internal](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/internal) 。详见：[ISerializeSetting.Modifier](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/84d9897c-6316-c9d4-90c3-3c80753691a3.htm)。
 
 * 支持选择序列化或反序列化 [属性](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/properties)
-，[字段](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/fields) 。详见：[ISerializeSetting.MemberType]()。
+，[字段](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/fields) 。详见：[ISerializeSetting.MemberType](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/d99d22aa-d2ce-68ec-a765-24ccaffd3441.htm)。
 
 * 支持 [Nullable\<T\>](https://msdn.microsoft.com/zh-cn/library/b3h38hb0.aspx) 结构类型属性。
 
@@ -48,10 +48,10 @@
 ，[OnDeserializingAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.ondeserializingattribute(v=vs.110).aspx)
 ，[OnDeserializedAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.ondeserializedattribute(v=vs.110).aspx) 特性。
 同时支持在序列化或反序列化开始前关闭其中某一项或多项的支持。
-[ISerializeSetting.EnableOnSerializingAttribute]()
-，[ISerializeSetting.EnableOnSerializedAttribute]()
-，[ISerializeSetting.EnableOnDeserializedAttribute]()
-，[ISerializeSetting.EnableOnDeserializingAttribute]()
+[ISerializeSetting.EnableOnSerializingAttribute](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/2415ef52-6307-c846-5843-1aaadea585f0.htm)
+，[ISerializeSetting.EnableOnSerializedAttribute](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/18a0a8e8-54a4-0c66-a598-21e4fd9dfa4b.htm)
+，[ISerializeSetting.EnableOnDeserializedAttribute](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/63752b2a-22fc-3bef-6ce6-2f7fd414dc6e.htm)
+，[ISerializeSetting.EnableOnDeserializingAttribute](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/2645e6e0-406d-4e9e-8190-34f4d2d86d42.htm)
   > 此功能仅在 `.NET Framework 2.0` 及以上版本 或 `.NET Standard 2.0` 及以上版本被支持。
 
 ## 性能对比
