@@ -22,12 +22,10 @@
 
 相对于 [XmlSerializer](https://msdn.microsoft.com/en-us/library/system.xml.serialization.xmlserializer(v=vs.110).aspx) 增加如下功能：
 
-* 支持选择不同访问修饰符成员的序列化或反序列化 [Private](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/private)
-，[Protected](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/protected)
-，[Internal](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/internal) 。详见：[ISerializeSetting.Modifier](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/84d9897c-6316-c9d4-90c3-3c80753691a3.htm)。
+* 支持被不同 [访问修饰符](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/access-modifiers) 声明的成员参与序列化或反序列化。详见：[ISerializeSetting.Modifier](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/84d9897c-6316-c9d4-90c3-3c80753691a3.htm)。
 
 * 支持选择序列化或反序列化 [属性](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/properties)
-，[字段](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/fields) 。详见：[ISerializeSetting.MemberType](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/d99d22aa-d2ce-68ec-a765-24ccaffd3441.htm)。
+，[字段](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/fields)。详见：[ISerializeSetting.MemberType](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/d99d22aa-d2ce-68ec-a765-24ccaffd3441.htm)。
 
 * 支持 [Nullable\<T\>](https://msdn.microsoft.com/zh-cn/library/b3h38hb0.aspx) 结构类型属性。
 
@@ -37,11 +35,11 @@
 
 * 支持 [ISerializable](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable.aspx) 实例 。
 
-* 支持在序列化时排除默认值。([ISerializeSetting.SerializeDefalutValue](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/08b1d89e-1f80-5c11-319b-55fbcd78e888.htm))
+* 支持在序列化时排除默认值。详见：([ISerializeSetting.SerializeDefalutValue](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/08b1d89e-1f80-5c11-319b-55fbcd78e888.htm))
 
 * 支持将枚举序列化到其文本名称。
 
-* 支持自定义跳过属性序列化特性。([ITextWriter.IgnoreAttributeType](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/3b6ecafa-83a3-3cdd-568d-848b70f3f234.htm))
+* 支持自定义跳过属性序列化特性。详见：([ITextWriter.IgnoreAttributeType](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/3b6ecafa-83a3-3cdd-568d-848b70f3f234.htm))
 
 * 支持 [OnSerializingAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializingattribute(v=vs.110).aspx)
 ，[OnSerializedAttribute](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.onserializedattribute(v=vs.110).aspx)
