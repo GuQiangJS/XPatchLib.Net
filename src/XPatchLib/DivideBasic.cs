@@ -4,6 +4,11 @@
 using System;
 using System.Globalization;
 using System.Xml;
+#if NETSTANDARD_1_0 || NETSTANDARD_1_1
+using XmlConvert=XPatchLib.XmlConvert;
+#else
+using XmlConvert=System.Xml.XmlConvert;
+#endif
 
 namespace XPatchLib
 {
@@ -244,6 +249,6 @@ namespace XPatchLib
             return string.Empty;
         }
 
-        #endregion Private Methods
+#endregion Private Methods
     }
 }

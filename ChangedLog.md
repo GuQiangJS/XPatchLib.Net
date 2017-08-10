@@ -1,3 +1,7 @@
+#### 3.0.4.1
+
+* 重构 - 支持 .NET Standard 1.0 。
+
 #### 3.0.3.2
 
 * 修正 - 修正 `Serializer.RegisterType` 方法签名。

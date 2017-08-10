@@ -14,7 +14,7 @@
 
 * .NET Framework 2.0 SP1 及以上版本
 
-* .NET Standard 1.3 及以上版本
+* .NET Standard 1.0 及以上版本
 
 可以在 Visual Studio 2008 及后续版本中使用 `XPatchLib`。
 

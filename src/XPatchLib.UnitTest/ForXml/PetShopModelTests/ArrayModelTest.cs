@@ -52,7 +52,9 @@ namespace XPatchLib.UnitTest.ForXml.PetShopModelTests
       <CardNumber>" + changedObjs[2].CreditCard.CardNumber + @"</CardNumber>
       <CardType>" + changedObjs[2].CreditCard.CardType + @"</CardType>
     </CreditCard>
-    <Date>" + XmlConvert.ToString(changedObjs[2].Date, XmlDateTimeSerializationMode.RoundtripKind) + @"</Date>
+    <Date>" +
+    XmlConvert.ToString(changedObjs[2].Date, XmlDateTimeSerializationMode.RoundtripKind) +
+    @"</Date>
     <OrderId>" + changedObjs[2].OrderId + @"</OrderId>
     <OrderTotal>" + changedObjs[2].OrderTotal + @"</OrderTotal>
     <UserId>" + changedObjs[2].UserId + @"</UserId>

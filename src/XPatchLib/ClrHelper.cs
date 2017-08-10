@@ -25,7 +25,11 @@ namespace XPatchLib
         public static Func<T> CreateInstanceFunc<T>(Type pType)
         {
             Guard.ArgumentNotNull(pType, "type");
+#if NETSTANDARD_1_0 || NETSTANDARD_1_1
+            ConstructorInfo emptyConstructor = pType.GetConstructor(EmptyArray<Type>.Value);
+#else
             ConstructorInfo emptyConstructor = pType.GetConstructor(Type.EmptyTypes);
+#endif
             if (emptyConstructor == null)
                 return null;
 #if NET

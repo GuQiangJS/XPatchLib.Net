@@ -432,4 +432,11 @@ namespace XPatchLib
         }
 #endif
     }
+
+#if NETSTANDARD_1_0 || NETSTANDARD_1_1
+    internal static class EmptyArray<T>
+    {
+        public static readonly T[] Value = new T[0];
+    }
+#endif
 }

@@ -8,7 +8,7 @@ namespace XPatchLib.UnitTest.TestClass
 {
     public class XmlIgnoreClass
     {
-#if (NET || NETSTANDARD_1_3_UP)
+#if (!NETSTANDARD_1_0 && !NETSTANDARD_1_3)
         [XmlIgnore]
 #endif
         public string A { get; set; }

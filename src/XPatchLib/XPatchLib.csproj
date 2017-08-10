@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net20;net35;net40;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net20;net35;net40;netstandard1.0;netstandard1.3</TargetFrameworks>
     <TargetFrameworks Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFrameworks>
     <!--
     <TargetFramework Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFramework>
@@ -11,8 +11,8 @@
     <Description>Patch Serialization Library for the .Net</Description>
     <Company />
     <Authors>Qiang Gu</Authors>
-    <FileVersion>3.0.3.2</FileVersion>
-    <VersionPrefix>3.0.3.2</VersionPrefix>
+    <FileVersion>3.0.4.1</FileVersion>
+    <VersionPrefix>3.0.4.1</VersionPrefix>
     <VersionSuffix Condition="'$(Configuration)'=='Debug'">DEBUG</VersionSuffix>
     <PackageLicenseUrl>https://github.com/GuQiangJS/XPatchLib.Net/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/GuQiangJS/XPatchLib.Net</PackageProjectUrl>
@@ -24,9 +24,6 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\XPatchLib.xml</DocumentationFile>
 </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
-    <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
-  </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net20'">
     <AssemblyTitle>XPatchLib 2.0</AssemblyTitle>
     <DefineConstants>NET;NET_20;NET_20_UP</DefineConstants>
@@ -53,6 +50,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <AssemblyTitle>XPatchLib Standard 2.0</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;NETSTANDARD_2_0;NETSTANDARD_1_0_UP;NETSTANDARD_1_1_UP;NETSTANDARD_1_3_UP;NETSTANDARD_1_5_UP;NETSTANDARD_2_0_UP</DefineConstants>
+    <DefineConstants>NETSTANDARD;NETSTANDARD_2_0;NETSTANDARD_1_0_UP;NETSTANDARD_1_1_UP;NETSTANDARD_1_3_UP;NETSTANDARD_2_0_UP</DefineConstants>
   </PropertyGroup>
 </Project>

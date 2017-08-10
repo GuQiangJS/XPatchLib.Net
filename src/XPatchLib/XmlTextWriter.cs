@@ -150,6 +150,7 @@ namespace XPatchLib
             _textWriter = w;
         }
 
+#if NET || NETSTANDARD_1_3_UP
         /// <summary>
         ///     使用指定的文件创建 <see cref="XmlTextWriter" /> 类的实例。
         /// </summary>
@@ -160,6 +161,7 @@ namespace XPatchLib
                 FileAccess.Write, FileShare.Read), pEncoding)
         {
         }
+#endif
 
         /// <summary>
         ///     以指定的 <paramref name="pWriter" /> 实例创建 <see cref="XmlTextWriter" /> 类型实例。
@@ -591,7 +593,7 @@ namespace XPatchLib
             }
         }
 
-        #region 来源：XmlTextEncoder
+#region 来源：XmlTextEncoder
 
         private void Write(string text)
         {
@@ -709,9 +711,9 @@ namespace XPatchLib
             _textWriter.Write(';');
         }
 
-        #endregion
+#endregion
 
-        #region
+#region
 
 #if NET || NETSTANDARD_2_0_UP
         /// <summary>
@@ -924,6 +926,6 @@ namespace XPatchLib
             InternalWriteString(pValue);
         }
 
-        #endregion
+#endregion
     }
 }
