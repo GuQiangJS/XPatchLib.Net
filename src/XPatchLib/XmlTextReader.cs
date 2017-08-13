@@ -125,6 +125,7 @@ namespace XPatchLib
         /// <summary>
         ///     获取当前节点的文本值。
         /// </summary>
+        /// <returns>返回当前节点的文本值。</returns>
         public string GetValue()
         {
             if (_value == null)
@@ -150,8 +151,9 @@ namespace XPatchLib
         }
 
         /// <summary>
-        ///     获取当前节点的特性名称与值的键值对字典
+        ///     获取当前节点的特性名称与值的键值对数组。
         /// </summary>
+        /// <returns>返回当前节点的特性名称与值的键值对数组。</returns>
         public string[,] GetAttributes()
         {
             return _attributes;
