@@ -126,6 +126,7 @@ namespace XPatchLib
             return Combine(pReader, pOriValue, false);
         }
 
+#if NET || NETSTANDARD_2_0
         /// <summary>
         ///     以可指定是否覆盖原始对象的方式反序列化指定 <see cref="ITextReader" /> 包含的增量文档，并与 原始对象 进行数据合并。
         /// </summary>
@@ -139,7 +140,7 @@ namespace XPatchLib
         /// </param>
         /// <param name="pOverride">
         ///     <include file='docs/docs.xml'
-        ///         path='Comments/params/param[@class="Serializer" and @paramtype="bool" and @method="Combine" and @paramname="pOverride"]' />
+        ///         path='Comments/params/param[@class="Serializer" and @paramtype="bool" and @method="Combine" and @paramname="pOverride" and @target="HasIserializable"]' />
         /// </param>
         /// <returns>
         ///     <include file='docs/docs.xml' path='Comments/returns/return[@class="Serializer" and @method="Combine"]' />
@@ -151,6 +152,33 @@ namespace XPatchLib
         ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="Serializer" and @method="Combine"]/*' />
         /// </example>
         /// <seealso cref="Combine(XPatchLib.ITextReader,object)" />
+#else
+        /// <summary>
+        ///     以可指定是否覆盖原始对象的方式反序列化指定 <see cref="ITextReader" /> 包含的增量文档，并与 原始对象 进行数据合并。
+        /// </summary>
+        /// <param name="pReader">
+        ///     <include file='docs/docs.xml'
+        ///         path='Comments/params/param[@class="Serializer" and @paramtype="ITextReader" and @method="Combine" and @paramname="pReader"]' />
+        /// </param>
+        /// <param name="pOriValue">
+        ///     <include file='docs/docs.xml'
+        ///         path='Comments/params/param[@class="Serializer" and @paramtype="Object" and @method="Combine" and @paramname="pOriValue"]' />
+        /// </param>
+        /// <param name="pOverride">
+        ///     <include file='docs/docs.xml'
+        ///         path='Comments/params/param[@class="Serializer" and @paramtype="bool" and @method="Combine" and @paramname="pOverride" and @target=""]' />
+        /// </param>
+        /// <returns>
+        ///     <include file='docs/docs.xml' path='Comments/returns/return[@class="Serializer" and @method="Combine"]' />
+        /// </returns>
+        /// <remarks>
+        ///     <include file='docs/docs.xml' path='Comments/remarks/remark[@class="Serializer" and @method="Combine"]/*' />
+        /// </remarks>
+        /// <example>
+        ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="Serializer" and @method="Combine"]/*' />
+        /// </example>
+        /// <seealso cref="Combine(XPatchLib.ITextReader,object)" />
+#endif
         [SuppressMessage("Microsoft.Usage", "CA2202:不要多次释放对象")]
         public object Combine(ITextReader pReader, object pOriValue, bool pOverride)
         {
@@ -214,8 +242,10 @@ namespace XPatchLib
             }
             else
             {
+#if NET || NETSTANDARD_2_0_UP
                 //如果是ISerializable接口派生类，则不主动创建实例
                 if (!_type.IsISerializable)
+#endif
                     cloneObjValue = _type.CreateInstance();
             }
 
@@ -293,6 +323,6 @@ namespace XPatchLib
             _registerTypes.Add(pType, pPrimaryKeys);
         }
 
-        #endregion Public Methods
+#endregion Public Methods
     }
 }

@@ -85,14 +85,14 @@ namespace XPatchLib
                 }
             }
         }
-#endif
 
-
-        private bool _serializeDefalutValue;
         private bool _enableOnSerializingAttribute = true;
         private bool _enableOnSerializedAttribute = true;
         private bool _enableOnDeserializedAttribute = true;
         private bool _enableOnDeserializingAttribute = true;
+#endif
+
+        private bool _serializeDefalutValue;
 
         /// <summary>
         ///     在更改属性值时发生。

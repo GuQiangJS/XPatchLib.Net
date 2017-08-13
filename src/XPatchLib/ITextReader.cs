@@ -35,6 +35,7 @@ namespace XPatchLib
         /// <summary>
         ///     获取当前节点的文本值。
         /// </summary>
+        /// <returns>返回当前节点的文本值。</returns>
         string GetValue();
 
         /// <summary>
@@ -48,8 +49,9 @@ namespace XPatchLib
         Boolean HasAttribute { get; }
 
         /// <summary>
-        ///     获取当前节点的特性名称与值的键值对字典
+        ///     获取当前节点的特性名称与值的键值对数组。
         /// </summary>
+        /// <returns>返回当前节点的特性名称与值的键值对数组。</returns>
         string[,] GetAttributes();
 
         /// <summary>

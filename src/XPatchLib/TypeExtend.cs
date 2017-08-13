@@ -60,6 +60,8 @@ namespace XPatchLib
 
         private readonly Type NullableType;
 
+
+#if NET || NETSTANDARD_2_0_UP
         private readonly Boolean _isISerializable;
 
         /// <summary>
@@ -72,6 +74,7 @@ namespace XPatchLib
         {
             get { return _isISerializable; }
         }
+#endif
 
         private ISerializeSetting _setting;
 

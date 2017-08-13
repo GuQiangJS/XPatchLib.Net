@@ -60,18 +60,16 @@ namespace XPatchLib
     }
 
 #if NETSTANDARD && !NETSTANDARD_2_0_UP
-    
-    //
-    // 摘要:
-    //     支持克隆，即用与现有实例相同的值创建类的新实例。
+
+    /// <summary>
+    /// 克隆的支持，这将类的新实例创建与现有实例相同的值。
+    /// </summary>
     public interface ICloneable
     {
-        //
-        // 摘要:
-        //     创建作为当前实例副本的新对象。
-        //
-        // 返回结果:
-        //     作为此实例副本的新对象。
+        /// <summary>
+        /// 创建作为当前实例副本的新对象。
+        /// </summary>
+        /// <returns>作为此实例副本的新对象。</returns>
         object Clone();
     }
 #endif
