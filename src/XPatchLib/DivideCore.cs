@@ -56,7 +56,7 @@ namespace XPatchLib
         protected override bool DivideAction(string pName, object pOriObject, object pRevObject,
             DivideAttachment pAttach = null)
         {
-            IDivide divide;
+            DivideBase divide;
 
             if (Type.IsBasicType)
                 divide = new DivideBasic(Writer, Type);
@@ -73,6 +73,7 @@ namespace XPatchLib
             else
                 divide = new DivideObject(Writer, Type);
 
+            divide.Assign(this);
             return divide.Divide(pName, pOriObject, pRevObject, pAttach);
         }
 

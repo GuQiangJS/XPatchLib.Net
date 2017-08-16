@@ -73,6 +73,7 @@ namespace XPatchLib
                     TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(Writer.Setting, revPro.ObjectType,
                         Writer.IgnoreAttributeType, null);
                     DivideCore ser = new DivideCore(Writer, typeExtend);
+                    ser.Assign(this);
 
                     s.Enqueue(revPro.Name);
 

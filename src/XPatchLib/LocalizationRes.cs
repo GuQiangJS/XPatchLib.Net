@@ -59,5 +59,10 @@ namespace XPatchLib
         {
             get { return "Exp_String_WriteClosed"; }
         }
+
+        internal static string Exp_String_CircularReference
+        {
+            get { return "Exp_String_CircularReference"; }
+        }
     }
 }

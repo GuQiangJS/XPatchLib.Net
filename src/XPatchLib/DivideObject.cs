@@ -53,7 +53,7 @@ namespace XPatchLib
 
                 var memberType = member.MemberType;
 
-                IDivide divide;
+                DivideBase divide;
 
                 //基础类型 ReflectionUtils.IsBasicType
                 if (member.IsBasicType)
@@ -111,6 +111,7 @@ namespace XPatchLib
 
                 //只要成功写入过一个节点，就表示父节点都写入过了
                 divide.ParentElementWrited = result;
+                divide.Assign(this);
                 var childResult = divide.Divide(member.Name, pOriMemberValue, pRevMemberValue, pAttach);
                 //if (childResult)
                 //{

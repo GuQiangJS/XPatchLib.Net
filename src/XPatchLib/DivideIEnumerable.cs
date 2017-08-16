@@ -259,6 +259,7 @@ namespace XPatchLib
 
                 //元素的类型未知，所以再次创建DivideCore实例，由此实例创建元素的增量结果。（递归方式）
                 DivideCore ser = new DivideCore(Writer, GenericArgumentType);
+                ser.Assign(this);
                 foreach (var keyValuesObject in pFoundItems)
                 {
                     bool itemResult = false;

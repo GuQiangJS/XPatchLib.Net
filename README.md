@@ -174,8 +174,10 @@ using (var fs = new FileStream(filename, FileMode.Open))
 - [x] 部分对象类型尚未支持。例如：`DateTimeOffset`，`BigInteger` 等。
 - [x] 支持自定义跳过属性序列化特性。
 - [x] 支持 private 属性。
-- [ ] 支持匿名类型。
-- [ ] 支持循环引用实例的处理。
+- ~~[ ] 支持[匿名类型](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/anonymous-types)。~~
+  > 匿名类型所有属性均为只读属性，所以无法支持。
+- ~~[ ] 支持循环引用实例的处理。~~
+  > 遇到循环实例间循环引用会抛出 `InvalidOperationException异常`。
 - [x] 支持 [ISerializable](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable.aspx) 实例 。
 - [ ] 支持 [DynamicObject](https://msdn.microsoft.com/zh-cn/library/system.dynamic.dynamicobject.aspx) 实例 。
 - [ ] 支持除 `XML` 外的其他格式输出。

@@ -2,6 +2,7 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
 namespace XPatchLib
 {
@@ -42,6 +43,17 @@ namespace XPatchLib
 
             Guard.ArgumentNotNullOrEmpty(pName, "pName");
 
+            if (pRevObject != null && objectsInUse != null)
+            {
+                if (objectsInUse.Contains(pRevObject))
+                {
+                    throw new InvalidOperationException(
+                        ResourceHelper.GetResourceString(LocalizationRes.Exp_String_CircularReference,
+                            Type.OriType.FullName));
+                }
+                objectsInUse.Add(pRevObject);
+            }
+
             try
             {
                 //当前节点是被SetNull时，直接写入节点并增加SetNull Attribute，并返回写入成功。
@@ -63,6 +75,7 @@ namespace XPatchLib
                 {
                     WriteEnd(pRevObject);
                 }
+                objectsInUse.Remove(pRevObject);
             }
         }
 
@@ -138,6 +151,25 @@ namespace XPatchLib
         protected virtual void WriteStart(ParentObject pParentObject)
         {
             WriteStart(pParentObject.Type, pParentObject.CurrentObj, pParentObject.Name);
+        }
+
+        internal virtual void Assign(DivideBase item)
+        {
+            objectsInUse = item.objectsInUse;
+        }
+
+        /// <summary>
+        /// 判断对象实例是否有循环引用。
+        /// </summary>
+        /// <param name="pObj">待判断的对象实例。</param>
+        /// <returns></returns>
+        protected bool CheckForCircularReference(object pObj)
+        {
+            if (pObj != null && objectsInUse != null)
+            {
+                return objectsInUse.Contains(pObj);
+            }
+            return true;
         }
 
         /// <summary>
@@ -241,6 +273,8 @@ namespace XPatchLib
         ///     获取当前的写入器。
         /// </summary>
         protected ITextWriter Writer;
+
+        List<object> objectsInUse = new List<object>();
 
         #endregion Internal Properties
     }
