@@ -64,5 +64,15 @@ namespace XPatchLib
         {
             get { return "Exp_String_CircularReference"; }
         }
+
+        internal static string Exp_String_TypeAssemblyQualifiedNameNotFound
+        {
+            get { return "Exp_String_TypeAssemblyQualifiedNameNotFound"; }
+        }
+
+        internal static string Exp_String_TypeAssemblyQualifiedNameIsEmpty
+        {
+            get { return "Exp_String_TypeAssemblyQualifiedNameIsEmpty"; }
+        }
     }
 }

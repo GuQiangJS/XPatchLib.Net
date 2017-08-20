@@ -63,6 +63,9 @@ namespace XPatchLib.UnitTest.ForXml
             setting.EnableOnSerializedAttribute = false;
             setting.EnableOnSerializingAttribute = false;
 #endif
+#if NET_40_UP || NETSTANDARD_2_0_UP
+            setting.AssemblyQualifiedName = "NewAssemblyQualifiedName";
+#endif
 
             Assert.AreEqual(propertyInfos.Length, changedProNames.Count);
             foreach (var VARIABLE in propertyInfos)
@@ -78,6 +81,9 @@ namespace XPatchLib.UnitTest.ForXml
             Assert.IsFalse(setting.EnableOnDeserializingAttribute);
             Assert.IsFalse(setting.EnableOnSerializedAttribute);
             Assert.IsFalse(setting.EnableOnSerializingAttribute);
+#endif
+#if NET_40_UP || NETSTANDARD_2_0_UP
+            Assert.AreEqual("NewAssemblyQualifiedName", setting.AssemblyQualifiedName);
 #endif
         }
     }

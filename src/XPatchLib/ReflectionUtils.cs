@@ -7,6 +7,9 @@ using System.Collections.Generic;
 #if (NET || NETSTANDARD_2_0_UP)
 using System.Drawing;
 #endif
+#if NET_40_UP || NETSTANDARD_2_0_UP
+using System.Dynamic;
+#endif
 using System.Globalization;
 #if (NET_35_UP || NETSTANDARD)
 using System.Linq;
@@ -307,6 +310,13 @@ namespace XPatchLib
             Type keyType, valueType;
             return IsIDictionary(type, out keyType, out valueType);
         }
+
+#if NET_40_UP || NETSTANDARD_2_0_UP
+        internal static bool IsDynamicObject(Type type)
+        {
+            return typeof(IDynamicMetaObjectProvider).IsAssignableFrom(type);
+        }
+#endif
 
         internal static bool IsIDictionary(Type type, out Type keyType, out Type valueType)
         {

@@ -21,6 +21,13 @@ namespace XPatchLib
         /// </summary>
         SerializeMemberModifier Modifier { get; set; }
 
+#if NET_40_UP || NETSTANDARD_2_0_UP
+        /// <summary>
+        /// 获取或设置序列化/反序列化时，文本中标记 '<b>类型的程序集限定名称</b>' 的文本。
+        /// </summary>
+        string AssemblyQualifiedName { get; set; }
+#endif
+
         /// <summary>
         ///     获取或设置序列化/反序列化时，文本中标记 '<b>动作</b>' 的文本。
         /// </summary>

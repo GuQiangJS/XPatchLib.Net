@@ -3,6 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+#if (NET_40_UP || NETSTANDARD_2_0_UP)
+using System.Dynamic;
+#endif
 using System.Globalization;
 using System.Reflection;
 #if (NET_35_UP || NETSTANDARD)
@@ -52,6 +55,7 @@ namespace XPatchLib
         private readonly MemberWrapper[] _fieldsToBeSerialized;
         private readonly bool _isArrayItem;
         private readonly bool _isArray;
+        private readonly bool _isDynamicObject;
 
         public Boolean IsNullable
         {
@@ -130,15 +134,22 @@ namespace XPatchLib
             _isGenericType = OriType.IsGenericType();
             _isGuid = pType == typeof(Guid);
             _typeFriendlyName = ReflectionUtils.GetTypeFriendlyName(pType);
+#if NET_40_UP || NETSTANDARD_2_0_UP
+            _isDynamicObject = ReflectionUtils.IsDynamicObject(pType);
+#endif
 
             _fieldsToBeSerialized = new MemberWrapper[] { };
             if (!(_isIEnumerable || _isIDictionary || _isICollection || _isBasicType || _isArray))
             {
-                _fieldsToBeSerialized = ReflectionUtils.GetFieldsToBeSerialized(pSetting, pType, pIgnoreAttributeType);
-                foreach (MemberWrapper member in _fieldsToBeSerialized)
+                if (!_isDynamicObject)
                 {
-                    AddGetValueFunc(member);
-                    AddSetValueFunc(member);
+                    _fieldsToBeSerialized =
+                        ReflectionUtils.GetFieldsToBeSerialized(pSetting, pType, pIgnoreAttributeType);
+                    foreach (MemberWrapper member in _fieldsToBeSerialized)
+                    {
+                        AddGetValueFunc(member);
+                        AddSetValueFunc(member);
+                    }
                 }
             }
 
@@ -252,6 +263,13 @@ namespace XPatchLib
         {
             get { return _isICollection; }
         }
+
+#if NET_40_UP || NETSTANDARD_2_0_UP
+        internal Boolean IsDynamicObject
+        {
+            get { return _isDynamicObject; }
+        }
+#endif
 
         internal Boolean IsIDictionary
         {

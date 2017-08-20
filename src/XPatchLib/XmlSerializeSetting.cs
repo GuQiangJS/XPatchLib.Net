@@ -17,7 +17,7 @@ namespace XPatchLib
         /// <filterpriority>2</filterpriority>
         public override object Clone()
         {
-            XmlSerializeSetting result=new XmlSerializeSetting();
+            XmlSerializeSetting result = new XmlSerializeSetting();
             result.MemberType = this.MemberType;
 #if NET || NETSTANDARD_2_0_UP
             result.EnableOnDeserializedAttribute = this.EnableOnDeserializedAttribute;
@@ -29,6 +29,9 @@ namespace XPatchLib
             result.Mode = this.Mode;
             result.Modifier = this.Modifier;
             result.SerializeDefalutValue = this.SerializeDefalutValue;
+#if NET_40_UP || NETSTANDARD_2_0_UP
+            result.AssemblyQualifiedName = this.AssemblyQualifiedName;
+#endif
             return result;
         }
     }

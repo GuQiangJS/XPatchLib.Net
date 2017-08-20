@@ -1,3 +1,7 @@
+#### 3.0.5.1
+
+* 新增 - 新增对 [DynamicObject](https://msdn.microsoft.com/zh-cn/library/system.dynamic.dynamicobject.aspx) 的支持。
+
 #### 3.0.4.4
 
 * 修正 - 修正对序列化实例中如果有循环引用时的异常处理。

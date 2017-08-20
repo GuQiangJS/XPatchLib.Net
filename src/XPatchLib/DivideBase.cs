@@ -61,6 +61,9 @@ namespace XPatchLib
                 {
                     WriteParentElementStart(pAttach);
                     Writer.WriteStartObject(pName);
+#if NET40 || NETSTANDARD_2_0_UP
+                    WriteAssemby(Type);
+#endif
                     Writer.WriteActionAttribute(Action.SetNull);
                     return result = true;
                 }
@@ -120,33 +123,58 @@ namespace XPatchLib
                 }
         }
 
-        protected virtual void WriteStart(TypeExtend pType,Object obj, string pName)
+        protected virtual void WriteStart(TypeExtend pType, Object obj, string pName)
         {
-            if (pType != null)
+            try
             {
-                if (pType.IsArrayItem)
+                if (pType != null)
                 {
-                    Writer.WriteStartArrayItem(pName);
-                    return;
+                    if (pType.IsArrayItem)
+                    {
+                        Writer.WriteStartArrayItem(pName);
+                        return;
+                    }
+                    //string类型也是IsIEnumerable，所以要写在前面
+                    if (pType.IsBasicType)
+                    {
+                        Writer.WriteStartProperty(pName);
+                        return;
+                    }
+                    if (pType.IsArray || pType.IsICollection || pType.IsIEnumerable)
+                    {
+                        Writer.WriteStartArray(pName);
+                        return;
+                    }
                 }
-                //string类型也是IsIEnumerable，所以要写在前面
-                if (pType.IsBasicType)
-                {
-                    Writer.WriteStartProperty(pName);
-                    return;
-                }
-                if (pType.IsArray || pType.IsICollection || pType.IsIEnumerable)
-                {
-                    Writer.WriteStartArray(pName);
-                    return;
-                }
-            }
 #if NET || NETSTANDARD_2_0_UP
             if (Writer.Setting.EnableOnSerializingAttribute && obj != null)
                 Type.InvokeOnSerializing(obj, new System.Runtime.Serialization.StreamingContext());
 #endif
-            Writer.WriteStartObject(pName);
+                Writer.WriteStartObject(pName);
+            }
+            finally
+            {
+#if NET40 || NETSTANDARD_2_0_UP
+                WriteAssemby(pType);
+#endif
+            }
         }
+
+#if NET40 || NETSTANDARD_2_0_UP
+        /// <summary>
+        /// 将当前类型的程序集限定名称作为属性写入
+        /// </summary>
+        /// <param name="pType"></param>
+        /// <remarks>只有在支持 <see cref="System.Dynamic.DynamicObject"/> 时才支持。</remarks>
+        protected virtual void WriteAssemby(TypeExtend pType)
+        {
+            string v = pType.OriType.AssemblyQualifiedName;
+            if (pType != null && pType.ParentType!=null && pType.ParentType.IsDynamicObject)
+            {
+                Writer.WriteAttribute(Writer.Setting.AssemblyQualifiedName, v);
+            }
+    }
+#endif
 
         protected virtual void WriteStart(ParentObject pParentObject)
         {
@@ -260,7 +288,7 @@ namespace XPatchLib
         protected abstract bool DivideAction(string pName, object pOriObject, object pRevObject,
             DivideAttachment pAttach = null);
 
-        #region Internal Properties
+#region Internal Properties
 
         /// <summary>
         ///     获取或设置当前正在处理的类型。
@@ -280,6 +308,6 @@ namespace XPatchLib
 
         List<object> objectsInUse = new List<object>();
 
-        #endregion Internal Properties
+#endregion Internal Properties
     }
 }

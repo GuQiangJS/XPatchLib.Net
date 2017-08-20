@@ -93,6 +93,7 @@ namespace XPatchLib
 #endif
 
         private bool _serializeDefalutValue;
+        private string _assemblyQualifiedName = "AssemblyQualified";
 
         /// <summary>
         ///     在更改属性值时发生。
@@ -196,6 +197,34 @@ namespace XPatchLib
                 }
             }
         }
+
+#if NET_40_UP || NETSTANDARD_2_0_UP
+        /// <summary>
+        /// 获取或设置序列化/反序列化时，文本中标记 '<b>类型的程序集限定名称</b>' 的文本。
+        /// </summary>
+        /// <value>
+        ///     默认值是 <c>AssemblyQualified</c> 。
+        /// </value>
+        /// <exception cref="ArgumentNullException">当设置值是传入 <b>null</b> 时。</exception>
+        /// <exception cref="ArgumentException">当设置值为空时。</exception>
+        /// <example>
+        ///     <include file='docs/docs.xml'
+        ///         path='Comments/examples/example[@class="XmlSerializeSetting" and @property="AssemblyQualifiedName"]/*' />
+        /// </example>
+        public virtual string AssemblyQualifiedName
+        {
+            get { return _assemblyQualifiedName; }
+            set
+            {
+                Guard.ArgumentNotNullOrEmpty(value, "value");
+                if (_assemblyQualifiedName != value)
+                {
+                    _assemblyQualifiedName = value;
+                    OnPropertyChanged(nameof(AssemblyQualifiedName));
+                }
+            }
+        }
+#endif
 
         /// <summary>
         ///     播发属性变更后事件。

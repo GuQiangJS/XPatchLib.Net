@@ -38,6 +38,10 @@ namespace XPatchLib
                     else if (pType.IsISerializable)
                         result=new CombineISerializable(pType);
 #endif
+#if NET_40_UP || NETSTANDARD_2_0_UP
+                    else if (pType.IsDynamicObject)
+                        result = new CombineDynamic(pType);
+#endif
                     else
                         result = new CombineObject(pType);
 

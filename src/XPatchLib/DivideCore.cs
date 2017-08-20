@@ -70,6 +70,10 @@ namespace XPatchLib
             else if (Type.IsISerializable)
                 divide=new DivideISerializable(Writer,Type);
 #endif
+#if NET_40_UP || NETSTANDARD_2_0_UP
+            else if (Type.IsDynamicObject)
+                divide = new DivideDynamic(Writer, Type);
+#endif
             else
                 divide = new DivideObject(Writer, Type);
 
@@ -77,7 +81,7 @@ namespace XPatchLib
             return divide.Divide(pName, pOriObject, pRevObject, pAttach);
         }
 
-        #region Internal Constructors
+#region Internal Constructors
 
         /// <summary>
         ///     使用指定的类型初始化 <see cref="XPatchLib.DivideCore" /> 类的新实例。
@@ -89,6 +93,6 @@ namespace XPatchLib
         {
         }
 
-        #endregion Internal Constructors
+#endregion Internal Constructors
     }
 }

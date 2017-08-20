@@ -21,6 +21,8 @@
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='NET40' OR '$(TargetFramework)'=='NET35' OR '$(TargetFramework)'=='NET46'">
     <Reference Include="WindowsBase" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='NET46'">

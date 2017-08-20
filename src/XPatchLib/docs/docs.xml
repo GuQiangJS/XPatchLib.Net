@@ -238,6 +238,12 @@ Small Widget
 </List_OrderedItem>]]>
       </code>
     </example>
+    <example class="XmlSerializeSetting" property="AssemblyQualifiedName">
+      <para>
+        下面的示例展示了 AssemblyQualifiedName 的使用效果，以及如何修改 AssemblyQualifiedName 。
+      </para>
+      <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\AssemblyQualifiedName.cs" />
+    </example>
     <example class="XmlSerializeSetting" property="ActionName">
       <para>
         下面的示例展示了 ActionName 的使用效果，以及如何修改 ActionName 。

@@ -38,6 +38,11 @@ namespace XPatchLib
         ///     获取或设置当前正在进行的操作。
         /// </summary>
         public Action CurrentAction { get; set; }
+
+        /// <summary>
+        /// 当前类型的程序集信息
+        /// </summary>
+        public string TypeAssembly { get; set; }
     }
 
     internal class ParentObject

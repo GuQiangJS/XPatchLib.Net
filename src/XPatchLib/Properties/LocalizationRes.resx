@@ -150,6 +150,12 @@
   <data name="Exp_String_PrimaryKey" xml:space="preserve">
     <value>'{0}' 的 主键 '{1}' 设置异常。</value>
   </data>
+  <data name="Exp_String_TypeAssemblyQualifiedNameIsEmpty" xml:space="preserve">
+    <value>节点 '{0}' 程序集特性标记不能为空。</value>
+  </data>
+  <data name="Exp_String_TypeAssemblyQualifiedNameNotFound" xml:space="preserve">
+    <value>未能加载文件或程序集 '{0}' 或它的某一个依赖项。系统找不到指定的文件。</value>
+  </data>
   <data name="Exp_String_WriteClosed" xml:space="preserve">
     <value>写入器被关闭。</value>
   </data>

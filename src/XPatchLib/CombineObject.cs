@@ -133,7 +133,7 @@ namespace XPatchLib
         #region Internal Constructors
 
         /// <summary>
-        ///     使用指定的类型初始化 <see cref="XPatchLib.CombineObject" /> 类的新实例。
+        ///     使用指定的类型初始化 <see cref="CombineObject" /> 类的新实例。
         /// </summary>
         /// <param name="pType">
         ///     指定的类型。
