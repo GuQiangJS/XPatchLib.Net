@@ -4,9 +4,11 @@
 #if NET_40_UP|| NETSTANDARD_2_0_UP
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
 using System.IO;
+using System.Linq;
 
 namespace XPatchLib
 {
@@ -31,6 +33,12 @@ namespace XPatchLib
             //当原始对象为null时，先创建一个实例。
             if (pOriObject == null)
                 pOriObject = Type.CreateInstance();
+
+            DynamicObject oriValue = pOriObject as DynamicObject;
+
+            List<string> names =
+                new DynamicObject[] { oriValue }.GetMembers(Type.FieldsToBeSerialized.Select(x => x.Name)
+                    .ToArray());
 
             while (!pReader.EOF)
             {
@@ -93,14 +101,18 @@ namespace XPatchLib
 
                 if (pReader.NodeType == NodeType.Element || pReader.NodeType == NodeType.FullElement)
                 {
-                    DynamicObject oriValue = pOriObject as DynamicObject;
                     if (oriValue != null)
                         if (action != Action.SetNull)
                         {
+                            object memberObj=null;
+                            if (names.Contains(pReader.Name))
+                            {
+                                memberObj = oriValue.GetMemberValue(pReader.Name);
+                            }
                             oriValue.SetMemberValue(pReader.Name, CombineInstanceContainer
                                 .GetCombineInstance(
                                     TypeExtendContainer.GetTypeExtend(pReader.Setting, memberType, null, Type))
-                                .Combine(pReader, pOriObject, pReader.Name));
+                                .Combine(pReader, memberObj, pReader.Name));
                         }
                         else
                         {

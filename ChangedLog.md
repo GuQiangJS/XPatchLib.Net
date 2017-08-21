@@ -1,3 +1,7 @@
+#### 3.0.5.2
+
+* 修正 - 修正 `DynamicObject` 对象实例中包含普通属性或参数时的拆分和合并问题。
+
 #### 3.0.5.1
 
 * 新增 - 新增对 [DynamicObject](https://msdn.microsoft.com/zh-cn/library/system.dynamic.dynamicobject.aspx) 的支持。

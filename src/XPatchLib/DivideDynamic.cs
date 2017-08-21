@@ -13,8 +13,8 @@ namespace XPatchLib
     /// <summary>
     ///     动态类型增量内容产生类。
     /// </summary>
-    /// <seealso cref="XPatchLib.DivideBase" />
-    internal class DivideDynamic : DivideBase
+    /// <seealso cref="XPatchLib.DivideObject" />
+    internal class DivideDynamic : DivideObject
     {
         /// <summary>
         ///     使用指定的类型初始化 <see cref="XPatchLib.DivideBasic" /> 类的新实例。
@@ -36,12 +36,14 @@ namespace XPatchLib
         protected override bool DivideAction(string pName, object pOriObject, object pRevObject,
             DivideAttachment pAttach = null)
         {
-            var result = false;
+            var result = base.DivideAction(pName, pOriObject, pRevObject, pAttach);
 
             DynamicObject oriObj=pOriObject as DynamicObject;
             DynamicObject revObj=pRevObject as DynamicObject;
 
-            List<string> names = new DynamicObject[] {oriObj, revObj}.GetMembers();
+            List<string> names =
+                new DynamicObject[] {oriObj, revObj}.GetMembers(Type.FieldsToBeSerialized.Select(x => x.Name)
+                    .ToArray());
 
             foreach (string name in names)
             {

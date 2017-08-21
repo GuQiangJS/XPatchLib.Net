@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.CSharp.RuntimeBinder;
 
@@ -14,6 +15,17 @@ namespace XPatchLib
     {
         internal static List<string> GetMembers(this DynamicObject[] o)
         {
+            return o.GetMembers(new string[] { });
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="excepts">排除的名称</param>
+        /// <returns></returns>
+        internal static List<string> GetMembers(this DynamicObject[] o, string[] excepts)
+        {
             List<string> result = new List<string>();
             foreach (DynamicObject dynamicObject in o)
             {
@@ -21,7 +33,7 @@ namespace XPatchLib
                 IEnumerable<string> s = dynamicObject.GetDynamicMemberNames();
                 foreach (string s1 in s)
                 {
-                    if (!result.Contains(s1))
+                    if (!result.Contains(s1) && !excepts.Contains(s1))
                         result.Add(s1);
                 }
             }

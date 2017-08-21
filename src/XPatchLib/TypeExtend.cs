@@ -141,15 +141,12 @@ namespace XPatchLib
             _fieldsToBeSerialized = new MemberWrapper[] { };
             if (!(_isIEnumerable || _isIDictionary || _isICollection || _isBasicType || _isArray))
             {
-                if (!_isDynamicObject)
+                _fieldsToBeSerialized =
+                    ReflectionUtils.GetFieldsToBeSerialized(pSetting, pType, pIgnoreAttributeType);
+                foreach (MemberWrapper member in _fieldsToBeSerialized)
                 {
-                    _fieldsToBeSerialized =
-                        ReflectionUtils.GetFieldsToBeSerialized(pSetting, pType, pIgnoreAttributeType);
-                    foreach (MemberWrapper member in _fieldsToBeSerialized)
-                    {
-                        AddGetValueFunc(member);
-                        AddSetValueFunc(member);
-                    }
+                    AddGetValueFunc(member);
+                    AddSetValueFunc(member);
                 }
             }
 

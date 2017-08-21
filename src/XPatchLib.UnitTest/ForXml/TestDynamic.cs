@@ -45,6 +45,7 @@ namespace XPatchLib.UnitTest
         {
             return @"<?xml version=""1.0"" encoding=""utf-8""?>
 <TestDynamicObject>
+  <ChildObject " + setting.AssemblyQualifiedName + @"=""" + typeof(DynamicChildObject).AssemblyQualifiedName + @""" Action=""SetNull"" />
   <Text " + setting.AssemblyQualifiedName + @"=""" + GetTypeAssembly(o.Text) + @""">Text!</Text>
   <IntDefault " + setting.AssemblyQualifiedName + @"=""" + GetTypeAssembly(o.Int) + @""">0</IntDefault>
   <NUllableIntDefault " + setting.AssemblyQualifiedName + @"=""" + GetTypeAssembly(o.NUllableIntDefault) +
@@ -52,7 +53,6 @@ namespace XPatchLib.UnitTest
   <DynamicChildObject " + setting.AssemblyQualifiedName + @"=""" + GetTypeAssembly(o.DynamicChildObject) +
                    @""" Action=""SetNull"" />
   <Int " + setting.AssemblyQualifiedName + @"=""" + GetTypeAssembly(o.Int) + @""">2147483647</Int>
-  <ChildObject " + setting.AssemblyQualifiedName + @"=""" + GetTypeAssembly(o.ChildObject) + @""" Action=""SetNull"" />
 </TestDynamicObject>";
         }
 
@@ -114,6 +114,59 @@ namespace XPatchLib.UnitTest
             Assert.AreEqual(o.NUllableIntDefault, o2.NUllableIntDefault);
             Assert.AreEqual(o.ChildObject, o2.ChildObject);
             Assert.AreEqual(o.DynamicChildObject, o2.DynamicChildObject);
+        }
+
+        [Test]
+        public void TestSerializeDynamicObject()
+        {
+            TestDynamicObject dynamicObject = new TestDynamicObject();
+            dynamicObject.Explicit = true;
+
+            dynamic d = dynamicObject;
+            d.Int = 1;
+            d.Decimal = 99.9d;
+            d.ChildObject = new DynamicChildObject();
+
+            Dictionary<string, object> values = new Dictionary<string, object>();
+
+            foreach (string memberName in dynamicObject.GetDynamicMemberNames())
+            {
+                object value = dynamicObject.GetMemberValue(memberName);
+
+                values.Add(memberName, value);
+            }
+
+            Assert.AreEqual(d.Int, values["Int"]);
+            Assert.AreEqual(d.Decimal, values["Decimal"]);
+            Assert.AreEqual(d.ChildObject, values["ChildObject"]);
+
+            ISerializeSetting settings = new XmlSerializeSetting()
+            {
+                MemberType = SerializeMemberType.All,
+                SerializeDefalutValue = true
+            };
+
+            string result = DoSerializer_Divide(null, d, settings);
+            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<TestDynamicObject>
+  <ChildObject " + settings.AssemblyQualifiedName + @"=""" + GetTypeAssembly(d.ChildObject) + @""">
+    <Integer>0</Integer>
+    <Text Action=""SetNull"" />
+  </ChildObject>
+  <Explicit " + settings.AssemblyQualifiedName + @"=""" + GetTypeAssembly(d.Explicit) + @""">true</Explicit>
+  <Int " + settings.AssemblyQualifiedName + @"=""" + GetTypeAssembly(d.Int) + @""">1</Int>
+  <Decimal " + settings.AssemblyQualifiedName + @"=""" + GetTypeAssembly(d.Decimal) + @""">99.9</Decimal>
+</TestDynamicObject>", result);
+
+            TestDynamicObject newDynamicObject = DoSerializer_Combie<TestDynamicObject>(result, null);
+            Assert.AreEqual(true, newDynamicObject.Explicit);
+
+            dynamic n = newDynamicObject;
+
+            Assert.AreEqual(99.9, n.Decimal);
+            Assert.AreEqual(1, n.Int);
+            Assert.AreEqual(dynamicObject.ChildObject.Integer, n.ChildObject.Integer);
+            Assert.AreEqual(dynamicObject.ChildObject.Text, n.ChildObject.Text);
         }
     }
     
