@@ -1,3 +1,7 @@
+#### 3.0.5.3
+
+* 重构 - 重构 `ITextReader` 。修改 `GetAttributes` 方法签名及取消 `HasAttribute` 属性，同时修改相应实现。
+
 #### 3.0.5.2
 
 * 修正 - 修正 `DynamicObject` 对象实例中包含普通属性或参数时的拆分和合并问题。

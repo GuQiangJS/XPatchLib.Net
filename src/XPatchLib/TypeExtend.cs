@@ -90,6 +90,13 @@ namespace XPatchLib
             get { return _setting; }
         }
 
+        /// <summary>
+        /// 获取当前类型可能产生的特性名称集合。
+        /// </summary>
+        public string[] AttributeNames { get { return _attributeNames; } }
+
+        private string[] _attributeNames;
+
         internal TypeExtend(ISerializeSetting pSetting,Type pType, Type pIgnoreAttributeType, TypeExtend pParentType = null)
         {
             _parentType = pParentType;
@@ -109,6 +116,8 @@ namespace XPatchLib
             _primaryKeyAttr = GetCustomAttribute<PrimaryKeyAttribute>();
 
             if (_primaryKeyAttr == null) _primaryKeyAttr = TypeExtendContainer.GetPrimaryKeyAttribute(pType);
+
+            InitAttributeNames(pSetting,_primaryKeyAttr);
 
             GetValueFuncs = new Dictionary<string, Func<object, object>>();
             SetValueFuncs = new Dictionary<string, Action<object, object>>();
@@ -191,6 +200,33 @@ namespace XPatchLib
 #if NET || NETSTANDARD_2_0_UP
             _isISerializable = typeof(ISerializable).IsAssignableFrom(OriType);
 #endif
+        }
+
+        private void InitAttributeNames(ISerializeSetting pSetting, PrimaryKeyAttribute primaryKeyAttr)
+        {
+            string[] app = 
+            {
+                pSetting.ActionName
+#if NET_40_UP || NETSTANDARD_2_0_UP
+                ,pSetting.AssemblyQualifiedName
+#endif
+            };
+            int attrLen = 0;
+            if (primaryKeyAttr != null)
+            {
+                string[] attrs = primaryKeyAttr.GetPrimaryKeys();
+                if (attrs != null && attrs.Length > 0)
+                {
+                    attrLen = attrs.Length;
+                    _attributeNames = new string[attrLen + app.Length];
+                    Array.Copy(attrs, 0, _attributeNames, 0, attrLen);
+                }
+            }
+            if (_attributeNames == null)
+            {
+                _attributeNames = new string[attrLen + app.Length];
+            }
+            Array.Copy(app, 0, _attributeNames, attrLen, app.Length);
         }
 
         /// <summary>

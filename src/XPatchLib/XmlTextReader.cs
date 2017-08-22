@@ -140,21 +140,22 @@ namespace XPatchLib
         /// </summary>
         public NodeType NodeType { get { return _nodeType; } }
 
-        private bool _hasAttribute;
+        //private bool _hasAttribute;
 
-        /// <summary>
-        ///     获取当前解析的节点是否包含特性节点。
-        /// </summary>
-        public bool HasAttribute
-        {
-            get { return _hasAttribute; }
-        }
+        ///// <summary>
+        /////     获取当前解析的节点是否包含特性节点。
+        ///// </summary>
+        //public bool HasAttribute
+        //{
+        //    get { return _hasAttribute; }
+        //}
 
         /// <summary>
         ///     获取当前节点的特性名称与值的键值对数组。
         /// </summary>
+        /// <param name="names">待读取的特性名称</param>
         /// <returns>返回当前节点的特性名称与值的键值对数组。</returns>
-        public string[,] GetAttributes()
+        public string[,] GetAttributes(string[] names)
         {
             return _attributes;
         }
@@ -204,7 +205,7 @@ namespace XPatchLib
         void ResetAttribute()
         {
             _attributes = _emptyAttributeDic;
-            _hasAttribute = false;
+            //_hasAttribute = false;
         }
 
         private void SetXmlReaderNormalization()
@@ -259,10 +260,10 @@ namespace XPatchLib
                     _attributes[index, 1] = _xmlReader.Value;
                     index++;
                 }
-                _hasAttribute = true;
+                //_hasAttribute = true;
                 return;
             }
-            _hasAttribute = false;
+            //_hasAttribute = false;
             _attributes = _emptyAttributeDic;
         }
 

@@ -43,16 +43,17 @@ namespace XPatchLib
         /// </summary>
         NodeType NodeType { get; }
 
-        /// <summary>
-        /// 获取当前解析的节点是否包含特性节点。
-        /// </summary>
-        Boolean HasAttribute { get; }
+        ///// <summary>
+        ///// 获取当前解析的节点是否包含特性节点。
+        ///// </summary>
+        //Boolean HasAttribute { get; }
 
         /// <summary>
         ///     获取当前节点的特性名称与值的键值对数组。
         /// </summary>
+        /// <param name="names">待读取的特性名称</param>
         /// <returns>返回当前节点的特性名称与值的键值对数组。</returns>
-        string[,] GetAttributes();
+        string[,] GetAttributes(string[] names);
 
         /// <summary>
         ///     从流中读取下一个节点。
