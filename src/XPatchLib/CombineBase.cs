@@ -87,7 +87,7 @@ namespace XPatchLib
         /// <remarks>执行此操作会移动到移动到包含当前属性节点的元素。<see cref="XmlReader.MoveToElement()" /></remarks>
         protected virtual CombineAttribute AnlysisAttributes(ITextReader pReader, string pName)
         {
-            string[,] kv = pReader.GetAttributes(Type.AttributeNames);
+            string[,] kv = pReader.GetAttributes(pName, Type.AttributeNames);
             int attrLen = kv.GetLength(0);
             CombineAttribute result = null;
             if (attrLen > 0)
@@ -99,7 +99,12 @@ namespace XPatchLib
                     for (int i = 0; i < attrLen; i++)
                     {
                         string n = kv[i, 0];
+
+                        if (n == null)
+                            continue;
+
                         string v = kv[i, 1];
+
 #if DEBUG
                         Debug.WriteLine("Attributes of <" + n + "," + v + ">");
 #endif

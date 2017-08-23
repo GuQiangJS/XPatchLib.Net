@@ -1,7 +1,7 @@
 ﻿// Copyright © 2013-2017 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
-#if NET_40_UP|| NETSTANDARD_2_0_UP
+#if NET_40_UP || NETSTANDARD_2_0_UP
 
 using System;
 using System.Collections.Generic;
@@ -70,7 +70,7 @@ namespace XPatchLib
                     }
                 }
 
-                string[,] curAttrs = pReader.GetAttributes(Type.AttributeNames);
+                string[,] curAttrs = pReader.GetAttributes(pName, Type.AttributeNames);
                 string assembly = string.Empty;
                 Action action = Action.Edit;
                 for (int i = 0; i < curAttrs.GetLength(0); i++)
