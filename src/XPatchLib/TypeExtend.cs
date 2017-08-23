@@ -204,13 +204,21 @@ namespace XPatchLib
 
         private void InitAttributeNames(ISerializeSetting pSetting, PrimaryKeyAttribute primaryKeyAttr)
         {
-            string[] app = 
+            string[] app = new[]
             {
                 pSetting.ActionName
-#if NET_40_UP || NETSTANDARD_2_0_UP
-                ,pSetting.AssemblyQualifiedName
-#endif
             };
+#if NET_40_UP || NETSTANDARD_2_0_UP
+            if (ParentType != null && ParentType.IsDynamicObject)
+            {
+                app =new []
+                {
+                    pSetting.ActionName
+                    ,pSetting.AssemblyQualifiedName
+                };
+            }
+#endif
+
             int attrLen = 0;
             if (primaryKeyAttr != null)
             {
