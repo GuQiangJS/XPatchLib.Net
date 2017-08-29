@@ -24,7 +24,7 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\XPatchLib.xml</DocumentationFile>
 </PropertyGroup>
   
-  <ItemGroup Condition="'$(TargetFramework)'=='NET40'">
+  <ItemGroup Condition="'$(TargetFramework)'=='net40'">
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
