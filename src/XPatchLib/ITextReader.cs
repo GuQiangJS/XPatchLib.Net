@@ -51,10 +51,8 @@ namespace XPatchLib
         /// <summary>
         ///     获取当前节点的特性名称与值的键值对数组。
         /// </summary>
-        /// <param name="name">当前读取的节点的名称。</param>
-        /// <param name="names">待读取的特性名称。</param>
         /// <returns>返回当前节点的特性名称与值的键值对数组。</returns>
-        string[,] GetAttributes(string name,string[] names);
+        string[,] GetAttributes();
 
         /// <summary>
         ///     从流中读取下一个节点。

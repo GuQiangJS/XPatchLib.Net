@@ -70,7 +70,7 @@ namespace XPatchLib
                     }
                 }
 
-                string[,] curAttrs = pReader.GetAttributes(pName, Type.AttributeNames);
+                string[,] curAttrs = pReader.GetAttributes();
                 string assembly = string.Empty;
                 Action action = Action.Edit;
                 for (int i = 0; i < curAttrs.GetLength(0); i++)

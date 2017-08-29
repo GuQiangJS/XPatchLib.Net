@@ -117,7 +117,7 @@ namespace XPatchLib
 
             if (_primaryKeyAttr == null) _primaryKeyAttr = TypeExtendContainer.GetPrimaryKeyAttribute(pType);
 
-            InitAttributeNames(pSetting,_primaryKeyAttr);
+            //InitAttributeNames(pSetting,_primaryKeyAttr);
 
             GetValueFuncs = new Dictionary<string, Func<object, object>>();
             SetValueFuncs = new Dictionary<string, Action<object, object>>();
