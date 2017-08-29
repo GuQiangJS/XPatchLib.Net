@@ -228,6 +228,7 @@ namespace XPatchLib
                             stream.Position = 0;
                             using (ITextReader reader = new XmlTextReader(stream))
                             {
+                                reader.Setting = pReader.Setting.Clone() as ISerializeSetting;
                                 cloneObjValue =
                                     new Serializer(_initialType, true, false).Combine(reader, null, true);
                             }
