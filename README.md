@@ -22,6 +22,8 @@
 
 相对于 [XmlSerializer](https://msdn.microsoft.com/en-us/library/system.xml.serialization.xmlserializer(v=vs.110).aspx) 增加如下功能：
 
+* 支持输出 `JSON` 格式。[GitHub](https://github.com/GuQiangJS/XPatchLib.Net.Json),[NuGet](https://www.nuget.org/packages/XPatchLib.Json/)
+
 * 支持 [DynamicObject](https://msdn.microsoft.com/zh-cn/library/system.dynamic.dynamicobject.aspx) 实例 。
 
 * 支持被不同 [访问修饰符](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/access-modifiers) 声明的成员参与序列化或反序列化。参见：[ISerializeSetting.Modifier](https://guqiangjs.github.io/XPatchLib.Net.Doc/html/84d9897c-6316-c9d4-90c3-3c80753691a3.htm)。
@@ -169,7 +171,9 @@ using (var fs = new FileStream(filename, FileMode.Open))
 
 ## 相关链接
 
-* [XPatchLib.Net.Localization](https://github.com/GuQiangJS/XPatchLib.Net.Localization)
+* [多语言包](https://github.com/GuQiangJS/XPatchLib.Net.Localization)
+
+* [Json格式扩展](https://github.com/GuQiangJS/XPatchLib.Net.Json)
 
 ## 后续计划
 
@@ -182,5 +186,5 @@ using (var fs = new FileStream(filename, FileMode.Open))
   > 实例间循环引用会抛出 `InvalidOperationException` 异常。
 - [x] 支持 [ISerializable](https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable.aspx) 实例 。
 - [x] 支持 [DynamicObject](https://msdn.microsoft.com/zh-cn/library/system.dynamic.dynamicobject.aspx) 实例 。
-- [ ] 支持除 `XML` 外的其他格式输出。
+- [x] 支持除 `JSON` 格式输出。
 - [ ] 支持更多的 .NET [目标框架](https://docs.microsoft.com/zh-cn/dotnet/standard/frameworks)。
