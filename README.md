@@ -22,7 +22,7 @@
 
 相对于 [XmlSerializer](https://msdn.microsoft.com/en-us/library/system.xml.serialization.xmlserializer(v=vs.110).aspx) 增加如下功能：
 
-* 支持输出 `JSON` 格式。[GitHub](https://github.com/GuQiangJS/XPatchLib.Net.Json),[NuGet](https://www.nuget.org/packages/XPatchLib.Json/)
+* 支持输出 `JSON` 格式。[GitHub](https://github.com/GuQiangJS/XPatchLib.Net.Json)，[NuGet](https://www.nuget.org/packages/XPatchLib.Json/)
 
 * 支持 [DynamicObject](https://msdn.microsoft.com/zh-cn/library/system.dynamic.dynamicobject.aspx) 实例 。
 
