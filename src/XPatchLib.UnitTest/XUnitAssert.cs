@@ -8,6 +8,15 @@ using Xunit;
 
 namespace XPatchLib.UnitTest
 {
+
+    internal class StringAssert
+    {
+        public static void AreEqualIgnoringCase(string expected, string actual)
+        {
+            Xunit.Assert.Equal(expected, actual, true);
+        }
+
+    }
     internal class XUnitAssert
     {
         public static void IsInstanceOf(Type expectedType, object o)

@@ -526,13 +526,34 @@ namespace XPatchLib
             {
                 MethodInfo
 #endif
-                    methodInfo = OriType.GetMethod(name, invokeAttr);
+                methodInfo = OriType.GetMethod(name, invokeAttr);
                 Type t = OriType;
                 if (methodInfo == null)
                 {
                     //当前OriType可能是接口类型（如IList<T>，调用 Add 方法时，无法在当前类型上找到方法，所以还可以根据实例的类型来找方法）
                     t = target.GetType();
-                    methodInfo = t.GetMethod(name);
+#if NETSTANDARD_2_0_UP
+                    // .NET Core 2.0 开始，字典类型Remove 方法增加了一个可以同时传入 Key 值和 Value 值的方法。
+                    if (args != null)
+                    {
+                        Type[] ts = new Type[args.Length];
+                        for (int i = 0; i < args.Length; i++)
+                        {
+                            if (args[i] == null)
+                            {
+                                methodInfo = t.GetMethod(name);
+                                ts = null;
+                                break;
+                            }
+                            ts[i] = args[i].GetType();
+                        }
+                        if(ts!=null)
+                            methodInfo = t.GetMethod(name, ts);
+                    }
+                    else
+#endif
+                        methodInfo = t.GetMethod(name);
+
                     if (methodInfo == null)
                         return null;
                 }
@@ -889,7 +910,7 @@ namespace XPatchLib
 #endif
     }
 
-#if NET
+#if NET || NETSTANDARD_2_0_UP
     internal delegate void SerializationCallback(object o, StreamingContext context);
 #endif
 }

@@ -21,7 +21,6 @@ namespace XPatchLib.UnitTest.ForXml
     [TestFixture]
     public class TestHashTable:TestBase
     {
-#if (NET || NETSTANDARD_2_0_UP)
         [Test]
         public void TestHashTableDivideWithoutPrimaryKeyAttribute()
         {
@@ -50,6 +49,5 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.Fail("未能引发 AttributeMissException 异常。");
             }
         }
-#endif
     }
 }

@@ -303,7 +303,7 @@ namespace XPatchLib
             }
         }
 
-#if (!NET && !NETSTANDARD_2_0_UP)
+#if (!NET)
         internal delegate TResult MethodCall<T, TResult>(T target, params object[] args);
 
         public static MethodCall<T, object> CreateMethodCall<T>(this Type pType,MethodBase method)

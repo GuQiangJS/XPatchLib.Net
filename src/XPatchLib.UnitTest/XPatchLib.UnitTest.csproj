@@ -2,11 +2,11 @@
 
   <PropertyGroup>
 
-    <TargetFrameworks Condition="'$(TestFrameworks)'==''">NET46;NET40;NET35;NET20;NETCOREAPP1.0;NETCOREAPP1.1</TargetFrameworks>
+    <TargetFrameworks Condition="'$(TestFrameworks)'==''">NET46;NET40;NET35;NET20;NETCOREAPP1.0;NETCOREAPP1.1;NETCOREAPP2.0</TargetFrameworks>
     <!--<TargetFrameworks Condition="'$(TestFrameworks)'!=''">$(TestFrameworks)</TargetFrameworks>
     <TargetFramework>netstandard1.3</TargetFramework>-->
     <!-- Workaround for https://github.com/nunit/nunit3-vs-adapter/issues/296 -->
-    <DebugType Condition="'$(TargetFramework)' != '' AND '$(TargetFramework)' != 'netcoreapp1.0' AND '$(TargetFramework)' != 'netcoreapp1.1'">Full</DebugType>
+    <DebugType Condition="'$(TargetFramework)' != '' AND '$(TargetFramework)' != 'netcoreapp1.0' AND '$(TargetFramework)' != 'netcoreapp1.1' AND '$(TargetFramework)' != 'netcoreapp2.0'">Full</DebugType>
     <ProjectGuid>1deb0516-d274-4afa-9278-3810a500c99f</ProjectGuid>
     <NoWarn>1701;1702;1705;0659</NoWarn>
   </PropertyGroup>
@@ -15,9 +15,9 @@
     <ProjectReference Include="..\XPatchLib\XPatchLib.csproj" />
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)'!='netcoreapp1.0' OR '$(TargetFramework)'!='netcoreapp1.1'">
-    <PackageReference Include="NUnit" Version="3.7.1" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.8.0-alpha1" />
+  <ItemGroup Condition="'$(TargetFramework)'!='netcoreapp1.0' and '$(TargetFramework)'!='netcoreapp1.1' and '$(TargetFramework)'!='netcoreapp2.0'">
+    <PackageReference Include="NUnit" Version="3.8.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.9.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='NET40' OR '$(TargetFramework)'=='NET35' OR '$(TargetFramework)'=='NET46'">
     <Reference Include="WindowsBase" />
@@ -35,12 +35,12 @@
     <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0' OR '$(TargetFramework)'=='netcoreapp1.1'">
-    <PackageReference Include="xunit" Version="2.2.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0' OR '$(TargetFramework)'=='netcoreapp1.1' OR '$(TargetFramework)'=='netcoreapp2.0'">
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.1'">
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.1' OR '$(TargetFramework)'=='netcoreapp2.0'">
     <PackageReference Include="BenchmarkDotNet" Version="0.10.8" />
   </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net20'">
@@ -68,5 +68,10 @@
     <AssemblyTitle>XPatchLib UnitTest .NET Standard 1.0</AssemblyTitle>
     <ReferringTargetFrameworkForProjectReferences>.NETStandard,Version=v1.0</ReferringTargetFrameworkForProjectReferences>
     <DefineConstants>NETSTANDARD;XUNIT;NETSTANDARD_1_0;NETSTANDARD_1_0_UP</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+    <AssemblyTitle>XPatchLib UnitTest .NET Standard 2.0</AssemblyTitle>
+    <ReferringTargetFrameworkForProjectReferences>.NETStandard,Version=v2.0</ReferringTargetFrameworkForProjectReferences>
+    <DefineConstants>NETSTANDARD;XUNIT;BENCHMARK;NETSTANDARD_2_0;NETSTANDARD_1_0_UP;NETSTANDARD_1_1_UP;NETSTANDARD_1_2_UP;NETSTANDARD_1_3_UP;NETSTANDARD_2_0_UP</DefineConstants>
   </PropertyGroup>
 </Project>
