@@ -2,6 +2,7 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Xml.Serialization;
 #if NUNIT
 using NUnit.Framework;
 #elif XUNIT
@@ -26,7 +27,6 @@ namespace XPatchLib.UnitTest
             string Context = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <TestSimpleObject>
   <member2>123</member2>
-  <member3>123</member3>
   <member4>123</member4>
 </TestSimpleObject>";
 
@@ -94,7 +94,7 @@ namespace XPatchLib.UnitTest
 
         // This field is not serialized. The OnDeserializedAttribute 
         // is used to set the member value after serialization.
-        [NonSerialized] public string member3;
+        [XmlIgnore] public string member3;
 
         // This field is set to null, but populated after deserialization.
         public string member4;

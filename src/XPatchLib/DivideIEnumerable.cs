@@ -31,7 +31,7 @@ namespace XPatchLib
             : base(pWriter, pType)
         {
             Type t = null;
-            if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, out t))
+            if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, pType.InterfaceTypes, out t))
             {
                 GenericArgumentType =
                     TypeExtendContainer.GetTypeExtend(pWriter.Setting, t, Writer.IgnoreAttributeType, pType);

@@ -291,24 +291,26 @@ namespace XPatchLib
             return result;
         }
 
-        internal static bool IsICollection(Type type)
+        internal static bool IsICollection(Type type,Type[] interfaces)
         {
             // a direct reference to the interface itself is also OK. 
             if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(ICollection<>))
                 return true;
 
-            foreach (Type interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
-                    interfaceType.GetGenericTypeDefinition() == typeof(ICollection<>))
-                    return true;
-
+            if (interfaces != null)
+            {
+                foreach (Type interfaceType in interfaces)
+                    if (interfaceType.IsGenericType() &&
+                        interfaceType.GetGenericTypeDefinition() == typeof(ICollection<>))
+                        return true;
+            }
             return false;
         }
 
-        internal static bool IsIDictionary(Type type)
+        internal static bool IsIDictionary(Type type, Type[] interfaces)
         {
             Type keyType, valueType;
-            return IsIDictionary(type, out keyType, out valueType);
+            return IsIDictionary(type, interfaces, out keyType, out valueType);
         }
 
 #if NET_40_UP || NETSTANDARD_2_0_UP
@@ -318,7 +320,7 @@ namespace XPatchLib
         }
 #endif
 
-        internal static bool IsIDictionary(Type type, out Type keyType, out Type valueType)
+        internal static bool IsIDictionary(Type type, Type[] interfaces, out Type keyType, out Type valueType)
         {
             keyType = typeof(object);
             valueType = typeof(object);
@@ -332,15 +334,18 @@ namespace XPatchLib
                 return true;
             }
 
-            foreach (Type interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
-                    interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
-                {
-                    Type[] genArgs = interfaceType.GetGenericArguments();
-                    keyType = genArgs[0];
-                    valueType = genArgs[1];
-                    return true;
-                }
+            if (interfaces != null)
+            {
+                foreach (Type interfaceType in interfaces)
+                    if (interfaceType.IsGenericType() &&
+                        interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                    {
+                        Type[] genArgs = interfaceType.GetGenericArguments();
+                        keyType = genArgs[0];
+                        valueType = genArgs[1];
+                        return true;
+                    }
+            }
 
             return false;
         }
@@ -352,23 +357,25 @@ namespace XPatchLib
         /// </param>
         /// <returns>
         /// </returns>
-        internal static bool IsIEnumerable(Type pType)
+        internal static bool IsIEnumerable(Type pType, Type[] interfaces)
         {
             Type seqType;
-            return TryGetIEnumerableGenericArgument(pType, out seqType);
+            return TryGetIEnumerableGenericArgument(pType, interfaces, out seqType);
         }
 
-        internal static bool IsIList(Type type)
+        internal static bool IsIList(Type type,Type[] interfaces)
         {
             // a direct reference to the interface itself is also OK. 
             if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(IList<>))
                 return true;
 
-            foreach (Type interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
-                    interfaceType.GetGenericTypeDefinition() == typeof(IList<>))
-                    return true;
-
+            if (interfaces != null)
+            {
+                foreach (Type interfaceType in interfaces)
+                    if (interfaceType.IsGenericType() &&
+                        interfaceType.GetGenericTypeDefinition() == typeof(IList<>))
+                        return true;
+            }
             return false;
         }
 
@@ -456,7 +463,7 @@ namespace XPatchLib
         /// </param>
         /// <returns>
         /// </returns>
-        internal static bool TryGetIEnumerableGenericArgument(Type pType, out Type pSeqType)
+        internal static bool TryGetIEnumerableGenericArgument(Type pType, Type[] interfaces, out Type pSeqType)
         {
             // detect arrays early 
             if (TryGetArrayElementType(pType, out pSeqType))
@@ -468,25 +475,28 @@ namespace XPatchLib
 
             bool isNongenericEnumerable = false;
 
-            if (pType.IsInterface() && pType.IsGenericType() && pType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (pType.IsInterface() && pType.IsGenericType() &&
+                pType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
                 pSeqType = pType.GetGenericArguments()[0];
                 return true;
             }
 
-            foreach (Type interfaceType in pType.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
-                    interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                {
-                    Type[] genArgs = interfaceType.GetGenericArguments();
-                    pSeqType = genArgs[0];
-                    return true;
-                }
-                else if (interfaceType == typeof(IEnumerable))
-                {
-                    isNongenericEnumerable = true;
-                }
-
+            if (interfaces != null)
+            {
+                foreach (Type interfaceType in interfaces)
+                    if (interfaceType.IsGenericType() &&
+                        interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                    {
+                        Type[] genArgs = interfaceType.GetGenericArguments();
+                        pSeqType = genArgs[0];
+                        return true;
+                    }
+                    else if (interfaceType == typeof(IEnumerable))
+                    {
+                        isNongenericEnumerable = true;
+                    }
+            }
             // the second case is a direct reference to IEnumerable 
             if (isNongenericEnumerable || pType == typeof(IEnumerable))
             {

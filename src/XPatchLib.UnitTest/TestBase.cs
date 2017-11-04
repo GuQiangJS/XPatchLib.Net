@@ -623,7 +623,7 @@ namespace XPatchLib.UnitTest
                             Assert.AreEqual(result.GetHashCode(), pOriValue.GetHashCode());
                     }
                 }
-                if (XPatchLib.ReflectionUtils.IsIEnumerable(pType))
+                if (XPatchLib.ReflectionUtils.IsIEnumerable(pType, pType.GetInterfaces()))
                 {
                     AssertIEnumerable(pRevValue, result, pType, string.Empty);
                 }
@@ -685,10 +685,10 @@ namespace XPatchLib.UnitTest
                 if (ReflectionUtils.TryGetArrayElementType(type, out t))
                     return t.IsValueType() || t == typeof(string);
             }
-            if (ReflectionUtils.IsIEnumerable(type))
+            if (ReflectionUtils.IsIEnumerable(type, type.GetInterfaces()))
             {
                 Type t;
-                if (ReflectionUtils.TryGetIEnumerableGenericArgument(type, out t))
+                if (ReflectionUtils.TryGetIEnumerableGenericArgument(type, type.GetInterfaces(), out t))
                     return t.IsValueType() || t == typeof(string);
             }
             return type.IsValueType() || type == typeof(string);

@@ -203,7 +203,7 @@ namespace XPatchLib
 
             IsBasicType = ReflectionUtils.IsBasicType(Type);
 
-            IsIEnumerable = ReflectionUtils.IsIEnumerable(Type);
+            IsIEnumerable = ReflectionUtils.IsIEnumerable(Type, Type.GetInterfaces());
 
             IsEnum = Type.IsEnum();
 

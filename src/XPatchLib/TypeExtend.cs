@@ -56,6 +56,12 @@ namespace XPatchLib
         private readonly bool _isArrayItem;
         private readonly bool _isArray;
         private readonly bool _isDynamicObject;
+        private readonly Type[] _interfaceTypes;
+
+        public Type[] InterfaceTypes
+        {
+            get { return _interfaceTypes; }
+        }
 
         public Boolean IsNullable
         {
@@ -115,6 +121,8 @@ namespace XPatchLib
 #endif
             _primaryKeyAttr = GetCustomAttribute<PrimaryKeyAttribute>();
 
+            _interfaceTypes = pType.GetInterfaces();
+
             if (_primaryKeyAttr == null) _primaryKeyAttr = TypeExtendContainer.GetPrimaryKeyAttribute(pType);
 
             //InitAttributeNames(pSetting,_primaryKeyAttr);
@@ -130,9 +138,9 @@ namespace XPatchLib
             _isBasicType = ReflectionUtils.IsBasicType(pType);
             if (!_isBasicType)
             {
-                _isIDictionary = ReflectionUtils.IsIDictionary(pType);
-                _isICollection = ReflectionUtils.IsICollection(pType);
-                _isIEnumerable = ReflectionUtils.IsIEnumerable(pType);
+                _isIDictionary = ReflectionUtils.IsIDictionary(pType, _interfaceTypes);
+                _isICollection = ReflectionUtils.IsICollection(pType, _interfaceTypes);
+                _isIEnumerable = ReflectionUtils.IsIEnumerable(pType, _interfaceTypes);
                 _isArray = ReflectionUtils.IsArray(pType);
             }
             _defaultValue = ReflectionUtils.GetDefaultValue(pType);
@@ -163,7 +171,7 @@ namespace XPatchLib
             {
                 Type keyType = typeof(object);
                 Type valueType = typeof(object);
-                ReflectionUtils.IsIDictionary(pType, out keyType, out valueType);
+                ReflectionUtils.IsIDictionary(pType, _interfaceTypes, out keyType, out valueType);
 
                 _keyArgumentType = keyType;
                 _valueArgumentType = valueType;

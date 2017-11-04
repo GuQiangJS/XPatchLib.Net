@@ -177,9 +177,9 @@ namespace XPatchLib
             return MethodBinder.SelectMethod(type.GetTypeInfo().DeclaredMethods.Where(m => (name == null || m.Name == name) && TestAccessibility(m, bindingFlags)), parameterTypes);
         }
 
-        internal static IEnumerable<Type> GetInterfaces(this Type type)
+        internal static Type[] GetInterfaces(this Type type)
         {
-            return type.GetTypeInfo().ImplementedInterfaces;
+            return type.GetTypeInfo().ImplementedInterfaces.ToArray();
         }
         
         public static IEnumerable<FieldInfo> GetFields(this Type type, BindingFlags bindingFlags)

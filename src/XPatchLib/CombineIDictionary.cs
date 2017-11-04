@@ -131,7 +131,7 @@ namespace XPatchLib
             if (!Type.IsIDictionary)
                 throw new ArgumentException("类型需要是字典类型");
             Type t;
-            if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, out t))
+            if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, pType.InterfaceTypes, out t))
                 GenericArgumentType = TypeExtendContainer.GetTypeExtend(pType.Setting, t, null, pType);
             else
                 throw new ArgumentOutOfRangeException(pType.OriType.FullName);
