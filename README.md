@@ -84,11 +84,21 @@ Frequency=10000000 Hz, Resolution=100.0000 ns, Timer=UNKNOWN
 
 也可以在安装了 [Visual Studio 2017 生成工具](https://www.visualstudio.com/zh-hans/downloads/) 的前提下，执行 `builder/MasterBuild.bat` 进行编译。
 
+为支持 .NET Core 2.0 编译，请使用 Visual Studio 2017 15.4.0 及以上版本。
+
 ## 测试
 
-单元测试使用 [NUnit3](https://github.com/nunit/nunit)。可以通过安装 [NUnit Console](https://github.com/nunit/nunit-console) 后，执行 `builder/unittest.bat` ，自动执行 .Net20,.Net35,.Net40 等多个版本的单元测试。也可以使用 Visual Studio 2017 的 `测试资源管理器`执行。
+单元测试使用 
 
-单元测试项目引用了 [Microsoft.NET.Test.Sdk](https://github.com/microsoft/vstest/) , [NUnit](http://nunit.org/) , [NUnit3TestAdapter](https://github.com/nunit/docs/wiki/Visual-Studio-Test-Adapter) 。
+[NUnit3](https://github.com/nunit/nunit) For .NET Framework
+
+[XUnit](https://github.com/xunit/xunit) For .NET Standard
+
+可以通过安装 [NUnit Console](https://github.com/nunit/nunit-console) 后，执行 `builder/unittest.bat` ，自动执行 .Net20,.Net35,.Net40 等多个版本的单元测试。也可以使用 Visual Studio 2017 的 `测试资源管理器`执行。
+
+单元测试项目引用了 [Microsoft.NET.Test.Sdk](https://github.com/microsoft/vstest/) , [NUnit](http://nunit.org/) , [NUnit3TestAdapter](https://github.com/nunit/docs/wiki/Visual-Studio-Test-Adapter), [XUnit](https://github.com/xunit/xunit) , [xunit.runner.visualstudio](https://github.com/xunit/xunit) 。
+
+建议使用 [ReSharper 2017.2.x及以上版本](https://www.jetbrains.com/resharper/eap/)
 
 ## **Example**
 
