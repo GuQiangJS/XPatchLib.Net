@@ -2,6 +2,7 @@
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Globalization;
 using System.Reflection;
 using System.Xml;
@@ -70,21 +71,34 @@ namespace XPatchLib
             switch (attrs.Action)
             {
                 case Action.Add:
-                    Update(ConstValue.OPERATOR_ADD, pOriObject, key, value);
+                    Add(this.Type.IsConcurrentDictionary ? "TryAdd" : ConstValue.OPERATOR_ADD, pOriObject, key,
+                        value);
                     break;
 
                 case Action.Edit:
-                    Update(ConstValue.OPERATOR_SET, pOriObject, key, value);
+                    Update(this.Type.IsConcurrentDictionary ? "TryUpdate" : ConstValue.OPERATOR_SET, pOriObject, key, value);
                     break;
 
                 case Action.Remove:
-                    Remove(pOriObject, key);
+                    Remove(pOriObject, key, value);
                     break;
 
                 case Action.SetNull:
                     Update(ConstValue.OPERATOR_SET, pOriObject, key, null);
                     break;
             }
+        }
+
+        /// <summary>
+        ///     执行增加操作。
+        /// </summary>
+        /// <param name="pOperatorName">操作名称。</param>
+        /// <param name="pOriObject">待附加增量的对象实例。</param>
+        /// <param name="pKey">Key值。</param>
+        /// <param name="pValue">Value值。</param>
+        private void Add(string pOperatorName, Object pOriObject, Object pKey, Object pValue)
+        {
+            Type.InvokeMember(pOperatorName, BindingFlags.InvokeMethod, pOriObject, new[] { pKey, pValue },CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -96,8 +110,18 @@ namespace XPatchLib
         /// <param name="pValue">Value值。</param>
         private void Update(string pOperatorName, Object pOriObject, Object pKey, Object pValue)
         {
-            Type.InvokeMember(pOperatorName, BindingFlags.InvokeMethod, pOriObject, new[] {pKey, pValue},
-                CultureInfo.InvariantCulture);
+            if (this.Type.IsConcurrentDictionary)
+            {
+                Type.InvokeMember(pOperatorName, BindingFlags.InvokeMethod, pOriObject,
+                    new[] {pKey, pValue, ((IDictionary) pOriObject)[pKey]},
+                    CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                Type.InvokeMember(pOperatorName, BindingFlags.InvokeMethod, pOriObject,new[] { pKey, pValue },
+                    CultureInfo.InvariantCulture);
+            }
+            
         }
 
         /// <summary>
@@ -105,10 +129,14 @@ namespace XPatchLib
         /// </summary>
         /// <param name="pOriObject">待删除增量的对象实例。</param>
         /// <param name="pKey">Key值。</param>
-        private void Remove(Object pOriObject, Object pKey)
+        private void Remove(Object pOriObject, Object pKey, Object pValue)
         {
-            Type.InvokeMember(ConstValue.OPERATOR_REMOVE, BindingFlags.InvokeMethod, pOriObject, new[] {pKey},
-                CultureInfo.InvariantCulture);
+            if (this.Type.IsConcurrentDictionary)
+                Type.InvokeMember("TryRemove", BindingFlags.InvokeMethod, pOriObject, new[] {pKey, pValue},
+                    CultureInfo.InvariantCulture);
+            else
+                Type.InvokeMember(ConstValue.OPERATOR_REMOVE, BindingFlags.InvokeMethod, pOriObject, new[] {pKey},
+                    CultureInfo.InvariantCulture);
         }
 
         #region Internal Constructors

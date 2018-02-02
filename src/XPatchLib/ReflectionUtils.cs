@@ -507,6 +507,110 @@ namespace XPatchLib
             return false;
         }
 
-#endregion Internal Methods
+        internal static bool ShouldSkipDeserialized(Type t)
+        {
+            // ConcurrentDictionary throws an error in its OnDeserialized so ignore
+            if (IsConcurrentOrObservableCollection(t))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        internal static bool ShouldSkipSerializing(Type t)
+        {
+            if (IsConcurrentOrObservableCollection(t))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        internal static bool IsConcurrentOrObservableCollection(Type t)
+        {
+            return IsConcurrentDictionary(t) || IsConcurrentStack(t) || IsConcurrentQueue(t) || IsConcurrentBag(t) ||
+                   IsObservableCollection(t);
+        }
+
+        internal static bool IsConcurrentDictionary(Type t)
+        {
+            if (t.IsGenericType())
+            {
+                Type definition = t.GetGenericTypeDefinition();
+
+                switch (definition.FullName)
+                {
+                    case "System.Collections.Concurrent.ConcurrentDictionary`2":
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        internal static bool IsConcurrentStack(Type t)
+        {
+            if (t.IsGenericType())
+            {
+                Type definition = t.GetGenericTypeDefinition();
+
+                switch (definition.FullName)
+                {
+                    case "System.Collections.Concurrent.ConcurrentStack`1":
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        internal static bool IsConcurrentQueue(Type t)
+        {
+            if (t.IsGenericType())
+            {
+                Type definition = t.GetGenericTypeDefinition();
+
+                switch (definition.FullName)
+                {
+                    case "System.Collections.Concurrent.ConcurrentQueue`1":
+                        return true;
+                }
+            }
+
+            return false;
+        }
+        internal static bool IsConcurrentBag(Type t)
+        {
+            if (t.IsGenericType())
+            {
+                Type definition = t.GetGenericTypeDefinition();
+
+                switch (definition.FullName)
+                {
+                    case "System.Collections.Concurrent.ConcurrentBag`1":
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        internal static bool IsObservableCollection(Type t)
+        {
+            if (t.IsGenericType())
+            {
+                Type definition = t.GetGenericTypeDefinition();
+
+                switch (definition.FullName)
+                {
+                    case "System.Collections.ObjectModel.ObservableCollection`1":
+                        return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion Internal Methods
     }
 }

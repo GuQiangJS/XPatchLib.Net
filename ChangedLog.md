@@ -1,5 +1,9 @@
 #### 3.0.5.12
 
+* 修正 - 支持 [ConcurrentDictionary](https://msdn.microsoft.com/zh-cn/library/dd287191(v=vs.110))。*会跳过 `OnDeserialized`,`OnSerializing`*
+
+#### 3.0.5.12
+
 * 重构 - 支持 [.NET Core 2.0](https://github.com/dotnet/core/blob/master/release-notes/2.0/2.0.0.md)。
 
 #### 3.0.5.11

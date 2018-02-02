@@ -57,10 +57,16 @@ namespace XPatchLib
         private readonly bool _isArray;
         private readonly bool _isDynamicObject;
         private readonly Type[] _interfaceTypes;
+        private readonly bool _isConcurrentDictionary;
 
         public Type[] InterfaceTypes
         {
             get { return _interfaceTypes; }
+        }
+
+        public Boolean IsConcurrentDictionary
+        {
+            get { return _isConcurrentDictionary; }
         }
 
         public Boolean IsNullable
@@ -153,6 +159,7 @@ namespace XPatchLib
             _typeFriendlyName = ReflectionUtils.GetTypeFriendlyName(pType);
 #if NET_40_UP || NETSTANDARD_2_0_UP
             _isDynamicObject = ReflectionUtils.IsDynamicObject(pType);
+            _isConcurrentDictionary=ReflectionUtils.IsConcurrentDictionary(pType);
 #endif
 
             _fieldsToBeSerialized = new MemberWrapper[] { };

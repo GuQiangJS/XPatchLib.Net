@@ -21,6 +21,7 @@ namespace XPatchLib.UnitTest.ForXml
     public class TestIncompleteXml : TestBase
     {
         [Test]
+        [Description("测试反序列化不完整的XML，是否会抛出XmlException异常")]
         public void TestDeserializeIncompleteXml()
         {
             Serializer serializer = new Serializer(typeof(BookClassCollection));
