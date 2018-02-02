@@ -40,9 +40,33 @@ namespace XPatchLib
         /// <summary>
         ///     集合类型 增加 操作方法名
         /// </summary>
+        internal static String OPERATOR_TRY_ADD
+        {
+            get { return "TryAdd"; }
+        }
+
+        /// <summary>
+        ///     集合类型 增加 操作方法名
+        /// </summary>
         internal static String OPERATOR_ADD
         {
             get { return "Add"; }
+        }
+
+        /// <summary>
+        ///     集合类型 增加 操作方法名
+        /// </summary>
+        internal static String OPERATOR_ENQUEUE
+        {
+            get { return "Enqueue"; }
+        }
+
+        /// <summary>
+        ///     集合类型 增加 操作方法名
+        /// </summary>
+        internal static String OPERATOR_PUSH
+        {
+            get { return "Push"; }
         }
 
         /// <summary>
@@ -59,6 +83,22 @@ namespace XPatchLib
         internal static String OPERATOR_REMOVE
         {
             get { return "Remove"; }
+        }
+
+        /// <summary>
+        ///     集合类型 删除 操作方法名
+        /// </summary>
+        internal static String OPERATOR_TRY_REMOVE
+        {
+            get { return "TryRemove"; }
+        }
+
+        /// <summary>
+        ///     集合类型 更改值 操作方法名
+        /// </summary>
+        internal static String OPERATOR_TRY_UPDATE
+        {
+            get { return "TryUpdate"; }
         }
 
         /// <summary>

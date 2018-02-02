@@ -1,6 +1,12 @@
+#### 3.0.5.14
+
+* 修正 - 合并增量 [ConcurrentQueue](https://msdn.microsoft.com/zh-cn/library/dd267265(v=vs.110).aspx)。
+
+* 修正 - 合并增量 [ConcurrentStack](https://msdn.microsoft.com/zh-cn/library/dd267331(v=vs.110).aspx)。
+
 #### 3.0.5.12
 
-* 修正 - 支持 [ConcurrentDictionary](https://msdn.microsoft.com/zh-cn/library/dd287191(v=vs.110))。*会跳过 `OnDeserialized`,`OnSerializing`*
+* 修正 - 合并增量 [ConcurrentDictionary](https://msdn.microsoft.com/zh-cn/library/dd287191(v=vs.110))。*会跳过 `OnDeserialized`,`OnSerializing`*
 
 #### 3.0.5.12
 

@@ -125,10 +125,10 @@ namespace XPatchLib
                 //使用新的集合对象替换原有的集合对象。
                 pOriObject = newList;
             }
-            else if (listType.GetMethod(ConstValue.OPERATOR_ADD) != null)
+            else if (listType.GetMethod(GetAddOperator()) != null)
             {
                 //非数组类型时，在当前集合类型上调用Add方法
-                Type.InvokeMember(ConstValue.OPERATOR_ADD, BindingFlags.InvokeMethod, pOriObject, new[] {obj},
+                Type.InvokeMember(GetAddOperator(), BindingFlags.InvokeMethod, pOriObject, new[] {obj},
                     CultureInfo.InvariantCulture);
             }
             else
@@ -136,6 +136,13 @@ namespace XPatchLib
                 //TODO:未实现
                 throw new NotImplementedException();
             }
+        }
+
+        private string GetAddOperator()
+        {
+            if (Type.IsConcurrentQueue) return ConstValue.OPERATOR_ENQUEUE;
+            else if (Type.IsConcurrentStack) return ConstValue.OPERATOR_PUSH;
+            else return ConstValue.OPERATOR_ADD;
         }
 
         /// <summary>

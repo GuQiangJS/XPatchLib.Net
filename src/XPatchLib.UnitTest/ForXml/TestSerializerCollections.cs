@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 #if NUNIT
 using NUnit.Framework;
 
@@ -24,7 +25,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             string str = DoSerializer_Divide(null, dic);
 
-            Debug.WriteLine(str);
+            Trace.WriteLine(str);
 
             ConcurrentDictionary<string, string> dic_1 = DoSerializer_Combie<ConcurrentDictionary<string, string>>(str, null);
 
@@ -48,7 +49,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             string str = DoSerializer_Divide(dic_1, dic_2);
 
-            Debug.WriteLine(str);
+            Trace.WriteLine(str);
 
             ConcurrentDictionary<string, string> dic_3 =
                 DoSerializer_Combie<ConcurrentDictionary<string, string>>(str, dic_1, true);
@@ -58,6 +59,56 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 Assert.AreEqual(dic_3[pair.Key], dic_2[pair.Key]);
             }
+        }
+
+        [Test]
+        public void SerializeConcurrentQueue()
+        {
+            ConcurrentQueue<int> queue1 = new ConcurrentQueue<int>();
+            queue1.Enqueue(1);
+
+            string str = DoSerializer_Divide(null, queue1);
+            //Assert.AreEqual(@"[1]", output);
+            Trace.WriteLine(str);
+
+            ConcurrentQueue<int> queue2 =
+                DoSerializer_Combie<ConcurrentQueue<int>>(str, queue1, true);
+            int i;
+            Assert.IsTrue(queue2.TryDequeue(out i));
+            Assert.AreEqual(1, i);
+        }
+        [Test]
+        public void SerializeConcurrentBag()
+        {
+            ConcurrentBag<int> bag1 = new ConcurrentBag<int>();
+            bag1.Add(1);
+
+            string str = DoSerializer_Divide(null, bag1);
+            //Assert.AreEqual(@"[1]", output);
+            Trace.WriteLine(str);
+
+            ConcurrentBag<int> bag2 =
+                DoSerializer_Combie<ConcurrentBag<int>>(str, bag1, true);
+            int i;
+            Assert.IsTrue(bag2.TryTake(out i));
+            Assert.AreEqual(1, i);
+        }
+
+        [Test]
+        public void SerializeConcurrentStack()
+        {
+            ConcurrentStack<int> stack1 = new ConcurrentStack<int>();
+            stack1.Push(1);
+
+            string str = DoSerializer_Divide(null, stack1);
+            //Assert.AreEqual(@"[1]", output);
+            Trace.WriteLine(str);
+
+            ConcurrentStack<int> stack2 =
+                DoSerializer_Combie<ConcurrentStack<int>>(str, stack1, true);
+            int i;
+            Assert.IsTrue(stack2.TryPop(out i));
+            Assert.AreEqual(1, i);
         }
 #endif
     }

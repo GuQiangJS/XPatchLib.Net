@@ -71,12 +71,12 @@ namespace XPatchLib
             switch (attrs.Action)
             {
                 case Action.Add:
-                    Add(this.Type.IsConcurrentDictionary ? "TryAdd" : ConstValue.OPERATOR_ADD, pOriObject, key,
+                    Add(this.Type.IsConcurrentDictionary ? ConstValue.OPERATOR_TRY_ADD : ConstValue.OPERATOR_ADD, pOriObject, key,
                         value);
                     break;
 
                 case Action.Edit:
-                    Update(this.Type.IsConcurrentDictionary ? "TryUpdate" : ConstValue.OPERATOR_SET, pOriObject, key, value);
+                    Update(this.Type.IsConcurrentDictionary ? ConstValue.OPERATOR_TRY_UPDATE : ConstValue.OPERATOR_SET, pOriObject, key, value);
                     break;
 
                 case Action.Remove:
@@ -132,7 +132,7 @@ namespace XPatchLib
         private void Remove(Object pOriObject, Object pKey, Object pValue)
         {
             if (this.Type.IsConcurrentDictionary)
-                Type.InvokeMember("TryRemove", BindingFlags.InvokeMethod, pOriObject, new[] {pKey, pValue},
+                Type.InvokeMember(ConstValue.OPERATOR_TRY_REMOVE, BindingFlags.InvokeMethod, pOriObject, new[] {pKey, pValue},
                     CultureInfo.InvariantCulture);
             else
                 Type.InvokeMember(ConstValue.OPERATOR_REMOVE, BindingFlags.InvokeMethod, pOriObject, new[] {pKey},
