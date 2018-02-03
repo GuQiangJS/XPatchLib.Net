@@ -1,7 +1,9 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Xml;
 #if NUNIT
 using NUnit.Framework;
 
@@ -23,11 +25,16 @@ namespace XPatchLib.UnitTest.ForXml
             ConcurrentDictionary<string, string> dic = new ConcurrentDictionary<string, string>();
             dic.TryAdd("KEY", null);
 
-            string str = DoSerializer_Divide(null, dic);
+            string output = DoSerializer_Divide(null, dic);
+//            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
+//<ConcurrentDictionary_String_String>
+//  <KeyValuePair_String_String Action=""Add"">
+//    <Key>KEY</Key>
+//  </KeyValuePair_String_String>
+//</ConcurrentDictionary_String_String>", output);
+            LogHelper.Debug(output);
 
-            LogHelper.Debug(str);
-
-            ConcurrentDictionary<string, string> dic_1 = DoSerializer_Combie<ConcurrentDictionary<string, string>>(str, null);
+            ConcurrentDictionary<string, string> dic_1 = DoSerializer_Combie<ConcurrentDictionary<string, string>>(output, null);
 
             Assert.AreEqual(dic, dic_1);
             Assert.IsTrue(dic_1.ContainsKey("KEY"));
@@ -47,12 +54,25 @@ namespace XPatchLib.UnitTest.ForXml
             dic_2.TryAdd("2", "F");
             dic_2.TryAdd("4", "D");
 
-            string str = DoSerializer_Divide(dic_1, dic_2);
-
-            LogHelper.Debug(str);
+            string output = DoSerializer_Divide(dic_1, dic_2);
+//            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
+//<ConcurrentDictionary_String_String>
+//  <KeyValuePair_String_String Action=""Remove"">
+//    <Key>3</Key>
+//  </KeyValuePair_String_String>
+//  <KeyValuePair_String_String>
+//    <Key>2</Key>
+//    <Value>F</Value>
+//  </KeyValuePair_String_String>
+//  <KeyValuePair_String_String Action=""Add"">
+//    <Key>4</Key>
+//    <Value>D</Value>
+//  </KeyValuePair_String_String>
+//</ConcurrentDictionary_String_String>", output);
+            LogHelper.Debug(output);
 
             ConcurrentDictionary<string, string> dic_3 =
-                DoSerializer_Combie<ConcurrentDictionary<string, string>>(str, dic_1, true);
+                DoSerializer_Combie<ConcurrentDictionary<string, string>>(output, dic_1, true);
 
             Assert.AreEqual(dic_2, dic_3);
             foreach (KeyValuePair<string, string> pair in dic_2)
@@ -67,12 +87,15 @@ namespace XPatchLib.UnitTest.ForXml
             ConcurrentQueue<int> queue1 = new ConcurrentQueue<int>();
             queue1.Enqueue(1);
 
-            string str = DoSerializer_Divide(null, queue1);
-            //Assert.AreEqual(@"[1]", output);
-            LogHelper.Debug(str);
+            string output = DoSerializer_Divide(null, queue1);
+//            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
+//<ConcurrentQueue_Int32>
+//  <Int32 Action=""Add"">1</Int32>
+//</ConcurrentQueue_Int32>", output);
+            LogHelper.Debug(output);
 
             ConcurrentQueue<int> queue2 =
-                DoSerializer_Combie<ConcurrentQueue<int>>(str, queue1, true);
+                DoSerializer_Combie<ConcurrentQueue<int>>(output, queue1, true);
             int i;
             Assert.IsTrue(queue2.TryDequeue(out i));
             Assert.AreEqual(1, i);
@@ -83,15 +106,31 @@ namespace XPatchLib.UnitTest.ForXml
             ConcurrentBag<int> bag1 = new ConcurrentBag<int>();
             bag1.Add(1);
 
-            string str = DoSerializer_Divide(null, bag1);
-            //Assert.AreEqual(@"[1]", output);
-            LogHelper.Debug(str);
+            string output = DoSerializer_Divide(null, bag1);
+//            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
+//<ConcurrentBag_Int32>
+//  <Int32 Action=""Add"">1</Int32>
+//</ConcurrentBag_Int32>", output);
+            LogHelper.Debug(output);
 
             ConcurrentBag<int> bag2 =
-                DoSerializer_Combie<ConcurrentBag<int>>(str, bag1, true);
+                DoSerializer_Combie<ConcurrentBag<int>>(output, bag1, true);
             int i;
             Assert.IsTrue(bag2.TryTake(out i));
             Assert.AreEqual(1, i);
+            
+            ConcurrentBag<int> bag_1 = new ConcurrentBag<int>();
+            bag_1.Add(1);
+            bag_1.Add(2);
+
+            ConcurrentBag<int> bag_2 = new ConcurrentBag<int>();
+            bag_2.Add(1);
+            bag_2.Add(3);
+
+            output = DoSerializer_Divide(bag_1, bag_2);
+            LogHelper.Debug(output);
+
+            Assert.Throws<NotImplementedException>(() => DoSerializer_Combie<ConcurrentBag<int>>(output, bag_1, true));
         }
 
         [Test]
@@ -100,16 +139,55 @@ namespace XPatchLib.UnitTest.ForXml
             ConcurrentStack<int> stack1 = new ConcurrentStack<int>();
             stack1.Push(1);
 
-            string str = DoSerializer_Divide(null, stack1);
-            //Assert.AreEqual(@"[1]", output);
-            LogHelper.Debug(str);
+            string output = DoSerializer_Divide(null, stack1);
+//            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
+//<ConcurrentStack_Int32>
+//  <Int32 Action=""Add"">1</Int32>
+//</ConcurrentStack_Int32>", output);
+            LogHelper.Debug(output);
 
             ConcurrentStack<int> stack2 =
-                DoSerializer_Combie<ConcurrentStack<int>>(str, stack1, true);
+                DoSerializer_Combie<ConcurrentStack<int>>(output, stack1, true);
             int i;
             Assert.IsTrue(stack2.TryPop(out i));
             Assert.AreEqual(1, i);
         }
 #endif
+
+        [Test]
+        [Description("不支持包含Remove或Update的增量合并")]
+        public void SerializeQueue()
+        {
+            Queue<int> queue1 = new Queue<int>();
+            queue1.Enqueue(1);
+            queue1.Enqueue(2);
+
+            Queue<int> queue2 = new Queue<int>();
+            queue2.Enqueue(1);
+            queue2.Enqueue(3);
+
+            string output = DoSerializer_Divide(queue1, queue2);
+            LogHelper.Debug(output);
+
+            Assert.Throws<NotImplementedException>(() => DoSerializer_Combie<Queue<int>>(output, queue1, true));
+        }
+
+        [Test]
+        [Description("不支持包含Remove或Update的增量合并")]
+        public void SerializeStack()
+        {
+            Stack<int> queue1 = new Stack<int>();
+            queue1.Push(1);
+            queue1.Push(2);
+
+            Stack<int> queue2 = new Stack<int>();
+            queue2.Push(1);
+            queue2.Push(3);
+
+            string output = DoSerializer_Divide(queue1, queue2);
+            LogHelper.Debug(output);
+
+            Assert.Throws<NotImplementedException>(() => DoSerializer_Combie<Stack<int>>(output, queue1, true));
+        }
     }
 }

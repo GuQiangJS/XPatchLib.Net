@@ -60,15 +60,33 @@ namespace XPatchLib
         private readonly bool _isConcurrentDictionary;
         private readonly bool _isConcurrentQueue;
         private readonly bool _isConcurrentStack;
+        private readonly bool _isConcurrentBag;
+        private readonly bool _isQueue;
+        private readonly bool _isStack;
 
         public Type[] InterfaceTypes
         {
             get { return _interfaceTypes; }
         }
 
+        public Boolean IsStack
+        {
+            get { return _isStack; }
+        }
+
+        public Boolean IsQueue
+        {
+            get { return _isQueue; }
+        }
+
         public Boolean IsConcurrentStack
         {
             get { return _isConcurrentStack; }
+        }
+
+        public Boolean IsConcurrentBag
+        {
+            get { return _isConcurrentBag; }
         }
 
         public Boolean IsConcurrentQueue
@@ -174,7 +192,10 @@ namespace XPatchLib
             _isConcurrentDictionary=ReflectionUtils.IsConcurrentDictionary(pType);
             _isConcurrentQueue=ReflectionUtils.IsConcurrentQueue(pType);
             _isConcurrentStack=ReflectionUtils.IsConcurrentStack(pType);
+            _isConcurrentBag = ReflectionUtils.IsConcurrentBag(pType);
 #endif
+            _isQueue = ReflectionUtils.IsQueue(pType);
+            _isStack = ReflectionUtils.IsStack(pType);
 
             _fieldsToBeSerialized = new MemberWrapper[] { };
             if (!(_isIEnumerable || _isIDictionary || _isICollection || _isBasicType || _isArray))

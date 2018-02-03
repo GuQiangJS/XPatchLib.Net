@@ -1,4 +1,12 @@
+#### 4.0.0.1
+
+* 修正 - 合并增量 [Queue](https://msdn.microsoft.com/zh-cn/library/7977ey2c(v=vs.110).aspx)。
+
+* 修正 - 合并增量 [Stack](https://msdn.microsoft.com/zh-cn/library/3278tedw(v=vs.110).aspx)。
+
 #### 3.0.5.14
+
+* 修正 - 合并增量 [ConcurrentBag](https://msdn.microsoft.com/zh-cn/library/dd381779(v=vs.110).aspx)。
 
 * 修正 - 合并增量 [ConcurrentQueue](https://msdn.microsoft.com/zh-cn/library/dd267265(v=vs.110).aspx)。
 

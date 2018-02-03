@@ -191,6 +191,10 @@ using (var fs = new FileStream(filename, FileMode.Open))
 
 * [Json格式扩展](https://github.com/GuQiangJS/XPatchLib.Net.Json)
 
+## 其他说明
+
+* 只支持从合并 **Add** 类型的增量内容：[ConcurrentBag](https://msdn.microsoft.com/zh-cn/library/dd381779(v=vs.110).aspx)/[ConcurrentQueue](https://msdn.microsoft.com/zh-cn/library/dd267265(v=vs.110).aspx)/[ConcurrentStack](https://msdn.microsoft.com/zh-cn/library/dd267331(v=vs.110).aspx)/[Queue](https://msdn.microsoft.com/zh-cn/library/7977ey2c(v=vs.110).aspx)/[Stack](https://msdn.microsoft.com/zh-cn/library/3278tedw(v=vs.110).aspx)
+
 ## 后续计划
 
 - [x] 部分对象类型尚未支持。例如：`DateTimeOffset`，`BigInteger` 等。

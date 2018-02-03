@@ -533,6 +533,38 @@ namespace XPatchLib
                    IsObservableCollection(t);
         }
 
+        internal static bool IsQueue(Type t)
+        {
+            if (t.IsGenericType())
+            {
+                Type definition = t.GetGenericTypeDefinition();
+
+                switch (definition.FullName)
+                {
+                    case "System.Collections.Generic.Queue`1":
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        internal static bool IsStack(Type t)
+        {
+            if (t.IsGenericType())
+            {
+                Type definition = t.GetGenericTypeDefinition();
+
+                switch (definition.FullName)
+                {
+                    case "System.Collections.Generic.Stack`1":
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
         internal static bool IsConcurrentDictionary(Type t)
         {
             if (t.IsGenericType())

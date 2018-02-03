@@ -140,8 +140,8 @@ namespace XPatchLib
 
         private string GetAddOperator()
         {
-            if (Type.IsConcurrentQueue) return ConstValue.OPERATOR_ENQUEUE;
-            else if (Type.IsConcurrentStack) return ConstValue.OPERATOR_PUSH;
+            if (Type.IsConcurrentQueue || Type.IsQueue) return ConstValue.OPERATOR_ENQUEUE;
+            else if (Type.IsConcurrentStack || Type.IsStack) return ConstValue.OPERATOR_PUSH;
             else return ConstValue.OPERATOR_ADD;
         }
 
