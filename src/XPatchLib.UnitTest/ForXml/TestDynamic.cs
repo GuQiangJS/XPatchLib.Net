@@ -61,7 +61,7 @@ namespace XPatchLib.UnitTest
             dynamic o = CreateInstance();
             string s = DoSerializer_Divide(null, o, setting);
             Assert.AreEqual(context, s);
-            Debug.WriteLine(s);
+            LogHelper.Debug(s);
             return DoSerializer_Combie(o.GetType(), s, null, setting);
         }
 

@@ -110,10 +110,10 @@ namespace XPatchLib.UnitTest
 
         public void Print()
         {
-            Console.WriteLine("member1 = '{0}'", member1);
-            Console.WriteLine("member2 = '{0}'", member2);
-            Console.WriteLine("member3 = '{0}'", member3);
-            Console.WriteLine("member4 = '{0}'", member4);
+            LogHelper.Debug("member1 = '{0}'", member1);
+            LogHelper.Debug("member2 = '{0}'", member2);
+            LogHelper.Debug("member3 = '{0}'", member3);
+            LogHelper.Debug("member4 = '{0}'", member4);
         }
 
         [OnSerializing]

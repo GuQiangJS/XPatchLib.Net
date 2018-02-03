@@ -12,6 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="log4net" Version="2.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\XPatchLib\XPatchLib.csproj" />
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
@@ -43,6 +47,11 @@
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.1' OR '$(TargetFramework)'=='netcoreapp2.0'">
     <PackageReference Include="BenchmarkDotNet" Version="0.10.8" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net20'">
     <AssemblyTitle>XPatchLib UnitTest .NET 2.0</AssemblyTitle>
     <DefineConstants>NET;NUNIT;NET_20;NET_20_UP</DefineConstants>
@@ -57,7 +66,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net46'">
     <AssemblyTitle>XPatchLib UnitTest .NET 4.6</AssemblyTitle>
-    <DefineConstants>TRACE;NET;NUNIT;BENCHMARK;NET_46;NET_20_UP;NET_35_UP;NET_40_UP;NET_46_UP;DEBUG;NET46</DefineConstants>
+    <DefineConstants>NET;NUNIT;BENCHMARK;NET_46;NET_20_UP;NET_35_UP;NET_40_UP;NET_46_UP;NET46;NET46</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1'">
     <AssemblyTitle>XPatchLib UnitTest .NET Standard 1.3</AssemblyTitle>

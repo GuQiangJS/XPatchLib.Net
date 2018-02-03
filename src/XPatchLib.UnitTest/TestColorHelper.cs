@@ -30,20 +30,20 @@ namespace XPatchLib.UnitTest
             ColorHelper.TryTransFromString("AliceBlue", out result);
             Assert.AreEqual(Color.AliceBlue, result);
 
-            Trace.WriteLine(result.Name);
-            Trace.WriteLine(result.A);
-            Trace.WriteLine(result.R);
-            Trace.WriteLine(result.G);
-            Trace.WriteLine(result.B);
+            LogHelper.Debug(result.Name);
+            LogHelper.Debug(result.A);
+            LogHelper.Debug(result.R);
+            LogHelper.Debug(result.G);
+            LogHelper.Debug(result.B);
 
             ColorHelper.TryTransFromString("#FFFFFFFF", out result);
             Assert.AreEqual(Color.FromArgb(255, 255, 255), result);
 
-            Trace.WriteLine(result.Name);
-            Trace.WriteLine(result.A);
-            Trace.WriteLine(result.R);
-            Trace.WriteLine(result.G);
-            Trace.WriteLine(result.B);
+            LogHelper.Debug(result.Name);
+            LogHelper.Debug(result.A);
+            LogHelper.Debug(result.R);
+            LogHelper.Debug(result.G);
+            LogHelper.Debug(result.B);
 
             Assert.IsFalse(ColorHelper.TryTransFromString("", out result));
             Assert.IsFalse(ColorHelper.TryTransFromString("#", out result));

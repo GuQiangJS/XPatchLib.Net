@@ -564,7 +564,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 string result = DoSerializer_Divide(new TestOverrideClass(), TestOverrideClass.CreateInstance(),
                     settings[i]);
-                Debug.WriteLine(result);
+                LogHelper.Debug(result);
                 //Assert.AreEqual(GetCompleteContext(contexts[i]), result);
                 TestOverrideClass newObj =
                     DoSerializer_Combie(t, result, new TestOverrideClass(), settings[i]) as TestOverrideClass;

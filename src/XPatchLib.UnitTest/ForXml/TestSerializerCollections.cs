@@ -25,7 +25,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             string str = DoSerializer_Divide(null, dic);
 
-            Trace.WriteLine(str);
+            LogHelper.Debug(str);
 
             ConcurrentDictionary<string, string> dic_1 = DoSerializer_Combie<ConcurrentDictionary<string, string>>(str, null);
 
@@ -49,7 +49,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             string str = DoSerializer_Divide(dic_1, dic_2);
 
-            Trace.WriteLine(str);
+            LogHelper.Debug(str);
 
             ConcurrentDictionary<string, string> dic_3 =
                 DoSerializer_Combie<ConcurrentDictionary<string, string>>(str, dic_1, true);
@@ -69,7 +69,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             string str = DoSerializer_Divide(null, queue1);
             //Assert.AreEqual(@"[1]", output);
-            Trace.WriteLine(str);
+            LogHelper.Debug(str);
 
             ConcurrentQueue<int> queue2 =
                 DoSerializer_Combie<ConcurrentQueue<int>>(str, queue1, true);
@@ -85,7 +85,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             string str = DoSerializer_Divide(null, bag1);
             //Assert.AreEqual(@"[1]", output);
-            Trace.WriteLine(str);
+            LogHelper.Debug(str);
 
             ConcurrentBag<int> bag2 =
                 DoSerializer_Combie<ConcurrentBag<int>>(str, bag1, true);
@@ -102,7 +102,7 @@ namespace XPatchLib.UnitTest.ForXml
 
             string str = DoSerializer_Divide(null, stack1);
             //Assert.AreEqual(@"[1]", output);
-            Trace.WriteLine(str);
+            LogHelper.Debug(str);
 
             ConcurrentStack<int> stack2 =
                 DoSerializer_Combie<ConcurrentStack<int>>(str, stack1, true);

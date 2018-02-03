@@ -163,7 +163,7 @@ namespace XPatchLib.UnitTest.ForXml
                     serializer.Divide(writer, OriObject, RevObject);
                     writer.Flush();
                     var context = StreamToString(stream);
-                    Debug.WriteLine(context);
+                    LogHelper.Debug(context);
                     Assert.AreEqual(ChangedContext.Replace("utf-8", "us-ascii"), context);
                     stream.Position = 0;
                     using (var reader = new XmlTextReader(stream))
@@ -187,7 +187,7 @@ namespace XPatchLib.UnitTest.ForXml
                     serializer.Divide(writer, OriObject, RevObject);
                     writer.Flush();
                     var context = StreamToString(stream);
-                    Debug.WriteLine(context);
+                    LogHelper.Debug(context);
                     Assert.AreEqual(
                         ChangedContext.Replace("utf-8", "us-ascii")
                             .Replace(Environment.NewLine, "")

@@ -36,7 +36,7 @@ namespace XPatchLib.UnitTest.ForXml
                     serializer.Divide(writer, null, books);
                 }
             }
-            Debug.WriteLine(sb.ToString());
+            LogHelper.Debug(sb.ToString());
             using (StringReader sr = new StringReader(sb.ToString(0, sb.Length - 10)))
             {
                 using (XmlTextReader reader = new XmlTextReader(sr))
