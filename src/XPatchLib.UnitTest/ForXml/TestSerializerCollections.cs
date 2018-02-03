@@ -30,7 +30,7 @@ namespace XPatchLib.UnitTest.ForXml
             ConcurrentDictionary<string, string> dic_1 = DoSerializer_Combie<ConcurrentDictionary<string, string>>(str, null);
 
             Assert.AreEqual(dic, dic_1);
-            Assert.True(dic_1.ContainsKey("KEY"));
+            Assert.IsTrue(dic_1.ContainsKey("KEY"));
             Assert.IsNull(dic_1["KEY"]);
         }
 

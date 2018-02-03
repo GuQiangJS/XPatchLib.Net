@@ -57,7 +57,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net46'">
     <AssemblyTitle>XPatchLib UnitTest .NET 4.6</AssemblyTitle>
-    <DefineConstants>NET;NUNIT;BENCHMARK;NET_46;NET_20_UP;NET_35_UP;NET_40_UP;NET_46_UP</DefineConstants>
+    <DefineConstants>TRACE;NET;NUNIT;BENCHMARK;NET_46;NET_20_UP;NET_35_UP;NET_40_UP;NET_46_UP;DEBUG;NET46</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1'">
     <AssemblyTitle>XPatchLib UnitTest .NET Standard 1.3</AssemblyTitle>
