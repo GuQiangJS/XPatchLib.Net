@@ -184,7 +184,12 @@ namespace XPatchLib
         {
             Guard.ArgumentNotNull(pReader, "pReader");
 
-            InitType(pReader.Setting, _initialType, null);
+            Type t = _initialType;
+            if (t.IsInterface() && pOriValue != null)
+            {
+                t = pOriValue.GetType();
+            }
+            InitType(pReader.Setting, t, null);
             RegisterTypes(pReader.Setting);
 
             object cloneObjValue = null;
@@ -281,7 +286,15 @@ namespace XPatchLib
         {
             Guard.ArgumentNotNull(pWriter, "pWriter");
 
-            InitType(pWriter.Setting, _initialType, pWriter.IgnoreAttributeType);
+            Type t = _initialType;
+            if (t.IsInterface())
+            {
+                if (pOriValue != null || pRevValue != null)
+                {
+                    t = (pOriValue != null) ? pOriValue.GetType() : pRevValue.GetType();
+                }
+            }
+            InitType(pWriter.Setting, t, pWriter.IgnoreAttributeType);
             RegisterTypes(pWriter.Setting);
 
             pWriter.WriteStartDocument();

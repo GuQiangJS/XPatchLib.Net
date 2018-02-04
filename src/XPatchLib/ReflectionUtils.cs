@@ -304,6 +304,7 @@ namespace XPatchLib
                         interfaceType.GetGenericTypeDefinition() == typeof(ICollection<>))
                         return true;
             }
+
             return false;
         }
 
@@ -376,6 +377,7 @@ namespace XPatchLib
                         interfaceType.GetGenericTypeDefinition() == typeof(IList<>))
                         return true;
             }
+
             return false;
         }
 
@@ -510,7 +512,7 @@ namespace XPatchLib
         internal static bool ShouldSkipDeserialized(Type t)
         {
             // ConcurrentDictionary throws an error in its OnDeserialized so ignore
-            if (IsConcurrentOrObservableCollection(t))
+            if (IsConcurrentDictionary(t) || IsConcurrentStack(t) || IsConcurrentQueue(t) || IsConcurrentBag(t))
             {
                 return true;
             }
@@ -519,18 +521,12 @@ namespace XPatchLib
         }
         internal static bool ShouldSkipSerializing(Type t)
         {
-            if (IsConcurrentOrObservableCollection(t))
+            if (IsConcurrentDictionary(t) || IsConcurrentStack(t) || IsConcurrentQueue(t) || IsConcurrentBag(t))
             {
                 return true;
             }
 
             return false;
-        }
-
-        internal static bool IsConcurrentOrObservableCollection(Type t)
-        {
-            return IsConcurrentDictionary(t) || IsConcurrentStack(t) || IsConcurrentQueue(t) || IsConcurrentBag(t) ||
-                   IsObservableCollection(t);
         }
 
         internal static bool IsQueue(Type t)
@@ -565,7 +561,7 @@ namespace XPatchLib
             return false;
         }
 
-        internal static bool IsConcurrentDictionary(Type t)
+        internal static bool IsConcurrentDictionary(Type t, bool checkBase = false)
         {
             if (t.IsGenericType())
             {
@@ -578,10 +574,15 @@ namespace XPatchLib
                 }
             }
 
+            if (checkBase && t.BaseType() != null && IsConcurrentDictionary(t.BaseType()))
+            {
+                return true;
+            }
+
             return false;
         }
 
-        internal static bool IsConcurrentStack(Type t)
+        internal static bool IsConcurrentStack(Type t,bool checkBase=false)
         {
             if (t.IsGenericType())
             {
@@ -594,10 +595,15 @@ namespace XPatchLib
                 }
             }
 
+            if (checkBase && t.BaseType() != null && IsConcurrentStack(t.BaseType()))
+            {
+                return true;
+            }
+
             return false;
         }
 
-        internal static bool IsConcurrentQueue(Type t)
+        internal static bool IsConcurrentQueue(Type t,bool checkBase=false)
         {
             if (t.IsGenericType())
             {
@@ -610,9 +616,14 @@ namespace XPatchLib
                 }
             }
 
+            if (checkBase && t.BaseType() != null && IsConcurrentQueue(t.BaseType()))
+            {
+                return true;
+            }
+
             return false;
         }
-        internal static bool IsConcurrentBag(Type t)
+        internal static bool IsConcurrentBag(Type t, bool checkBase = false)
         {
             if (t.IsGenericType())
             {
@@ -623,6 +634,11 @@ namespace XPatchLib
                     case "System.Collections.Concurrent.ConcurrentBag`1":
                         return true;
                 }
+            }
+
+            if (checkBase && t.BaseType() != null && IsConcurrentBag(t.BaseType()))
+            {
+                return true;
             }
 
             return false;
@@ -639,6 +655,11 @@ namespace XPatchLib
                     case "System.Collections.ObjectModel.ObservableCollection`1":
                         return true;
                 }
+            }
+
+            if (t.BaseType() != null && IsObservableCollection(t.BaseType()))
+            {
+                return true;
             }
 
             return false;

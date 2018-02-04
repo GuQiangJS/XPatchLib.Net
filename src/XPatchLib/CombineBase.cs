@@ -52,7 +52,7 @@ namespace XPatchLib
             Object result = CombineAction(pReader, pOriObject, pName);
 
 #if NET || NETSTANDARD_2_0_UP
-            if (pReader.Setting.EnableOnDeserializedAttribute && pOriObject != null && !ReflectionUtils.ShouldSkipDeserialized(this.Type.OriType))
+            if (pReader.Setting.EnableOnDeserializedAttribute && pOriObject != null)
                 Type.InvokeOnDeserialized(pOriObject, new System.Runtime.Serialization.StreamingContext());
 #endif
             return result;

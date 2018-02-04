@@ -189,8 +189,8 @@ namespace XPatchLib
             _typeFriendlyName = ReflectionUtils.GetTypeFriendlyName(pType);
 #if NET_40_UP || NETSTANDARD_2_0_UP
             _isDynamicObject = ReflectionUtils.IsDynamicObject(pType);
-            _isConcurrentDictionary=ReflectionUtils.IsConcurrentDictionary(pType);
-            _isConcurrentQueue=ReflectionUtils.IsConcurrentQueue(pType);
+            _isConcurrentDictionary = ReflectionUtils.IsConcurrentDictionary(pType, true);
+            _isConcurrentQueue=ReflectionUtils.IsConcurrentQueue(pType,true);
             _isConcurrentStack=ReflectionUtils.IsConcurrentStack(pType);
             _isConcurrentBag = ReflectionUtils.IsConcurrentBag(pType);
 #endif
@@ -243,7 +243,7 @@ namespace XPatchLib
 
             if (!_isBasicType)
                 CreateInstanceFuncs = ClrHelper.CreateInstanceFunc<Object>(pType);
-#if NET
+#if NET || NETSTANDARD_2_0_UP
             ResolveCallbackMethods(OriType);
 #endif
 
@@ -760,7 +760,7 @@ namespace XPatchLib
         {
             if (_onDeserializedCallbacks != null)
                 foreach (SerializationCallback callback in _onDeserializedCallbacks)
-                    callback(o, context);
+                        callback(o, context);
         }
 
         private List<SerializationCallback> _onDeserializedCallbacks;
@@ -882,7 +882,7 @@ namespace XPatchLib
                     ParameterInfo[] parameters = method.GetParameters();
 
                     if (IsValidCallback(method, parameters, typeof(OnSerializingAttribute), currentOnSerializing,
-                        ref prevAttributeType))
+                        ref prevAttributeType) && !ReflectionUtils.ShouldSkipSerializing(method.DeclaringType))
                     {
                         onSerializing = onSerializing ?? new List<SerializationCallback>();
                         onSerializing.Add(CreateSerializationCallback(method));
@@ -903,7 +903,7 @@ namespace XPatchLib
                         currentOnDeserializing = method;
                     }
                     if (IsValidCallback(method, parameters, typeof(OnDeserializedAttribute), currentOnDeserialized,
-                        ref prevAttributeType))
+                        ref prevAttributeType) && !ReflectionUtils.ShouldSkipDeserialized(method.DeclaringType))
                     {
                         onDeserialized = onDeserialized ?? new List<SerializationCallback>();
                         onDeserialized.Add(CreateSerializationCallback(method));

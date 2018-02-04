@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Xml;
 #if NUNIT
 using NUnit.Framework;
@@ -151,6 +153,48 @@ namespace XPatchLib.UnitTest.ForXml
             int i;
             Assert.IsTrue(stack2.TryPop(out i));
             Assert.AreEqual(1, i);
+        }
+
+        [PrimaryKey("Text1")]
+        public class SomeObject
+        {
+            public string Text1 { get; set; }
+        }
+
+        public class CustomConcurrentDictionary : ConcurrentDictionary<string, List<SomeObject>>
+        {
+            [OnDeserialized]
+            internal void OnDeserializedMethod(StreamingContext context)
+            {
+                ((IDictionary)this).Add("key2", new List<SomeObject>
+                {
+                    new SomeObject
+                    {
+                        Text1 = "value2"
+                    }
+                });
+            }
+        }
+        [Test]
+        public void SerializeCustomConcurrentDictionary()
+        {
+            IDictionary d = new CustomConcurrentDictionary();
+            d.Add("key", new List<SomeObject>
+            {
+                new SomeObject
+                {
+                    Text1 = "value1"
+                }
+            });
+
+            string output = this.DoSerializer_Divide(null, d);
+            LogHelper.Debug(output);
+
+            CustomConcurrentDictionary d2 = this.DoSerializer_Combie<CustomConcurrentDictionary>(output, null, true);
+
+            Assert.AreEqual(2, d2.Count);
+            Assert.AreEqual("value1", d2["key"][0].Text1);
+            Assert.AreEqual("value2", d2["key2"][0].Text1);
         }
 #endif
 

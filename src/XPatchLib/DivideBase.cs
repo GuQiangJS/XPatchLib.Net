@@ -147,7 +147,7 @@ namespace XPatchLib
                     }
                 }
 #if NET || NETSTANDARD_2_0_UP
-            if (Writer.Setting.EnableOnSerializingAttribute && obj != null && !ReflectionUtils.ShouldSkipSerializing(this.Type.OriType))
+            if (Writer.Setting.EnableOnSerializingAttribute && obj != null)
                 Type.InvokeOnSerializing(obj, new System.Runtime.Serialization.StreamingContext());
 #endif
                 Writer.WriteStartObject(pName);

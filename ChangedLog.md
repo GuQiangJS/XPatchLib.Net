@@ -1,3 +1,9 @@
+#### 4.0.0.3
+
+* 修正 - 合并增量 `IDictionary<T,W>` 类型实例时，如果W与T类型不同时的BUG。
+
+* 修正 - `Serializer` 构造函数传入传入的类型为接口时的BUG。
+
 #### 4.0.0.1
 
 * 修正 - 合并增量 [Queue](https://msdn.microsoft.com/zh-cn/library/7977ey2c(v=vs.110).aspx)。

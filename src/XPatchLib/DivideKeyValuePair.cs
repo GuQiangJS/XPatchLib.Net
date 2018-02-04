@@ -60,7 +60,7 @@ namespace XPatchLib
             var keyType = TypeExtendContainer.GetTypeExtend(Writer.Setting, Type.KeyArgumentType,
                 Writer.IgnoreAttributeType, Type);
             var valueType =
-                TypeExtendContainer.GetTypeExtend(Writer.Setting, Type.KeyArgumentType, Writer.IgnoreAttributeType,
+                TypeExtendContainer.GetTypeExtend(Writer.Setting, Type.ValueArgumentType, Writer.IgnoreAttributeType,
                     Type);
 
             //分别获取原始值与修改后的值的Key值和Value值
