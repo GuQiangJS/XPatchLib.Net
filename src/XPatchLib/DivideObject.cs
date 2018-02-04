@@ -76,20 +76,20 @@ namespace XPatchLib
 #endif
                     divide = new DivideBasic(Writer,
                         TypeExtendContainer.GetTypeExtend(Writer.Setting, memberType, Writer.IgnoreAttributeType,
-                            Type));
+                            Type, member.MemberInfo));
                 }
                 //集合类型
                 else if (member.IsIEnumerable)
                 {
                     divide = new DivideIEnumerable(Writer,
                         TypeExtendContainer.GetTypeExtend(Writer.Setting, memberType, Writer.IgnoreAttributeType,
-                            Type));
+                            Type, member.MemberInfo));
                 }
                 else
                 {
                     divide = new DivideCore(Writer,
                         TypeExtendContainer.GetTypeExtend(Writer.Setting, memberType, Writer.IgnoreAttributeType,
-                            Type));
+                            Type, member.MemberInfo));
                 }
 
                 if (pAttach == null)

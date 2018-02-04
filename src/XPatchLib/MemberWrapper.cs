@@ -49,7 +49,7 @@ namespace XPatchLib
             Name = MemberInfo.Name;
 
             InitType();
-            InitDefaultValue();
+            DefaultValue = ReflectionUtils.GetDefaultValue(Type, MemberInfo);
         }
 
 #endregion Internal Constructors
@@ -164,17 +164,6 @@ namespace XPatchLib
         }
 
 #region Private Methods
-
-        /// <summary>
-        ///     初始化当前成员属性的默认值。
-        /// </summary>
-        private void InitDefaultValue()
-        {
-            if (Type.IsValueType())
-                DefaultValue = Activator.CreateInstance(Type);
-            else
-                DefaultValue = null;
-        }
 
         /// <summary>
         ///     获取类型。

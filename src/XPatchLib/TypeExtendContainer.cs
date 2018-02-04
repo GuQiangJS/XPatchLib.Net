@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace XPatchLib
 {
@@ -101,7 +102,7 @@ namespace XPatchLib
             }
         }
 
-        internal static TypeExtend GetTypeExtend(ISerializeSetting pSetting,Type pType, Type pIgnoreAttributeType, TypeExtend pParentType = null)
+        internal static TypeExtend GetTypeExtend(ISerializeSetting pSetting,Type pType, Type pIgnoreAttributeType, TypeExtend pParentType = null,MemberInfo memberInfo=null)
         {
             TypeExtend result = null;
             lock (InnerDic)
@@ -118,7 +119,7 @@ namespace XPatchLib
                 }
                 if (!innerDictionary.TryGetValue(pParentType, out result))
                 {
-                    result = new TypeExtend(pSetting, pType, pIgnoreAttributeType, pParentType);
+                    result = new TypeExtend(pSetting, pType, pIgnoreAttributeType, pParentType, memberInfo);
                     lock (InnerDic)
                     {
                         innerDictionary.Add(pParentType, result);

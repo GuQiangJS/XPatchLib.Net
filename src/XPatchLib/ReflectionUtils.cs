@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 #if (NET || NETSTANDARD_2_0_UP)
 using System.Drawing;
 #endif
@@ -23,8 +24,17 @@ namespace XPatchLib
     {
         #region Internal Methods
 
-        internal static Object GetDefaultValue(Type pType)
+        internal static Object GetDefaultValue(Type pType,MemberInfo memberInfo=null)
         {
+            if (memberInfo != null)
+            {
+                DefaultValueAttribute attr =
+                    memberInfo.GetCustomAttributes(false)
+                        .FirstOrDefault(x =>
+                            x.GetType() == typeof(DefaultValueAttribute)) as DefaultValueAttribute;
+                if (attr != null)
+                    return attr.Value;
+            }
             Object result = null;
             if (pType.IsValueType())
                 result = Activator.CreateInstance(pType);

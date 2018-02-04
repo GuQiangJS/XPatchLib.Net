@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 #if (NET_40_UP || NETSTANDARD_2_0_UP)
 using System.Dynamic;
 #endif
@@ -139,7 +140,7 @@ namespace XPatchLib
 
         private string[] _attributeNames;
 
-        internal TypeExtend(ISerializeSetting pSetting,Type pType, Type pIgnoreAttributeType, TypeExtend pParentType = null)
+        internal TypeExtend(ISerializeSetting pSetting,Type pType, Type pIgnoreAttributeType, TypeExtend pParentType = null,MemberInfo memberInfo=null)
         {
             _parentType = pParentType;
             _setting = pSetting;
@@ -179,7 +180,8 @@ namespace XPatchLib
                 _isIEnumerable = ReflectionUtils.IsIEnumerable(pType, _interfaceTypes);
                 _isArray = ReflectionUtils.IsArray(pType);
             }
-            _defaultValue = ReflectionUtils.GetDefaultValue(_oriType);
+
+            _defaultValue = ReflectionUtils.GetDefaultValue(_oriType, memberInfo);
             _isArrayItem = ParentType != null &&
                            (ParentType.IsArray || ParentType.IsICollection ||
                             ParentType.IsIEnumerable);
@@ -550,7 +552,7 @@ namespace XPatchLib
         internal static Boolean NeedSerialize(object defaultValue, object objA, object objB, bool serializeDefaultValue)
         {
             bool result = Equals(objA, objB);
-            if (result && IsDefaultValue(defaultValue, objA) && serializeDefaultValue)
+            if (result && IsDefaultValue(defaultValue, objB) && serializeDefaultValue)
                 return true;
             return !result;
         }

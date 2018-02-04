@@ -67,7 +67,7 @@ namespace XPatchLib.UnitTest
             }
         }
 
-        protected ITextWriter CreateWriter(StringBuilder output)
+        protected virtual ITextWriter CreateWriter(StringBuilder output)
         {
             ExtentedStringWriter sw = new ExtentedStringWriter(output, new UTF8Encoding(false));
             return new XmlTextWriter(sw);
