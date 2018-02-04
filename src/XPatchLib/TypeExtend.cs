@@ -179,7 +179,7 @@ namespace XPatchLib
                 _isIEnumerable = ReflectionUtils.IsIEnumerable(pType, _interfaceTypes);
                 _isArray = ReflectionUtils.IsArray(pType);
             }
-            _defaultValue = ReflectionUtils.GetDefaultValue(pType);
+            _defaultValue = ReflectionUtils.GetDefaultValue(_oriType);
             _isArrayItem = ParentType != null &&
                            (ParentType.IsArray || ParentType.IsICollection ||
                             ParentType.IsIEnumerable);

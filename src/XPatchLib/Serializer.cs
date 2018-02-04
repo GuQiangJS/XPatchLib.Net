@@ -287,12 +287,9 @@ namespace XPatchLib
             Guard.ArgumentNotNull(pWriter, "pWriter");
 
             Type t = _initialType;
-            if (t.IsInterface())
+            if (t.IsInterface() && (pOriValue != null || pRevValue != null))
             {
-                if (pOriValue != null || pRevValue != null)
-                {
                     t = (pOriValue != null) ? pOriValue.GetType() : pRevValue.GetType();
-                }
             }
             InitType(pWriter.Setting, t, pWriter.IgnoreAttributeType);
             RegisterTypes(pWriter.Setting);
