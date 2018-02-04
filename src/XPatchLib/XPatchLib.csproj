@@ -17,7 +17,7 @@
     <PackageLicenseUrl>https://github.com/GuQiangJS/XPatchLib.Net/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/GuQiangJS/XPatchLib.Net</PackageProjectUrl>
     <NeutralLanguage>zh-Hans</NeutralLanguage>
-    <Copyright>Copyright © 2013-2017 - GuQiang</Copyright>
+    <Copyright>Copyright © 2013-2018 - GuQiang</Copyright>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageTags>Serialization Patch XmlSerialization</PackageTags>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
