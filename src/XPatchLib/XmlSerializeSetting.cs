@@ -55,7 +55,7 @@ namespace XPatchLib
         /// </remarks>
         /// <example>
         ///     <include file='docs/docs.xml'
-        ///         path='Comments/examples/example[@class="XmlTextWriter" and @property="IgnoreAttributeType"]/*' />
+        ///         path='Comments/examples/example[@class="XmlSerializeSetting" and @property="IgnoreAttributeType"]/*' />
         /// </example>
         /// <value>
         ///     默认值：
@@ -69,7 +69,7 @@ namespace XPatchLib
         /// 用于控制如何<see cref="Serializer" /> 方法 <see cref = "Serializer.Divide" /> 序列化对象。
         /// </remarks>
         /// <example>
-        /// <include file='docs/docs.xml' path='Comments/examples/example[@class="XmlTextWriter" and @property="IgnoreAttributeType"]/*'/>
+        /// <include file='docs/docs.xml' path='Comments/examples/example[@class="XmlSerializeSetting" and @property="IgnoreAttributeType"]/*'/>
         /// </example>
         /// <value>
         /// 默认值：

@@ -23,11 +23,13 @@ namespace XPatchLib
         /// <summary>
         ///     获取或设置在产生增量时类或结构中哪些类型的成员参与序列化。
         /// </summary>
+        /// <seealso cref="SerializeSetting.MemberType"/>
         SerializeMemberType MemberType { get; set; }
 
         /// <summary>
         ///     获取或设置在产生增量时类或结构中哪些修饰符的成员参与序列化。
         /// </summary>
+        /// <seealso cref="SerializeSetting.Modifier"/>
         SerializeMemberModifier Modifier { get; set; }
 
 #if NET_40_UP || NETSTANDARD_2_0_UP 
@@ -40,6 +42,7 @@ namespace XPatchLib
         /// <summary>
         ///     获取或设置序列化/反序列化时，文本中标记 '<b>动作</b>' 的文本。
         /// </summary>
+        /// <seealso cref="XmlSerializeSetting.ActionName"/>
         string ActionName { get; set; }
 
         /// <summary>

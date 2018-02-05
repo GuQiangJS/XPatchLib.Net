@@ -112,6 +112,9 @@ namespace XPatchLib
         ///     获取或设置在产生增量时类或结构中哪些类型的成员参与序列化。
         /// </summary>
         /// <value>默认为 <see cref="SerializeMemberType.Property" />。</value>
+        /// <example>
+        /// <include file='docs/docs.xml' path='Comments/examples/example[@class="XmlSerializeSetting" and @property="MemberType"]/*'/>
+        /// </example>
         public virtual SerializeMemberType MemberType
         {
             get { return _memberType; }

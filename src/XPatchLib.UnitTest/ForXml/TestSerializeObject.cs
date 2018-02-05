@@ -471,5 +471,73 @@ namespace XPatchLib.UnitTest.ForXml
                 Assert.Fail("Exception fired in threading method");
             }
         }
+
+        [Test]
+        public void TestMemberType()
+        {
+            Author c =new Author();
+            c.Name = "N1";
+            c.Age = 3;
+
+            using (Serializer serializer = new Serializer(typeof(Author)))
+            {
+                StringBuilder sb = new StringBuilder();
+                using (StringWriter sw = new StringWriter(sb))
+                {
+                    using (XmlTextWriter writer = new XmlTextWriter(sw))
+                    {
+                        serializer.Divide(writer, null, c);
+                    }
+                }
+                LogHelper.Debug(sb.ToString());
+                Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<Author>
+  <Name>N1</Name>
+</Author>", sb.ToString());
+            }
+            using (Serializer serializer = new Serializer(typeof(Author)))
+            {
+                StringBuilder sb = new StringBuilder();
+                using (StringWriter sw = new StringWriter(sb))
+                {
+                    using (XmlTextWriter writer = new XmlTextWriter(sw))
+                    {
+                        writer.Setting.MemberType = SerializeMemberType.Field;
+                        serializer.Divide(writer, null, c);
+                    }
+                }
+                LogHelper.Debug(sb.ToString());
+                Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<Author>
+  <Age>3</Age>
+</Author>", sb.ToString());
+            }
+            using (Serializer serializer = new Serializer(typeof(Author)))
+            {
+                StringBuilder sb = new StringBuilder();
+                using (StringWriter sw = new StringWriter(sb))
+                {
+                    using (XmlTextWriter writer = new XmlTextWriter(sw))
+                    {
+                        writer.Setting.MemberType = SerializeMemberType.All;
+                        serializer.Divide(writer, null, c);
+                    }
+                }
+                LogHelper.Debug(sb.ToString());
+                Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<Author>
+  <Age>3</Age>
+  <Name>N1</Name>
+</Author>", sb.ToString());
+            }
+        }
+
+
+        class Author
+        {
+            public string Name { get; set; }
+
+            public int Age;
+        }
     }
 }
