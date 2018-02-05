@@ -41,7 +41,7 @@ namespace XPatchLib
         private Type _ignoreAttributeType =
 #if (NET || NETSTANDARD_2_0_UP)
             typeof(XmlIgnoreAttribute);
-#else 
+#else
         null;
 #endif
 
@@ -60,20 +60,22 @@ namespace XPatchLib
         ///     默认值：
         ///     <see cref="System.Xml.Serialization.XmlIgnoreAttribute" />。
         /// </value>
-#else /// <summary>
-/// 获取或设置指示<see cref="Serializer" /> 方法<see cref= "Serializer.Divide" /> 进行序列化的公共字段或公共读 / 写属性值。
-/// </summary>
-/// <remarks>
-/// 用于控制如何<see cref="Serializer" /> 方法 <see cref = "Serializer.Divide" /> 序列化对象。
-/// </remarks>
-/// <example>
-/// <include file='docs/docs.xml' path='Comments/examples/example[@class="XmlTextWriter" and @property="IgnoreAttributeType"]/*'/>
-/// </example>
-/// <value>
-/// 默认值：
-/// <c>null</c>。
-/// </value>
-#endif public override Type IgnoreAttributeType
+#else 
+        /// <summary>
+        /// 获取或设置指示<see cref="Serializer" /> 方法<see cref= "Serializer.Divide" /> 进行序列化的公共字段或公共读 / 写属性值。
+        /// </summary>
+        /// <remarks>
+        /// 用于控制如何<see cref="Serializer" /> 方法 <see cref = "Serializer.Divide" /> 序列化对象。
+        /// </remarks>
+        /// <example>
+        /// <include file='docs/docs.xml' path='Comments/examples/example[@class="XmlTextWriter" and @property="IgnoreAttributeType"]/*'/>
+        /// </example>
+        /// <value>
+        /// 默认值：
+        /// <c>null</c>。
+        /// </value>
+#endif
+        public override Type IgnoreAttributeType
         {
             get { return _ignoreAttributeType; }
             set

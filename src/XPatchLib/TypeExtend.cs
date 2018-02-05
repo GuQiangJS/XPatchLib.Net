@@ -44,13 +44,13 @@ namespace XPatchLib
 
         public Boolean IsQueue { get; }
 
-        public Boolean IsConcurrentStack { get; }
+        public Boolean IsConcurrentStack { get; private set; }
 
-        public Boolean IsConcurrentBag { get; }
+        public Boolean IsConcurrentBag { get; private set; }
 
-        public Boolean IsConcurrentQueue { get; }
+        public Boolean IsConcurrentQueue { get; private set; }
 
-        public Boolean IsConcurrentDictionary { get; }
+        public Boolean IsConcurrentDictionary { get; private set; }
 
         public Boolean IsNullable { get; }
 
@@ -130,10 +130,10 @@ namespace XPatchLib
             TypeFriendlyName = ReflectionUtils.GetTypeFriendlyName(pType);
 #if NET_40_UP || NETSTANDARD_2_0_UP
             _isDynamicObject = ReflectionUtils.IsDynamicObject(pType);
-            _isConcurrentDictionary = ReflectionUtils.IsConcurrentDictionary(pType, true);
-            _isConcurrentQueue = ReflectionUtils.IsConcurrentQueue(pType,true);
-            _isConcurrentStack = ReflectionUtils.IsConcurrentStack(pType);
-            _isConcurrentBag = ReflectionUtils.IsConcurrentBag(pType);
+            IsConcurrentDictionary = ReflectionUtils.IsConcurrentDictionary(pType, true);
+            IsConcurrentQueue = ReflectionUtils.IsConcurrentQueue(pType,true);
+            IsConcurrentStack = ReflectionUtils.IsConcurrentStack(pType);
+            IsConcurrentBag = ReflectionUtils.IsConcurrentBag(pType);
 #endif
             IsQueue = ReflectionUtils.IsQueue(pType);
             IsStack = ReflectionUtils.IsStack(pType);

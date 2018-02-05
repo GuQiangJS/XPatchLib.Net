@@ -30,9 +30,10 @@ namespace XPatchLib
         /// </summary>
         SerializeMemberModifier Modifier { get; set; }
 
-#if NET_40_UP || NETSTANDARD_2_0_UP /// <summary>
-/// 获取或设置序列化/反序列化时，文本中标记 '<b>类型的程序集限定名称</b>' 的文本。
-/// </summary>
+#if NET_40_UP || NETSTANDARD_2_0_UP 
+        /// <summary>
+        /// 获取或设置序列化/反序列化时，文本中标记 '<b>类型的程序集限定名称</b>' 的文本。
+        /// </summary>
         string AssemblyQualifiedName { get; set; }
 #endif
 
@@ -74,16 +75,17 @@ namespace XPatchLib
 #endif
     }
 
-#if NETSTANDARD && !NETSTANDARD_2_0_UP /// <summary>
-/// 克隆的支持，这将类的新实例创建与现有实例相同的值。
-/// </summary>
-    public interface ICloneable
-    {
+#if NETSTANDARD && !NETSTANDARD_2_0_UP 
         /// <summary>
-        /// 创建作为当前实例副本的新对象。
+        /// 克隆的支持，这将类的新实例创建与现有实例相同的值。
         /// </summary>
-        /// <returns>作为此实例副本的新对象。</returns>
-        object Clone();
-    }
+        public interface ICloneable
+        {
+            /// <summary>
+            /// 创建作为当前实例副本的新对象。
+            /// </summary>
+            /// <returns>作为此实例副本的新对象。</returns>
+            object Clone();
+        }
 #endif
 }

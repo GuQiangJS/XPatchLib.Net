@@ -4,7 +4,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+#if NET || NETSTANDARD_2_0_UP
 using System.Runtime.Serialization;
+#endif
 
 #if (NET_35_UP || NETSTANDARD)
 using System.Linq;
