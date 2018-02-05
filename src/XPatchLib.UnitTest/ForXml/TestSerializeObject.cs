@@ -539,5 +539,211 @@ namespace XPatchLib.UnitTest.ForXml
 
             public int Age;
         }
+
+        [Test]
+        public void TestModifier()
+        {
+            using (Serializer serializer = new Serializer(typeof(Invoice)))
+            {
+                StringBuilder sb = new StringBuilder();
+                using (StringWriter sw = new StringWriter(sb))
+                {
+                    using (XmlTextWriter writer = new XmlTextWriter(sw))
+                    {
+                        serializer.Divide(writer, null, new Invoice());
+                    }
+                }
+                LogHelper.Debug(sb.ToString());
+                Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<Invoice>
+  <Company>C</Company>
+</Invoice>", sb.ToString());
+            }
+            using (Serializer serializer = new Serializer(typeof(Invoice)))
+            {
+                StringBuilder sb = new StringBuilder();
+                using (StringWriter sw = new StringWriter(sb))
+                {
+                    using (XmlTextWriter writer = new XmlTextWriter(sw))
+                    {
+                        writer.Setting.Modifier = SerializeMemberModifier.Private;
+                        serializer.Divide(writer, null, new Invoice());
+                    }
+                }
+                LogHelper.Debug(sb.ToString());
+                Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<Invoice>
+  <Paid>true</Paid>
+</Invoice>", sb.ToString());
+            }
+            using (Serializer serializer = new Serializer(typeof(Invoice)))
+            {
+                StringBuilder sb = new StringBuilder();
+                using (StringWriter sw = new StringWriter(sb))
+                {
+                    using (XmlTextWriter writer = new XmlTextWriter(sw))
+                    {
+                        writer.Setting.Modifier = SerializeMemberModifier.Protected;
+                        serializer.Divide(writer, null, new Invoice());
+                    }
+                }
+                LogHelper.Debug(sb.ToString());
+                Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<Invoice>
+  <Amount>1.2</Amount>
+</Invoice>", sb.ToString());
+            }
+            using (Serializer serializer = new Serializer(typeof(Invoice)))
+            {
+                StringBuilder sb = new StringBuilder();
+                using (StringWriter sw = new StringWriter(sb))
+                {
+                    using (XmlTextWriter writer = new XmlTextWriter(sw))
+                    {
+                        writer.Setting.Modifier = SerializeMemberModifier.Internal;
+                        serializer.Divide(writer, null, new Invoice());
+                    }
+                }
+                LogHelper.Debug(sb.ToString());
+                Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<Invoice>
+  <PaidDate>2008-08-08T00:00:00</PaidDate>
+</Invoice>", sb.ToString());
+            }
+            using (Serializer serializer = new Serializer(typeof(Invoice)))
+            {
+                StringBuilder sb = new StringBuilder();
+                using (StringWriter sw = new StringWriter(sb))
+                {
+                    using (XmlTextWriter writer = new XmlTextWriter(sw))
+                    {
+                        writer.Setting.Modifier = SerializeMemberModifier.NonPublic;
+                        serializer.Divide(writer, null, new Invoice());
+                    }
+                }
+                LogHelper.Debug(sb.ToString());
+                Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<Invoice>
+  <Amount>1.2</Amount>
+  <Paid>true</Paid>
+  <PaidDate>2008-08-08T00:00:00</PaidDate>
+</Invoice>", sb.ToString());
+            }
+            using (Serializer serializer = new Serializer(typeof(Invoice)))
+            {
+                StringBuilder sb = new StringBuilder();
+                using (StringWriter sw = new StringWriter(sb))
+                {
+                    using (XmlTextWriter writer = new XmlTextWriter(sw))
+                    {
+                        writer.Setting.Modifier = SerializeMemberModifier.All;
+                        serializer.Divide(writer, null, new Invoice());
+                    }
+                }
+                LogHelper.Debug(sb.ToString());
+                Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<Invoice>
+  <Amount>1.2</Amount>
+  <Company>C</Company>
+  <Paid>true</Paid>
+  <PaidDate>2008-08-08T00:00:00</PaidDate>
+</Invoice>", sb.ToString());
+            }
+        }
+
+        class Invoice
+        {
+            public Invoice()
+            {
+                Company = "C";
+                Amount = 1.2m;
+                Paid = true;
+                PaidDate=new DateTime(2008,8,8);
+            }
+
+            public string Company { get; set; }
+            protected decimal Amount { get; set; }
+            
+            private bool Paid { get; set; }
+            
+            internal DateTime PaidDate { get; set; }
+        }
+
+        [Test]
+        public void TestMode()
+        {
+            using (Serializer serializer = new Serializer(typeof(Invoice)))
+            {
+                StringBuilder sb = new StringBuilder();
+                using (StringWriter sw = new StringWriter(sb))
+                {
+                    using (XmlTextWriter writer = new XmlTextWriter(sw))
+                    {
+                        writer.Setting.Mode = DateTimeSerializationMode.Local;
+                        writer.Setting.Modifier = SerializeMemberModifier.Internal;
+                        serializer.Divide(writer, null, new Invoice());
+                    }
+                }
+                LogHelper.Debug(sb.ToString());
+                Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<Invoice>
+  <PaidDate>2008-08-08T00:00:00+08:00</PaidDate>
+</Invoice>", sb.ToString());
+            }
+            using (Serializer serializer = new Serializer(typeof(Invoice)))
+            {
+                StringBuilder sb = new StringBuilder();
+                using (StringWriter sw = new StringWriter(sb))
+                {
+                    using (XmlTextWriter writer = new XmlTextWriter(sw))
+                    {
+                        writer.Setting.Mode = DateTimeSerializationMode.RoundtripKind;
+                        writer.Setting.Modifier = SerializeMemberModifier.Internal;
+                        serializer.Divide(writer, null, new Invoice());
+                    }
+                }
+                LogHelper.Debug(sb.ToString());
+                Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<Invoice>
+  <PaidDate>2008-08-08T00:00:00</PaidDate>
+</Invoice>", sb.ToString());
+            }
+            using (Serializer serializer = new Serializer(typeof(Invoice)))
+            {
+                StringBuilder sb = new StringBuilder();
+                using (StringWriter sw = new StringWriter(sb))
+                {
+                    using (XmlTextWriter writer = new XmlTextWriter(sw))
+                    {
+                        writer.Setting.Mode = DateTimeSerializationMode.Unspecified;
+                        writer.Setting.Modifier = SerializeMemberModifier.Internal;
+                        serializer.Divide(writer, null, new Invoice());
+                    }
+                }
+                LogHelper.Debug(sb.ToString());
+                Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<Invoice>
+  <PaidDate>2008-08-08T00:00:00</PaidDate>
+</Invoice>", sb.ToString());
+            }
+            using (Serializer serializer = new Serializer(typeof(Invoice)))
+            {
+                StringBuilder sb = new StringBuilder();
+                using (StringWriter sw = new StringWriter(sb))
+                {
+                    using (XmlTextWriter writer = new XmlTextWriter(sw))
+                    {
+                        writer.Setting.Mode = DateTimeSerializationMode.Utc;
+                        writer.Setting.Modifier = SerializeMemberModifier.Internal;
+                        serializer.Divide(writer, null, new Invoice());
+                    }
+                }
+                LogHelper.Debug(sb.ToString());
+                Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<Invoice>
+  <PaidDate>2008-08-08T00:00:00Z</PaidDate>
+</Invoice>", sb.ToString());
+            }
+        }
     }
 }

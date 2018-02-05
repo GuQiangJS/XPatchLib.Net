@@ -9,6 +9,7 @@ namespace XPatchLib
     /// <summary>
     ///     写入器的默认设置。
     /// </summary>
+    /// <seealso cref="XmlSerializeSetting"/>
     public abstract class SerializeSetting : ISerializeSetting, INotifyPropertyChanged
     {
         private string _actionName = "Action";
@@ -132,6 +133,9 @@ namespace XPatchLib
         ///     获取或设置在产生增量时类或结构中哪些修饰符的成员参与序列化。
         /// </summary>
         /// <value>默认为 <see cref="SerializeMemberModifier.Public" />。</value>
+        /// <example>
+        /// <include file='docs/docs.xml' path='Comments/examples/example[@class="XmlSerializeSetting" and @property="Modifier"]/*'/>
+        /// </example>
         public virtual SerializeMemberModifier Modifier
         {
             get { return _modifier; }
@@ -149,6 +153,9 @@ namespace XPatchLib
         ///     获取或设置在字符串与 <see cref="DateTime" /> 之间转换时，如何处理时间值。
         /// </summary>
         /// <value>默认为 <see cref="DateTimeSerializationMode.RoundtripKind" />。</value>
+        /// <example>
+        /// <include file='docs/docs.xml' path='Comments/examples/example[@class="XmlSerializeSetting" and @property="Mode"]/*'/>
+        /// </example>
         public virtual DateTimeSerializationMode Mode
         {
             get { return _mode; }

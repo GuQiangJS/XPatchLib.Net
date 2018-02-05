@@ -262,6 +262,18 @@ Small Widget
       </para>
       <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\MemberType.cs" />
     </example>
+    <example class="XmlSerializeSetting" property="Mode">
+      <para>
+        下面的示例展示了 Mode 的使用效果。
+      </para>
+      <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\Mode.cs" />
+    </example>
+    <example class="XmlSerializeSetting" property="Modifier">
+      <para>
+        下面的示例展示了 Modifier 的使用效果。
+      </para>
+      <code language="c#" source="..\..\..\XPatchLib.Net.Example\CSharp\Examples\Modifier.cs" />
+    </example>
     <example class="XmlSerializeSetting" property="IgnoreAttributeType">
       <para>
         下面的示例展示了 IgnoreAttributeType 的使用效果，以及如何修改 IgnoreAttributeType 。

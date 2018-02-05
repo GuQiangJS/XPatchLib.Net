@@ -42,17 +42,19 @@ namespace XPatchLib
         /// <summary>
         ///     获取或设置序列化/反序列化时，文本中标记 '<b>动作</b>' 的文本。
         /// </summary>
-        /// <seealso cref="XmlSerializeSetting.ActionName"/>
+        /// <seealso cref="SerializeSetting.ActionName"/>
         string ActionName { get; set; }
 
         /// <summary>
         ///     获取或设置在字符串与 <see cref="DateTime" /> 之间转换时，如何处理时间值。
         /// </summary>
+        /// <seealso cref="SerializeSetting.Mode"/>
         DateTimeSerializationMode Mode { get; set; }
 
         /// <summary>
         ///     获取或设置是否序列化默认值。
         /// </summary>
+        /// <seealso cref="SerializeSetting.SerializeDefalutValue"/>
         bool SerializeDefalutValue { get; set; }
 
 #if NET || NETSTANDARD_2_0_UP

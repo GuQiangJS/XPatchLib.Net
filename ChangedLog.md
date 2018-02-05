@@ -1,3 +1,7 @@
+#### 4.0.2.3
+
+* 重构 - `Serializer` 增加 `IDisposable` 接口。 
+
 #### 4.0.2.2
 
 * 修正 - `XmlSerializeSetting.Clone()` 方法。 
