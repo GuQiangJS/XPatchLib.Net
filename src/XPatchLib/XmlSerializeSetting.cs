@@ -1,4 +1,4 @@
-﻿// Copyright © 2013-2018 - GuQiang55
+﻿// Copyright © 2013-2018 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -32,6 +32,7 @@ namespace XPatchLib
             result.Mode = Mode;
             result.Modifier = Modifier;
             result.SerializeDefalutValue = SerializeDefalutValue;
+            result.IgnoreAttributeType = IgnoreAttributeType;
 #if NET_40_UP || NETSTANDARD_2_0_UP
             result.AssemblyQualifiedName = this.AssemblyQualifiedName;
 #endif
@@ -60,7 +61,7 @@ namespace XPatchLib
         ///     默认值：
         ///     <see cref="System.Xml.Serialization.XmlIgnoreAttribute" />。
         /// </value>
-#else 
+#else
         /// <summary>
         /// 获取或设置指示<see cref="Serializer" /> 方法<see cref= "Serializer.Divide" /> 进行序列化的公共字段或公共读 / 写属性值。
         /// </summary>

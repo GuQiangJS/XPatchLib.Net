@@ -11,8 +11,8 @@
     <Description>Patch Serialization Library for the .Net</Description>
     <Company />
     <Authors>Qiang Gu</Authors>
-    <FileVersion>4.0.2.1</FileVersion>
-    <VersionPrefix>4.0.2.1</VersionPrefix>
+    <FileVersion>4.0.2.2</FileVersion>
+    <VersionPrefix>4.0.2.2</VersionPrefix>
     <VersionSuffix Condition="'$(Configuration)'=='Debug'">DEBUG</VersionSuffix>
     <PackageLicenseUrl>https://github.com/GuQiangJS/XPatchLib.Net/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/GuQiangJS/XPatchLib.Net</PackageProjectUrl>

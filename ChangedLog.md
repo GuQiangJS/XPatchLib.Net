@@ -1,3 +1,7 @@
+#### 4.0.2.2
+
+* 修正 - `XmlSerializeSetting.Clone()` 方法。 
+
 #### 4.0.2.1
 
 * 重构 - 将 `IgnoreAttributeType` 由 `ITextWriter` 移动至 `ISerializeSetting`。 
