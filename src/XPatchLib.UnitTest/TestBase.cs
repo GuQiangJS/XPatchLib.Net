@@ -577,63 +577,65 @@ namespace XPatchLib.UnitTest
             bool contextIsEmpty = string.IsNullOrEmpty(context);
             context = GetCompleteContext(context);
 
-            Serializer serializer = new Serializer(pType);
-            if (pTypes != null && pTypes.Count > 0)
+            using (Serializer serializer = new Serializer(pType))
             {
-                foreach (KeyValuePair<Type, string[]> pair in pTypes)
+                if (pTypes != null && pTypes.Count > 0)
                 {
-                    serializer.RegisterType(pair.Key, pair.Value);
-                }
-            }
-            StringBuilder sb = new StringBuilder();
-            using (ITextWriter writer = CreateWriter(sb))
-            {
-                if (setting != null)
-                    writer.Setting = setting;
-                serializer.Divide(writer, pOriValue, pRevValue);
-            }
-            if (!contextIsEmpty)
-                Assert.AreEqual(context, sb.ToString(), "输出内容与预期不符");
-            if (string.Equals(XmlHeaderContext, sb.ToString()))
-                return default(T);
-            using (XmlTextReader reader = new XmlTextReader(new StringReader(sb.ToString())))
-            {
-                if (setting != null)
-                    reader.Setting = setting;
-                T result = (T)serializer.Combine(reader,
-                pOriValue,
-                !createNew);
-                if (createNew)
-                {
-                    Assert.AreNotEqual(result,
-                    pOriValue);
-                    if (pOriValue != null && pRevValue != null)
-                        Assert.AreNotEqual(result.GetHashCode(),
-                        pOriValue.GetHashCode());
-                }
-                else
-                {
-                    //类型如果是数组，始终会创建新实例
-                    if (!IsValueType(pType) && !pType.IsArray)
+                    foreach (KeyValuePair<Type, string[]> pair in pTypes)
                     {
-                        if (pOriValue != null)
-                            //如果pOriValue为null，那么会始终创建一个新的实例，所以肯定不相同
-                            Assert.AreEqual(result, pOriValue);
-                        if (pOriValue != null && pRevValue != null)
-                            Assert.AreEqual(result.GetHashCode(), pOriValue.GetHashCode());
+                        serializer.RegisterType(pair.Key, pair.Value);
                     }
                 }
-                if (XPatchLib.ReflectionUtils.IsIEnumerable(pType, pType.GetInterfaces()))
+                StringBuilder sb = new StringBuilder();
+                using (ITextWriter writer = CreateWriter(sb))
                 {
-                    AssertIEnumerable(pRevValue, result, pType, string.Empty);
+                    if (setting != null)
+                        writer.Setting = setting;
+                    serializer.Divide(writer, pOriValue, pRevValue);
                 }
-                else
+                if (!contextIsEmpty)
+                    Assert.AreEqual(context, sb.ToString(), "输出内容与预期不符");
+                if (string.Equals(XmlHeaderContext, sb.ToString()))
+                    return default(T);
+                using (XmlTextReader reader = new XmlTextReader(new StringReader(sb.ToString())))
                 {
-                    Assert.AreEqual(pRevValue, result);
+                    if (setting != null)
+                        reader.Setting = setting;
+                    T result = (T) serializer.Combine(reader,
+                        pOriValue,
+                        !createNew);
+                    if (createNew)
+                    {
+                        Assert.AreNotEqual(result,
+                            pOriValue);
+                        if (pOriValue != null && pRevValue != null)
+                            Assert.AreNotEqual(result.GetHashCode(),
+                                pOriValue.GetHashCode());
+                    }
+                    else
+                    {
+                        //类型如果是数组，始终会创建新实例
+                        if (!IsValueType(pType) && !pType.IsArray)
+                        {
+                            if (pOriValue != null)
+                                //如果pOriValue为null，那么会始终创建一个新的实例，所以肯定不相同
+                                Assert.AreEqual(result, pOriValue);
+                            if (pOriValue != null && pRevValue != null)
+                                Assert.AreEqual(result.GetHashCode(), pOriValue.GetHashCode());
+                        }
+                    }
+                    if (XPatchLib.ReflectionUtils.IsIEnumerable(pType, pType.GetInterfaces()))
+                    {
+                        AssertIEnumerable(pRevValue, result, pType, string.Empty);
+                    }
+                    else
+                    {
+                        Assert.AreEqual(pRevValue, result);
+                    }
+                    if (!IsValueType(pType) && pRevValue != null)
+                        Assert.AreNotEqual(result.GetHashCode(), pRevValue.GetHashCode());
+                    return result;
                 }
-                if (!IsValueType(pType) && pRevValue != null)
-                    Assert.AreNotEqual(result.GetHashCode(), pRevValue.GetHashCode());
-                return result;
             }
         }
 

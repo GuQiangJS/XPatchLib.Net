@@ -31,7 +31,7 @@ namespace XPatchLib
     /// <example>
     ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="Serializer" and @method="none"]/*' />
     /// </example>
-    public class Serializer
+    public class Serializer:IDisposable
     {
         private bool _needRegistTypes;
         private IDictionary<Type, String[]> _registerTypes;
@@ -332,6 +332,20 @@ namespace XPatchLib
             _registerTypes.Add(pType, pPrimaryKeys);
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
         #endregion Public Methods
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                TypeExtendContainer.ClearAll();
+            }
+        }
+
     }
 }
