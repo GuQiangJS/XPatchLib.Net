@@ -1,12 +1,11 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang55
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 #if (NET_40_UP || NETSTANDARD_2_0_UP)
 using System.Dynamic;
 #endif
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 #if (NET_35_UP || NETSTANDARD)
@@ -37,79 +36,28 @@ namespace XPatchLib
 #else
         private readonly Dictionary<String, ClrHelper.MethodCall<object, object>> Methods;
 #endif
-        private readonly Boolean _isNullable;
-        private readonly bool _isGenericType;
-        private readonly bool _isGuid;
-        private readonly bool _isICollection;
-        private readonly bool _isIDictionary;
-        private readonly bool _isIEnumerable;
-        private readonly bool _isKeyValuePair;
-        private readonly Type _keyArgumentType;
-        private readonly Type _oriType;
-        private PrimaryKeyAttribute _primaryKeyAttr;
-        private readonly TypeCode _typeCode;
-        private readonly string _typeFriendlyName;
-        private readonly Type _valueArgumentType;
-        private readonly object _defaultValue;
-        private IEnumerable<Attribute> _customAttributes;
-        private readonly TypeExtend _parentType;
-        private readonly MemberWrapper[] _fieldsToBeSerialized;
-        private readonly bool _isArrayItem;
-        private readonly bool _isArray;
         private readonly bool _isDynamicObject;
-        private readonly Type[] _interfaceTypes;
-        private readonly bool _isConcurrentDictionary;
-        private readonly bool _isConcurrentQueue;
-        private readonly bool _isConcurrentStack;
-        private readonly bool _isConcurrentBag;
-        private readonly bool _isQueue;
-        private readonly bool _isStack;
 
-        public Type[] InterfaceTypes
-        {
-            get { return _interfaceTypes; }
-        }
+        public Type[] InterfaceTypes { get; }
 
-        public Boolean IsStack
-        {
-            get { return _isStack; }
-        }
+        public Boolean IsStack { get; }
 
-        public Boolean IsQueue
-        {
-            get { return _isQueue; }
-        }
+        public Boolean IsQueue { get; }
 
-        public Boolean IsConcurrentStack
-        {
-            get { return _isConcurrentStack; }
-        }
+        public Boolean IsConcurrentStack { get; }
 
-        public Boolean IsConcurrentBag
-        {
-            get { return _isConcurrentBag; }
-        }
+        public Boolean IsConcurrentBag { get; }
 
-        public Boolean IsConcurrentQueue
-        {
-            get { return _isConcurrentQueue; }
-        }
+        public Boolean IsConcurrentQueue { get; }
 
-        public Boolean IsConcurrentDictionary
-        {
-            get { return _isConcurrentDictionary; }
-        }
+        public Boolean IsConcurrentDictionary { get; }
 
-        public Boolean IsNullable
-        {
-            get { return _isNullable; }
-        }
+        public Boolean IsNullable { get; }
 
         private readonly Type NullableType;
 
 
 #if NET || NETSTANDARD_2_0_UP
-        private readonly Boolean _isISerializable;
 
         /// <summary>
         ///     是否为 <see cref="ISerializable" /> 接口的实现
@@ -117,38 +65,29 @@ namespace XPatchLib
         /// <remarks>
         ///     https://msdn.microsoft.com/zh-cn/library/system.runtime.serialization.iserializable(v=vs.110).aspx
         /// </remarks>
-        public Boolean IsISerializable
-        {
-            get { return _isISerializable; }
-        }
+        public Boolean IsISerializable { get; }
 #endif
-
-        private ISerializeSetting _setting;
 
         /// <summary>
         ///     获取序列化/反序列化时的设置。
         /// </summary>
-        public ISerializeSetting Setting
-        {
-            get { return _setting; }
-        }
+        public ISerializeSetting Setting { get; }
 
         /// <summary>
-        /// 获取当前类型可能产生的特性名称集合。
+        ///     获取当前类型可能产生的特性名称集合。
         /// </summary>
-        public string[] AttributeNames { get { return _attributeNames; } }
+        public string[] AttributeNames { get; private set; }
 
-        private string[] _attributeNames;
-
-        internal TypeExtend(ISerializeSetting pSetting,Type pType, Type pIgnoreAttributeType, TypeExtend pParentType = null,MemberInfo memberInfo=null)
+        internal TypeExtend(ISerializeSetting pSetting, Type pType, Type pIgnoreAttributeType,
+            TypeExtend pParentType = null, MemberInfo memberInfo = null)
         {
-            _parentType = pParentType;
-            _setting = pSetting;
-            _oriType = pType;
+            ParentType = pParentType;
+            Setting = pSetting;
+            OriType = pType;
 
             Type actType;
-            _isNullable = ReflectionUtils.IsNullable(pType, out actType);
-            if (_isNullable)
+            IsNullable = ReflectionUtils.IsNullable(pType, out actType);
+            if (IsNullable)
                 NullableType = pType = actType;
 
 #if (NET_20_UP || NETSTANDARD_2_0_UP)
@@ -156,11 +95,11 @@ namespace XPatchLib
 #else
             CustomAttributes = pType.GetTypeInfo().GetCustomAttributes().ToArray();
 #endif
-            _primaryKeyAttr = GetCustomAttribute<PrimaryKeyAttribute>();
+            PrimaryKeyAttr = GetCustomAttribute<PrimaryKeyAttribute>();
 
-            _interfaceTypes = pType.GetInterfaces();
+            InterfaceTypes = pType.GetInterfaces();
 
-            if (_primaryKeyAttr == null) _primaryKeyAttr = TypeExtendContainer.GetPrimaryKeyAttribute(pType);
+            if (PrimaryKeyAttr == null) PrimaryKeyAttr = TypeExtendContainer.GetPrimaryKeyAttribute(pType);
 
             //InitAttributeNames(pSetting,_primaryKeyAttr);
 
@@ -172,98 +111,98 @@ namespace XPatchLib
             Methods = new Dictionary<string, ClrHelper.MethodCall<object, object>>();
 #endif
 
-            _isBasicType = ReflectionUtils.IsBasicType(pType);
-            if (!_isBasicType)
+            IsBasicType = ReflectionUtils.IsBasicType(pType);
+            if (!IsBasicType)
             {
-                _isIDictionary = ReflectionUtils.IsIDictionary(pType, _interfaceTypes);
-                _isICollection = ReflectionUtils.IsICollection(pType, _interfaceTypes);
-                _isIEnumerable = ReflectionUtils.IsIEnumerable(pType, _interfaceTypes);
-                _isArray = ReflectionUtils.IsArray(pType);
+                IsIDictionary = ReflectionUtils.IsIDictionary(pType, InterfaceTypes);
+                IsICollection = ReflectionUtils.IsICollection(pType, InterfaceTypes);
+                IsIEnumerable = ReflectionUtils.IsIEnumerable(pType, InterfaceTypes);
+                IsArray = ReflectionUtils.IsArray(pType);
             }
 
-            _defaultValue = ReflectionUtils.GetDefaultValue(_oriType, memberInfo);
-            _isArrayItem = ParentType != null &&
-                           (ParentType.IsArray || ParentType.IsICollection ||
-                            ParentType.IsIEnumerable);
-            _typeCode = ConvertHelper.GetTypeCode(pType);
-            _isGenericType = OriType.IsGenericType();
-            _isGuid = pType == typeof(Guid);
-            _typeFriendlyName = ReflectionUtils.GetTypeFriendlyName(pType);
+            DefaultValue = ReflectionUtils.GetDefaultValue(OriType, memberInfo);
+            IsArrayItem = ParentType != null &&
+                          (ParentType.IsArray || ParentType.IsICollection ||
+                           ParentType.IsIEnumerable);
+            TypeCode = ConvertHelper.GetTypeCode(pType);
+            IsGenericType = OriType.IsGenericType();
+            IsGuid = pType == typeof(Guid);
+            TypeFriendlyName = ReflectionUtils.GetTypeFriendlyName(pType);
 #if NET_40_UP || NETSTANDARD_2_0_UP
             _isDynamicObject = ReflectionUtils.IsDynamicObject(pType);
             _isConcurrentDictionary = ReflectionUtils.IsConcurrentDictionary(pType, true);
-            _isConcurrentQueue=ReflectionUtils.IsConcurrentQueue(pType,true);
-            _isConcurrentStack=ReflectionUtils.IsConcurrentStack(pType);
+            _isConcurrentQueue = ReflectionUtils.IsConcurrentQueue(pType,true);
+            _isConcurrentStack = ReflectionUtils.IsConcurrentStack(pType);
             _isConcurrentBag = ReflectionUtils.IsConcurrentBag(pType);
 #endif
-            _isQueue = ReflectionUtils.IsQueue(pType);
-            _isStack = ReflectionUtils.IsStack(pType);
+            IsQueue = ReflectionUtils.IsQueue(pType);
+            IsStack = ReflectionUtils.IsStack(pType);
 
-            _fieldsToBeSerialized = new MemberWrapper[] { };
-            if (!(_isIEnumerable || _isIDictionary || _isICollection || _isBasicType || _isArray))
+            FieldsToBeSerialized = new MemberWrapper[] { };
+            if (!(IsIEnumerable || IsIDictionary || IsICollection || IsBasicType || IsArray))
             {
-                _fieldsToBeSerialized =
+                FieldsToBeSerialized =
                     ReflectionUtils.GetFieldsToBeSerialized(pSetting, pType, pIgnoreAttributeType);
-                foreach (MemberWrapper member in _fieldsToBeSerialized)
+                foreach (MemberWrapper member in FieldsToBeSerialized)
                 {
                     AddGetValueFunc(member);
                     AddSetValueFunc(member);
                 }
             }
 
-            if (_isIDictionary)
+            if (IsIDictionary)
             {
                 Type keyType = typeof(object);
                 Type valueType = typeof(object);
-                ReflectionUtils.IsIDictionary(pType, _interfaceTypes, out keyType, out valueType);
+                ReflectionUtils.IsIDictionary(pType, InterfaceTypes, out keyType, out valueType);
 
-                _keyArgumentType = keyType;
-                _valueArgumentType = valueType;
+                KeyArgumentType = keyType;
+                ValueArgumentType = valueType;
             }
 
-            _isKeyValuePair = ReflectionUtils.IsKeyValuePair(pType);
-            if (_isKeyValuePair)
+            IsKeyValuePair = ReflectionUtils.IsKeyValuePair(pType);
+            if (IsKeyValuePair)
             {
                 Type keyType = typeof(object);
                 Type valueType = typeof(object);
                 ReflectionUtils.IsKeyValuePair(pType, out keyType, out valueType);
 
-                _keyArgumentType = keyType;
-                _valueArgumentType = valueType;
+                KeyArgumentType = keyType;
+                ValueArgumentType = valueType;
 
                 MemberWrapper[] members =
                 {
                     new MemberWrapper(pType.GetProperty(ConstValue.KEY)),
                     new MemberWrapper(pType.GetProperty(ConstValue.VALUE))
                 };
-                _fieldsToBeSerialized = members.OrderBy(x => x.Name).ToArray();
+                FieldsToBeSerialized = members.OrderBy(x => x.Name).ToArray();
             }
 
             string errorPrimaryKeyName = string.Empty;
             if (!CheckPrimaryKeyAttribute(false, out errorPrimaryKeyName))
                 throw new PrimaryKeyException(pType, errorPrimaryKeyName);
 
-            if (!_isBasicType)
+            if (!IsBasicType)
                 CreateInstanceFuncs = ClrHelper.CreateInstanceFunc<Object>(pType);
 #if NET || NETSTANDARD_2_0_UP
             ResolveCallbackMethods(OriType);
 #endif
 
 #if NET || NETSTANDARD_2_0_UP
-            _isISerializable = typeof(ISerializable).IsAssignableFrom(OriType);
+            IsISerializable = typeof(ISerializable).IsAssignableFrom(OriType);
 #endif
         }
 
         private void InitAttributeNames(ISerializeSetting pSetting, PrimaryKeyAttribute primaryKeyAttr)
         {
-            string[] app = new[]
+            string[] app =
             {
                 pSetting.ActionName
             };
 #if NET_40_UP || NETSTANDARD_2_0_UP
             if (ParentType != null && ParentType.IsDynamicObject)
             {
-                app =new []
+                app = new []
                 {
                     pSetting.ActionName
                     ,pSetting.AssemblyQualifiedName
@@ -278,84 +217,49 @@ namespace XPatchLib
                 if (attrs != null && attrs.Length > 0)
                 {
                     attrLen = attrs.Length;
-                    _attributeNames = new string[attrLen + app.Length];
-                    Array.Copy(attrs, 0, _attributeNames, 0, attrLen);
+                    AttributeNames = new string[attrLen + app.Length];
+                    Array.Copy(attrs, 0, AttributeNames, 0, attrLen);
                 }
             }
-            if (_attributeNames == null)
-            {
-                _attributeNames = new string[attrLen + app.Length];
-            }
-            Array.Copy(app, 0, _attributeNames, attrLen, app.Length);
+            if (AttributeNames == null)
+                AttributeNames = new string[attrLen + app.Length];
+            Array.Copy(app, 0, AttributeNames, attrLen, app.Length);
         }
 
         /// <summary>
         ///     获取父级类型定义。
         /// </summary>
-        internal TypeExtend ParentType
-        {
-            get { return _parentType; }
-        }
+        internal TypeExtend ParentType { get; }
 
         /// <summary>
         ///     获取该类型的自定义Attributes。
         /// </summary>
-        internal IEnumerable<Attribute> CustomAttributes
-        {
-            get { return _customAttributes; }
-            private set { _customAttributes = value; }
-        }
+        internal IEnumerable<Attribute> CustomAttributes { get; private set; }
 
         /// <summary>
         ///     获取该类型的默认值。
         /// </summary>
-        internal Object DefaultValue
-        {
-            get { return _defaultValue; }
-        }
+        internal Object DefaultValue { get; }
 
         /// <summary>
         ///     获取该类型下可以被序列化的字段。
         /// </summary>
-        internal MemberWrapper[] FieldsToBeSerialized
-        {
-            get { return _fieldsToBeSerialized; }
-        }
+        internal MemberWrapper[] FieldsToBeSerialized { get; }
 
-        internal Boolean IsArrayItem
-        {
-            get { return _isArrayItem; }
-        }
+        internal Boolean IsArrayItem { get; }
 
-        internal Boolean IsArray
-        {
-            get { return _isArray; }
-        }
-
-        private readonly bool _isBasicType;
+        internal Boolean IsArray { get; }
 
         /// <summary>
         ///     获取是否为基础类型。
         /// </summary>
-        internal Boolean IsBasicType
-        {
-            get { return _isBasicType; }
-        }
+        internal Boolean IsBasicType { get; }
 
-        internal Boolean IsGenericType
-        {
-            get { return _isGenericType; }
-        }
+        internal Boolean IsGenericType { get; }
 
-        internal Boolean IsGuid
-        {
-            get { return _isGuid; }
-        }
+        internal Boolean IsGuid { get; }
 
-        internal Boolean IsICollection
-        {
-            get { return _isICollection; }
-        }
+        internal Boolean IsICollection { get; }
 
 #if NET_40_UP || NETSTANDARD_2_0_UP
         internal Boolean IsDynamicObject
@@ -364,59 +268,32 @@ namespace XPatchLib
         }
 #endif
 
-        internal Boolean IsIDictionary
-        {
-            get { return _isIDictionary; }
-        }
+        internal Boolean IsIDictionary { get; }
 
-        internal Boolean IsIEnumerable
-        {
-            get { return _isIEnumerable; }
-        }
+        internal Boolean IsIEnumerable { get; }
 
-        internal Boolean IsKeyValuePair
-        {
-            get { return _isKeyValuePair; }
-        }
+        internal Boolean IsKeyValuePair { get; }
 
         /// <summary>
         ///     只有当是字典类型或KeyValue类型时才会有值
         /// </summary>
-        internal Type KeyArgumentType
-        {
-            get { return _keyArgumentType; }
-        }
+        internal Type KeyArgumentType { get; }
 
         /// <summary>
         ///     获取原始类型定义。
         /// </summary>
-        internal Type OriType
-        {
-            get { return _oriType; }
-        }
+        internal Type OriType { get; }
 
-        internal PrimaryKeyAttribute PrimaryKeyAttr
-        {
-            get { return _primaryKeyAttr; }
-        }
+        internal PrimaryKeyAttribute PrimaryKeyAttr { get; private set; }
 
-        internal TypeCode TypeCode
-        {
-            get { return _typeCode; }
-        }
+        internal TypeCode TypeCode { get; }
 
-        internal String TypeFriendlyName
-        {
-            get { return _typeFriendlyName; }
-        }
+        internal String TypeFriendlyName { get; }
 
         /// <summary>
         ///     只有当是字典类型或KeyValue类型时才会有值
         /// </summary>
-        internal Type ValueArgumentType
-        {
-            get { return _valueArgumentType; }
-        }
+        internal Type ValueArgumentType { get; }
 
         /// <summary>
         ///     检测类型上的PrimaryKeyAttribute特性是否符合要求。
@@ -457,7 +334,7 @@ namespace XPatchLib
             if (CreateInstanceFuncs != null && (args == null || args.Length <= 0))
                 return CreateInstanceFuncs();
 
-            if (_isBasicType)
+            if (IsBasicType)
             {
                 if ((IsNullable ? NullableType : OriType).IsValueType())
                     if (CreateInstanceFuncs == null)
@@ -469,7 +346,7 @@ namespace XPatchLib
             }
             else
             {
-                if (_isArray)
+                if (IsArray)
                 {
                     Type elementType;
                     if (ReflectionUtils.TryGetArrayElementType(IsNullable ? NullableType : OriType, out elementType))
@@ -576,8 +453,7 @@ namespace XPatchLib
                 {
                     //当前OriType可能是接口类型（如IList<T>，调用 Add 方法时，无法在当前类型上找到方法，所以还可以根据实例的类型来找方法）
                     t = target.GetType();
-#if NETSTANDARD_2_0_UP
-                    // .NET Core 2.0 开始，字典类型Remove 方法增加了一个可以同时传入 Key 值和 Value 值的方法。
+#if NETSTANDARD_2_0_UP // .NET Core 2.0 开始，字典类型Remove 方法增加了一个可以同时传入 Key 值和 Value 值的方法。
                     if (args != null)
                     {
                         Type[] ts = new Type[args.Length];
@@ -596,7 +472,7 @@ namespace XPatchLib
                     }
                     else
 #endif
-                        methodInfo = t.GetMethod(name);
+                    methodInfo = t.GetMethod(name);
 
                     if (methodInfo == null)
                         return null;
@@ -650,10 +526,10 @@ namespace XPatchLib
             pIsProperty = false;
             MemberWrapper member = null;
 
-            for (int i = 0; i < _fieldsToBeSerialized.Length; i++)
-                if (_fieldsToBeSerialized[i].Name.Equals(pPropertyName, StringComparison.OrdinalIgnoreCase))
+            for (int i = 0; i < FieldsToBeSerialized.Length; i++)
+                if (FieldsToBeSerialized[i].Name.Equals(pPropertyName, StringComparison.OrdinalIgnoreCase))
                 {
-                    member = _fieldsToBeSerialized[i];
+                    member = FieldsToBeSerialized[i];
                     break;
                 }
 
@@ -701,7 +577,7 @@ namespace XPatchLib
             IEnumerable<Attribute> newAttrs = CustomAttributes.Where(x => x.GetType() != typeof(PrimaryKeyAttribute));
             CustomAttributes = newAttrs.Union(new Attribute[] {pAttribute});
 
-            _primaryKeyAttr = pAttribute;
+            PrimaryKeyAttr = pAttribute;
         }
 
         private void AddGetValueFunc(MemberWrapper pMember)
@@ -762,7 +638,7 @@ namespace XPatchLib
         {
             if (_onDeserializedCallbacks != null)
                 foreach (SerializationCallback callback in _onDeserializedCallbacks)
-                        callback(o, context);
+                    callback(o, context);
         }
 
         private List<SerializationCallback> _onDeserializedCallbacks;
@@ -884,7 +760,7 @@ namespace XPatchLib
                     ParameterInfo[] parameters = method.GetParameters();
 
                     if (IsValidCallback(method, parameters, typeof(OnSerializingAttribute), currentOnSerializing,
-                        ref prevAttributeType) && !ReflectionUtils.ShouldSkipSerializing(method.DeclaringType))
+                            ref prevAttributeType) && !ReflectionUtils.ShouldSkipSerializing(method.DeclaringType))
                     {
                         onSerializing = onSerializing ?? new List<SerializationCallback>();
                         onSerializing.Add(CreateSerializationCallback(method));
@@ -905,7 +781,7 @@ namespace XPatchLib
                         currentOnDeserializing = method;
                     }
                     if (IsValidCallback(method, parameters, typeof(OnDeserializedAttribute), currentOnDeserialized,
-                        ref prevAttributeType) && !ReflectionUtils.ShouldSkipDeserialized(method.DeclaringType))
+                            ref prevAttributeType) && !ReflectionUtils.ShouldSkipDeserialized(method.DeclaringType))
                     {
                         onDeserialized = onDeserialized ?? new List<SerializationCallback>();
                         onDeserialized.Add(CreateSerializationCallback(method));

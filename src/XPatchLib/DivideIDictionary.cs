@@ -1,9 +1,10 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang55
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 #if (NET_35_UP || NETSTANDARD)
 using System.Linq;
 #endif
@@ -34,7 +35,7 @@ namespace XPatchLib
             Type t = null;
             if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, pType.InterfaceTypes, out t))
                 GenericArgumentType =
-                    TypeExtendContainer.GetTypeExtend(pWriter.Setting, t, Writer.IgnoreAttributeType, pType);
+                    TypeExtendContainer.GetTypeExtend(pWriter.Setting, t, Writer.Setting.IgnoreAttributeType, pType);
             else
                 throw new ArgumentOutOfRangeException(pType.OriType.FullName);
         }
@@ -46,7 +47,7 @@ namespace XPatchLib
         /// <summary>
         ///     集合类型中元素的类型。
         /// </summary>
-        protected TypeExtend GenericArgumentType { get; private set; }
+        protected TypeExtend GenericArgumentType { get; }
 
         #endregion Protected Properties
 
@@ -106,7 +107,7 @@ namespace XPatchLib
 
         #region Private Methods
 
-        private static KeyValuesObject[] Translate(IEnumerable pValue,ISerializeSetting pSetting)
+        private static KeyValuesObject[] Translate(IEnumerable pValue, ISerializeSetting pSetting)
         {
             if (pValue != null)
             {

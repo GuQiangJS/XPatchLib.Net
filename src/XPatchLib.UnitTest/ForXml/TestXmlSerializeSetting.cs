@@ -57,6 +57,7 @@ namespace XPatchLib.UnitTest.ForXml
             setting.SerializeDefalutValue = true;
             setting.MemberType = SerializeMemberType.All;
             setting.Modifier = SerializeMemberModifier.NonPublic;
+            setting.IgnoreAttributeType = typeof(string);
 #if NET || NETSTANDARD_2_0_UP
             setting.EnableOnDeserializedAttribute = false;
             setting.EnableOnDeserializingAttribute = false;

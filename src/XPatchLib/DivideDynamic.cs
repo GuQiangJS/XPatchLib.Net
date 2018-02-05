@@ -1,4 +1,4 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang55
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 #if NET_40_UP|| NETSTANDARD_2_0_UP
@@ -38,11 +38,11 @@ namespace XPatchLib
         {
             var result = base.DivideAction(pName, pOriObject, pRevObject, pAttach);
 
-            DynamicObject oriObj=pOriObject as DynamicObject;
-            DynamicObject revObj=pRevObject as DynamicObject;
+            DynamicObject oriObj = pOriObject as DynamicObject;
+            DynamicObject revObj = pRevObject as DynamicObject;
 
             List<string> names =
-                new DynamicObject[] {oriObj, revObj}.GetMembers(Type.FieldsToBeSerialized.Select(x => x.Name)
+                new[] {oriObj, revObj}.GetMembers(Type.FieldsToBeSerialized.Select(x => x.Name)
                     .ToArray());
 
             foreach (string name in names)
@@ -52,7 +52,8 @@ namespace XPatchLib
                 Type memberType = GetType(oriValue, revValue);
 
                 TypeExtend t =
-                    TypeExtendContainer.GetTypeExtend(Writer.Setting, memberType, Writer.IgnoreAttributeType, Type);
+                    TypeExtendContainer.GetTypeExtend(Writer.Setting, memberType, Writer.Setting.IgnoreAttributeType,
+                        Type);
 
                 DivideBase d = new DivideCore(Writer, t);
                 d.Assign(this);
@@ -74,13 +75,14 @@ namespace XPatchLib
                     }
                 }
 
-                var childResult = d.Divide(name, oriValue, revValue, pAttach); if (!result)
+                var childResult = d.Divide(name, oriValue, revValue, pAttach);
+                if (!result)
                     result = childResult;
             }
             return result;
         }
 
-        Type GetType(params object[] o)
+        private Type GetType(params object[] o)
         {
             foreach (object dynamicObject in o)
             {

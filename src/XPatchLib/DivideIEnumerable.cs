@@ -1,9 +1,11 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang55
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+
 #if (NET_35_UP || NETSTANDARD)
 using System.Linq;
 #endif
@@ -34,7 +36,7 @@ namespace XPatchLib
             if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, pType.InterfaceTypes, out t))
             {
                 GenericArgumentType =
-                    TypeExtendContainer.GetTypeExtend(pWriter.Setting, t, Writer.IgnoreAttributeType, pType);
+                    TypeExtendContainer.GetTypeExtend(pWriter.Setting, t, Writer.Setting.IgnoreAttributeType, pType);
 
                 GenericArgumentTypePrimaryKeyAttribute = GenericArgumentType.PrimaryKeyAttr;
 
@@ -54,8 +56,8 @@ namespace XPatchLib
         {
             Writer.WriteEndArray();
 #if NET || NETSTANDARD_2_0_UP
-            if(Writer.Setting.EnableOnSerializedAttribute)
-                Type.InvokeOnSerialized(obj, new System.Runtime.Serialization.StreamingContext());
+            if (Writer.Setting.EnableOnSerializedAttribute)
+                Type.InvokeOnSerialized(obj, new StreamingContext());
 #endif
         }
 
@@ -146,12 +148,12 @@ namespace XPatchLib
         /// <summary>
         ///     集合类型中元素的类型。
         /// </summary>
-        protected TypeExtend GenericArgumentType { get; private set; }
+        protected TypeExtend GenericArgumentType { get; }
 
         /// <summary>
         ///     集合类型中元素的类型所标记的主键特性。
         /// </summary>
-        protected PrimaryKeyAttribute GenericArgumentTypePrimaryKeyAttribute { get; private set; }
+        protected PrimaryKeyAttribute GenericArgumentTypePrimaryKeyAttribute { get; }
 
         #endregion Protected Properties
 
@@ -315,7 +317,7 @@ namespace XPatchLib
                     }
                     pAttach.CurrentObj = null;
                     pAttach.CurrentType = null;
-                    pAttach.PrimaryKeys = new string[] {};
+                    pAttach.PrimaryKeys = new string[] { };
                 }
             }
             return result;

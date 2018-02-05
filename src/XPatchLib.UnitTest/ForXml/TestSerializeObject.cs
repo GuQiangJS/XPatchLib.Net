@@ -1,4 +1,4 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 #if (NET_35_UP || NETSTANDARD)
@@ -431,7 +431,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (ITextWriter writer = CreateWriter(new StringBuilder()))
                 {
                     new DivideObject(writer,
-                        new TypeExtend(DefaultXmlSerializeSetting, typeof(ErrorPrimaryKeyDefineClass), writer.IgnoreAttributeType));
+                        new TypeExtend(DefaultXmlSerializeSetting, typeof(ErrorPrimaryKeyDefineClass), writer.Setting.IgnoreAttributeType));
                 }
                 Assert.Fail("未能抛出PrimaryKeyException异常");
             }

@@ -1,4 +1,7 @@
-﻿#if NET || NETSTANDARD_2_0_UP
+﻿// Copyright © 2013-2018 - GuQiang55
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+#if NET || NETSTANDARD_2_0_UP
 
 using System;
 using System.Collections.Generic;
@@ -19,7 +22,8 @@ namespace XPatchLib
         {
         }
 
-        protected override bool DivideAction(string pName, object pOriObject, object pRevObject, DivideAttachment pAttach = null)
+        protected override bool DivideAction(string pName, object pOriObject, object pRevObject,
+            DivideAttachment pAttach = null)
         {
             Boolean result;
 
@@ -29,12 +33,12 @@ namespace XPatchLib
             ISerializable revSerializable = pRevObject as ISerializable;
             if (oriSerializable != null)
             {
-                oriSerializationInfo = new SerializationInfo(Type.OriType, new XPatchLib.FormatterConverter(Writer.Setting));
+                oriSerializationInfo = new SerializationInfo(Type.OriType, new FormatterConverter(Writer.Setting));
                 oriSerializable.GetObjectData(oriSerializationInfo, DefaultContext);
             }
             if (revSerializable != null)
             {
-                revSerializationInfo = new SerializationInfo(Type.OriType, new XPatchLib.FormatterConverter(Writer.Setting));
+                revSerializationInfo = new SerializationInfo(Type.OriType, new FormatterConverter(Writer.Setting));
                 revSerializable.GetObjectData(revSerializationInfo, DefaultContext);
             }
 
@@ -62,45 +66,43 @@ namespace XPatchLib
             return result;
         }
 
-        private bool DivideItems(SerializationInfo oriSerializationInfo, SerializationInfo revSerializationInfo, DivideAttachment pAttach = null)
+        private bool DivideItems(SerializationInfo oriSerializationInfo, SerializationInfo revSerializationInfo,
+            DivideAttachment pAttach = null)
         {
             Queue<string> s = new Queue<string>();
             bool result = false;
             if (revSerializationInfo != null)
-            {
-                foreach(SerializationEntry revPro in revSerializationInfo)
+                foreach (SerializationEntry revPro in revSerializationInfo)
                 {
                     TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(Writer.Setting, revPro.ObjectType,
-                        Writer.IgnoreAttributeType, null);
+                        Writer.Setting.IgnoreAttributeType, null);
                     DivideCore ser = new DivideCore(Writer, typeExtend);
                     ser.Assign(this);
 
                     s.Enqueue(revPro.Name);
 
                     SerializationEntry oriEntry;
-                    Boolean b = ser.Divide(revPro.Name, TryGetSerializationEntry(oriSerializationInfo, revPro, out oriEntry) ? oriEntry.Value : null, revPro.Value, pAttach);
+                    Boolean b = ser.Divide(revPro.Name,
+                        TryGetSerializationEntry(oriSerializationInfo, revPro, out oriEntry) ? oriEntry.Value : null,
+                        revPro.Value, pAttach);
                     if (!result)
                         result = b;
                 }
-            }
             return result;
         }
 
-        private bool TryGetSerializationEntry(SerializationInfo oriSerializationInfo, SerializationEntry revPro,out SerializationEntry oriPro)
+        private bool TryGetSerializationEntry(SerializationInfo oriSerializationInfo, SerializationEntry revPro,
+            out SerializationEntry oriPro)
         {
             oriPro = default(SerializationEntry);
-            if (oriSerializationInfo==null)
-            {
+            if (oriSerializationInfo == null)
                 return false;
-            }
-            foreach(SerializationEntry entry in oriSerializationInfo)
-            {
+            foreach (SerializationEntry entry in oriSerializationInfo)
                 if (string.Equals(revPro.Name, entry.Name))
                 {
                     oriPro = entry;
                     return true;
                 }
-            }
             return false;
         }
     }

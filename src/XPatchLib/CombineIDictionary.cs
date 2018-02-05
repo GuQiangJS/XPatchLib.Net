@@ -1,11 +1,10 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang55
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections;
 using System.Globalization;
 using System.Reflection;
-using System.Xml;
 
 namespace XPatchLib
 {
@@ -15,10 +14,38 @@ namespace XPatchLib
     /// <seealso cref="XPatchLib.CombineBase" />
     internal class CombineIDictionary : CombineBase
     {
+        #region Internal Constructors
+
+        /// <summary>
+        ///     使用指定的类型初始化 <see cref="XPatchLib.CombineIEnumerable" /> 类的新实例。
+        /// </summary>
+        /// <param name="pType">
+        ///     指定的类型。
+        /// </param>
+        /// <exception cref="ArgumentException">
+        ///     待处理的类型不是字典类型时。
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     当 <paramref name="pType" /> 上无法获取元素类型时。
+        /// </exception>
+        internal CombineIDictionary(TypeExtend pType)
+            : base(pType)
+        {
+            if (!Type.IsIDictionary)
+                throw new ArgumentException("类型需要是字典类型");
+            Type t;
+            if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, pType.InterfaceTypes, out t))
+                GenericArgumentType = TypeExtendContainer.GetTypeExtend(pType.Setting, t, null, pType);
+            else
+                throw new ArgumentOutOfRangeException(pType.OriType.FullName);
+        }
+
+        #endregion Internal Constructors
+
         /// <summary>
         ///     集合类型中元素的类型。
         /// </summary>
-        protected TypeExtend GenericArgumentType { get; private set; }
+        protected TypeExtend GenericArgumentType { get; }
 
         /// <summary>
         ///     根据增量内容创建基础类型实例。
@@ -56,7 +83,8 @@ namespace XPatchLib
             CombineAttribute attrs = AnlysisAttributes(pReader, pName);
 
             //生成增量内容实例
-            object item = CombineInstanceContainer.GetCombineInstance(GenericArgumentType).Combine(pReader, null, pName);
+            object item = CombineInstanceContainer.GetCombineInstance(GenericArgumentType)
+                .Combine(pReader, null, pName);
 
             //增量内容实例Key值
             object key = GenericArgumentType.GetMemberValue(item, ConstValue.KEY);
@@ -71,12 +99,14 @@ namespace XPatchLib
             switch (attrs.Action)
             {
                 case Action.Add:
-                    Add(this.Type.IsConcurrentDictionary ? ConstValue.OPERATOR_TRY_ADD : ConstValue.OPERATOR_ADD, pOriObject, key,
+                    Add(Type.IsConcurrentDictionary ? ConstValue.OPERATOR_TRY_ADD : ConstValue.OPERATOR_ADD, pOriObject,
+                        key,
                         value);
                     break;
 
                 case Action.Edit:
-                    Update(this.Type.IsConcurrentDictionary ? ConstValue.OPERATOR_TRY_UPDATE : ConstValue.OPERATOR_SET, pOriObject, key, value);
+                    Update(Type.IsConcurrentDictionary ? ConstValue.OPERATOR_TRY_UPDATE : ConstValue.OPERATOR_SET,
+                        pOriObject, key, value);
                     break;
 
                 case Action.Remove:
@@ -98,7 +128,8 @@ namespace XPatchLib
         /// <param name="pValue">Value值。</param>
         private void Add(string pOperatorName, Object pOriObject, Object pKey, Object pValue)
         {
-            Type.InvokeMember(pOperatorName, BindingFlags.InvokeMethod, pOriObject, new[] { pKey, pValue },CultureInfo.InvariantCulture);
+            Type.InvokeMember(pOperatorName, BindingFlags.InvokeMethod, pOriObject, new[] {pKey, pValue},
+                CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -110,61 +141,30 @@ namespace XPatchLib
         /// <param name="pValue">Value值。</param>
         private void Update(string pOperatorName, Object pOriObject, Object pKey, Object pValue)
         {
-            if (this.Type.IsConcurrentDictionary)
-            {
+            if (Type.IsConcurrentDictionary)
                 Type.InvokeMember(pOperatorName, BindingFlags.InvokeMethod, pOriObject,
                     new[] {pKey, pValue, ((IDictionary) pOriObject)[pKey]},
                     CultureInfo.InvariantCulture);
-            }
             else
-            {
-                Type.InvokeMember(pOperatorName, BindingFlags.InvokeMethod, pOriObject,new[] { pKey, pValue },
+                Type.InvokeMember(pOperatorName, BindingFlags.InvokeMethod, pOriObject, new[] {pKey, pValue},
                     CultureInfo.InvariantCulture);
-            }
-            
         }
 
         /// <summary>
         ///     删除操作。
         /// </summary>
         /// <param name="pOriObject">待删除增量的对象实例。</param>
-        /// <param name="pKey">Key值。</param>
+        /// <param name="pKey">待移除的Key值。</param>
+        /// <param name="pValue">待移除的value值</param>
         private void Remove(Object pOriObject, Object pKey, Object pValue)
         {
-            if (this.Type.IsConcurrentDictionary)
-                Type.InvokeMember(ConstValue.OPERATOR_TRY_REMOVE, BindingFlags.InvokeMethod, pOriObject, new[] {pKey, pValue},
+            if (Type.IsConcurrentDictionary)
+                Type.InvokeMember(ConstValue.OPERATOR_TRY_REMOVE, BindingFlags.InvokeMethod, pOriObject,
+                    new[] {pKey, pValue},
                     CultureInfo.InvariantCulture);
             else
                 Type.InvokeMember(ConstValue.OPERATOR_REMOVE, BindingFlags.InvokeMethod, pOriObject, new[] {pKey},
                     CultureInfo.InvariantCulture);
         }
-
-        #region Internal Constructors
-
-        /// <summary>
-        ///     使用指定的类型初始化 <see cref="XPatchLib.CombineIEnumerable" /> 类的新实例。
-        /// </summary>
-        /// <param name="pType">
-        ///     指定的类型。
-        /// </param>
-        /// <exception cref="ArgumentException">
-        ///     待处理的类型不是字典类型时。
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        ///     当 <paramref name="pType" /> 上无法获取元素类型时。
-        /// </exception>
-        internal CombineIDictionary(TypeExtend pType)
-            : base(pType)
-        {
-            if (!Type.IsIDictionary)
-                throw new ArgumentException("类型需要是字典类型");
-            Type t;
-            if (ReflectionUtils.TryGetIEnumerableGenericArgument(pType.OriType, pType.InterfaceTypes, out t))
-                GenericArgumentType = TypeExtendContainer.GetTypeExtend(pType.Setting, t, null, pType);
-            else
-                throw new ArgumentOutOfRangeException(pType.OriType.FullName);
-        }
-
-        #endregion Internal Constructors
     }
 }

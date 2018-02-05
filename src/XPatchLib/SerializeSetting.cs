@@ -1,4 +1,4 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang55
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -19,7 +19,7 @@ namespace XPatchLib
 
 #if NET || NETSTANDARD_2_0_UP
         /// <summary>
-        /// 获取或设置序列化时是否支持 <see cref="System.Runtime.Serialization.OnSerializingAttribute"/>。
+        ///     获取或设置序列化时是否支持 <see cref="System.Runtime.Serialization.OnSerializingAttribute" />。
         /// </summary>
         /// <value>默认值：<c>true</c> 。</value>
         public virtual bool EnableOnSerializingAttribute
@@ -36,7 +36,7 @@ namespace XPatchLib
         }
 
         /// <summary>
-        /// 获取或设置序列化时是否支持 <see cref="System.Runtime.Serialization.OnSerializedAttribute"/>。
+        ///     获取或设置序列化时是否支持 <see cref="System.Runtime.Serialization.OnSerializedAttribute" />。
         /// </summary>
         /// <value>默认值：<c>true</c> 。</value>
         public virtual bool EnableOnSerializedAttribute
@@ -53,7 +53,7 @@ namespace XPatchLib
         }
 
         /// <summary>
-        /// 获取或设置反序列化时是否支持 <see cref="System.Runtime.Serialization.OnDeserializedAttribute"/>。
+        ///     获取或设置反序列化时是否支持 <see cref="System.Runtime.Serialization.OnDeserializedAttribute" />。
         /// </summary>
         /// <value>默认值：<c>true</c> 。</value>
         public virtual bool EnableOnDeserializedAttribute
@@ -70,7 +70,7 @@ namespace XPatchLib
         }
 
         /// <summary>
-        /// 获取或设置反序列化时是否支持 <see cref="System.Runtime.Serialization.OnDeserializingAttribute"/>。
+        ///     获取或设置反序列化时是否支持 <see cref="System.Runtime.Serialization.OnDeserializingAttribute" />。
         /// </summary>
         /// <value>默认值：<c>true</c> 。</value>
         public virtual bool EnableOnDeserializingAttribute
@@ -93,12 +93,20 @@ namespace XPatchLib
 #endif
 
         private bool _serializeDefalutValue;
-        private string _assemblyQualifiedName = "AssemblyQualified";
 
         /// <summary>
         ///     在更改属性值时发生。
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        ///     获取或设置指示 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 进行序列化的公共字段或公共读/写属性值。
+        /// </summary>
+        /// <remarks>
+        ///     用于控制如何 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 序列化对象。
+        /// </remarks>
+        /// <seealso cref="XmlSerializeSetting.IgnoreAttributeType" />
+        public virtual Type IgnoreAttributeType { get; set; }
 
         /// <summary>
         ///     获取或设置在产生增量时类或结构中哪些类型的成员参与序列化。
@@ -199,6 +207,7 @@ namespace XPatchLib
         }
 
 #if NET_40_UP || NETSTANDARD_2_0_UP
+        private string _assemblyQualifiedName = "AssemblyQualified";
         /// <summary>
         /// 获取或设置序列化/反序列化时，文本中标记 '<b>类型的程序集限定名称</b>' 的文本。
         /// </summary>

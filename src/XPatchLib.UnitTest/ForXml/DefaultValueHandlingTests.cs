@@ -7,7 +7,6 @@ using System.Xml.Serialization;
 using NUnit.Framework;
 
 #elif XUNIT
-using System;
 using System.Text;
 using Test = Xunit.FactAttribute;
 using Assert = XPatchLib.UnitTest.XUnitAssert;
@@ -48,7 +47,7 @@ namespace XPatchLib.UnitTest.ForXml
         protected override ITextWriter CreateWriter(StringBuilder output)
         {
             ITextWriter writer = base.CreateWriter(output);
-            writer.IgnoreAttributeType = typeof(XmlIgnoreAttribute);
+            writer.Setting.IgnoreAttributeType = typeof(XmlIgnoreAttribute);
             return writer;
         }
 #endif

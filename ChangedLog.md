@@ -1,3 +1,7 @@
+#### 4.0.2.1
+
+* 重构 - 将 `IgnoreAttributeType` 由 `ITextWriter` 移动至 `ISerializeSetting`。 
+
 #### 4.0.1.1
 
 * 增加 - 增加支持 `DefaultValueAttribute` 特性，标记了该特性的属性会采用标记值作为默认值而不是类型的默认值。

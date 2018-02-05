@@ -1,4 +1,4 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang55
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -9,8 +9,17 @@ namespace XPatchLib
     ///     序列化/反序列化时的设置。
     /// </summary>
     /// <seealso cref="SerializeSetting" />
-    public interface ISerializeSetting:ICloneable
+    public interface ISerializeSetting : ICloneable
     {
+        /// <summary>
+        ///     获取或设置指示 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 进行序列化的公共字段或公共读/写属性值。
+        /// </summary>
+        /// <remarks>
+        ///     用于控制如何 <see cref="Serializer" /> 方法 <see cref="Serializer.Divide" /> 序列化对象。
+        /// </remarks>
+        /// <seealso cref="XmlSerializeSetting.IgnoreAttributeType" />
+        Type IgnoreAttributeType { get; set; }
+
         /// <summary>
         ///     获取或设置在产生增量时类或结构中哪些类型的成员参与序列化。
         /// </summary>
@@ -21,10 +30,9 @@ namespace XPatchLib
         /// </summary>
         SerializeMemberModifier Modifier { get; set; }
 
-#if NET_40_UP || NETSTANDARD_2_0_UP
-        /// <summary>
-        /// 获取或设置序列化/反序列化时，文本中标记 '<b>类型的程序集限定名称</b>' 的文本。
-        /// </summary>
+#if NET_40_UP || NETSTANDARD_2_0_UP /// <summary>
+/// 获取或设置序列化/反序列化时，文本中标记 '<b>类型的程序集限定名称</b>' 的文本。
+/// </summary>
         string AssemblyQualifiedName { get; set; }
 #endif
 
@@ -45,32 +53,30 @@ namespace XPatchLib
 
 #if NET || NETSTANDARD_2_0_UP
         /// <summary>
-        /// 获取或设置序列化时是否支持 <see cref="System.Runtime.Serialization.OnSerializingAttribute"/>。
+        ///     获取或设置序列化时是否支持 <see cref="System.Runtime.Serialization.OnSerializingAttribute" />。
         /// </summary>
         bool EnableOnSerializingAttribute { get; set; }
-        
+
         /// <summary>
-        /// 获取或设置序列化时是否支持 <see cref="System.Runtime.Serialization.OnSerializedAttribute"/>。
+        ///     获取或设置序列化时是否支持 <see cref="System.Runtime.Serialization.OnSerializedAttribute" />。
         /// </summary>
         bool EnableOnSerializedAttribute { get; set; }
 
         /// <summary>
-        /// 获取或设置反序列化时是否支持 <see cref="System.Runtime.Serialization.OnDeserializedAttribute"/>。
+        ///     获取或设置反序列化时是否支持 <see cref="System.Runtime.Serialization.OnDeserializedAttribute" />。
         /// </summary>
         bool EnableOnDeserializedAttribute { get; set; }
 
         /// <summary>
-        /// 获取或设置反序列化时是否支持 <see cref="System.Runtime.Serialization.OnDeserializingAttribute"/>。
+        ///     获取或设置反序列化时是否支持 <see cref="System.Runtime.Serialization.OnDeserializingAttribute" />。
         /// </summary>
         bool EnableOnDeserializingAttribute { get; set; }
 #endif
     }
 
-#if NETSTANDARD && !NETSTANDARD_2_0_UP
-
-    /// <summary>
-    /// 克隆的支持，这将类的新实例创建与现有实例相同的值。
-    /// </summary>
+#if NETSTANDARD && !NETSTANDARD_2_0_UP /// <summary>
+/// 克隆的支持，这将类的新实例创建与现有实例相同的值。
+/// </summary>
     public interface ICloneable
     {
         /// <summary>

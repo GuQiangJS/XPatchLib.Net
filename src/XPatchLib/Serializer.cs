@@ -1,4 +1,4 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang55
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -89,7 +89,9 @@ namespace XPatchLib
                 CombineInstanceContainer.Clear();
             }
             else if (pClearKeyAttributes)
+            {
                 TypeExtendContainer.ClearKeyAttributes();
+            }
             _initialType = pType;
         }
 
@@ -152,43 +154,39 @@ namespace XPatchLib
         ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="Serializer" and @method="Combine"]/*' />
         /// </example>
         /// <seealso cref="Combine(XPatchLib.ITextReader,object)" />
-#else
-        /// <summary>
-        ///     以可指定是否覆盖原始对象的方式反序列化指定 <see cref="ITextReader" /> 包含的增量文档，并与 原始对象 进行数据合并。
-        /// </summary>
-        /// <param name="pReader">
-        ///     <include file='docs/docs.xml'
-        ///         path='Comments/params/param[@class="Serializer" and @paramtype="ITextReader" and @method="Combine" and @paramname="pReader"]' />
-        /// </param>
-        /// <param name="pOriValue">
-        ///     <include file='docs/docs.xml'
-        ///         path='Comments/params/param[@class="Serializer" and @paramtype="Object" and @method="Combine" and @paramname="pOriValue"]' />
-        /// </param>
-        /// <param name="pOverride">
-        ///     <include file='docs/docs.xml'
-        ///         path='Comments/params/param[@class="Serializer" and @paramtype="bool" and @method="Combine" and @paramname="pOverride" and @target=""]' />
-        /// </param>
-        /// <returns>
-        ///     <include file='docs/docs.xml' path='Comments/returns/return[@class="Serializer" and @method="Combine"]' />
-        /// </returns>
-        /// <remarks>
-        ///     <include file='docs/docs.xml' path='Comments/remarks/remark[@class="Serializer" and @method="Combine"]/*' />
-        /// </remarks>
-        /// <example>
-        ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="Serializer" and @method="Combine"]/*' />
-        /// </example>
-        /// <seealso cref="Combine(XPatchLib.ITextReader,object)" />
-#endif
-        [SuppressMessage("Microsoft.Usage", "CA2202:不要多次释放对象")]
+#else /// <summary>
+///     以可指定是否覆盖原始对象的方式反序列化指定 <see cref="ITextReader" /> 包含的增量文档，并与 原始对象 进行数据合并。
+/// </summary>
+/// <param name="pReader">
+///     <include file='docs/docs.xml'
+///         path='Comments/params/param[@class="Serializer" and @paramtype="ITextReader" and @method="Combine" and @paramname="pReader"]' />
+/// </param>
+/// <param name="pOriValue">
+///     <include file='docs/docs.xml'
+///         path='Comments/params/param[@class="Serializer" and @paramtype="Object" and @method="Combine" and @paramname="pOriValue"]' />
+/// </param>
+/// <param name="pOverride">
+///     <include file='docs/docs.xml'
+///         path='Comments/params/param[@class="Serializer" and @paramtype="bool" and @method="Combine" and @paramname="pOverride" and @target=""]' />
+/// </param>
+/// <returns>
+///     <include file='docs/docs.xml' path='Comments/returns/return[@class="Serializer" and @method="Combine"]' />
+/// </returns>
+/// <remarks>
+///     <include file='docs/docs.xml' path='Comments/remarks/remark[@class="Serializer" and @method="Combine"]/*' />
+/// </remarks>
+/// <example>
+///     <include file='docs/docs.xml' path='Comments/examples/example[@class="Serializer" and @method="Combine"]/*' />
+/// </example>
+/// <seealso cref="Combine(XPatchLib.ITextReader,object)" />
+#endif [SuppressMessage("Microsoft.Usage", "CA2202:不要多次释放对象")]
         public object Combine(ITextReader pReader, object pOriValue, bool pOverride)
         {
             Guard.ArgumentNotNull(pReader, "pReader");
 
             Type t = _initialType;
             if (t.IsInterface() && pOriValue != null)
-            {
                 t = pOriValue.GetType();
-            }
             InitType(pReader.Setting, t, null);
             RegisterTypes(pReader.Setting);
 
@@ -208,7 +206,7 @@ namespace XPatchLib
                         stream = new MemoryStream();
                         using (XmlTextWriter writer = new XmlTextWriter(stream, new UTF8Encoding(false)))
                         {
-                            writer.IgnoreAttributeType = null;
+                            writer.Setting.IgnoreAttributeType = null;
                             writer.Setting = pReader.Setting.Clone() as ISerializeSetting;
                             writer.Setting.SerializeDefalutValue = true;
                             new Serializer(_initialType, true, false).Divide(writer, null, pOriValue);
@@ -288,10 +286,8 @@ namespace XPatchLib
 
             Type t = _initialType;
             if (t.IsInterface() && (pOriValue != null || pRevValue != null))
-            {
-                    t = (pOriValue != null) ? pOriValue.GetType() : pRevValue.GetType();
-            }
-            InitType(pWriter.Setting, t, pWriter.IgnoreAttributeType);
+                t = pOriValue != null ? pOriValue.GetType() : pRevValue.GetType();
+            InitType(pWriter.Setting, t, pWriter.Setting.IgnoreAttributeType);
             RegisterTypes(pWriter.Setting);
 
             pWriter.WriteStartDocument();
@@ -308,7 +304,7 @@ namespace XPatchLib
         ///     待注册的类型。
         /// </param>
         /// <param name="pPrimaryKeys">
-        ///     <paramref name="pType"/> 的主键名称集合。
+        ///     <paramref name="pType" /> 的主键名称集合。
         /// </param>
         /// <remarks>
         ///     在无法修改类型定义，为其增加或修改 <see cref="PrimaryKeyAttribute" /> 的情况下， 可以在调用
@@ -318,22 +314,22 @@ namespace XPatchLib
         ///     或 <c> Combine </c> 方法前，调用此方法，传入需要修改的Type及与其对应的主键名称集合。 系统在处理时会按照传入的设置进行处理。
         /// </remarks>
         /// <exception cref="ArgumentNullException">
-        ///     当参数 <paramref name="pType" /> 或 <paramref name="pPrimaryKeys"/> is null 时。
+        ///     当参数 <paramref name="pType" /> 或 <paramref name="pPrimaryKeys" /> is null 时。
         /// </exception>
         /// <exception cref="ArgumentException">
-        ///     当参数 <paramref name="pPrimaryKeys"/>.Length == 0 时。
+        ///     当参数 <paramref name="pPrimaryKeys" />.Length == 0 时。
         /// </exception>
-        public void RegisterType(Type pType,string[] pPrimaryKeys)
+        public void RegisterType(Type pType, string[] pPrimaryKeys)
         {
             Guard.ArgumentNotNull(pType, nameof(pType));
             Guard.ArgumentNotNullOrEmpty(pPrimaryKeys, nameof(pPrimaryKeys));
-            
+
             _needRegistTypes = true;
-            if(_registerTypes==null)
+            if (_registerTypes == null)
                 _registerTypes = new Dictionary<Type, string[]>();
             _registerTypes.Add(pType, pPrimaryKeys);
         }
 
-#endregion Public Methods
+        #endregion Public Methods
     }
 }

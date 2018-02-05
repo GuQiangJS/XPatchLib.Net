@@ -1,9 +1,8 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang55
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Globalization;
-using System.Xml;
 
 namespace XPatchLib
 {
@@ -13,6 +12,20 @@ namespace XPatchLib
     /// <seealso cref="XPatchLib.DivideBase" />
     internal class DivideKeyValuePair : DivideBase
     {
+        #region Internal Constructors
+
+        /// <summary>
+        ///     使用指定的类型初始化 <see cref="XPatchLib.DivideKeyValuePair" /> 类的新实例。
+        /// </summary>
+        /// <param name="pWriter">写入器。</param>
+        /// <param name="pType">指定的类型。</param>
+        internal DivideKeyValuePair(ITextWriter pWriter, TypeExtend pType)
+            : base(pWriter, pType)
+        {
+        }
+
+        #endregion Internal Constructors
+
         /// <summary>
         ///     产生增量内容。
         /// </summary>
@@ -58,9 +71,10 @@ namespace XPatchLib
         {
             //获取KeyValuePair类型对象的Key值与Value值的类型
             var keyType = TypeExtendContainer.GetTypeExtend(Writer.Setting, Type.KeyArgumentType,
-                Writer.IgnoreAttributeType, Type);
+                Writer.Setting.IgnoreAttributeType, Type);
             var valueType =
-                TypeExtendContainer.GetTypeExtend(Writer.Setting, Type.ValueArgumentType, Writer.IgnoreAttributeType,
+                TypeExtendContainer.GetTypeExtend(Writer.Setting, Type.ValueArgumentType,
+                    Writer.Setting.IgnoreAttributeType,
                     Type);
 
             //分别获取原始值与修改后的值的Key值和Value值
@@ -90,7 +104,8 @@ namespace XPatchLib
              * 但是不可以两者同时为Null，那样字典中无法赋值，也不能进行增量内容附加
              */
             if (oriKeyObj == null && revKeyObj == null)
-                throw new ArgumentException(ResourceHelper.GetResourceString(LocalizationRes.Exp_String_KeyValue_KeyIsNull));
+                throw new ArgumentException(
+                    ResourceHelper.GetResourceString(LocalizationRes.Exp_String_KeyValue_KeyIsNull));
 
             if (Equals(oriKeyObj, revKeyObj) && Equals(oriValueObj, revValueObj))
                 return false;
@@ -105,7 +120,8 @@ namespace XPatchLib
             else
             {
                 if (revValueObj == null)
-                    return DivideAction(keyType, valueType, revKeyObj, oriValueObj, revValueObj, Action.SetNull, pAttach);
+                    return DivideAction(keyType, valueType, revKeyObj, oriValueObj, revValueObj, Action.SetNull,
+                        pAttach);
                 return DivideAction(keyType, valueType, revKeyObj, oriValueObj, revValueObj, Action.Edit, pAttach);
             }
 
@@ -136,19 +152,5 @@ namespace XPatchLib
         }
 
         #endregion Private Methods
-
-        #region Internal Constructors
-
-        /// <summary>
-        ///     使用指定的类型初始化 <see cref="XPatchLib.DivideKeyValuePair" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        internal DivideKeyValuePair(ITextWriter pWriter, TypeExtend pType)
-            : base(pWriter, pType)
-        {
-        }
-
-        #endregion Internal Constructors
     }
 }

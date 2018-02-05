@@ -35,7 +35,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (XmlTextWriter xmlWriter=new XmlTextWriter(writer))
                 {
                     //在本次序列化过程中，类型定义中的XmlIgnoreAttribute无效。
-                    xmlWriter.IgnoreAttributeType = null;
+                    xmlWriter.Setting.IgnoreAttributeType = null;
                     serializer.Divide(xmlWriter, c1,c2);
                 }
             }
@@ -60,7 +60,7 @@ namespace XPatchLib.UnitTest.ForXml
                 using (XmlTextWriter xmlWriter = new XmlTextWriter(writer))
                 {
                     //在本次序列化过程中，使用 XPatchLibXmlIgnoreAttribute 作为忽略特性，而不是用默认的 XmlIgnoreAttribute
-                    xmlWriter.IgnoreAttributeType = typeof(XPatchLibXmlIgnoreAttribute);
+                    xmlWriter.Setting.IgnoreAttributeType = typeof(XPatchLibXmlIgnoreAttribute);
                     serializer.Divide(xmlWriter, c1, c2);
                 }
             }

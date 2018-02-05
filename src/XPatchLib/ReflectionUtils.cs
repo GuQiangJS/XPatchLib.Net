@@ -1,22 +1,22 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang55
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 #if (NET || NETSTANDARD_2_0_UP)
 using System.Drawing;
 #endif
 #if NET_40_UP || NETSTANDARD_2_0_UP
 using System.Dynamic;
 #endif
-using System.Globalization;
 #if (NET_35_UP || NETSTANDARD)
 using System.Linq;
 #endif
-using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace XPatchLib
 {
@@ -24,7 +24,7 @@ namespace XPatchLib
     {
         #region Internal Methods
 
-        internal static Object GetDefaultValue(Type pType,MemberInfo memberInfo=null)
+        internal static Object GetDefaultValue(Type pType, MemberInfo memberInfo = null)
         {
             if (memberInfo != null)
             {
@@ -42,20 +42,20 @@ namespace XPatchLib
         }
 
         /// <summary>
-        /// 获取一个类型上需要序列化的属性或字段集合。
+        ///     获取一个类型上需要序列化的属性或字段集合。
         /// </summary>
         /// <param name="pSetting">序列化/反序列化时的设置。</param>
         /// <param name="pObjType">Type of the p object.</param>
         /// <param name="pIngoreAttributeType">不序列化的特性类型定义。</param>
         /// <returns></returns>
-        internal static MemberWrapper[] GetFieldsToBeSerialized(ISerializeSetting pSetting,Type pObjType, Type pIngoreAttributeType)
+        internal static MemberWrapper[] GetFieldsToBeSerialized(ISerializeSetting pSetting, Type pObjType,
+            Type pIngoreAttributeType)
         {
             List<MemberInfo> members = GetFieldsAndProperties(pObjType, pSetting);
 
             Queue<MemberWrapper> result = new Queue<MemberWrapper>(members.Count);
 
             foreach (MemberInfo memberInfo in members)
-            {
                 if (TestAccessibility(memberInfo, pSetting))
                 {
                     MemberWrapper wrapper = new MemberWrapper(memberInfo);
@@ -71,7 +71,6 @@ namespace XPatchLib
                         continue;
                     result.Enqueue(wrapper);
                 }
-            }
 
             return result.OrderBy(x => x.Name).ToArray();
         }
@@ -82,22 +81,18 @@ namespace XPatchLib
                 return false;
 
             if (memberInfo is FieldInfo)
-            {
-                return TestAccessibility((FieldInfo)memberInfo, pSetting);
-            }
-            else if (memberInfo is PropertyInfo)
-            {
-                return TestAccessibility((PropertyInfo)memberInfo, pSetting);
-            }
+                return TestAccessibility((FieldInfo) memberInfo, pSetting);
+            if (memberInfo is PropertyInfo)
+                return TestAccessibility((PropertyInfo) memberInfo, pSetting);
             return false;
         }
 
-        static bool TestAccessibility(FieldInfo fieldInfo, ISerializeSetting pSetting)
+        private static bool TestAccessibility(FieldInfo fieldInfo, ISerializeSetting pSetting)
         {
-            bool visibility = (fieldInfo.IsPublic && pSetting.Modifier.HasFlag(SerializeMemberModifier.Public)) ||
-                              (fieldInfo.IsPrivate && pSetting.Modifier.HasFlag(SerializeMemberModifier.Private)) ||
-                              (fieldInfo.IsAssembly && pSetting.Modifier.HasFlag(SerializeMemberModifier.Internal)) ||
-                              (fieldInfo.IsFamily && pSetting.Modifier.HasFlag(SerializeMemberModifier.Protected));
+            bool visibility = fieldInfo.IsPublic && pSetting.Modifier.HasFlag(SerializeMemberModifier.Public) ||
+                              fieldInfo.IsPrivate && pSetting.Modifier.HasFlag(SerializeMemberModifier.Private) ||
+                              fieldInfo.IsAssembly && pSetting.Modifier.HasFlag(SerializeMemberModifier.Internal) ||
+                              fieldInfo.IsFamily && pSetting.Modifier.HasFlag(SerializeMemberModifier.Protected);
 
             bool instance = true;
             //bool instance = (member.IsStatic && bindingFlags.HasFlag(BindingFlags.Static)) ||
@@ -113,26 +108,22 @@ namespace XPatchLib
             if (member.GetGetMethod() != null && TestAccessibility(member.GetGetMethod(), pSetting)
                 ||
                 member.GetGetMethod(true) != null && TestAccessibility(member.GetGetMethod(true), pSetting))
-            {
                 hasGetMethod = true;
-            }
 
             if (member.GetSetMethod() != null && TestAccessibility(member.GetSetMethod(), pSetting)
                 ||
                 member.GetSetMethod(true) != null && TestAccessibility(member.GetSetMethod(true), pSetting))
-            {
                 hasSetMethod = true;
-            }
 
             return hasGetMethod & hasSetMethod;
         }
 
-        static bool TestAccessibility(MethodInfo methodInfo, ISerializeSetting pSetting)
+        private static bool TestAccessibility(MethodInfo methodInfo, ISerializeSetting pSetting)
         {
-            bool visibility = (methodInfo.IsPublic && pSetting.Modifier.HasFlag(SerializeMemberModifier.Public)) ||
-                              (methodInfo.IsPrivate && pSetting.Modifier.HasFlag(SerializeMemberModifier.Private)) ||
-                              (methodInfo.IsAssembly && pSetting.Modifier.HasFlag(SerializeMemberModifier.Internal)) ||
-                              (methodInfo.IsFamily && pSetting.Modifier.HasFlag(SerializeMemberModifier.Protected));
+            bool visibility = methodInfo.IsPublic && pSetting.Modifier.HasFlag(SerializeMemberModifier.Public) ||
+                              methodInfo.IsPrivate && pSetting.Modifier.HasFlag(SerializeMemberModifier.Private) ||
+                              methodInfo.IsAssembly && pSetting.Modifier.HasFlag(SerializeMemberModifier.Internal) ||
+                              methodInfo.IsFamily && pSetting.Modifier.HasFlag(SerializeMemberModifier.Protected);
 
             bool instance = true;
             //bool instance = (member.IsStatic && bindingFlags.HasFlag(BindingFlags.Static)) ||
@@ -144,7 +135,7 @@ namespace XPatchLib
         public static IEnumerable<MemberInfo> GetProperties(Type targetType, BindingFlags bindingAttr)
         {
             Guard.ArgumentNotNull(targetType, nameof(targetType));
-            
+
             return targetType.GetProperties(bindingAttr);
         }
 
@@ -152,7 +143,7 @@ namespace XPatchLib
         {
             List<MemberInfo> result = new List<MemberInfo>();
             BindingFlags bindingFlags = GetBindingFlags(pSetting);
-            if(pSetting.MemberType.HasFlag(SerializeMemberType.Field))
+            if (pSetting.MemberType.HasFlag(SerializeMemberType.Field))
                 result.AddRange(GetFields(pObjType, bindingFlags));
             if (pSetting.MemberType.HasFlag(SerializeMemberType.Property))
                 result.AddRange(GetProperties(pObjType, bindingFlags));
@@ -167,27 +158,27 @@ namespace XPatchLib
             return targetType.GetFields(bindingAttr);
         }
 
-        static BindingFlags GetBindingFlags(ISerializeSetting pSettings)
+        private static BindingFlags GetBindingFlags(ISerializeSetting pSettings)
         {
-            switch ((int)pSettings.Modifier)
+            switch ((int) pSettings.Modifier)
             {
-                case 1://public
+                case 1: //public
                     return BindingFlags.Instance | BindingFlags.Public;
-                case 2://private
-                case 4://protected
-                case 6://private | protected
-                case 8://internal
-                case 10://private | internal
-                case 12://protected | internal
-                case 14://private | protected | internal
+                case 2: //private
+                case 4: //protected
+                case 6: //private | protected
+                case 8: //internal
+                case 10: //private | internal
+                case 12: //protected | internal
+                case 14: //private | protected | internal
                     return BindingFlags.Instance | BindingFlags.NonPublic;
-                case 3://public | private
-                case 5://public | protected
-                case 7://public | private | protected
-                case 9://public | internal
-                case 11://public | private | internal
-                case 13://public | protected | internal
-                case 15://public | private | protected | internal 
+                case 3: //public | private
+                case 5: //public | protected
+                case 7: //public | private | protected
+                case 9: //public | internal
+                case 11: //public | private | internal
+                case 13: //public | protected | internal
+                case 15: //public | private | protected | internal 
                     return BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
                 default:
                     throw new NotImplementedException();
@@ -236,17 +227,16 @@ namespace XPatchLib
             {
                 int backqIndex = result.IndexOf('`');
                 if (backqIndex == 0)
-                    throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Bad type name: {0}",
+                    throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture,
+                        "Bad type name: {0}",
                         result));
                 if (backqIndex > 0)
                     result = result.Substring(0, backqIndex);
 
                 result += ConstValue.UNDERLINE;
 
-                foreach(Type t in pType.GetGenericArguments())
-                {
+                foreach (Type t in pType.GetGenericArguments())
                     result += GetTypeFriendlyName(t) + ConstValue.UNDERLINE;
-                }
 
                 if (result.EndsWith(ConstValue.UNDERLINE, StringComparison.OrdinalIgnoreCase))
                     result = result.Remove(result.Length - 1);
@@ -286,7 +276,7 @@ namespace XPatchLib
 #if (NET || NETSTANDARD_2_0_UP)
                 || pType == typeof(Color)
 #endif
-                )
+            )
             {
                 result = true;
             }
@@ -301,19 +291,17 @@ namespace XPatchLib
             return result;
         }
 
-        internal static bool IsICollection(Type type,Type[] interfaces)
+        internal static bool IsICollection(Type type, Type[] interfaces)
         {
             // a direct reference to the interface itself is also OK. 
             if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(ICollection<>))
                 return true;
 
             if (interfaces != null)
-            {
                 foreach (Type interfaceType in interfaces)
                     if (interfaceType.IsGenericType() &&
                         interfaceType.GetGenericTypeDefinition() == typeof(ICollection<>))
                         return true;
-            }
 
             return false;
         }
@@ -346,7 +334,6 @@ namespace XPatchLib
             }
 
             if (interfaces != null)
-            {
                 foreach (Type interfaceType in interfaces)
                     if (interfaceType.IsGenericType() &&
                         interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
@@ -356,7 +343,6 @@ namespace XPatchLib
                         valueType = genArgs[1];
                         return true;
                     }
-            }
 
             return false;
         }
@@ -366,6 +352,7 @@ namespace XPatchLib
         /// </summary>
         /// <param name="pType">
         /// </param>
+        /// <param name="interfaces"></param>
         /// <returns>
         /// </returns>
         internal static bool IsIEnumerable(Type pType, Type[] interfaces)
@@ -374,19 +361,17 @@ namespace XPatchLib
             return TryGetIEnumerableGenericArgument(pType, interfaces, out seqType);
         }
 
-        internal static bool IsIList(Type type,Type[] interfaces)
+        internal static bool IsIList(Type type, Type[] interfaces)
         {
             // a direct reference to the interface itself is also OK. 
             if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(IList<>))
                 return true;
 
             if (interfaces != null)
-            {
                 foreach (Type interfaceType in interfaces)
                     if (interfaceType.IsGenericType() &&
                         interfaceType.GetGenericTypeDefinition() == typeof(IList<>))
                         return true;
-            }
 
             return false;
         }
@@ -470,6 +455,7 @@ namespace XPatchLib
         /// </summary>
         /// <param name="pType">
         /// </param>
+        /// <param name="interfaces"></param>
         /// <param name="pSeqType">
         ///     泛型类型。
         /// </param>
@@ -495,7 +481,6 @@ namespace XPatchLib
             }
 
             if (interfaces != null)
-            {
                 foreach (Type interfaceType in interfaces)
                     if (interfaceType.IsGenericType() &&
                         interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
@@ -508,7 +493,6 @@ namespace XPatchLib
                     {
                         isNongenericEnumerable = true;
                     }
-            }
             // the second case is a direct reference to IEnumerable 
             if (isNongenericEnumerable || pType == typeof(IEnumerable))
             {
@@ -523,18 +507,15 @@ namespace XPatchLib
         {
             // ConcurrentDictionary throws an error in its OnDeserialized so ignore
             if (IsConcurrentDictionary(t) || IsConcurrentStack(t) || IsConcurrentQueue(t) || IsConcurrentBag(t))
-            {
                 return true;
-            }
 
             return false;
         }
+
         internal static bool ShouldSkipSerializing(Type t)
         {
             if (IsConcurrentDictionary(t) || IsConcurrentStack(t) || IsConcurrentQueue(t) || IsConcurrentBag(t))
-            {
                 return true;
-            }
 
             return false;
         }
@@ -585,14 +566,12 @@ namespace XPatchLib
             }
 
             if (checkBase && t.BaseType() != null && IsConcurrentDictionary(t.BaseType()))
-            {
                 return true;
-            }
 
             return false;
         }
 
-        internal static bool IsConcurrentStack(Type t,bool checkBase=false)
+        internal static bool IsConcurrentStack(Type t, bool checkBase = false)
         {
             if (t.IsGenericType())
             {
@@ -606,14 +585,12 @@ namespace XPatchLib
             }
 
             if (checkBase && t.BaseType() != null && IsConcurrentStack(t.BaseType()))
-            {
                 return true;
-            }
 
             return false;
         }
 
-        internal static bool IsConcurrentQueue(Type t,bool checkBase=false)
+        internal static bool IsConcurrentQueue(Type t, bool checkBase = false)
         {
             if (t.IsGenericType())
             {
@@ -627,12 +604,11 @@ namespace XPatchLib
             }
 
             if (checkBase && t.BaseType() != null && IsConcurrentQueue(t.BaseType()))
-            {
                 return true;
-            }
 
             return false;
         }
+
         internal static bool IsConcurrentBag(Type t, bool checkBase = false)
         {
             if (t.IsGenericType())
@@ -647,9 +623,7 @@ namespace XPatchLib
             }
 
             if (checkBase && t.BaseType() != null && IsConcurrentBag(t.BaseType()))
-            {
                 return true;
-            }
 
             return false;
         }
@@ -668,12 +642,11 @@ namespace XPatchLib
             }
 
             if (t.BaseType() != null && IsObservableCollection(t.BaseType()))
-            {
                 return true;
-            }
 
             return false;
         }
+
         #endregion Internal Methods
     }
 }

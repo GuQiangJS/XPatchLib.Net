@@ -224,11 +224,19 @@ namespace XPatchLib.UnitTest.ForXml
             string context = DoSerializer_Divide(c1, c2);
             Assert.AreEqual(changedContext, context);
             var c4 = DoSerializer_Combie(context, c1, true);
-            Assert.AreEqual(c3, c4);
+#if (NET || NETSTANDARD_2_0_UP)
+            //属性A没有参与序列化，所以在合并增量时如果选择了克隆原对象，那么在克隆时会丢失A属性，所以C2与C4不同
+            Assert.AreNotEqual(c2, c4);
+#else
+            Assert.AreEqual(c2, c4);
+#endif
             Assert.AreNotEqual(c1, c4);
+            Assert.AreNotEqual(c1.GetHashCode(), c4.GetHashCode());
+
             c4 = DoSerializer_Combie(context, c1, false);
             Assert.AreEqual(c3, c4);
             Assert.AreEqual(c1, c4);
+            Assert.AreEqual(c1.GetHashCode(), c4.GetHashCode());
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -347,7 +347,7 @@ namespace XPatchLib.UnitTest
             StringBuilder result = new StringBuilder();
             using (var writer = CreateWriter(result))
             {
-                TypeExtend typeExtend = new TypeExtend(DefaultXmlSerializeSetting, typeof(T), writer.IgnoreAttributeType);
+                TypeExtend typeExtend = new TypeExtend(DefaultXmlSerializeSetting, typeof(T), writer.Setting.IgnoreAttributeType);
                 var serializer = new DivideIDictionary(writer, typeExtend);
                 bool succeeded = serializer.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(T)), ori, rev);
                 Assert.IsTrue(succeeded);
@@ -360,7 +360,7 @@ namespace XPatchLib.UnitTest
             StringBuilder result = new StringBuilder();
             using (var writer = CreateWriter(result))
             {
-                TypeExtend typeExtend = new TypeExtend(DefaultXmlSerializeSetting, typeof(T), writer.IgnoreAttributeType);
+                TypeExtend typeExtend = new TypeExtend(DefaultXmlSerializeSetting, typeof(T), writer.Setting.IgnoreAttributeType);
                 var serializer = new DivideKeyValuePair(writer, typeExtend);
                 bool succeeded = serializer.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(T)), ori, rev);
                 Assert.IsTrue(succeeded);
@@ -379,7 +379,7 @@ namespace XPatchLib.UnitTest
             {
                 if (setting != null)
                     writer.Setting = setting;
-                TypeExtend typeExtend = new TypeExtend(DefaultXmlSerializeSetting, typeof(T), writer.IgnoreAttributeType);
+                TypeExtend typeExtend = new TypeExtend(DefaultXmlSerializeSetting, typeof(T), writer.Setting.IgnoreAttributeType);
                 var serializer = new DivideIEnumerable(writer, typeExtend);
                 bool succeeded = serializer.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(T)), ori, rev);
                 Assert.IsTrue(succeeded);

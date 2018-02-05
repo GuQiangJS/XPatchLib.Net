@@ -1,12 +1,12 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang55
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
+
 #if (NET || NETSTANDARD_2_0_UP)
-using System.Xml.Serialization;
 
 #endif
 
@@ -81,6 +81,7 @@ namespace XPatchLib
             /* Token.Whitespace     */ State.Prolog, State.Prolog, State.PostDtd, State.Content, State.Attribute,
             State.Content, State.Attribute, State.Epilog
         };
+
         private readonly Encoding _encoding;
 
         private readonly TextWriter _textWriter;
@@ -124,10 +125,6 @@ namespace XPatchLib
             _stateTable = StateTableDefault;
             _currentState = State.Start;
             _lastToken = Token.Empty;
-
-#if (NET || NETSTANDARD_2_0_UP)
-            IgnoreAttributeType = typeof(XmlIgnoreAttribute);
-#endif
         }
 
         /// <summary>
@@ -212,7 +209,8 @@ namespace XPatchLib
             set
             {
                 if (value < 0)
-                    throw new ArgumentException(ResourceHelper.GetResourceString(LocalizationRes.Exp_String_InvalidIndentation));
+                    throw new ArgumentException(
+                        ResourceHelper.GetResourceString(LocalizationRes.Exp_String_InvalidIndentation));
                 _indentation = value;
             }
         }
@@ -242,7 +240,8 @@ namespace XPatchLib
             set
             {
                 if (value != '"' && value != '\'')
-                    throw new ArgumentException(ResourceHelper.GetResourceString(LocalizationRes.Exp_String_InvalidQuote));
+                    throw new ArgumentException(
+                        ResourceHelper.GetResourceString(LocalizationRes.Exp_String_InvalidQuote));
                 _quoteChar = value;
             }
         }
@@ -283,7 +282,8 @@ namespace XPatchLib
         private void AutoComplete(Token token)
         {
             if (_currentState == State.Closed)
-                throw new InvalidOperationException(ResourceHelper.GetResourceString(LocalizationRes.Exp_String_WriteClosed));
+                throw new InvalidOperationException(
+                    ResourceHelper.GetResourceString(LocalizationRes.Exp_String_WriteClosed));
             if (_currentState == State.Error)
                 throw new InvalidOperationException(
                     /*Res.GetString(Res.Xml_WrongToken, tokenName[(int)token], stateName[(int)State.Error])*/);
@@ -593,7 +593,7 @@ namespace XPatchLib
             }
         }
 
-#region 来源：XmlTextEncoder
+        #region 来源：XmlTextEncoder
 
         private void Write(string text)
         {
@@ -711,40 +711,9 @@ namespace XPatchLib
             _textWriter.Write(';');
         }
 
-#endregion
+        #endregion
 
-#region
-
-#if NET || NETSTANDARD_2_0_UP
-        /// <summary>
-        /// 获取或设置指示<see cref="Serializer" /> 方法<see cref= "Serializer.Divide" /> 进行序列化的公共字段或公共读 / 写属性值。
-        /// </summary>
-        /// <remarks>
-        /// 用于控制如何<see cref="Serializer" /> 方法 <see cref = "Serializer.Divide" /> 序列化对象。
-        /// </remarks>
-        /// <example>
-        /// <include file='docs/docs.xml' path='Comments/examples/example[@class="XmlTextWriter" and @property="IgnoreAttributeType"]/*'/>
-        /// </example>
-        /// <value>
-        /// 默认值：
-        /// <see cref = "System.Xml.Serialization.XmlIgnoreAttribute" />。
-        /// </value>
-#else
-        /// <summary>
-        /// 获取或设置指示<see cref="Serializer" /> 方法<see cref= "Serializer.Divide" /> 进行序列化的公共字段或公共读 / 写属性值。
-        /// </summary>
-        /// <remarks>
-        /// 用于控制如何<see cref="Serializer" /> 方法 <see cref = "Serializer.Divide" /> 序列化对象。
-        /// </remarks>
-        /// <example>
-        /// <include file='docs/docs.xml' path='Comments/examples/example[@class="XmlTextWriter" and @property="IgnoreAttributeType"]/*'/>
-        /// </example>
-        /// <value>
-        /// 默认值：
-        /// <c>null</c>。
-        /// </value>
-#endif
-        public Type IgnoreAttributeType { get; set; }
+        #region
 
         private ISerializeSetting _setting = new XmlSerializeSetting();
 
@@ -926,6 +895,6 @@ namespace XPatchLib
             InternalWriteString(pValue);
         }
 
-#endregion
+        #endregion
     }
 }

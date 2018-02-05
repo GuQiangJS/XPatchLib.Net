@@ -1,7 +1,8 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang55
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+
 #if (NET_35_UP || NETSTANDARD)
 using System.Linq;
 #endif
@@ -22,7 +23,9 @@ namespace XPatchLib
         /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
         internal DivideObject(ITextWriter pWriter, TypeExtend pType)
-            : base(pWriter, pType) { }
+            : base(pWriter, pType)
+        {
+        }
 
         #endregion Internal Constructors
 
@@ -75,20 +78,23 @@ namespace XPatchLib
                     }
 #endif
                     divide = new DivideBasic(Writer,
-                        TypeExtendContainer.GetTypeExtend(Writer.Setting, memberType, Writer.IgnoreAttributeType,
+                        TypeExtendContainer.GetTypeExtend(Writer.Setting, memberType,
+                            Writer.Setting.IgnoreAttributeType,
                             Type, member.MemberInfo));
                 }
                 //集合类型
                 else if (member.IsIEnumerable)
                 {
                     divide = new DivideIEnumerable(Writer,
-                        TypeExtendContainer.GetTypeExtend(Writer.Setting, memberType, Writer.IgnoreAttributeType,
+                        TypeExtendContainer.GetTypeExtend(Writer.Setting, memberType,
+                            Writer.Setting.IgnoreAttributeType,
                             Type, member.MemberInfo));
                 }
                 else
                 {
                     divide = new DivideCore(Writer,
-                        TypeExtendContainer.GetTypeExtend(Writer.Setting, memberType, Writer.IgnoreAttributeType,
+                        TypeExtendContainer.GetTypeExtend(Writer.Setting, memberType,
+                            Writer.Setting.IgnoreAttributeType,
                             Type, member.MemberInfo));
                 }
 
