@@ -28,12 +28,12 @@ namespace XPatchLib.UnitTest.ForXml
             dic.TryAdd("KEY", null);
 
             string output = DoSerializer_Divide(null, dic);
-//            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
-//<ConcurrentDictionary_String_String>
-//  <KeyValuePair_String_String Action=""Add"">
-//    <Key>KEY</Key>
-//  </KeyValuePair_String_String>
-//</ConcurrentDictionary_String_String>", output);
+            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<ConcurrentDictionary_String_String>
+  <KeyValuePair_String_String Action=""Add"">
+    <Key>KEY</Key>
+  </KeyValuePair_String_String>
+</ConcurrentDictionary_String_String>", output);
             LogHelper.Debug(output);
 
             ConcurrentDictionary<string, string> dic_1 = DoSerializer_Combie<ConcurrentDictionary<string, string>>(output, null);
@@ -57,20 +57,20 @@ namespace XPatchLib.UnitTest.ForXml
             dic_2.TryAdd("4", "D");
 
             string output = DoSerializer_Divide(dic_1, dic_2);
-//            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
-//<ConcurrentDictionary_String_String>
-//  <KeyValuePair_String_String Action=""Remove"">
-//    <Key>3</Key>
-//  </KeyValuePair_String_String>
-//  <KeyValuePair_String_String>
-//    <Key>2</Key>
-//    <Value>F</Value>
-//  </KeyValuePair_String_String>
-//  <KeyValuePair_String_String Action=""Add"">
-//    <Key>4</Key>
-//    <Value>D</Value>
-//  </KeyValuePair_String_String>
-//</ConcurrentDictionary_String_String>", output);
+            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<ConcurrentDictionary_String_String>
+  <KeyValuePair_String_String Action=""Remove"">
+    <Key>3</Key>
+  </KeyValuePair_String_String>
+  <KeyValuePair_String_String>
+    <Key>2</Key>
+    <Value>F</Value>
+  </KeyValuePair_String_String>
+  <KeyValuePair_String_String Action=""Add"">
+    <Key>4</Key>
+    <Value>D</Value>
+  </KeyValuePair_String_String>
+</ConcurrentDictionary_String_String>", output);
             LogHelper.Debug(output);
 
             ConcurrentDictionary<string, string> dic_3 =
@@ -90,10 +90,10 @@ namespace XPatchLib.UnitTest.ForXml
             queue1.Enqueue(1);
 
             string output = DoSerializer_Divide(null, queue1);
-//            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
-//<ConcurrentQueue_Int32>
-//  <Int32 Action=""Add"">1</Int32>
-//</ConcurrentQueue_Int32>", output);
+            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<ConcurrentQueue_Int32>
+  <Int32 Action=""Add"">1</Int32>
+</ConcurrentQueue_Int32>", output);
             LogHelper.Debug(output);
 
             ConcurrentQueue<int> queue2 =
@@ -109,10 +109,10 @@ namespace XPatchLib.UnitTest.ForXml
             bag1.Add(1);
 
             string output = DoSerializer_Divide(null, bag1);
-//            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
-//<ConcurrentBag_Int32>
-//  <Int32 Action=""Add"">1</Int32>
-//</ConcurrentBag_Int32>", output);
+            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<ConcurrentBag_Int32>
+  <Int32 Action=""Add"">1</Int32>
+</ConcurrentBag_Int32>", output);
             LogHelper.Debug(output);
 
             ConcurrentBag<int> bag2 =
@@ -142,10 +142,10 @@ namespace XPatchLib.UnitTest.ForXml
             stack1.Push(1);
 
             string output = DoSerializer_Divide(null, stack1);
-//            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
-//<ConcurrentStack_Int32>
-//  <Int32 Action=""Add"">1</Int32>
-//</ConcurrentStack_Int32>", output);
+            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<ConcurrentStack_Int32>
+  <Int32 Action=""Add"">1</Int32>
+</ConcurrentStack_Int32>", output);
             LogHelper.Debug(output);
 
             ConcurrentStack<int> stack2 =
