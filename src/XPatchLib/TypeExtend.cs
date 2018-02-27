@@ -16,7 +16,6 @@ using XPatchLib.NoLinq;
 #endif
 #if NET || NETSTANDARD_2_0_UP
 using System.Runtime.Serialization;
-
 #endif
 
 namespace XPatchLib
@@ -53,6 +52,14 @@ namespace XPatchLib
         public Boolean IsConcurrentDictionary { get; private set; }
 
         public Boolean IsNullable { get; }
+
+#if NET || NETSTANDARD_1_3_UP
+        public Boolean IsFileSystemInfo { get; private set; }
+#endif
+
+#if NET || NETSTANDARD_2_0_UP
+        public Boolean IsDriveInfo { get; private set; }
+#endif
 
         private readonly Type NullableType;
 
@@ -177,6 +184,14 @@ namespace XPatchLib
                 };
                 FieldsToBeSerialized = members.OrderBy(x => x.Name).ToArray();
             }
+
+#if NET || NETSTANDARD_1_3_UP
+            IsFileSystemInfo = ReflectionUtils.IsFileSystemInfo(pType);
+#endif
+
+#if NET || NETSTANDARD_2_0_UP
+            IsDriveInfo = ReflectionUtils.IsDriveInfo(pType);
+#endif
 
             string errorPrimaryKeyName = string.Empty;
             if (!CheckPrimaryKeyAttribute(false, out errorPrimaryKeyName))

@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 #if (NET || NETSTANDARD_2_0_UP)
@@ -290,6 +291,20 @@ namespace XPatchLib
             }
             return result;
         }
+
+#if NET || NETSTANDARD_1_3_UP
+        internal static bool IsFileSystemInfo(Type type)
+        {
+            return type.BaseType() == typeof(FileSystemInfo) || type == typeof(FileSystemInfo);
+        }
+#endif
+
+#if NET || NETSTANDARD_2_0_UP
+        internal static bool IsDriveInfo(Type type)
+        {
+            return type == typeof(DriveInfo);
+        }
+#endif
 
         internal static bool IsICollection(Type type, Type[] interfaces)
         {

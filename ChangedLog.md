@@ -1,3 +1,7 @@
+#### 4.0.2.4
+
+* 修正 - 修正 `FileInfo`、`DriviInfo`、`DirectoryInfo` 的问题。
+
 #### 4.0.2.3
 
 * 重构 - `Serializer` 增加 `IDisposable` 接口。 

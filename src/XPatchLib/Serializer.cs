@@ -252,6 +252,9 @@ namespace XPatchLib
                 //如果是ISerializable接口派生类，则不主动创建实例
                 if (!_type.IsISerializable)
 #endif
+#if NET|| NETSTANDARD_1_3_UP
+                if(!_type.IsFileSystemInfo)
+#endif
                     cloneObjValue = _type.CreateInstance();
             }
 

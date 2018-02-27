@@ -34,7 +34,13 @@ namespace XPatchLib
                         result = new CombineIEnumerable(pType);
                     else if (pType.IsGenericType && pType.OriType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
                         result = new CombineKeyValuePair(pType);
+#if NET || NETSTANDARD_1_3_UP
+                    else if (pType.IsFileSystemInfo)
+                        result=new CombineFileSystemInfo(pType);
+#endif
 #if NET || NETSTANDARD_2_0_UP
+                    else if (pType.IsDriveInfo)
+                        result = new CombineDriveInfo(pType);
                     else if (pType.IsISerializable)
                         result=new CombineISerializable(pType);
 #endif
