@@ -158,6 +158,14 @@ namespace XPatchLib
 #endif
         }
 
+#if NET && !NET_45_UP
+
+        public static object GetValue(this PropertyInfo info,object obj)
+        {
+            return info.GetValue(obj, null);
+        }
+#endif
+
 #if !(NET || NETSTANDARD_2_0_UP)
 
         private static BindingFlags DefaultFlags = BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic;

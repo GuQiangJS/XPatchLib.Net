@@ -220,7 +220,7 @@ namespace XPatchLib
 
         private static object CombineTimeSpan(string pValue)
         {
-            return XmlConvert.ToTimeSpan(pValue);
+            return TimeSpan.Parse(pValue);
         }
 
         private static object CombineDateTimeOffset(string pValue)

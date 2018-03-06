@@ -229,7 +229,7 @@ namespace XPatchLib
                     return XmlConvert.ToString((ushort) (char) pObj);
 
                 case TypeCode.TimeSpan:
-                    return XmlConvert.ToString((TimeSpan)pObj);
+                    return ((TimeSpan)pObj).ToString();
 
                 case TypeCode.DateTimeOffset:
                     return XmlConvert.ToString((DateTimeOffset) pObj);

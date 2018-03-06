@@ -1,3 +1,9 @@
+#### 4.0.2.6
+
+* 重构 - 重构非标准类型的产生增量和合并增量的代码。参考 `Regex` 类型的实现（`CombineOtherObjectBase`、`DivideOtherObjectBase`、`OtherCombineContainer`、`OtherDivideContainer`）。 
+
+* 修正 - 修正 `Regex` 的问题。 
+
 #### 4.0.2.4
 
 * 修正 - 修正 `FileInfo`、`DriviInfo`、`DirectoryInfo` 的问题。

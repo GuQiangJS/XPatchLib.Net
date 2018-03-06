@@ -61,7 +61,7 @@ namespace XPatchLib
                 {
                     WriteParentElementStart(pAttach);
                     Writer.WriteStartObject(pName);
-#if NET40 || NETSTANDARD_2_0_UP
+#if NET_40_UP || NETSTANDARD_2_0_UP
                     WriteAssemby(Type);
 #endif
                     Writer.WriteActionAttribute(Action.SetNull);
@@ -154,13 +154,13 @@ namespace XPatchLib
             }
             finally
             {
-#if NET40 || NETSTANDARD_2_0_UP
+#if NET_40_UP || NETSTANDARD_2_0_UP
                 WriteAssemby(pType);
 #endif
             }
         }
 
-#if NET40 || NETSTANDARD_2_0_UP
+#if NET_40_UP || NETSTANDARD_2_0_UP
         /// <summary>
         /// 将当前类型的程序集限定名称作为属性写入
         /// </summary>
@@ -185,7 +185,7 @@ namespace XPatchLib
         /// 从作为参数指定的增量产生器中复制设置。
         /// </summary>
         /// <param name="item">将其设置复制到当前对象。</param>
-        internal virtual void Assign(DivideBase item)
+        public virtual void Assign(DivideBase item)
         {
             objectsInUse = item.objectsInUse;
         }

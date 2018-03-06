@@ -368,30 +368,11 @@ namespace XPatchLib
                         return Array.CreateInstance(elementType, 0);
                     throw new NotImplementedException();
                 }
-                ConstructorInfo constructorInfo = null;
-                Type[] ts = args != null ? new Type[args.Length] : new Type[0];
-                if (args != null && args.Length > 0)
-                    for (int i = 0; i < args.Length; i++)
-                        ts[i] = args[i] != null ? args[i].GetType() : typeof(object);
-                BindingFlags flags = BindingFlags.NonPublic | BindingFlags.CreateInstance |
-                                     BindingFlags.Instance | BindingFlags.Public;
-                constructorInfo = (IsNullable ? NullableType : OriType).GetConstructor(flags, null, ts, null);
-#if (NET || NETSTANDARD_2_0_UP)
-                if (constructorInfo != null)
-                    return constructorInfo.Invoke(args);
-                return Activator.CreateInstance(IsNullable ? NullableType : OriType, args);
-#else
-                if (constructorInfo != null)
-                {
-                    ClrHelper.MethodCall<object, object> call =
-                        (IsNullable ? NullableType : OriType).CreateMethodCall<object>(constructorInfo);
-                    return call.Invoke(null, args);
-                }
-                return Activator.CreateInstance(IsNullable ? NullableType : OriType, args);
-#endif
+                return TypeHelper.CreateInstance(IsNullable ? NullableType : OriType, args);
             }
             return null;
         }
+
 
         internal T GetCustomAttribute<T>() where T : Attribute
         {

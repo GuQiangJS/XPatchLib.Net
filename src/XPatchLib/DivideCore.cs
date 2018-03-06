@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using XPatchLib.Others;
 
 namespace XPatchLib
 {
@@ -56,32 +57,35 @@ namespace XPatchLib
         protected override bool DivideAction(string pName, object pOriObject, object pRevObject,
             DivideAttachment pAttach = null)
         {
-            DivideBase divide;
+            IDivide divide;
 
-            if (Type.IsBasicType)
-                divide = new DivideBasic(Writer, Type);
-            else if (Type.IsIDictionary)
-                divide = new DivideIDictionary(Writer, Type);
-            else if (Type.IsIEnumerable)
-                divide = new DivideIEnumerable(Writer, Type);
-            else if (Type.IsGenericType && Type.OriType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
-                divide = new DivideKeyValuePair(Writer, Type);
+            if (!OtherDivideContainer.TryGet(Writer, Type, out divide))
+            {
+                if (Type.IsBasicType)
+                    divide = new DivideBasic(Writer, Type);
+                else if (Type.IsIDictionary)
+                    divide = new DivideIDictionary(Writer, Type);
+                else if (Type.IsIEnumerable)
+                    divide = new DivideIEnumerable(Writer, Type);
+                else if (Type.IsGenericType && Type.OriType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+                    divide = new DivideKeyValuePair(Writer, Type);
 #if NET || NETSTANDARD_1_3_UP
-            else if (Type.IsFileSystemInfo)
-                divide = new DivideFileSystemInfo(Writer, Type);
+                else if (Type.IsFileSystemInfo)
+                    divide = new DivideFileSystemInfo(Writer, Type);
 #endif
 #if NET || NETSTANDARD_2_0_UP
-            else if (Type.IsDriveInfo)
-                divide = new DivideDriveInfo(Writer, Type);
-            else if (Type.IsISerializable)
-                divide=new DivideISerializable(Writer,Type);
+                else if (Type.IsDriveInfo)
+                    divide = new DivideDriveInfo(Writer, Type);
+                else if (Type.IsISerializable)
+                    divide = new DivideISerializable(Writer, Type);
 #endif
 #if NET_40_UP || NETSTANDARD_2_0_UP
             else if (Type.IsDynamicObject)
                 divide = new DivideDynamic(Writer, Type);
 #endif
-            else
-                divide = new DivideObject(Writer, Type);
+                else
+                    divide = new DivideObject(Writer, Type);
+            }
 
             divide.Assign(this);
             return divide.Divide(pName, pOriObject, pRevObject, pAttach);

@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Xml;
-
+using XPatchLib.Others;
 #if (NET_35_UP || NETSTANDARD)
 using System.Xml.Linq;
 #endif
@@ -68,11 +68,11 @@ namespace XPatchLib
         /// </summary>
         /// <param name="pType">此 <see cref="Serializer" /> 可序列化的对象的类型。</param>
         /// <exception cref="ArgumentNullException"><paramref name="pType" /> 为 <c>null</c> 时。</exception>
-        public Serializer(Type pType) : this(pType, true, true)
+        public Serializer(Type pType) : this(pType, true, true, true, true)
         {
         }
 
-        private Serializer(Type pType, bool pClearTypeExtends, bool pClearKeyAttributes)
+        private Serializer(Type pType, bool pClearTypeExtends, bool pClearKeyAttributes,bool pClearOtherDivideInstances,bool pClearOtherCombineInstances)
         {
             if (pType == null)
                 throw new ArgumentNullException(nameof(pType));
@@ -91,6 +91,14 @@ namespace XPatchLib
             else if (pClearKeyAttributes)
             {
                 TypeExtendContainer.ClearKeyAttributes();
+            }
+            if (pClearOtherCombineInstances)
+            {
+                OtherCombineContainer.ClearInstances();
+            }
+            if (pClearOtherDivideInstances)
+            {
+                OtherDivideContainer.ClearInstances();
             }
             _initialType = pType;
         }
@@ -211,7 +219,7 @@ namespace XPatchLib
                             writer.Setting.IgnoreAttributeType = null;
                             writer.Setting = pReader.Setting.Clone() as ISerializeSetting;
                             writer.Setting.SerializeDefalutValue = true;
-                            new Serializer(_initialType, true, false).Divide(writer, null, pOriValue);
+                            new Serializer(_initialType, true, false, true, true).Divide(writer, null, pOriValue);
 #if DEBUG
                             stream.Position = 0;
                             try
@@ -235,7 +243,7 @@ namespace XPatchLib
                             {
                                 reader.Setting = pReader.Setting.Clone() as ISerializeSetting;
                                 cloneObjValue =
-                                    new Serializer(_initialType, true, false).Combine(reader, null, true);
+                                    new Serializer(_initialType, true, false, true, true).Combine(reader, null, true);
                             }
                         }
                     }

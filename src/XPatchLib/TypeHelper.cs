@@ -1,6 +1,9 @@
 ﻿// Copyright © 2013-2017 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Reflection;
+
 namespace XPatchLib
 {
     /// <summary>
@@ -8,70 +11,28 @@ namespace XPatchLib
     /// </summary>
     internal static class TypeHelper
     {
-        #region Internal Methods
-
-        ///// <summary>
-        ///// 检测类型上的PrimaryKeyAttribute特性是否符合要求。
-        ///// </summary>
-        ///// <param name="pType">
-        ///// 待检测的类型。
-        ///// </param>
-        ///// <param name="pCheckAttributeExists">
-        ///// 是否强制要求类型必须设定PrimaryKeyAttribute特性。
-        ///// </param>
-        //internal static Boolean CheckPrimaryKeyAttribute(this Type pType, bool pCheckAttributeExists)
-        //{
-        //    string errorPrimaryKeyName = string.Empty;
-        //    return CheckPrimaryKeyAttribute(pType, pCheckAttributeExists, out errorPrimaryKeyName);
-        //}
-
-
-        ///// <summary>
-        ///// 创建类型实例。 
-        ///// </summary>
-        ///// <param name="pType">
-        ///// </param>
-        ///// <returns>
-        ///// </returns>
-        //internal static Object CreateInstance(this Type pType)
-        //{
-        //    if (ReflectionUtils.IsBasicType(pType))
-        //    {
-        //        if (pType.IsValueType)
-        //        {
-        //            return pType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0], CultureInfo.InvariantCulture);
-        //        }
-        //        else if (pType == typeof(string))
-        //        {
-        //            return string.Empty;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (ReflectionUtils.IsArray(pType))
-        //        {
-        //            Type elementType;
-        //            if (ReflectionUtils.TryGetArrayElementType(pType, out elementType))
-        //            {
-        //                return Array.CreateInstance(elementType, 0);
-        //            }
-        //            throw new NotImplementedException();
-        //        }
-        //        else
-        //        {
-        //            try
-        //            {
-        //                return pType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0], CultureInfo.InvariantCulture);
-        //            }
-        //            catch (MissingMethodException)
-        //            {
-        //                return Activator.CreateInstance(pType, true);
-        //            }
-        //        }
-        //    }
-        //    return null;
-        //}
-
-        #endregion Internal Methods
+        internal static Object CreateInstance(Type t, params object[] args)
+        {
+            ConstructorInfo constructorInfo = null;
+            Type[] ts = args != null ? new Type[args.Length] : new Type[0];
+            if (args != null && args.Length > 0)
+                for (int i = 0; i < args.Length; i++)
+                    ts[i] = args[i] != null ? args[i].GetType() : typeof(object);
+            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.CreateInstance |
+                                 BindingFlags.Instance | BindingFlags.Public;
+            constructorInfo = t.GetConstructor(flags, null, ts, null);
+#if (NET || NETSTANDARD_2_0_UP)
+            if (constructorInfo != null)
+                return constructorInfo.Invoke(args);
+            return Activator.CreateInstance(t, args);
+#else
+                if (constructorInfo != null)
+                {
+                    ClrHelper.MethodCall<object, object> call = t.CreateMethodCall<object>(constructorInfo);
+                    return call.Invoke(null, args);
+                }
+                return Activator.CreateInstance(t, args);
+#endif
+        }
     }
 }

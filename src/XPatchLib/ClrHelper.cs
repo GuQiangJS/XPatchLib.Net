@@ -32,6 +32,8 @@ namespace XPatchLib
 #endif
             if (emptyConstructor == null)
                 return null;
+            if (!emptyConstructor.IsPublic)
+                return null;
 #if NET
             var dynamicMethod = new DynamicMethod("CreateInstance", pType, Type.EmptyTypes, true);
             ILGenerator ilGenerator = dynamicMethod.GetILGenerator();

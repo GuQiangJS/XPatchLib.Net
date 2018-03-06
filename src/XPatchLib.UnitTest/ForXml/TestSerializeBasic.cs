@@ -100,7 +100,7 @@ namespace XPatchLib.UnitTest.ForXml
                 "</DateTime>",
                 "<Guid>" + XmlConvert.ToString(g2) + "</Guid>",
                 "<Char>" + XmlConvert.ToString((ushort) 'b') + "</Char>",
-                "<TimeSpan>" + XmlConvert.ToString(TimeSpan.MaxValue) + "</TimeSpan>",
+                "<TimeSpan>" + TimeSpan.MaxValue.ToString() + "</TimeSpan>",
                 "<DateTimeOffset>" + XmlConvert.ToString(DateTimeOffset.MaxValue) + "</DateTimeOffset>"
 #if NET_40_UP || NETSTANDARD_1_1_UP
                 , "<BigInteger>" + System.Numerics.BigInteger.MinusOne.ToString(CultureInfo.InvariantCulture) + "</BigInteger>"
@@ -135,7 +135,7 @@ namespace XPatchLib.UnitTest.ForXml
                 "</DateTime>",
                 "<Guid>" + XmlConvert.ToString(Guid.Empty) + "</Guid>",
                 "<Char>" + XmlConvert.ToString((ushort) '\0') + "</Char>",
-                "<TimeSpan>" + XmlConvert.ToString(TimeSpan.Zero) + "</TimeSpan>",
+                "<TimeSpan>" + TimeSpan.Zero.ToString() + "</TimeSpan>",
                 "<DateTimeOffset>" +
                 XmlConvert.ToString((DateTimeOffset) ReflectionUtils.GetDefaultValue(typeof(DateTimeOffset))) +
                 "</DateTimeOffset>"

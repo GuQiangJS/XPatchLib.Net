@@ -24,5 +24,12 @@ namespace XPatchLib
         /// <param name="pAttach">生成增量时可能用到的附件。</param>
         /// <returns>返回是否成功写入内容。如果成功写入返回 <c>true</c> ，否则返回 <c>false</c> 。</returns>
         Boolean Divide(string pName, Object pOriObject, Object pRevObject, DivideAttachment pAttach);
+
+
+        /// <summary>
+        /// 从作为参数指定的增量产生器中复制设置。
+        /// </summary>
+        /// <param name="item">将其设置复制到当前对象。</param>
+        void Assign(DivideBase item);
     }
 }
