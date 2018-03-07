@@ -9,8 +9,8 @@ namespace XPatchLib
 {
     internal static class CombineInstanceContainer
     {
-        private static readonly Dictionary<Type, ICombineBase> InnerDic =
-            new Dictionary<Type, ICombineBase>();
+        private static readonly Dictionary<Type, ICombine> InnerDic =
+            new Dictionary<Type, ICombine>();
 
         internal static void Clear()
         {
@@ -20,9 +20,9 @@ namespace XPatchLib
             }
         }
 
-        internal static ICombineBase GetCombineInstance(TypeExtend pType)
+        internal static ICombine GetCombineInstance(TypeExtend pType)
         {
-            ICombineBase result = null;
+            ICombine result = null;
             lock (InnerDic)
             {
                 if (!InnerDic.TryGetValue(pType.OriType, out result))

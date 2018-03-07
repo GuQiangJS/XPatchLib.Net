@@ -8,7 +8,7 @@ namespace XPatchLib.Others
     internal static class OtherCombineContainer
     {
         private static Dictionary<Type, Type> _innerDic = new Dictionary<Type, Type>();
-        private static Dictionary<Type, ICombineBase> _instanceDic = new Dictionary<Type, ICombineBase>();
+        private static Dictionary<Type, ICombine> _instanceDic = new Dictionary<Type, ICombine>();
 
 
         static OtherCombineContainer()
@@ -36,7 +36,7 @@ namespace XPatchLib.Others
             }
         }
 
-        internal static bool TryGet(TypeExtend pType, out ICombineBase instance)
+        internal static bool TryGet(TypeExtend pType, out ICombine instance)
         {
             instance = null;
             lock (_instanceDic)
@@ -48,7 +48,7 @@ namespace XPatchLib.Others
                     {
                         if (_innerDic.TryGetValue(pType.OriType, out t))
                         {
-                            instance = TypeHelper.CreateInstance(t, pType) as ICombineBase;
+                            instance = TypeHelper.CreateInstance(t, pType) as ICombine;
                             _instanceDic.Add(pType.OriType, instance);
                         }
                     }

@@ -1,3 +1,7 @@
+#### 4.0.2.4
+
+* 重构 - `ICombine` 接口 更名为 `ICombine`。
+
 #### 4.0.2.6
 
 * 重构 - 重构非标准类型的产生增量和合并增量的代码。参考 `Regex` 类型的实现（`CombineOtherObjectBase`、`DivideOtherObjectBase`、`OtherCombineContainer`、`OtherDivideContainer`）。 

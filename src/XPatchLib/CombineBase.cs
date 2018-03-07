@@ -11,7 +11,7 @@ namespace XPatchLib
     /// <summary>
     ///     增量内容文档合并基础类。
     /// </summary>
-    internal abstract class CombineBase:ICombineBase
+    internal abstract class CombineBase:ICombine
     {
         /// <summary>
         ///     根据增量内容创建基础类型实例。
