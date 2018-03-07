@@ -1,4 +1,4 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 #if NET_40_UP || NETSTANDARD_2_0_UP
@@ -12,20 +12,75 @@ using System.Linq;
 
 namespace XPatchLib
 {
-    /// <summary>
-    ///     动态类型增量内容产生类。
-    /// </summary>
-    /// <seealso cref="XPatchLib.DivideBase" />
-    internal class CombineDynamic : CombineObject
+    internal class ConverterDynamic : ConverterObject
     {
-        /// <summary>
-        ///     使用指定的类型初始化 <see cref="CombineDynamic" /> 类的新实例。
-        /// </summary>
-        /// <param name="pType">
-        ///     指定的类型。
-        /// </param>
-        public CombineDynamic(TypeExtend pType) : base(pType)
+        internal ConverterDynamic(ITextWriter pWriter, TypeExtend pType) : base(pWriter, pType)
         {
+        }
+
+        internal ConverterDynamic(TypeExtend pType) : base(pType)
+        {
+        }
+
+        protected override bool DivideAction(string pName, object pOriObject, object pRevObject,
+            DivideAttachment pAttach = null)
+        {
+            var result = base.DivideAction(pName, pOriObject, pRevObject, pAttach);
+
+            DynamicObject oriObj = pOriObject as DynamicObject;
+            DynamicObject revObj = pRevObject as DynamicObject;
+
+            List<string> names =
+                new[] {oriObj, revObj}.GetMembers(Type.FieldsToBeSerialized.Select(x => x.Name)
+                    .ToArray());
+
+            foreach (string name in names)
+            {
+                object oriValue = oriObj.GetMemberValue(name);
+                object revValue = revObj.GetMemberValue(name);
+                Type memberType = GetType(oriValue, revValue);
+
+                TypeExtend t =
+                    TypeExtendContainer.GetTypeExtend(Writer.Setting, memberType, Writer.Setting.IgnoreAttributeType,
+                        Type);
+
+                ConverterBase d = new ConverterCore(Writer, t);
+                d.Assign(this);
+
+                if (pAttach == null)
+                    pAttach = new DivideAttachment();
+                if (!result)
+                {
+                    ParentObject parentObject = new ParentObject(pName, pOriObject, Type);
+                    if (pAttach.ParentQuere.Count <= 0 || !pAttach.ParentQuere.Last().Equals(parentObject))
+                    {
+                        //将当前节点加入附件中，如果遇到子节点被写入前，会首先根据队列先进先出写入附件中的节点的开始标记
+                        //只有当没有写入过的情况下才需要写入父节点
+                        pAttach.ParentQuere.Enqueue(new ParentObject(pName, pOriObject, Type)
+                        {
+                            Action = pAttach.CurrentAction
+                        });
+                        pAttach.CurrentAction = Action.Edit;
+                    }
+                }
+
+                var childResult = d.Divide(name, oriValue, revValue, pAttach);
+                if (!result)
+                    result = childResult;
+            }
+
+            return result;
+        }
+
+        private Type GetType(params object[] o)
+        {
+            foreach (object dynamicObject in o)
+            {
+                if (dynamicObject == null) continue;
+                return dynamicObject.GetType();
+            }
+
+            return typeof(object);
         }
 
         protected override object CombineAction(ITextReader pReader, object pOriObject, string pName)
@@ -37,7 +92,7 @@ namespace XPatchLib
             DynamicObject oriValue = pOriObject as DynamicObject;
 
             List<string> names =
-                new DynamicObject[] { oriValue }.GetMembers(Type.FieldsToBeSerialized.Select(x => x.Name)
+                new[] {oriValue}.GetMembers(Type.FieldsToBeSerialized.Select(x => x.Name)
                     .ToArray());
 
             while (!pReader.EOF)
@@ -81,10 +136,8 @@ namespace XPatchLib
                         assembly = curAttrs[i, 1];
                         continue;
                     }
-                    if (curAttrs[i, 0] == pReader.Setting.ActionName)
-                    {
-                        ActionHelper.TryParse(curAttrs[i, 1], out action);
-                    }
+
+                    if (curAttrs[i, 0] == pReader.Setting.ActionName) ActionHelper.TryParse(curAttrs[i, 1], out action);
                 }
 
                 if (string.IsNullOrEmpty(assembly))
@@ -104,11 +157,8 @@ namespace XPatchLib
                     if (oriValue != null)
                         if (action != Action.SetNull)
                         {
-                            object memberObj=null;
-                            if (names.Contains(pReader.Name))
-                            {
-                                memberObj = oriValue.GetMemberValue(pReader.Name);
-                            }
+                            object memberObj = null;
+                            if (names.Contains(pReader.Name)) memberObj = oriValue.GetMemberValue(pReader.Name);
                             oriValue.SetMemberValue(pReader.Name, CombineInstanceContainer
                                 .GetCombineInstance(
                                     TypeExtendContainer.GetTypeExtend(pReader.Setting, memberType, null, Type))
@@ -121,14 +171,13 @@ namespace XPatchLib
 
                     while (!(curName == pReader.Name && (pReader.NodeType == NodeType.EndElement ||
                                                          pReader.NodeType == NodeType.FullElement)))
-                    {
                         pReader.Read();
-                    }
                 }
 
                 //如果不是当前正在读取的节点的结束标记，就一直往下读
                 pReader.Read();
             }
+
             return pOriObject;
         }
     }

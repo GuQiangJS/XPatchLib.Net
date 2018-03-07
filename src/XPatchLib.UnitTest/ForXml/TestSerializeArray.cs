@@ -32,7 +32,7 @@ namespace XPatchLib.UnitTest.ForXml
         {
             try
             {
-                new CombineIEnumerable(new TypeExtend(DefaultXmlSerializeSetting, typeof(AuthorClass), null));
+                new ConverterIEnumerable(new TypeExtend(DefaultXmlSerializeSetting, typeof(AuthorClass), null));
                 Assert.Fail("未能抛出ArgumentOutOfRangeException异常");
             }
             catch (ArgumentOutOfRangeException ex)
@@ -51,7 +51,7 @@ namespace XPatchLib.UnitTest.ForXml
         {
             try
             {
-                new CombineIEnumerable(new TypeExtend(DefaultXmlSerializeSetting, typeof(List<AuthorClass>), null));
+                new ConverterIEnumerable(new TypeExtend(DefaultXmlSerializeSetting, typeof(List<AuthorClass>), null));
                 Assert.Fail("未能抛出AttributeMissException异常");
             }
             catch (AttributeMissException ex)
@@ -249,7 +249,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = CreateWriter(new StringBuilder()))
                 {
-                    new DivideIEnumerable(writer, new TypeExtend(DefaultXmlSerializeSetting, typeof(AuthorClass), writer.Setting.IgnoreAttributeType));
+                    new ConverterIEnumerable(writer, new TypeExtend(DefaultXmlSerializeSetting, typeof(AuthorClass), writer.Setting.IgnoreAttributeType));
                 }
                 Assert.Fail("未能抛出ArgumentOutOfRangeException异常");
             }

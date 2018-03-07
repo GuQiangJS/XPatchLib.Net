@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using XPatchLib.Others;
 
 namespace XPatchLib
 {
@@ -27,33 +26,27 @@ namespace XPatchLib
             {
                 if (!InnerDic.TryGetValue(pType.OriType, out result))
                 {
-                    if (!OtherCombineContainer.TryGet(pType, out result))
+                    if (!OtherConverterContainer.TryGetCombine(pType, out result))
                     {
                         if (pType.IsBasicType)
-                            result = new CombineBasic(pType);
+                            result = new ConverterBasic(pType);
                         else if (pType.IsIDictionary)
-                            result = new CombineIDictionary(pType);
+                            result = new ConverterIDictionary(pType);
                         else if (pType.IsIEnumerable)
-                            result = new CombineIEnumerable(pType);
+                            result = new ConverterIEnumerable(pType);
                         else if (pType.IsGenericType &&
                                  pType.OriType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
-                            result = new CombineKeyValuePair(pType);
-#if NET || NETSTANDARD_1_3_UP
-                        else if (pType.IsFileSystemInfo)
-                            result = new CombineFileSystemInfo(pType);
-#endif
+                            result = new ConverterKeyValuePair(pType);
 #if NET || NETSTANDARD_2_0_UP
-                        else if (pType.IsDriveInfo)
-                            result = new CombineDriveInfo(pType);
                         else if (pType.IsISerializable)
-                            result = new CombineISerializable(pType);
+                            result = new ConverterISerializable(pType);
 #endif
 #if NET_40_UP || NETSTANDARD_2_0_UP
                     else if (pType.IsDynamicObject)
-                        result = new CombineDynamic(pType);
+                        result = new ConverterDynamic(pType);
 #endif
                         else
-                            result = new CombineObject(pType);
+                            result = new ConverterObject(pType);
                     }
 
                     lock (InnerDic)

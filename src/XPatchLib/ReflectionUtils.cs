@@ -273,7 +273,8 @@ namespace XPatchLib
             bool result = false;
             if (pType == typeof(string) || pType.IsPrimitive() || pType.IsEnum() || pType == typeof(DateTime) ||
                 pType == typeof(decimal) ||
-                pType == typeof(Guid)
+                pType == typeof(Guid) || 
+                pType == typeof(TimeSpan)
 #if (NET || NETSTANDARD_2_0_UP)
                 || pType == typeof(Color)
 #endif

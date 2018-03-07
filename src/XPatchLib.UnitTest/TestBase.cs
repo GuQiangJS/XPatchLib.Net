@@ -215,7 +215,7 @@ namespace XPatchLib.UnitTest
             using (var reader = new XmlTextReader(new StringReader(context)))
             {
                 return
-                    new CombineBasic(new TypeExtend(DefaultXmlSerializeSetting,type, null)).Combine(reader, expected,
+                    new ConverterBasic(new TypeExtend(DefaultXmlSerializeSetting,type, null)).Combine(reader, expected,
                         ReflectionUtils.GetTypeFriendlyName(type));
             }
         }
@@ -225,7 +225,7 @@ namespace XPatchLib.UnitTest
             using (var reader = new XmlTextReader(new StringReader(context)))
             {
                 return
-                    new CombineBasic(new TypeExtend(DefaultXmlSerializeSetting,typeof(T), null)).Combine(reader, expected,
+                    new ConverterBasic(new TypeExtend(DefaultXmlSerializeSetting,typeof(T), null)).Combine(reader, expected,
                         ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
             }
         }
@@ -235,7 +235,7 @@ namespace XPatchLib.UnitTest
             using (var reader = new XmlTextReader(new StringReader(context)))
             {
                 return
-                    new CombineObject(new TypeExtend(DefaultXmlSerializeSetting,type, null)).Combine(reader, expected,
+                    new ConverterObject(new TypeExtend(DefaultXmlSerializeSetting,type, null)).Combine(reader, expected,
                         ReflectionUtils.GetTypeFriendlyName(type));
             }
         }
@@ -245,7 +245,7 @@ namespace XPatchLib.UnitTest
             using (var reader = new XmlTextReader(new StringReader(context)))
             {
                 return
-                    new CombineObject(new TypeExtend(DefaultXmlSerializeSetting, typeof(T), null)).Combine(reader, expected,
+                    new ConverterObject(new TypeExtend(DefaultXmlSerializeSetting, typeof(T), null)).Combine(reader, expected,
                         ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
             }
         }
@@ -255,7 +255,7 @@ namespace XPatchLib.UnitTest
             using (var reader = new XmlTextReader(new StringReader(context)))
             {
                 return
-                    new CombineCore(new TypeExtend(DefaultXmlSerializeSetting, typeof(T), null)).Combine(reader, expected,
+                    new ConverterCore(new TypeExtend(DefaultXmlSerializeSetting, typeof(T), null)).Combine(reader, expected,
                         ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
             }
         }
@@ -271,7 +271,7 @@ namespace XPatchLib.UnitTest
             using (var writer = CreateWriter(result))
             {
                 TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(DefaultXmlSerializeSetting, typeof(T), null, null);
-                var serializer = new DivideBasic(writer, typeExtend);
+                var serializer = new ConverterBasic(writer, typeExtend);
                 bool succeeded = serializer.Divide(typeExtend.TypeFriendlyName, ori, rev);
                 Assert.AreEqual(succeed, succeeded);
             }
@@ -285,7 +285,7 @@ namespace XPatchLib.UnitTest
             using (var writer = CreateWriter(result))
             {
                 TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(DefaultXmlSerializeSetting, typeof(T), null, null);
-                var serializer = new DivideISerializable(writer, typeExtend);
+                var serializer = new ConverterISerializable(writer, typeExtend);
                 bool succeeded = serializer.Divide(typeExtend.TypeFriendlyName, ori, rev);
                 Assert.AreEqual(succeed, succeeded);
             }
@@ -309,7 +309,7 @@ namespace XPatchLib.UnitTest
                     writer.Setting = setting;
                 }
                 TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(DefaultXmlSerializeSetting, type, null, null);
-                var serializer = new DivideBasic(writer, typeExtend);
+                var serializer = new ConverterBasic(writer, typeExtend);
                 bool succeeded = serializer.Divide(typeExtend.TypeFriendlyName, ori, rev);
                 Assert.AreEqual(succeed, succeeded);
             }
@@ -322,7 +322,7 @@ namespace XPatchLib.UnitTest
             using (var writer = CreateWriter(result))
             {
                 TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(DefaultXmlSerializeSetting, typeof(T), null, null);
-                var serializer = new DivideCore(writer, typeExtend);
+                var serializer = new ConverterCore(writer, typeExtend);
                 bool succeeded = serializer.Divide(typeExtend.TypeFriendlyName, ori, rev);
                 Assert.IsTrue(succeeded);
             }
@@ -335,7 +335,7 @@ namespace XPatchLib.UnitTest
             using (var writer = CreateWriter(result))
             {
                 TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(DefaultXmlSerializeSetting, typeof(T), null, null);
-                var serializer = new DivideObject(writer, typeExtend);
+                var serializer = new ConverterObject(writer, typeExtend);
                 bool succeeded = serializer.Divide(typeExtend.TypeFriendlyName, ori, rev);
                 Assert.IsTrue(succeeded);
             }
@@ -348,7 +348,7 @@ namespace XPatchLib.UnitTest
             using (var writer = CreateWriter(result))
             {
                 TypeExtend typeExtend = new TypeExtend(DefaultXmlSerializeSetting, typeof(T), writer.Setting.IgnoreAttributeType);
-                var serializer = new DivideIDictionary(writer, typeExtend);
+                var serializer = new ConverterIDictionary(writer, typeExtend);
                 bool succeeded = serializer.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(T)), ori, rev);
                 Assert.IsTrue(succeeded);
             }
@@ -361,7 +361,7 @@ namespace XPatchLib.UnitTest
             using (var writer = CreateWriter(result))
             {
                 TypeExtend typeExtend = new TypeExtend(DefaultXmlSerializeSetting, typeof(T), writer.Setting.IgnoreAttributeType);
-                var serializer = new DivideKeyValuePair(writer, typeExtend);
+                var serializer = new ConverterKeyValuePair(writer, typeExtend);
                 bool succeeded = serializer.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(T)), ori, rev);
                 Assert.IsTrue(succeeded);
             }
@@ -380,7 +380,7 @@ namespace XPatchLib.UnitTest
                 if (setting != null)
                     writer.Setting = setting;
                 TypeExtend typeExtend = new TypeExtend(DefaultXmlSerializeSetting, typeof(T), writer.Setting.IgnoreAttributeType);
-                var serializer = new DivideIEnumerable(writer, typeExtend);
+                var serializer = new ConverterIEnumerable(writer, typeExtend);
                 bool succeeded = serializer.Divide(ReflectionUtils.GetTypeFriendlyName(typeof(T)), ori, rev);
                 Assert.IsTrue(succeeded);
             }
@@ -443,7 +443,7 @@ namespace XPatchLib.UnitTest
             using (var reader = new XmlTextReader(new StringReader(context)))
             {
                 return
-                    new CombineIDictionary(new TypeExtend(DefaultXmlSerializeSetting, typeof(T), null)).Combine(reader, expected,
+                    new ConverterIDictionary(new TypeExtend(DefaultXmlSerializeSetting, typeof(T), null)).Combine(reader, expected,
                         ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
             }
         }
@@ -461,7 +461,7 @@ namespace XPatchLib.UnitTest
                 if (setting != null)
                     reader.Setting = setting;
                 return
-                    new CombineIEnumerable(new TypeExtend(DefaultXmlSerializeSetting, typeof(T), null)).Combine(reader, expected,
+                    new ConverterIEnumerable(new TypeExtend(DefaultXmlSerializeSetting, typeof(T), null)).Combine(reader, expected,
                         ReflectionUtils.GetTypeFriendlyName(typeof(T))) as T;
             }
         }
@@ -471,7 +471,7 @@ namespace XPatchLib.UnitTest
             using (var reader = new XmlTextReader(new StringReader(context)))
             {
                 return (T)
-                    new CombineKeyValuePair(new TypeExtend(DefaultXmlSerializeSetting, typeof(T), null)).Combine(reader, expected,
+                    new ConverterKeyValuePair(new TypeExtend(DefaultXmlSerializeSetting, typeof(T), null)).Combine(reader, expected,
                         ReflectionUtils.GetTypeFriendlyName(typeof(T)));
             }
         }

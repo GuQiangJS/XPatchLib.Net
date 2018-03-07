@@ -376,7 +376,7 @@ namespace XPatchLib.UnitTest.ForXml
         {
             AuthorClass b1 = AuthorClass.GetSampleInstance();
 
-            CombineObject dser = new CombineObject(new TypeExtend(DefaultXmlSerializeSetting, typeof(AuthorClass), null));
+            ConverterObject dser = new ConverterObject(new TypeExtend(DefaultXmlSerializeSetting, typeof(AuthorClass), null));
             string result = @"<AuthorClass Action=""SetNull"" />";
             
             string context = DoDivideObject_Divide(b1, null);
@@ -394,7 +394,7 @@ namespace XPatchLib.UnitTest.ForXml
         {
             try
             {
-                new CombineObject(new TypeExtend(DefaultXmlSerializeSetting, typeof(ErrorPrimaryKeyDefineClass), null));
+                new ConverterObject(new TypeExtend(DefaultXmlSerializeSetting, typeof(ErrorPrimaryKeyDefineClass), null));
                 Assert.Fail("未能抛出PrimaryKeyException异常");
             }
             catch (PrimaryKeyException ex)
@@ -430,7 +430,7 @@ namespace XPatchLib.UnitTest.ForXml
             {
                 using (ITextWriter writer = CreateWriter(new StringBuilder()))
                 {
-                    new DivideObject(writer,
+                    new ConverterObject(writer,
                         new TypeExtend(DefaultXmlSerializeSetting, typeof(ErrorPrimaryKeyDefineClass), writer.Setting.IgnoreAttributeType));
                 }
                 Assert.Fail("未能抛出PrimaryKeyException异常");

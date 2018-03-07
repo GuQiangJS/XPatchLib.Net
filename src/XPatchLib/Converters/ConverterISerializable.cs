@@ -1,24 +1,32 @@
-﻿// Copyright © 2013-2018 - GuQiang55
+﻿// Copyright © 2013-2018 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 #if NET || NETSTANDARD_2_0_UP
 
+#if !NET_20
+using System.Linq;
+#endif
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.Serialization;
 
 namespace XPatchLib
 {
-    internal class DivideISerializable : DivideBase
+    internal class ConverterISerializable : ConverterBase
     {
         internal static readonly StreamingContext DefaultContext;
 
-        static DivideISerializable()
+        static ConverterISerializable()
         {
             DefaultContext = new StreamingContext();
         }
 
-        public DivideISerializable(ITextWriter pWriter, TypeExtend pType) : base(pWriter, pType)
+        internal ConverterISerializable(ITextWriter pWriter, TypeExtend pType) : base(pWriter, pType)
+        {
+        }
+
+        internal ConverterISerializable(TypeExtend pType) : base(pType)
         {
         }
 
@@ -36,6 +44,7 @@ namespace XPatchLib
                 oriSerializationInfo = new SerializationInfo(Type.OriType, new FormatterConverter(Writer.Setting));
                 oriSerializable.GetObjectData(oriSerializationInfo, DefaultContext);
             }
+
             if (revSerializable != null)
             {
                 revSerializationInfo = new SerializationInfo(Type.OriType, new FormatterConverter(Writer.Setting));
@@ -76,7 +85,7 @@ namespace XPatchLib
                 {
                     TypeExtend typeExtend = TypeExtendContainer.GetTypeExtend(Writer.Setting, revPro.ObjectType,
                         Writer.Setting.IgnoreAttributeType, null);
-                    DivideCore ser = new DivideCore(Writer, typeExtend);
+                    ConverterCore ser = new ConverterCore(Writer, typeExtend);
                     ser.Assign(this);
 
                     s.Enqueue(revPro.Name);
@@ -88,6 +97,7 @@ namespace XPatchLib
                     if (!result)
                         result = b;
                 }
+
             return result;
         }
 
@@ -103,7 +113,43 @@ namespace XPatchLib
                     oriPro = entry;
                     return true;
                 }
+
             return false;
+        }
+
+        protected override object CombineAction(ITextReader pReader, object pOriObject, string pName)
+        {
+            SerializationInfo serializationInfo =
+                new SerializationInfo(Type.OriType, new FormatterConverter(pReader.Setting));
+
+            while (!pReader.EOF)
+            {
+                if (pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase) &&
+                    pReader.NodeType == NodeType.EndElement)
+                    break;
+
+                //pReader.MoveToElement();
+
+                if (string.Equals(pName, pReader.Name))
+                {
+                    pReader.Read();
+                    continue;
+                }
+
+                if (pReader.NodeType == NodeType.Element)
+                {
+                    string proName = pReader.Name;
+                    object newValue =
+                        new ConverterCore(
+                                TypeExtendContainer.GetTypeExtend(pReader.Setting, typeof(string), null, null))
+                            .Combine(pReader, null, proName);
+                    serializationInfo.AddValue(proName, newValue);
+                }
+
+                pReader.Read();
+            }
+
+            return Type.CreateInstance(serializationInfo, DefaultContext);
         }
     }
 }

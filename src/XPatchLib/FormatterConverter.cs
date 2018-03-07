@@ -19,7 +19,7 @@ namespace XPatchLib
 
         private T Convert<T>(TypeCode typeCode, object value)
         {
-            return (T)CombineBasic.CombineAction(typeCode, false, _setting.Mode, value.ToString());
+            return (T)ConverterBasic.CombineAction(typeCode, false, _setting.Mode, value.ToString());
         }
 
         public object Convert(object value, Type type)

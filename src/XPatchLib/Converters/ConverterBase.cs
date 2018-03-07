@@ -1,50 +1,16 @@
-﻿using System;
+﻿// Copyright © 2013-2018 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Xml;
 
 namespace XPatchLib
 {
-    internal abstract class ConverterBase : ICombine, IDivide
+    internal abstract class ConverterBase : IConverter
     {
-        #region Internal Constructors
-
-        /// <summary>
-        ///     使用指定的类型初始化 <see cref="XPatchLib.DivideBase" /> 类的新实例。
-        /// </summary>
-        /// <param name="pWriter">写入器。</param>
-        /// <param name="pType">指定的类型。</param>
-        /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
-        /// <exception cref="ArgumentNullException">当参数 <paramref name="pWriter" /> is null 时。</exception>
-        protected ConverterBase(ITextWriter pWriter, TypeExtend pType):this(pType)
-        {
-            Guard.ArgumentNotNull(pWriter, "pWriter");
-            Writer = pWriter;
-        }
-
-        /// <summary>
-        ///     使用指定的类型初始化 <see cref="XPatchLib.CombineBase" /> 类的新实例。
-        /// </summary>
-        /// <param name="pType">
-        ///     指定的类型。
-        /// </param>
-        internal ConverterBase(TypeExtend pType)
-        {
-            Type = pType;
-
-            if (Type.FieldsToBeSerialized.Length > 0)
-            {
-                _fieldsToBeSerialized = new Dictionary<string, MemberWrapper>(Type.FieldsToBeSerialized.Length);
-                foreach (MemberWrapper mw in Type.FieldsToBeSerialized)
-                {
-                    _fieldsToBeSerialized.Add(mw.Name, mw);
-                }
-            }
-            Attributes = new CombineAttribute(Action.Edit, 0);
-        }
-
-        #endregion Internal Constructors
+        private readonly Dictionary<string, MemberWrapper> _fieldsToBeSerialized;
 
         /// <summary>
         ///     产生增量内容。
@@ -63,11 +29,9 @@ namespace XPatchLib
             if (pRevObject != null && objectsInUse != null)
             {
                 if (objectsInUse.Contains(pRevObject))
-                {
                     throw new InvalidOperationException(
                         ResourceHelper.GetResourceString(LocalizationRes.Exp_String_CircularReference,
                             Type.OriType.FullName));
-                }
                 objectsInUse.Add(pRevObject);
             }
 
@@ -84,6 +48,7 @@ namespace XPatchLib
                     Writer.WriteActionAttribute(Action.SetNull);
                     return result = true;
                 }
+
                 if (!TypeExtend.NeedSerialize(Type.DefaultValue, pOriObject, pRevObject,
                     Writer.Setting.SerializeDefalutValue))
                     return result = false;
@@ -91,12 +56,18 @@ namespace XPatchLib
             }
             finally
             {
-                if (result)
-                {
-                    WriteEnd(pRevObject);
-                }
+                if (result) WriteEnd(pRevObject);
                 objectsInUse.Remove(pRevObject);
             }
+        }
+
+        /// <summary>
+        ///     从作为参数指定的增量产生器中复制设置。
+        /// </summary>
+        /// <param name="item">将其设置复制到当前对象。</param>
+        public virtual void Assign(IDivide item)
+        {
+            objectsInUse = ((ConverterBase) item).objectsInUse;
         }
 
         protected virtual void WriteEnd(Object obj)
@@ -108,17 +79,20 @@ namespace XPatchLib
                     Writer.WriteEndArrayItem();
                     return;
                 }
+
                 if (Type.IsBasicType)
                 {
                     Writer.WriteEndProperty();
                     return;
                 }
+
                 if (Type.IsArray || Type.IsICollection || Type.IsIEnumerable)
                 {
                     Writer.WriteEndArray();
                     return;
                 }
             }
+
             Writer.WriteEndObject();
 #if NET || NETSTANDARD_2_0_UP
             if (Writer.Setting.EnableOnSerializedAttribute)
@@ -151,12 +125,14 @@ namespace XPatchLib
                         Writer.WriteStartArrayItem(pName);
                         return;
                     }
+
                     //string类型也是IsIEnumerable，所以要写在前面
                     if (pType.IsBasicType)
                     {
                         Writer.WriteStartProperty(pName);
                         return;
                     }
+
                     if (pType.IsArray || pType.IsICollection || pType.IsIEnumerable)
                     {
                         Writer.WriteStartArray(pName);
@@ -179,18 +155,16 @@ namespace XPatchLib
 
 #if NET_40_UP || NETSTANDARD_2_0_UP
         /// <summary>
-        /// 将当前类型的程序集限定名称作为属性写入
+        ///     将当前类型的程序集限定名称作为属性写入
         /// </summary>
         /// <param name="pType"></param>
-        /// <remarks>只有在支持 <see cref="System.Dynamic.DynamicObject"/> 时才支持。</remarks>
+        /// <remarks>只有在支持 <see cref="System.Dynamic.DynamicObject" /> 时才支持。</remarks>
         protected virtual void WriteAssemby(TypeExtend pType)
         {
             string v = pType.OriType.AssemblyQualifiedName;
-            if (pType != null && pType.ParentType!=null && pType.ParentType.IsDynamicObject)
-            {
+            if (pType != null && pType.ParentType != null && pType.ParentType.IsDynamicObject)
                 Writer.WriteAttribute(Writer.Setting.AssemblyQualifiedName, v);
-            }
-    }
+        }
 #endif
 
         protected virtual void WriteStart(ParentObject pParentObject)
@@ -199,25 +173,13 @@ namespace XPatchLib
         }
 
         /// <summary>
-        /// 从作为参数指定的增量产生器中复制设置。
-        /// </summary>
-        /// <param name="item">将其设置复制到当前对象。</param>
-        public virtual void Assign(IDivide item)
-        {
-            objectsInUse = ((ConverterBase)item).objectsInUse;
-        }
-
-        /// <summary>
-        /// 判断对象实例是否有循环引用。
+        ///     判断对象实例是否有循环引用。
         /// </summary>
         /// <param name="pObj">待判断的对象实例。</param>
         /// <returns></returns>
         protected bool CheckForCircularReference(object pObj)
         {
-            if (pObj != null && objectsInUse != null)
-            {
-                return objectsInUse.Contains(pObj);
-            }
+            if (pObj != null && objectsInUse != null) return objectsInUse.Contains(pObj);
             return true;
         }
 
@@ -251,8 +213,10 @@ namespace XPatchLib
                     if (pAttach.ParentQuere.Count <= 0)
                         break;
                 }
+
                 ParentElementWrited = true;
             }
+
             return result;
         }
 
@@ -278,19 +242,20 @@ namespace XPatchLib
         /// <param name="pSerializeDefalutValue">是否序列化默认值</param>
         /// <returns>
         ///     <para>当<paramref name="pRevObject" />为 <c>null</c> 时</para>
-        ///     <para>如果<paramref name="pOriObject"/>不为 <c>null</c> ，返回<c>true</c>；</para>
-        ///     <para>如果<paramref name="pOriObject"/>为 <c>null</c> 且 <paramref name="pSerializeDefalutValue" />为 <c>true</c> 时，返回 <c>true</c></para>
+        ///     <para>如果<paramref name="pOriObject" />不为 <c>null</c> ，返回<c>true</c>；</para>
+        ///     <para>
+        ///         如果<paramref name="pOriObject" />为 <c>null</c> 且 <paramref name="pSerializeDefalutValue" />为 <c>true</c> 时，返回
+        ///         <c>true</c>
+        ///     </para>
         ///     <para>否则返回 <c>false</c> 。</para>
         /// </returns>
         protected virtual bool IsSetNull(Object pOriObject, Object pRevObject, bool pSerializeDefalutValue)
         {
             if (pRevObject == null)
-            {
                 if (pOriObject != null)
                     return true;
                 else if (pSerializeDefalutValue)
                     return true;
-            }
             return false;
         }
 
@@ -305,7 +270,44 @@ namespace XPatchLib
         protected abstract bool DivideAction(string pName, object pOriObject, object pRevObject,
             DivideAttachment pAttach = null);
 
+        #region Internal Constructors
+
+        /// <summary>
+        ///     使用指定的类型初始化 <see cref="XPatchLib.DivideBase" /> 类的新实例。
+        /// </summary>
+        /// <param name="pWriter">写入器。</param>
+        /// <param name="pType">指定的类型。</param>
+        /// <exception cref="PrimaryKeyException">当 <paramref name="pType" /> 的 <see cref="PrimaryKeyAttribute" /> 定义异常时。</exception>
+        /// <exception cref="ArgumentNullException">当参数 <paramref name="pWriter" /> is null 时。</exception>
+        protected ConverterBase(ITextWriter pWriter, TypeExtend pType) : this(pType)
+        {
+            Guard.ArgumentNotNull(pWriter, "pWriter");
+            Writer = pWriter;
+        }
+
+        /// <summary>
+        ///     使用指定的类型初始化 <see cref="XPatchLib.CombineBase" /> 类的新实例。
+        /// </summary>
+        /// <param name="pType">
+        ///     指定的类型。
+        /// </param>
+        internal ConverterBase(TypeExtend pType)
+        {
+            Type = pType;
+
+            if (Type.FieldsToBeSerialized.Length > 0)
+            {
+                _fieldsToBeSerialized = new Dictionary<string, MemberWrapper>(Type.FieldsToBeSerialized.Length);
+                foreach (MemberWrapper mw in Type.FieldsToBeSerialized) _fieldsToBeSerialized.Add(mw.Name, mw);
+            }
+
+            Attributes = new CombineAttribute(Action.Edit, 0);
+        }
+
+        #endregion Internal Constructors
+
         #region Combine
+
         /// <summary>
         ///     根据增量内容创建基础类型实例。
         /// </summary>
@@ -326,10 +328,7 @@ namespace XPatchLib
                 //刚开始读取时，先读取XML头信息
                 pReader.Read();
                 //再次读取XML头信息
-                if (pReader.NodeType == NodeType.XmlDeclaration)
-                {
-                    pReader.Read();
-                }
+                if (pReader.NodeType == NodeType.XmlDeclaration) pReader.Read();
             }
 
             InitAttributes(pReader, pName);
@@ -387,8 +386,6 @@ namespace XPatchLib
             {
                 result = new CombineAttribute(Action.Edit, attrLen);
                 if (pReader.Name.Equals(pName, StringComparison.OrdinalIgnoreCase))
-                {
-                    //读取除Action以外的所有Action，将其赋值给属性
                     for (int i = 0; i < attrLen; i++)
                     {
                         string n = kv[i, 0];
@@ -411,13 +408,9 @@ namespace XPatchLib
 
                         result.Set(n, AnlysisKeyAttributeValueObject(pReader, n, v));
                     }
-                    //pReader.MoveToElement();
-                }
             }
-            if (result == null)
-            {
-                result = new CombineAttribute(Action.Edit, 0);
-            }
+
+            if (result == null) result = new CombineAttribute(Action.Edit, 0);
             return result;
         }
 
@@ -425,7 +418,7 @@ namespace XPatchLib
         {
             MemberWrapper member = FindMember(pKeyName);
             if (member != null)
-                return CombineBasic.CombineAction(ConvertHelper.GetTypeCode(member.Type), member.Type == typeof(Guid),
+                return ConverterBasic.CombineAction(ConvertHelper.GetTypeCode(member.Type), member.Type == typeof(Guid),
                     pReader.Setting.Mode, pKeyValue);
             return pKeyValue;
         }
@@ -452,10 +445,12 @@ namespace XPatchLib
         /// <param name="pName">当前读取的内容名称。</param>
         /// <returns></returns>
         protected abstract object CombineAction(ITextReader pReader, Object pOriObject, string pName);
+
         #endregion
 
 
         #region Internal Properties
+
         /// <summary>
         ///     获取或设置当前正在处理的类型。
         /// </summary>
@@ -474,10 +469,8 @@ namespace XPatchLib
         /// </summary>
         protected ITextWriter Writer;
 
-        List<object> objectsInUse = new List<object>();
+        private List<object> objectsInUse = new List<object>();
 
         #endregion Internal Properties
-
-        private Dictionary<string, MemberWrapper> _fieldsToBeSerialized;
     }
 }

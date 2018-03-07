@@ -8,7 +8,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Xml;
-using XPatchLib.Others;
 #if (NET_35_UP || NETSTANDARD)
 using System.Xml.Linq;
 #endif
@@ -94,11 +93,11 @@ namespace XPatchLib
             }
             if (pClearOtherCombineInstances)
             {
-                OtherCombineContainer.ClearInstances();
+                OtherConverterContainer.ClearCombineInstances();
             }
             if (pClearOtherDivideInstances)
             {
-                OtherDivideContainer.ClearInstances();
+                OtherConverterContainer.ClearDivideInstances();
             }
             _initialType = pType;
         }
@@ -304,7 +303,7 @@ namespace XPatchLib
             RegisterTypes(pWriter.Setting);
 
             pWriter.WriteStartDocument();
-            if (new DivideCore(pWriter, _type).Divide(_type.TypeFriendlyName,
+            if (new ConverterCore(pWriter, _type).Divide(_type.TypeFriendlyName,
                 pOriValue, pRevValue))
                 pWriter.WriteEndDocument();
             pWriter.Flush();
