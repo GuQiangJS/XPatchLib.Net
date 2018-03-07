@@ -30,6 +30,6 @@ namespace XPatchLib
         /// 从作为参数指定的增量产生器中复制设置。
         /// </summary>
         /// <param name="item">将其设置复制到当前对象。</param>
-        void Assign(DivideBase item);
+        void Assign(IDivide item);
     }
 }
