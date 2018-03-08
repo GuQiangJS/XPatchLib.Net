@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace XPatchLib
@@ -19,6 +20,13 @@ namespace XPatchLib
             lock (_innerDic)
             {
                 _innerDic.Add(typeof(Regex), typeof(ConvertRegex));
+#if NET ||NETSTANDARD_2_0_UP
+                _innerDic.Add(typeof(DriveInfo), typeof(ConverterDriveInfo));
+#endif
+#if NET || NETSTANDARD_1_3_UP
+                _innerDic.Add(typeof(FileInfo),typeof(ConverterFileInfo));
+                _innerDic.Add(typeof(DirectoryInfo), typeof(ConverterDirectoryInfo));
+#endif
             }
         }
 

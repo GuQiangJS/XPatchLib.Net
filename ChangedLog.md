@@ -1,3 +1,7 @@
+#### 4.1.0.2
+
+* 重构 - 重构 `FileInfo`、`DriviInfo`、`DirectoryInfo` 相关代码。
+
 #### 4.1.0.1
 
 * 重构 - 合并 `ICombine`、`IDivide` 接口的实现。
