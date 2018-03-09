@@ -80,16 +80,6 @@ namespace XPatchLib.UnitTest.ForXml
         [Test]
         public void SimpleTestXmlSerializer()
         {
-            const string context = @"<?xml version=""1.0"" encoding=""utf-8""?>
-<Account>
-  <Active>true</Active>
-  <CreatedDate>2013-01-20T00:00:00Z</CreatedDate>
-  <Email>xpatchlib@example.com</Email>
-  <Roles>
-    <String Action=""Add"">User</String>
-    <String Action=""Add"">Admin</String>
-  </Roles>
-</Account>";
 
             var account1 = new Account();
 
@@ -104,7 +94,19 @@ namespace XPatchLib.UnitTest.ForXml
                     "Admin"
                 }
             };
-            
+
+            XmlSerializeSetting s = new XmlSerializeSetting();
+            string context = string.Format(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<Account>
+  <Active>true</Active>
+  <CreatedDate>2013-01-20T00:00:00Z</CreatedDate>
+  <Email>xpatchlib@example.com</Email>
+  <Roles {0}=""{1}"">
+    <String Action=""Add"">User</String>
+    <String Action=""Add"">Admin</String>
+  </Roles>
+</Account>", s.AssemblyQualifiedName, account2.Roles.GetType().AssemblyQualifiedName);
+
             DoAssert(typeof(Account), context, account1, account2, true);
             DoAssert(typeof(Account), context, account1, account2, false);
 

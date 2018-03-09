@@ -36,6 +36,8 @@ namespace XPatchLib
 
         private Action _action;
 
+        public string AssemblyQualifiedName { get; set; }
+
         public Action Action { get { return _action; }set { _action = value; } }
 
         public string[] Keys { get { return _keys; } }

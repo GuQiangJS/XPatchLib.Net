@@ -101,7 +101,7 @@ namespace XPatchLib
             if (pAttach == null)
                 pAttach = new DivideAttachment();
             //将当前节点加入附件中，如果遇到子节点被写入前，会首先根据队列先进先出写入附件中的节点的开始标记
-            pAttach.ParentQuere.Enqueue(new ParentObject(pName, pOriObject, Type));
+            pAttach.ParentQuere.Enqueue(new ParentObject(pName, pOriObject, Type, GetType(pOriObject, pRevObject)));
 
             //顺序处理集合的删除、编辑、添加操作（顺序不能错）
 
@@ -356,9 +356,10 @@ namespace XPatchLib
         ///     合并新增类型动作的增量内容。
         /// </summary>
         /// <param name="pReader">Xml读取器。</param>
+        /// <param name="pAttribute">当前正在解析的Attributes。（包含了Action和主键集合）</param>
         /// <param name="pOriObject">待合并数据的原始对象。</param>
         /// <param name="pName">当前正在解析的节点名称</param>
-        private void CombineAddedItem(ITextReader pReader, ref object pOriObject,
+        private void CombineAddedItem(ITextReader pReader, CombineAttribute pAttribute, ref object pOriObject,
             string pName)
         {
             //当原始对象为null时，先创建一个实例。
@@ -368,7 +369,8 @@ namespace XPatchLib
             //原始集合对象的类型。
             var listType = pOriObject.GetType();
             //创建集合元素实例,根据增量内容内容向集合元素实例赋值。
-            var obj = CombineInstanceContainer.GetCombineInstance(GenericArgumentType).Combine(pReader, null, pName);
+
+            var obj = GetItemCombiner(pAttribute, pReader).Combine(pReader, null, pName);
 
             if (Type.IsArray)
             {
@@ -420,7 +422,7 @@ namespace XPatchLib
             switch (attrs.Action)
             {
                 case Action.Add:
-                    CombineAddedItem(pReader, ref pOriObject, pName);
+                    CombineAddedItem(pReader, attrs, ref pOriObject, pName);
                     break;
 
                 case Action.Edit:
@@ -466,10 +468,21 @@ namespace XPatchLib
                 if (o != null)
                 {
                     object foundItem = o.OriValue;
-                    foundItem = CombineInstanceContainer.GetCombineInstance(GenericArgumentType)
-                        .Combine(pReader, foundItem, pName);
+                    foundItem = GetItemCombiner(pAttribute,pReader).Combine(pReader, foundItem, pName);
                 }
             }
+        }
+
+        ICombine GetItemCombiner(CombineAttribute pAttribute,ITextReader pReader)
+        {
+            TypeExtend itemType = GenericArgumentType;
+            if (GenericArgumentType.OriType.IsInterface() && pAttribute != null && !string.IsNullOrEmpty(pAttribute.AssemblyQualifiedName))
+            {
+                itemType = TypeExtendContainer.GetTypeExtend(pReader.Setting,
+                    System.Type.GetType(pAttribute.AssemblyQualifiedName), null, Type);
+            }
+
+            return CombineInstanceContainer.GetCombineInstance(itemType);
         }
 
         /// <summary>

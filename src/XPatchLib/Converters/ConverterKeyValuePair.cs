@@ -124,7 +124,7 @@ namespace XPatchLib
         {
             if (pAttach == null)
                 pAttach = new DivideAttachment();
-            pAttach.ParentQuere.Enqueue(new ParentObject(Type.TypeFriendlyName, keyObject, Type)
+            pAttach.ParentQuere.Enqueue(new ParentObject(Type.TypeFriendlyName, keyObject, Type, GetType(oriValueObject, revValueObject))
             {
                 Action = pAttach.CurrentAction != Action.Edit ? pAttach.CurrentAction : pAction
             });

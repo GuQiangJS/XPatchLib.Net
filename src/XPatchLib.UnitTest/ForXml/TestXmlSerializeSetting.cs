@@ -64,9 +64,7 @@ namespace XPatchLib.UnitTest.ForXml
             setting.EnableOnSerializedAttribute = false;
             setting.EnableOnSerializingAttribute = false;
 #endif
-#if NET_40_UP || NETSTANDARD_2_0_UP
             setting.AssemblyQualifiedName = "NewAssemblyQualifiedName";
-#endif
 
             Assert.AreEqual(propertyInfos.Length, changedProNames.Count);
             foreach (var VARIABLE in propertyInfos)

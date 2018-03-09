@@ -51,12 +51,13 @@ namespace XPatchLib
                     pAttach = new DivideAttachment();
                 if (!result)
                 {
-                    ParentObject parentObject = new ParentObject(pName, pOriObject, Type);
+                    ParentObject parentObject =
+                        new ParentObject(pName, pOriObject, Type, GetType(pOriObject, pRevObject));
                     if (pAttach.ParentQuere.Count <= 0 || !pAttach.ParentQuere.Last().Equals(parentObject))
                     {
                         //将当前节点加入附件中，如果遇到子节点被写入前，会首先根据队列先进先出写入附件中的节点的开始标记
                         //只有当没有写入过的情况下才需要写入父节点
-                        pAttach.ParentQuere.Enqueue(new ParentObject(pName, pOriObject, Type)
+                        pAttach.ParentQuere.Enqueue(new ParentObject(pName, pOriObject, Type, GetType(pOriObject, pRevObject))
                         {
                             Action = pAttach.CurrentAction
                         });

@@ -54,7 +54,7 @@ namespace XPatchLib
             if (pAttach == null)
                 pAttach = new DivideAttachment();
             //将当前节点加入附件中，如果遇到子节点被写入前，会首先根据队列先进先出写入附件中的节点的开始标记
-            pAttach.ParentQuere.Enqueue(new ParentObject(pName, pOriObject, Type));
+            pAttach.ParentQuere.Enqueue(new ParentObject(pName, pOriObject, Type, GetType(pOriObject, pRevObject)));
 
             result = DivideItems(oriSerializationInfo, revSerializationInfo, pAttach);
 

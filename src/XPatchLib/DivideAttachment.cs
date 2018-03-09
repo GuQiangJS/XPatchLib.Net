@@ -47,13 +47,19 @@ namespace XPatchLib
 
     internal class ParentObject
     {
-        public ParentObject(String pName, Object pCurrentObj, TypeExtend pType)
+        public ParentObject(String pName, Object pCurrentObj, TypeExtend pType,Type pRealType)
         {
             Name = pName;
             Type = pType;
             Action = Action.Edit;
             CurrentObj = pCurrentObj;
+            RealType = pRealType;
         }
+
+        /// <summary>
+        /// 当前可能会是接口，所以需要记录真实类型
+        /// </summary>
+        public Type RealType { get; }
 
         public Object CurrentObj { get; set; }
 

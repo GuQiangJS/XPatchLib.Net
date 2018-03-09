@@ -1,4 +1,4 @@
-﻿// Copyright © 2013-2017 - GuQiang
+﻿// Copyright © 2013-2018 - GuQiang
 // Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -20,7 +20,7 @@ namespace XPatchLib
     ///     <include file='docs/docs.xml' path='Comments/examples/example[@class="PrimaryKeyAttribute" and @method="none"]/*' />
     /// </example>
     [SuppressMessage("Microsoft.Design", "CA1019:DefineAccessorsForAttributeArguments")]
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct |AttributeTargets.Interface)]
     public sealed class PrimaryKeyAttribute : Attribute
     {
         #region Private Fields

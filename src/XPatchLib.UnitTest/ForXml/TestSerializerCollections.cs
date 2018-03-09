@@ -234,4 +234,65 @@ namespace XPatchLib.UnitTest.ForXml
             Assert.Throws<NotImplementedException>(() => DoSerializer_Combie<Stack<int>>(output, queue1, true));
         }
     }
+
+    [TestFixture]
+    public class MultipleDefinedPropertySerialization:TestBase
+    {
+        [Test]
+        public void SerializePropertyDefinedInMultipleInterfaces()
+        {
+            const string propertyValue = "value";
+
+            var list = new List<ITestInterface> { new TestClass { Property = propertyValue } };
+
+            var output = DoSerializer_Divide(null, list);
+            LogHelper.Debug(output);
+
+            List<ITestInterface> newlist = DoSerializer_Combie<List<ITestInterface>>(output, null, true);
+
+            Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<List_ITestInterface>
+  <ITestInterface AssemblyQualified=""XPatchLib.UnitTest.ForXml.MultipleDefinedPropertySerialization+TestClass, XPatchLib.UnitTest, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"" Action=""Add"">
+    <Property>value</Property>
+  </ITestInterface>
+</List_ITestInterface>",output);
+
+            Assert.AreEqual(list.Count, newlist.Count);
+            Assert.AreEqual(list[0], newlist[0]);
+        }
+
+        public interface IFirstInterface
+        {
+            string Property { get; set; }
+        }
+
+        public interface ISecondInterface
+        {
+            string Property { get; set; }
+        }
+
+        [PrimaryKey("Property")]
+        public interface ITestInterface : IFirstInterface, ISecondInterface
+        {
+        }
+
+        [PrimaryKey("Property")]
+        public class TestClass : ITestInterface
+        {
+            public string Property { get; set; }
+
+            public override int GetHashCode()
+            {
+                return this.Property.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                TestClass c = obj as TestClass;
+                if (c == null) return false;
+                return string.Equals(c.Property, this.Property, StringComparison.Ordinal);
+            }
+        }
+    }
+
 }

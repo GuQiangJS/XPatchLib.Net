@@ -137,7 +137,48 @@ namespace XPatchLib
         {
             Guard.ArgumentNotNull(targetType, nameof(targetType));
 
+            if (targetType.IsInterface())
+            {
+                return GetInterfaceProperties(targetType, bindingAttr);
+            }
             return targetType.GetProperties(bindingAttr);
+        }
+
+        static IEnumerable<MemberInfo> GetInterfaceProperties(Type targetType, BindingFlags bindingAttr)
+        {
+            Guard.ArgumentNotNull(targetType, nameof(targetType));
+            if (targetType.IsInterface())
+            {
+                var propertyInfos = new List<PropertyInfo>();
+
+                var considered = new List<Type>();
+                var queue = new Queue<Type>();
+                considered.Add(targetType);
+                queue.Enqueue(targetType);
+                while (queue.Count > 0)
+                {
+                    var subType = queue.Dequeue();
+                    foreach (var subInterface in subType.GetInterfaces())
+                    {
+                        if (considered.Contains(subInterface)) continue;
+
+                        considered.Add(subInterface);
+                        queue.Enqueue(subInterface);
+                    }
+
+                    var typeProperties = subType.GetProperties(
+                        BindingFlags.FlattenHierarchy | bindingAttr);
+
+                    var newPropertyInfos = typeProperties
+                        .Where(x => propertyInfos.FindIndex(z =>
+                                        string.Equals(z.Name, x.Name, StringComparison.Ordinal)) < 0);
+
+                    propertyInfos.InsertRange(0, newPropertyInfos);
+                }
+
+                return propertyInfos.ToArray();
+            }
+            return null;
         }
 
         private static List<MemberInfo> GetFieldsAndProperties(Type pObjType, ISerializeSetting pSetting)
@@ -152,9 +193,52 @@ namespace XPatchLib
             return result;
         }
 
+        static IEnumerable<MemberInfo> GetInterfaceFields(Type targetType, BindingFlags bindingAttr)
+        {
+            Guard.ArgumentNotNull(targetType, nameof(targetType));
+            if (targetType.IsInterface())
+            {
+                var propertyInfos = new List<FieldInfo>();
+
+                var considered = new List<Type>();
+                var queue = new Queue<Type>();
+                considered.Add(targetType);
+                queue.Enqueue(targetType);
+                while (queue.Count > 0)
+                {
+                    var subType = queue.Dequeue();
+                    foreach (var subInterface in subType.GetInterfaces())
+                    {
+                        if (considered.Contains(subInterface)) continue;
+
+                        considered.Add(subInterface);
+                        queue.Enqueue(subInterface);
+                    }
+
+                    var typeProperties = subType.GetFields(
+                        BindingFlags.FlattenHierarchy | bindingAttr);
+
+                    var newPropertyInfos = typeProperties
+                        .Where(x => propertyInfos.FindIndex(z =>
+                                        string.Equals(z.Name, x.Name, StringComparison.Ordinal)) < 0);
+
+                    propertyInfos.InsertRange(0, newPropertyInfos);
+                }
+
+                return propertyInfos.ToArray();
+            }
+            return null;
+        }
+
+
         private static IEnumerable<MemberInfo> GetFields(Type targetType, BindingFlags bindingAttr)
         {
             Guard.ArgumentNotNull(targetType, nameof(targetType));
+            
+            if (targetType.IsInterface())
+            {
+                return GetInterfaceFields(targetType, bindingAttr);
+            }
 
             return targetType.GetFields(bindingAttr);
         }

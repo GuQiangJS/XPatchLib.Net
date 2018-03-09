@@ -32,6 +32,8 @@ namespace XPatchLib
             {
                 WriteParentElementStart(pAttach);
                 Writer.WriteStartObject(pName);
+                if (Type.OriType.IsInterface())
+                    WriteAssemby(GetType(pOriObject, pRevObject));
                 Writer.WriteActionAttribute(Action.SetNull);
                 return true;
             }

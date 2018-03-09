@@ -10,6 +10,15 @@ namespace XPatchLib
 {
     internal abstract class ConverterBase : IConverter
     {
+        protected Type GetType(Object obj1, Object obj2)
+        {
+            if (obj1 != null)
+                return obj1.GetType();
+            if (obj2 != null)
+                return obj2.GetType();
+            return null;
+        }
+
         private readonly Dictionary<string, MemberWrapper> _fieldsToBeSerialized;
 
         /// <summary>
@@ -42,6 +51,8 @@ namespace XPatchLib
                 {
                     WriteParentElementStart(pAttach);
                     Writer.WriteStartObject(pName);
+                    if (Type.OriType.IsInterface())
+                        WriteAssemby(GetType(pOriObject, pRevObject));
 #if NET_40_UP || NETSTANDARD_2_0_UP
                     WriteAssemby(Type);
 #endif
@@ -114,7 +125,7 @@ namespace XPatchLib
                 }
         }
 
-        protected virtual void WriteStart(TypeExtend pType, Object obj, string pName)
+        protected virtual void WriteStart(TypeExtend pType, Object obj, string pName,Type pRealType)
         {
             try
             {
@@ -147,29 +158,40 @@ namespace XPatchLib
             }
             finally
             {
+                if (pType.OriType.IsInterface())
+                    WriteAssemby(pRealType);
 #if NET_40_UP || NETSTANDARD_2_0_UP
                 WriteAssemby(pType);
 #endif
             }
         }
-
+        
 #if NET_40_UP || NETSTANDARD_2_0_UP
         /// <summary>
         ///     将当前类型的程序集限定名称作为属性写入
         /// </summary>
         /// <param name="pType"></param>
-        /// <remarks>只有在支持 <see cref="System.Dynamic.DynamicObject" /> 时才支持。</remarks>
         protected virtual void WriteAssemby(TypeExtend pType)
         {
-            string v = pType.OriType.AssemblyQualifiedName;
             if (pType != null && pType.ParentType != null && pType.ParentType.IsDynamicObject)
+            {
+                string v = pType.OriType.AssemblyQualifiedName;
                 Writer.WriteAttribute(Writer.Setting.AssemblyQualifiedName, v);
+            }
         }
 #endif
 
+        protected virtual void WriteAssemby(Type pType)
+        {
+            if (pType!=null)
+            {
+                Writer.WriteAttribute(Writer.Setting.AssemblyQualifiedName, pType.AssemblyQualifiedName);
+            }
+        }
+
         protected virtual void WriteStart(ParentObject pParentObject)
         {
-            WriteStart(pParentObject.Type, pParentObject.CurrentObj, pParentObject.Name);
+            WriteStart(pParentObject.Type, pParentObject.CurrentObj, pParentObject.Name, pParentObject.RealType);
         }
 
         /// <summary>
@@ -403,6 +425,11 @@ namespace XPatchLib
                             Action action;
                             if (ActionHelper.TryParse(v, out action))
                                 result.Action = action;
+                            continue;
+                        }
+                        if (pReader.Setting.AssemblyQualifiedName.Equals(n))
+                        {
+                            result.AssemblyQualifiedName = v;
                             continue;
                         }
 
