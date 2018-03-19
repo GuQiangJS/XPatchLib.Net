@@ -1,11 +1,9 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using XPatchLib;
+﻿// Copyright © 2013-2018 - GuQiang
+// Licensed under the LGPL-3.0 license. See LICENSE file in the project root for full license information.
+
 #if NUNIT
 using NUnit.Framework;
+
 #elif XUNIT
 using Xunit;
 using Test = Xunit.FactAttribute;
@@ -15,8 +13,13 @@ using Assert = XPatchLib.UnitTest.XUnitAssert;
 namespace XPatchLib.UnitTest.Issues
 {
     [TestFixture]
-    public class Issue1561:TestBase
+    public class Issue1561 : TestBase
     {
+        public class Data
+        {
+            public decimal? Value { get; set; }
+        }
+
         [Test]
         public void Test()
         {
@@ -36,10 +39,6 @@ namespace XPatchLib.UnitTest.Issues
             Assert.IsNotNull(d);
             Assert.IsTrue(d.Value.HasValue);
             Assert.AreEqual(data.Value.Value, d.Value.Value);
-        }
-        public class Data
-        {
-            public decimal? Value { get; set; }
         }
     }
 }
