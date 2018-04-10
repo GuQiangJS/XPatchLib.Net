@@ -347,6 +347,7 @@ namespace XPatchLib
             _registerTypes.Add(pType, pPrimaryKeys);
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);

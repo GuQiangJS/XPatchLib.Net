@@ -16,7 +16,7 @@ namespace XPatchLib
     /// <summary>
     ///     基础类型增量内容转换类。
     /// </summary>
-    /// <seealso cref="XPatchLib.DivideBase" />
+    /// <seealso cref="XPatchLib.ConverterBasic" />
     internal class ConverterBasic : ConverterBase
     {
         internal ConverterBasic(ITextWriter pWriter, TypeExtend pType) : base(pWriter, pType)

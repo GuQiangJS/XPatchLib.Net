@@ -35,8 +35,9 @@ namespace XPatchLib
 #else
         private readonly Dictionary<String, ClrHelper.MethodCall<object, object>> Methods;
 #endif
+#if NET_40_UP || NETSTANDARD_2_0_UP
         private readonly bool _isDynamicObject;
-
+#endif
         public Type[] InterfaceTypes { get; }
 
         public Boolean IsStack { get; }

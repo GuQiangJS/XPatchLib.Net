@@ -190,6 +190,7 @@ namespace XPatchLib
         ///     获取现有对象需要比较的值
         /// </summary>
         /// <param name="obj"></param>
+        /// <param name="comparer"></param>
         /// <returns></returns>
         protected abstract Dictionary<string, object> GetOriValues(object obj, IEqualityComparer<string> comparer);
 

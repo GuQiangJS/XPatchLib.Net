@@ -44,13 +44,13 @@ namespace XPatchLib
 
             Guard.ArgumentNotNullOrEmpty(pName, "pName");
 
-            if (pRevObject != null && objectsInUse != null)
+            if (pRevObject != null && _objectsInUse != null)
             {
-                if (objectsInUse.Contains(pRevObject))
+                if (_objectsInUse.Contains(pRevObject))
                     throw new InvalidOperationException(
                         ResourceHelper.GetResourceString(LocalizationRes.Exp_String_CircularReference,
                             Type.OriType.FullName));
-                objectsInUse.Add(pRevObject);
+                _objectsInUse.Add(pRevObject);
             }
 
             try
@@ -77,7 +77,7 @@ namespace XPatchLib
             finally
             {
                 if (result) WriteEnd(pRevObject);
-                objectsInUse.Remove(pRevObject);
+                _objectsInUse.Remove(pRevObject);
             }
         }
 
@@ -87,7 +87,7 @@ namespace XPatchLib
         /// <param name="item">将其设置复制到当前对象。</param>
         public virtual void Assign(IDivide item)
         {
-            objectsInUse = ((ConverterBase) item).objectsInUse;
+            _objectsInUse = ((ConverterBase) item)._objectsInUse;
         }
 
         protected virtual void WriteEnd(Object obj)
@@ -210,7 +210,7 @@ namespace XPatchLib
         /// <returns></returns>
         protected bool CheckForCircularReference(object pObj)
         {
-            if (pObj != null && objectsInUse != null) return objectsInUse.Contains(pObj);
+            if (pObj != null && _objectsInUse != null) return _objectsInUse.Contains(pObj);
             return true;
         }
 
@@ -304,7 +304,7 @@ namespace XPatchLib
         #region Internal Constructors
 
         /// <summary>
-        ///     使用指定的类型初始化 <see cref="XPatchLib.DivideBase" /> 类的新实例。
+        ///     使用指定的类型初始化 <see cref="XPatchLib.ConverterBase" /> 类的新实例。
         /// </summary>
         /// <param name="pWriter">写入器。</param>
         /// <param name="pType">指定的类型。</param>
@@ -317,7 +317,7 @@ namespace XPatchLib
         }
 
         /// <summary>
-        ///     使用指定的类型初始化 <see cref="XPatchLib.CombineBase" /> 类的新实例。
+        ///     使用指定的类型初始化 <see cref="XPatchLib.ConverterBase" /> 类的新实例。
         /// </summary>
         /// <param name="pType">
         ///     指定的类型。
@@ -505,7 +505,7 @@ namespace XPatchLib
         /// </summary>
         protected ITextWriter Writer;
 
-        private List<object> objectsInUse = new List<object>();
+        private List<object> _objectsInUse = new List<object>();
 
         #endregion Internal Properties
     }
