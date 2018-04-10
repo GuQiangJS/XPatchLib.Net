@@ -25,8 +25,17 @@ namespace XPatchLib
 
         #region Divide
 
+        /// <summary>
+        /// 获取参与序列化的属性集合
+        /// </summary>
         internal abstract MemberWrapper[] DivideMembers { get; }
 
+        /// <summary>
+        /// 获取 <paramref name="Obj"/> 中 <paramref name="member"/> 的值
+        /// </summary>
+        /// <param name="member"></param>
+        /// <param name="Obj"></param>
+        /// <returns></returns>
         protected abstract object GetMemberValue(MemberWrapper member, object Obj);
 
         /// <summary>
@@ -191,6 +200,13 @@ namespace XPatchLib
         /// <returns></returns>
         protected abstract object CreateInstance(Dictionary<string, object> values);
 
+        /// <summary>
+        /// 读取原始对象 <paramref name="pObj"/> 指定属性 <paramref name="proName"/> 的值，并且合并 <paramref name="pReader"/> 中的增量
+        /// </summary>
+        /// <param name="proName">属性名称</param>
+        /// <param name="pObj">原始对象</param>
+        /// <param name="pReader"></param>
+        /// <returns>返回合并后的结果</returns>
         protected abstract object GetMemberValue(string proName, object pObj, ITextReader pReader);
 
         #endregion
