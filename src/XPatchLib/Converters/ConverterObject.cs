@@ -222,14 +222,14 @@ namespace XPatchLib
                         }
 
                         //调用CombineObject类型的Combine方法，对现有属性实例（或新创建的属性实例）进行增量数据合并。
-                        CombineInstanceContainer
+                        memberObj = CombineInstanceContainer
                             .GetCombineInstance(
                                 TypeExtendContainer.GetTypeExtend(pReader.Setting, memberType, null, Type))
                             .Combine(pReader, memberObj, member.Name);
                         //将数据合并后的实例赋值给当前正在处理的属性，替换原有的数据实例。实现数据合并功能。
 
-                        if (!(created && TypeExtendContainer.GetTypeExtend(pReader.Setting, memberType, null, Type)
-                                  .CreateInstance().Equals(memberObj)))
+                        if (!(created && object.Equals(TypeExtendContainer.GetTypeExtend(pReader.Setting, memberType, null, Type)
+                                  .CreateInstance(),memberObj)))
                             Type.SetMemberValue(pOriObject, member.Name, memberObj);
                     }
 

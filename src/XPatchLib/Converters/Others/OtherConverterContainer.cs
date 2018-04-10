@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -13,13 +14,36 @@ namespace XPatchLib
         private static readonly Dictionary<Type, Type> _innerDic = new Dictionary<Type, Type>();
         private static readonly Dictionary<Type, ICombine> _instance_Combine_Dic = new Dictionary<Type, ICombine>();
         private static readonly Dictionary<Type, IDivide> _instance_Divide_Dic = new Dictionary<Type, IDivide>();
+        private static readonly Dictionary<Type, IConverter> _instance_Converter_Dic = new Dictionary<Type, IConverter>();
 
+        internal static bool TryGetConverter(TypeExtend pType, out IConverter instance)
+        {
+            instance = null;
+            lock (_instance_Converter_Dic)
+            {
+                if (!_instance_Converter_Dic.TryGetValue(pType.OriType, out instance))
+                {
+                    Type t;
+                    lock (_instance_Converter_Dic)
+                    {
+                        if (_innerDic.TryGetValue(pType.OriType, out t))
+                        {
+                            instance = TypeHelper.CreateInstance(t, pType) as IConverter;
+                            _instance_Converter_Dic.Add(pType.OriType, instance);
+                        }
+                    }
+                }
+            }
+
+            return instance != null;
+        }
 
         static OtherConverterContainer()
         {
             lock (_innerDic)
             {
                 _innerDic.Add(typeof(Regex), typeof(ConvertRegex));
+                _innerDic.Add(typeof(CultureInfo), typeof(ConverterCultureInfo));
 #if NET ||NETSTANDARD_2_0_UP
                 _innerDic.Add(typeof(DriveInfo), typeof(ConverterDriveInfo));
 #endif

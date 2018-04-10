@@ -10,6 +10,15 @@ namespace XPatchLib
 {
     internal abstract class ConverterBase : IConverter
     {
+        /// <summary>
+        /// 获取当前对象类型的无参数构造函数实例。
+        /// </summary>
+        /// <returns></returns>
+        public virtual object CreateInstance()
+        {
+            return null;
+        }
+
         protected Type GetType(Object obj1, Object obj2)
         {
             if (obj1 != null)

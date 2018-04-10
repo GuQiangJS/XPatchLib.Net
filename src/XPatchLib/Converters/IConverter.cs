@@ -5,5 +5,10 @@ namespace XPatchLib
 {
     internal interface IConverter:ICombine, IDivide
     {
+        /// <summary>
+        /// 获取当前对象类型的无参数构造函数实例。
+        /// </summary>
+        /// <returns></returns>
+        object CreateInstance();
     }
 }

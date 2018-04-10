@@ -184,6 +184,11 @@ namespace XPatchLib
         /// <returns></returns>
         protected abstract Dictionary<string, object> GetOriValues(object obj, IEqualityComparer<string> comparer);
 
+        /// <summary>
+        /// 根据字典创建当前对象类型的实例
+        /// </summary>
+        /// <param name="values">参数名称-值的字典</param>
+        /// <returns></returns>
         protected abstract object CreateInstance(Dictionary<string, object> values);
 
         protected abstract object GetMemberValue(string proName, object pObj, ITextReader pReader);

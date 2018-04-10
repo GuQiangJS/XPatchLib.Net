@@ -255,19 +255,24 @@ namespace XPatchLib
             }
             else
             {
-#if NET || NETSTANDARD_2_0_UP
-                //如果是ISerializable接口派生类，则不主动创建实例
-                if (!_type.IsISerializable)
-#endif
-#if NET|| NETSTANDARD_1_3_UP
-                if(!_type.IsFileSystemInfo)
-#endif
-                    cloneObjValue = _type.CreateInstance();
+                cloneObjValue = CreateInstance(_type);
             }
 
             //var ele = XElement.Load(pReader, LoadOptions.None);
             return CombineInstanceContainer.GetCombineInstance(_type)
                 .Combine(pReader, cloneObjValue, _type.TypeFriendlyName);
+        }
+
+        object CreateInstance(TypeExtend type)
+        {
+#if NET || NETSTANDARD_2_0_UP
+            if (type.IsISerializable)
+                return null;
+#endif
+            IConverter converter = null;
+            if (OtherConverterContainer.TryGetConverter(type, out converter))
+                return converter.CreateInstance();
+            return _type.CreateInstance();
         }
 
         /// <summary>

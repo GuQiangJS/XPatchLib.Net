@@ -53,6 +53,16 @@ namespace XPatchLib.UnitTest.ForXml
         }
 
         [Test]
+        public void SerializeCultureInfo()
+        {
+            CultureInfo cul1 = new CultureInfo("zh-CN");
+            string context = this.DoSerializer_Divide(null, cul1);
+            LogHelper.Debug(context);
+            CultureInfo cul2 = this.DoSerializer_Combie<CultureInfo>(context, null, true);
+            Assert.AreEqual(cul1, cul2);
+        }
+
+        [Test]
         [Description("测试多层级对象的增量和数据合并-增加元素")]
         public void SerializeMulitiLevelClass_AddItem()
         {

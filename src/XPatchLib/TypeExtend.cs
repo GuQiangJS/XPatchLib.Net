@@ -346,6 +346,10 @@ namespace XPatchLib
 
         internal Object CreateInstance(params object[] args)
         {
+            IConverter converter;
+            if (OtherConverterContainer.TryGetConverter(this, out converter))
+                return converter.CreateInstance();
+
             if (CreateInstanceFuncs != null && (args == null || args.Length <= 0))
                 return CreateInstanceFuncs();
 
