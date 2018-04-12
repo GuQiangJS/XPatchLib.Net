@@ -57,6 +57,7 @@ namespace XPatchLib
         /// <summary>
         ///     从流中读取下一个节点。
         /// </summary>
+        /// <exception cref="MissingRootException">当读取的文档缺少根节点时</exception>
         /// <returns>如果成功读取了下一个节点，则为 <c>true</c>；如果没有其他节点可读取，则为 <c>false</c>。</returns>
         bool Read();
     }

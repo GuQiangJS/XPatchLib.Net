@@ -9,6 +9,10 @@ namespace XPatchLib
         {
             get { return "Exp_String_AttributeMiss"; }
         }
+        internal static string Exp_String_MissingRoot
+        {
+            get { return "Exp_String_MissingRoot"; }
+        }
 
         internal static string Exp_String_FileNotExists
         {

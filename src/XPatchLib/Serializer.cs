@@ -258,6 +258,21 @@ namespace XPatchLib
                 cloneObjValue = CreateInstance(_type);
             }
 
+            try
+            {
+                if (pReader.ReadState == ReadState.Initial)
+                {
+                    //刚开始读取时，先读取XML头信息
+                    pReader.Read();
+                    //再次读取XML头信息
+                    if (pReader.NodeType == NodeType.XmlDeclaration) pReader.Read();
+                }
+            }
+            catch (MissingRootException)
+            {
+                return cloneObjValue;
+            }
+
             //var ele = XElement.Load(pReader, LoadOptions.None);
             return CombineInstanceContainer.GetCombineInstance(_type)
                 .Combine(pReader, cloneObjValue, _type.TypeFriendlyName);

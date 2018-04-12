@@ -147,6 +147,9 @@
   <data name="Exp_String_MemberType" xml:space="preserve">
     <value>{0}.MemberType 既不是 MemberTypes.Property 也不是 MemberTypes.Field。而是 '{1}' 。</value>
   </data>
+  <data name="Exp_String_MissingRoot" xml:space="preserve">
+    <value>缺少根节点。</value>
+  </data>
   <data name="Exp_String_PrimaryKey" xml:space="preserve">
     <value>'{0}' 的 主键 '{1}' 设置异常。</value>
   </data>

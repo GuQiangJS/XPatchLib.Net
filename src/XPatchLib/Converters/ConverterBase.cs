@@ -354,13 +354,7 @@ namespace XPatchLib
             Guard.ArgumentNotNull(pReader, "pReader");
             Guard.ArgumentNotNullOrEmpty(pName, "pName");
 
-            if (pReader.ReadState == ReadState.Initial)
-            {
-                //刚开始读取时，先读取XML头信息
-                pReader.Read();
-                //再次读取XML头信息
-                if (pReader.NodeType == NodeType.XmlDeclaration) pReader.Read();
-            }
+            
 
             InitAttributes(pReader, pName);
 
